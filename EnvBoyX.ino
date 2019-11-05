@@ -20,7 +20,7 @@ String configured_file = "/config_ok.txt";
 
 String product_short = "ebx";
 String product = "EnvBoyX";
-String ver = "1.0";
+String ver = "1.2";
 String product_long = product + " Ver." + ver;
 
 #define SETTING_ID "EBX.r2"

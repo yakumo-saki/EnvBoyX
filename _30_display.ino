@@ -43,7 +43,7 @@ void disp_normal_startup_screen(String product_long) {
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.drawString(0, 0,  "ziomatrix corp.");
   display.drawString(0, 16, product_long);
-  display.drawString(0, 32, "initializing.");
+  display.drawString(0, 32, "init or flash");
   display.drawString(0, 48, "Please wait");
   display.display();
 
@@ -140,23 +140,31 @@ void disp_wait_for_reconfig() {
   display.drawString(0, 32, "Power off now");
   display.drawString(0, 48, " to re-configure");
 
-  int MAX_BAR = 20;
-  String bar = "*";
+  // バーを生成する
+  // 下の幅の部分を先に書かせてしまう。
+  int MAX_UNDER_BAR = 20;  // _ の数。プロポーショナルフォントなので幅注意
+  String bar = "";
+  for (int n = 0; n < MAX_UNDER_BAR ; n++) {
+    bar = bar + "_";
+    display.drawString(0, 16, bar);
+    display.drawString(0, 0, bar);
+    display.display();
+  }
+
+  int MAX_BAR = 31;  // _ の数。プロポーショナルフォントなので幅注意  
+  int now = 1;
   for (int i = 0; i < MAX_BAR; i++) {
-    String bar = "*";
-    for(int j = 0; j < MAX_BAR; j++) {
-      bar = bar + ( (j <= i) ? "-" : " ");
+    bar = "|";
+    
+    for (int n = 0; n < now ; n++) {
+      bar = bar + "|";
     }
 
     display.drawString(0, 16, bar);
     display.display();
-    delay(120);
+    delay(100);
+    now = now + 1;
   }
-
-  bar = bar + "*";
-  display.drawString(0, 16, bar);
-  display.display();
-  delay(500);
 
 }
 
@@ -165,18 +173,26 @@ void disp_sensor_value(String ip, String mdns) {
   if (!has_ssd1306()) return;
 
   display.clear();
+
+  // ヘッダ1行目
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(ArialMT_Plain_10);
   display.drawString(127, 0, "IP:" + ip); 
-  display.drawString(127, 9, mDNS); 
-
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.drawString(0, 0, product); 
 
+  // ヘッダ2行目
+  // display.drawString(127, 9, mDNS); 
+
+  // データ ヘッダ2行時のY座標19,34,49
   display.setFont(ArialMT_Plain_16);
-  display.drawString(0, 19, "T:" + String(lastTemp, 1) + "c" + " H:" + String(lastHumidity, 1) + "%" ); 
-  display.drawString(0, 34, "P:" + String(lastPressure, 1) + " " + "L:" + String(lastLuxFull, 0)); 
-  display.drawString(0, 49, String("CO2:") + String(lastPpm) + "ppm" ); 
+  String ppm = String(lastPpm);
+  if (lastPpm < 399) {
+    ppm = "****";
+  }
+  display.drawString(0, 12, "  " + String(lastTemp, 2) + "c" + "    " + String(lastHumidity, 2) + "%" ); 
+  display.drawString(0, 29, "" + String(lastPressure, 1) + "hpa " + String(lastLuxFull, 0) + "lx"); 
+  display.drawString(0, 47, String("CO2:") + ppm + "ppm" ); 
   // "L:" + String(lastLuxFull, 0) + " " + "Ir:" + String(lastLuxIr, 0)
 
   display.setTextAlignment(TEXT_ALIGN_RIGHT);

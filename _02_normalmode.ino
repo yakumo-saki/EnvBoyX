@@ -48,12 +48,13 @@ void setup_normal() {
 
     list_dir();
     Serial.println("=== reconfigure timeout. continue.");
+
+    http_setup();
   }
 
   // start WiFi
   make_sure_wifi_connected();
   disp_wifi_info(WiFi.localIP().toString(), mDNS);
-  begin_network_connection();
 
   Serial.println(">>> Initializing sensors start.");
   bme_setup();
@@ -74,15 +75,18 @@ void setup_normal() {
 //
 void loop_normal() {
 
+  Serial.println("");
+
   // WiFiが繋がってなければ意味がないので接続チェック
   make_sure_wifi_connected();
 
   // MQTT
   if (opMode == OPMODE_MQTT) {
+    begin_mqtt_connection();
+    
     mqttClient.loop();
     delay(10);  // <- fixes some issues with WiFi stability
   
-    Serial.println("");
     Serial.println("MQTT Connect");
     while (!mqttClient.connect(mDNS.c_str(), "", "")) { // username and password not support
       Serial.print(".");
@@ -111,8 +115,9 @@ void loop_normal() {
     }
   } else if (opMode == OPMODE_DISPLAY) {  
     disp_sensor_value(WiFi.localIP().toString(), mDNS);
+    http_loop();
     Serial.println("display: next tick.");
-    delay(1000);
+    delay(1500);
   }
 }
 
@@ -149,10 +154,11 @@ void read_config() {
   Serial.println("MQTT Name  : " + mqttName);  
 }
 
-void begin_network_connection() {
+void begin_mqtt_connection() {
   
   Serial.println("MQTT Begin");
   mqttClient.begin(mqttBroker.c_str(), net);
+  delay(10);
 
   Serial.println("MQTT Started successfully.");
 }
@@ -196,15 +202,22 @@ void read_data() {
   }
 
   if (use_mhz19b) {
-    lastPpm = 0;
 
-    // TODO: READ
+    // 
+    mhz_read_data();
 
+    if (opMode == OPMODE_MQTT) {
+      delay(2050);       // MHZデータ取得待ち
+      mhz_read_data();   // ここは adhoc 
+    }
+    
     // MQTT: if ppm == -1 , MH-Z19 error.
     if (lastPpm > 0) {
       char buf[24] = "";
       sprintf(buf, "%d", lastPpm);
       mqtt_publish("co2ppm", buf);
+    } else {
+      // MH-Z19B read error. do nothing.
     }
   } 
 
