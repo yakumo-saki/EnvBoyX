@@ -1,4 +1,4 @@
-// https://github.com/WifWaf/MH-Z19
+// https://github.com/tobiasschuerg/MH-Z-CO2-Sensors
 #include <MHZ19.h>
 #include <SoftwareSerial.h> 
 
@@ -66,13 +66,21 @@ void mhz_read_data() {
 
   if ( (millis() - mhzGetDataTimer) >= 3000) {
 
-//    int8_t temp;                                     // Buffer for temperature
-//    temp = mhz.getTemperature();                     // Request Temperature (as Celsius)
-
-    int temp = mhz.getTemperature();
-
-    int retry_count = 0;
     int MAX_RETRY = 3;
+
+    int temp = 0;
+    
+    int retry_count = 0;
+    while (retry_count <= MAX_RETRY) {
+      temp = mhz.getTemperature();
+      if (mhz.errorCode == 1) {
+        break;
+      }
+      retry_count = retry_count + 1;
+      delay(100);
+    }
+
+    retry_count = 0;
     while (retry_count <= MAX_RETRY) {
       int CO2 = mhz.getCO2();
 
@@ -86,12 +94,13 @@ void mhz_read_data() {
       retry_count = retry_count + 1;
       delay(500);
       if (retry_count == MAX_RETRY) {
-        mhzlog("too many failure. give up!");
+        mhzlog("too many failure. exec setup again !");
+        mhz_setup();
         lastPpm = -999;
       }
     }
 
-    mhzGetDataTimer = millis();                      // Update interval
+    mhzGetDataTimer = millis();
   }
 }
 

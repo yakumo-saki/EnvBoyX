@@ -137,7 +137,7 @@ void disp_wait_for_reconfig() {
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_16);
   display.drawString(0, 0, "Wait for re-config");
-  display.drawString(0, 32, "Power off now");
+  display.drawString(0, 33, "Power off now");
   display.drawString(0, 48, " to re-configure");
 
   // バーを生成する
