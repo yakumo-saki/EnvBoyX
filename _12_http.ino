@@ -47,7 +47,7 @@ void http_handle_data() {
   product_long.toCharArray(product, sizeof(product), 0);
 
   snprintf ( buf, sizeof buf,
-    "{ \"product\": \%s\", \"uptime\": \"%02d:%02d:%02d\", \"uptimeMills\": \"%02d\", \"temparature\": \"%s\", \"humidity\": \"%s\", \"pressure\": \"%s\",\"luminous\": \"%s\", \"luminousIr\": \"%s\", \"co2ppm\": \"%s\" }"
+    "{ \"product\": \"%s\", \"uptime\": \"%02d:%02d:%02d\", \"uptimeMills\": \"%02d\", \"temparature\": \"%s\", \"humidity\": \"%s\", \"pressure\": \"%s\",\"luminous\": \"%s\", \"luminousIr\": \"%s\", \"co2ppm\": \"%s\" }"
     , product, hr, min % 60, sec % 60, millis()
     , dtostrf(lastTemp, 0, 2, temp), dtostrf(lastHumidity, 0, 2, hum), dtostrf(lastPressure, 0, 2, pres)
     , dtostrf(lastLuxFull, 0, 0, lux), dtostrf(lastLuxIr, 0, 0, luxIr), dtostrf(lastPpm, 0, 0, ppm)
