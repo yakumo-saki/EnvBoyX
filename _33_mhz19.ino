@@ -1,6 +1,8 @@
-// https://github.com/tobiasschuerg/MH-Z-CO2-Sensors
-#include <MHZ19.h>
-#include <SoftwareSerial.h> 
+// https://github.com/piot-jp-Team/mhz19_uart/
+#include <MHZ19_uart.h>
+
+// ■ 動作モード ■
+bool USE_PWM = true;
 
 // MHZ用software serial のピン
 const int MHZ_RX_PIN = 12;
@@ -16,9 +18,14 @@ bool WAIT_FOR_CO2_WARMUP_FOREVER = false;
 // 終了後は false に戻す。
 bool AUTO_BASELINE_CORRECTION = true;
 
+// PWM
+#define CO2_IN 14
 
-MHZ19 mhz;                                             // Constructor for MH-Z19 class
-SoftwareSerial mhzSerial(MHZ_RX_PIN, MHZ_TX_PIN);                   // Uno example
+// 0 ~ 1004までなのでintでOK
+int mhz_high_ms = 0;
+int mhz_low_ms = 0;
+
+MHZ19_uart mhz19;
 
 unsigned long mhzGetDataTimer = 0;                     
 
@@ -29,33 +36,43 @@ void mhzlog(String msg) {
 }
 
 void mhz_setup() {
-
-  lastPpm = CO2_PPM_INVALID;
-
   if (use_mhz19b == USE_NO) {
     mhzlog("disabled.");
     return;
   }
 
-  mhzlog("Enabled.");
+  if (USE_PWM) {
+    mhz_setup_pwm();
+  } else {
+    mhz_setup_uart();
+  }
+}
+
+void mhz_setup_pwm() {
   
-  mhzlog("Start software serial.");
-  mhzSerial.begin(9600);
+  if (use_mhz19b == USE_NO) {
+    mhzlog("disabled.");
+    return;
+  }
 
-  mhzlog("initializing.");
-  mhz.begin(mhzSerial);
-  mhz.autoCalibration(AUTO_BASELINE_CORRECTION);
-  mhz.setRange(5000);
-  mhzlog("initialized.");
+  mhzlog("Enabled (PWM mode).");
+}
 
+void mhz_setup_uart() {
+
+  lastPpm = CO2_PPM_INVALID;
+
+  mhzlog("Enabled (UART mode).");
+  
+  mhz19.begin(MHZ_RX_PIN, MHZ_TX_PIN);
+  mhz19.setAutoCalibration(AUTO_BASELINE_CORRECTION);
   if (AUTO_BASELINE_CORRECTION) {
     mhzlog("WARNING -------------------------- WARNING");
     mhzlog("     Auto Baseline Correction is ON!");
     mhzlog("WARNING -------------------------- WARNING");
   }
   mhzlog("initialized.");
-  
-  
+ 
 }
 
 void mhz_read_data() {
@@ -64,47 +81,31 @@ void mhz_read_data() {
     return;
   }
 
-  if ( (millis() - mhzGetDataTimer) >= 3000) {
-
-    int MAX_RETRY = 3;
-
-    int temp = 0;
-    
-    int retry_count = 0;
-    while (retry_count <= MAX_RETRY) {
-      temp = mhz.getTemperature();
-      if (mhz.errorCode == 1) {
-        break;
-      }
-      retry_count = retry_count + 1;
-      delay(100);
-    }
-
-    retry_count = 0;
-    while (retry_count <= MAX_RETRY) {
-      int CO2 = mhz.getCO2();
-
-      if (mhz.errorCode == 1) {
-        mhzlog("CO2 (ppm): " + String(CO2) + + " Temp(C): " + String(temp)  + " Status: " + mhz_code_to_msg(mhz.errorCode));
-        lastPpm = CO2;
-        break;
-      } else {
-        mhzlog("Retry cause status: " + mhz_code_to_msg(mhz.errorCode));
-      }
-      retry_count = retry_count + 1;
-      delay(500);
-      if (retry_count == MAX_RETRY) {
-        mhzlog("too many failure. exec setup again !");
-        mhz_setup();
-        lastPpm = -999;
-      }
-    }
-
-    mhzGetDataTimer = millis();
+  if (USE_PWM) {
+    mhz_read_data_pwm();
+  } else {
+    mhz_read_data_uart();
   }
+
 }
 
-String mhz_code_to_msg(int error_code) {
+void mhz_read_data_uart() {
+
+  if ( (millis() - mhzGetDataTimer) > 3000) {
+    mhz19.updateSensor();   
+    mhzGetDataTimer = millis();
+    mhzlog("Update Sensor: status=" + String(mhz19.getStatus()) );
+  }
+
+  int co2ppm = mhz19.getPPM();
+  int temp = mhz19.getTemperature();
+  
+  mhzlog("CO2 (ppm): " + String(co2ppm) + " Temp: " + String(temp) );
+  lastPpm = co2ppm;
+
+}
+
+String mhz19_code_to_msg(int error_code) {
 
   if (error_code == 0) {
     return "RESULT IS NULL";
@@ -123,4 +124,131 @@ String mhz_code_to_msg(int error_code) {
   }
 
   return "UNKNOWN CODE " + String(error_code); 
+}
+
+
+String mhz_code_to_msg(int error_code) {
+
+  if (error_code == -2) {
+    return "NO_RESPONSE";
+  } else if (error_code == -3) {
+    return "STATUS_CHECKSUM_MISMATCH";
+  } else if (error_code == -4) {
+    return "STATUS_INCOMPLETE";
+  } else if (error_code == -5) {
+    return "STATUS_NOT_READY";
+  } else if (error_code == -6) {
+    return "STATUS_PWM_NOT_CONFIGURED";
+  } else if (error_code == -7) {
+    return "STATUS_SERIAL_NOT_CONFIGURED";
+  }
+
+  return "UNKNOWN CODE " + String(error_code); 
+}
+
+/**
+ * 
+ */
+int mhz_read_data_pwm() {
+
+  mhz_read_pwm_ms();
+
+  if (mhz_high_ms < 0 || mhz_low_ms < 0) {
+    mhzlog("PWM timeout, set lastppm = -999");
+    lastPpm = CO2_PPM_INVALID;
+    return CO2_PPM_INVALID;
+  }
+
+  // total may 1004ms +- 5%
+  mhzlog("mhz_high_ms = " + String(mhz_high_ms) + " mhz_low_ms  = " + String(mhz_low_ms) 
+                 + " total = " + String(mhz_high_ms + mhz_low_ms));
+
+  float ppm = 2000 * (mhz_high_ms - 2) / ((mhz_high_ms + mhz_low_ms) - 4);
+
+  mhzlog("PPM = " + String(ppm,2) + " ppm");
+
+  lastPpm = ppm;
+  return (int) ppm;
+}
+
+/**
+ * worst expected execution time 2008ms + alpha
+ */
+void mhz_read_pwm_ms() {
+
+  const int TIMEOUT_MS = 2500;
+  
+  long high_start_ms = 0;
+  long low_start_ms = 0;
+
+  bool is_ready = false;
+
+  String WAIT_TGT = "";
+
+//  bool log_wait_for_low  = false;
+//  bool log_wait_for_high = false;
+  bool log_ignore_high = false;
+
+  long timeout_start_ms = millis();
+  long timeout_end_ms = timeout_start_ms + TIMEOUT_MS;
+  mhzlog("read_mhz_pwm start " + String(timeout_start_ms));
+
+  while (millis() < timeout_end_ms) {
+    int pwmValue = digitalRead(CO2_IN);
+    ESP.wdtFeed();
+
+    // Serial.println(pwmValue);
+    
+    if (pwmValue == LOW) {
+      if (!is_ready) {
+        // LOWになったので次のHIGHから計測開始
+        is_ready = true;
+        WAIT_TGT = "HIGH";
+        mhzlog("LOW wait for first HIGH ms=" + String(millis()) );
+      } else if (WAIT_TGT == "LOW") {
+        // 計測開始後、HIGH→LOW になった時(HIGH計測終了）。次はLOW計測
+        long end_ms = millis();
+        low_start_ms = end_ms;
+        WAIT_TGT = "HIGH2";
+        long elapsed = end_ms - high_start_ms;
+        mhz_high_ms = elapsed;
+
+        mhzlog("LOW measure HIGH done. next: measure LOW. waiting HIGH ms=" + String(low_start_ms) );     
+        continue;
+      } else {
+        // 
+      }
+      
+    } else if (pwmValue == HIGH) {
+    
+      if (!is_ready) {
+        // HIGHの途中から見てしまっている可能性があるので無視
+        if (!log_ignore_high) {
+          mhzlog("HIGH but !is_ready. ignore");
+          log_ignore_high = true;
+        }
+      } else if (WAIT_TGT == "HIGH") {
+        // HIGH && is_ready && !is_wait_high = HIGH計測スタート
+        WAIT_TGT = "LOW";
+        high_start_ms = millis();
+        mhzlog("HIGH measure HIGH start. waiting LOW ms=" + String(high_start_ms) );
+      } else if (WAIT_TGT == "HIGH2") {
+        // LOW->HIGH LOW計測終了。　これで計測完了
+        long end_ms = millis();
+        mhz_low_ms = end_ms - low_start_ms;
+        mhzlog("HIGH measure LOW done. next: none. waiting none ms=" + String(end_ms) );     
+
+        return;
+      } else {
+        // HIGH && is_ready && is_high = 計測中
+        // 何もしない（まつだけ）
+      }
+    } else {
+      mhzlog("not expected value " + String(pwmValue) );
+    }
+  } // while
+
+  mhzlog("PWM Timeout");
+  mhz_high_ms = -1;
+  mhz_low_ms = -1;
 }

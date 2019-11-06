@@ -43,7 +43,7 @@ void disp_normal_startup_screen(String product_long) {
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.drawString(0, 0,  "ziomatrix corp.");
   display.drawString(0, 16, product_long);
-  display.drawString(0, 32, "init or flash");
+  display.drawString(0, 32, "initialize or flash");
   display.drawString(0, 48, "Please wait");
   display.display();
 
@@ -187,9 +187,14 @@ void disp_sensor_value(String ip, String mdns) {
   // データ ヘッダ2行時のY座標19,34,49
   display.setFont(ArialMT_Plain_16);
   String ppm = String(lastPpm);
-  if (lastPpm < 399) {
-    ppm = "****";
+  if (lastPpm < 0) {
+    ppm = "****";  // 計測エラー
+  } else if (lastPpm < 399) {
+    ppm = "*" + String(lastPpm); // あり得ない値(最低399ppmなはず）
+  } else {
+    ppm = String(lastPpm);       // OK
   }
+
   display.drawString(0, 12, "  " + String(lastTemp, 2) + "c" + "    " + String(lastHumidity, 2) + "%" ); 
   display.drawString(0, 29, "" + String(lastPressure, 1) + "hpa " + String(lastLuxFull, 0) + "lx"); 
   display.drawString(0, 47, String("CO2:") + ppm + "ppm" ); 

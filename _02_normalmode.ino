@@ -202,12 +202,11 @@ void read_data() {
   }
 
   if (use_mhz19b) {
-
     // 
     mhz_read_data();
 
     if (opMode == OPMODE_MQTT) {
-      delay(2050);       // MHZデータ取得待ち
+      delay(3050);       // MHZデータ取得待ち
       mhz_read_data();   // ここは adhoc 
     }
     
