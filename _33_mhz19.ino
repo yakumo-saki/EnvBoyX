@@ -5,8 +5,8 @@
 bool USE_PWM = true;
 
 // MHZ用software serial のピン
-const int MHZ_RX_PIN = 12;
-const int MHZ_TX_PIN = 14;
+const int MHZ_RX_PIN = 9;
+const int MHZ_TX_PIN = 10;
 
 const int CO2_PPM_INVALID = -999;
 
@@ -16,10 +16,10 @@ bool WAIT_FOR_CO2_WARMUP_FOREVER = false;
 
 // 400ppmの校正(ABC)を行う。これをするには、20分以上外気に晒し続ける必要がある。
 // 終了後は false に戻す。
-bool AUTO_BASELINE_CORRECTION = true;
+bool AUTO_BASELINE_CORRECTION = false;
 
 // PWM
-#define CO2_IN 14
+int CO2_IN = -1;
 
 // 0 ~ 1004までなのでintでOK
 int mhz_high_ms = 0;
@@ -36,10 +36,12 @@ void mhzlog(String msg) {
 }
 
 void mhz_setup() {
-  if (use_mhz19b == USE_NO) {
+  if (use_mhz19b == MHZ_NOUSE) {
     mhzlog("disabled.");
     return;
-  }
+  } 
+  
+  USE_PWM = (use_mhz19b == MHZ_USE_PWM);
 
   if (USE_PWM) {
     mhz_setup_pwm();
@@ -50,12 +52,14 @@ void mhz_setup() {
 
 void mhz_setup_pwm() {
   
-  if (use_mhz19b == USE_NO) {
+  if (use_mhz19b == MHZ_NOUSE) {
     mhzlog("disabled.");
     return;
   }
 
-  mhzlog("Enabled (PWM mode).");
+  CO2_IN = mhz19b_pwmpin.toInt();
+
+  mhzlog("Enabled (PWM mode). GPIO pin = " + String(CO2_IN) );
 }
 
 void mhz_setup_uart() {
@@ -77,7 +81,7 @@ void mhz_setup_uart() {
 
 void mhz_read_data() {
 
-  if (use_mhz19b == USE_NO) {
+  if (use_mhz19b == MHZ_NOUSE) {
     return;
   }
 
@@ -163,9 +167,15 @@ int mhz_read_data_pwm() {
   mhzlog("mhz_high_ms = " + String(mhz_high_ms) + " mhz_low_ms  = " + String(mhz_low_ms) 
                  + " total = " + String(mhz_high_ms + mhz_low_ms));
 
-  float ppm = 2000 * (mhz_high_ms - 2) / ((mhz_high_ms + mhz_low_ms) - 4);
+  float ppm = 5000 * (mhz_high_ms - 2) / ((mhz_high_ms + mhz_low_ms) - 4);
 
   mhzlog("PPM = " + String(ppm,2) + " ppm");
+
+  // PWMでよんだときに多少ブレてしまい、390台になるので、そこは400にごまかす
+  if (385 < ppm && ppm < 399) {
+    mhzlog("PPM is near 400. Result PPM adjusted to 400.");
+    ppm = 400.0;
+  }
 
   lastPpm = ppm;
   return (int) ppm;

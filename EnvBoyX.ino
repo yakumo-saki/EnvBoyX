@@ -20,15 +20,16 @@ String configured_file = "/config_ok.txt";
 
 String product_short = "ebx";
 String product = "EnvBoyX";
-String ver = "1.2";
+String ver = "1.3";
 String product_long = product + " Ver." + ver;
 
-#define SETTING_ID "EBX.r2"
+#define SETTING_ID "EBX.r4"
 
 #define OPMODE_MQTT "mqtt"
 #define OPMODE_DISPLAY "always"
-#define USE_YES "yes"
-#define USE_NO "no"
+#define MHZ_USE_PWM "yes_pwm"
+#define MHZ_USE_UART "yes_uart"
+#define MHZ_NOUSE "no"
 
 // setup時は、setup用SSID。 normal時は接続先SSID
 String ssid = "";
@@ -36,6 +37,7 @@ String password = "";
 String mDNS = "";
 String opMode = "";
 String use_mhz19b = ""; // MHZ-19Bはコードから接続されているかわからない
+String mhz19b_pwmpin = "";
 String mqttBroker = "";
 String mqttName = "";
 

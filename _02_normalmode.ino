@@ -63,7 +63,7 @@ void setup_normal() {
   lps_setup();
   tsl_setup();
 
-  if (use_mhz19b = USE_YES) {
+  if (use_mhz19b != MHZ_NOUSE) {
     mhz_setup();
   }
   Serial.println("=== Initializing sensors done.");
@@ -131,6 +131,7 @@ void read_config() {
   mDNS = f.readStringUntil('\n');  
   opMode = f.readStringUntil('\n');
   use_mhz19b = f.readStringUntil('\n');
+  mhz19b_pwmpin = f.readStringUntil('\n');
   mqttBroker = f.readStringUntil('\n');
   mqttName = f.readStringUntil('\n');  
   f.close();

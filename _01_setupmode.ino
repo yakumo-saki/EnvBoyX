@@ -44,22 +44,27 @@ void handle_get_root() {
   html += "  <input type='radio' name='opmode' value='mqtt' id='opmode_mqtt'><label for='opmode_mqtt'>MQTTモード（間欠動作・ディープスリープ）</label><br>";
   html += "  <br>";
   html += "  MH-Z19B CO2センサー有無（金色のセンサー）<br>";  
-  html += "  <input type='radio' name='use_mhz19b' value='" + String(USE_NO)  + "' id='mhz19b_no' checked><label for='mhz19b_no'>使用しない（通常はこちら）</label>";
-  html += "  <input type='radio' name='use_mhz19b' value='" + String(USE_YES) + "' id='mhz19b_yes'><label for='mhz19b_yes'>使用する（センサーが接続されている場合）</label><br>";
+  html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_NOUSE)  + "' id='mhz19b_no' checked><label for='mhz19b_no'>使用しない（通常はこちら）</label>";
+  html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_USE_UART) + "' id='mhz19b_uart'><label for='mhz19b_uart'>使用する（UARTモード）</label><br>";
+  html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_USE_PWM) + "' id='mhz19b_pwm'><label for='mhz19b_pwm'>使用する（PWMモード・5000ppm）</label><br>";
+  html += "  <br>";
+  html += "  ＜MH-Z19B PWM モード専用。それ以外では入力不要です＞<br>";
+  html += "  MH-Z19BがのPWMピンが接続されているGPIOピン番号<br>";
+  html += "  <input type='text' name='mhz19b_pwmpin' placeholder='GPIOピン番号' value='14'><br>";
   html += "  <br>";
   html += "  ＜MQTTモード専用。それ以外では入力不要です＞<br>";
   html += "  MQTTブローカーのIPアドレスです。ホスト名も可能ですが、mDNSは使用出来ません。<br>";
-  html += "  <input type='text' name='mqttbroker' placeholder='mqttbroker' value='""'><br>";
+  html += "  <input type='text' name='mqttbroker' placeholder='mqttbroker' value='"; html += "'><br>";
   html += "  <br>";
   html += "  ＜MQTTモード専用。それ以外では入力不要です＞<br>";
   html += "  MQTT名です。クライアント名とトピック名に使用されます。<br>";
-  html += "  <input type='text' name='mqttname' placeholder='mqttname' value='""'><br>";
+  html += "  <input type='text' name='mqttname' placeholder='mqttname' value='";html += "'><br>";
   html += "  <br>";
   html += "  <input type='submit' value='設定する'><br>";
   html += "</form>";
   html += "<br>";
   html += "<hr>";
-  html += product_long + ", Copyright 2018-2019 ziomatrix.org.";
+  html += product_long + ", Copyright 2018-2020 ziomatrix.org.";
   html += "</html>";
 
   server.send(200, "text/html", html);
@@ -74,6 +79,7 @@ void handle_post_root() {
   String mdnsname = server.arg("mdnsname");
   String opmode = server.arg("opmode");
   String mhz19b = server.arg("use_mhz19b");
+  String mhz19b_pwmpin = server.arg("mhz19b_pwmpin");
   String mqttbroker = server.arg("mqttbroker");
   String mqttname = server.arg("mqttname");
 
@@ -86,7 +92,8 @@ void handle_post_root() {
   f.println(pass);
   f.println(mdnsname);
   f.println(opmode);
-  f.println(mhz19b); 
+  f.println(mhz19b);
+  f.println(mhz19b_pwmpin);
   f.println(mqttbroker);
   f.println(mqttname); 
   f.close();
@@ -112,10 +119,13 @@ void handle_post_root() {
     html += "SSID " + ssid + "<br>";
     html += "PASS " + pass + "<br>";
     html += "mDNS " + mdnsname + "<br>";
-    if (mhz19b == USE_YES) {
-      html += "MHZ19B を使用する<br>";     
-    } else if (mhz19b == USE_NO) {
-      html += "MHZ19B を使用しない、または接続されていない<br>";     
+    if (mhz19b == MHZ_USE_UART) {
+      html += "MHZ19B を使用する（UART）<br>";
+    } else if (mhz19b == MHZ_USE_PWM) {
+      html += "MHZ19B を使用する（PWM）";
+      html += " GPIOピン番号=" + String(mhz19b_pwmpin) + "<br>";
+    } else if (mhz19b == MHZ_NOUSE) {
+      html += "MHZ19B を使用しない、または接続されていない<br>";
     } else {
       html += "【バグ】MHZ19B設定が異常です。 =>" + use_mhz19b + "<br>";           
     }
@@ -127,9 +137,11 @@ void handle_post_root() {
     html += "mDNS " + mdnsname + "<br>";
     html += "MQTT broker " + mqttbroker + "<br>";
     html += "MQTT name   " + mqttname + "<br>";
-    if (mhz19b == USE_YES) {
-      html += "MHZ19B を使用する<br>";     
-    } else if (mhz19b == USE_NO) {
+    if (mhz19b == MHZ_USE_UART) {
+      html += "MHZ19B を使用する（UARTモード）<br>";     
+    } else if (mhz19b == MHZ_USE_PWM) {
+      html += "MHZ19B を使用する(PWMモード)<br>";     
+    } else if (mhz19b == MHZ_NOUSE) {
       html += "MHZ19B を使用しない、または接続されていない<br>";     
     } else {
       html += "【バグ】MHZ19B設定が異常です。 =>" + use_mhz19b + "<br>";           
