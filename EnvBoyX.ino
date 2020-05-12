@@ -11,6 +11,7 @@
 #include <SSD1306.h>
 
 #include <FS.h>
+#include <LittleFS.h>
  
 ESP8266WebServer server(80);
 
@@ -20,7 +21,7 @@ String configured_file = "/config_ok.txt";
 
 String product_short = "ebx";
 String product = "EnvBoyX";
-String ver = "1.3";
+String ver = "1.5";
 String product_long = product + " Ver." + ver;
 
 #define SETTING_ID "EBX.r4"
@@ -53,19 +54,19 @@ void setup()
   // Init I2C Serial
   Wire.begin(5, 4);
 
-  SPIFFS.begin();
+  LittleFS.begin();
   delay(50);
 
   // ファイルが存在しないか、バージョン違いであればセットアップモード
   isNormal = false;
 
-  if (!SPIFFS.exists(configured_file)) {
+  if (!LittleFS.exists(configured_file)) {
     // reconfigure用ファイルがなければセットアップモード
     // wait for reconfigure でリセットされたとき。
     Serial.println("configured_file not found. goto setup mode");
     isNormal = false;
-  } else if (SPIFFS.exists(settings)) {
-    File f = SPIFFS.open(settings, "r");
+  } else if (LittleFS.exists(settings)) {
+    File f = LittleFS.open(settings, "r");
     String settingId = f.readStringUntil('\n');   
     settingId.trim();
     f.close();
@@ -99,10 +100,11 @@ void loop() {
 void list_dir() {
   char cwdName[2];
 
-  Serial.println(">>> SPIFFS directory listing");
+  Serial.println(">>> LittleFS directory listing");
 
   strcpy(cwdName,"/");
-  Dir dir=SPIFFS.openDir(cwdName);
+  Dir dir = LittleFS.openDir(cwdName);
+  
   while( dir.next()) {
     String fn, fs;
     fn = dir.fileName();

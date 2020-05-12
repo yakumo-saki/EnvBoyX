@@ -83,10 +83,10 @@ void handle_post_root() {
   String mqttbroker = server.arg("mqttbroker");
   String mqttname = server.arg("mqttname");
 
-  SPIFFS.begin();
+  LittleFS.begin();
 
   // 設定ファイル
-  File f = SPIFFS.open(settings, "w");
+  File f = LittleFS.open(settings, "w");
   f.println(String(SETTING_ID));
   f.println(ssid);
   f.println(pass);
@@ -99,7 +99,7 @@ void handle_post_root() {
   f.close();
 
   // 設定済みフラグファイル
-  File f2 = SPIFFS.open(configured_file, "w");
+  File f2 = LittleFS.open(configured_file, "w");
   f2.println("ok");
   f2.close();
 

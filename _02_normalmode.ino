@@ -36,13 +36,13 @@ void setup_normal() {
   // setupモードに入りやすくするための処理
   if (opMode == OPMODE_DISPLAY) {
     Serial.println(">>> Reset to reconfig start.");
-    SPIFFS.remove(configured_file);
+    LittleFS.remove(configured_file);
     list_dir();
 
     disp_wait_for_reconfig();
   
     // 設定済みフラグファイル
-    File f = SPIFFS.open(configured_file, "w");
+    File f = LittleFS.open(configured_file, "w");
     f.println("ok");
     f.close();
 
@@ -124,7 +124,7 @@ void loop_normal() {
 //
 // 設定読込
 void read_config() {
-  File f = SPIFFS.open(settings, "r");
+  File f = LittleFS.open(settings, "r");
   String settingId = f.readStringUntil('\n'); // 使わない
   ssid = f.readStringUntil('\n');
   password = f.readStringUntil('\n');
