@@ -1,4 +1,9 @@
 #include <Arduino.h>
+#include <LittleFS.h>
+
+#include "define.h"
+#include "display.h"
+#include "global_extern.h"
 
 /**
  * 初期化

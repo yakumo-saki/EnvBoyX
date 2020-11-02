@@ -1,7 +1,10 @@
 #include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <MQTTClient.h>
+#include <LittleFS.h>
 
-// using sodaq_lps22hb ver 1.0.0
-#include <Sodaq_LPS22HB.h>
+#include "define.h"
+#include "display.h"
 
 // test purpose only. false for production
 bool NO_DEEP_SLEEP = false;

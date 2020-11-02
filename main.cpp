@@ -5,8 +5,9 @@
  */
 #include <Arduino.h>
 
-#include <MQTTClient.h>
-#include <MQTT.h>
+#include "define.h"
+#include "setupmode.h"
+#include "normalmode.h"
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -15,29 +16,11 @@
 #include <WiFiClient.h> 
 
 #include <Wire.h>
-#include <SSD1306.h>
 
 #include <FS.h>
 #include <LittleFS.h>
  
 ESP8266WebServer server(80);
-
-// Wi-Fi設定保存ファイル
-String settings = "/wifi_settings.txt";
-String configured_file = "/config_ok.txt";
-
-String product_short = "ebx";
-String product = "EnvBoyX";
-String ver = "1.5";
-String product_long = product + " Ver." + ver;
-
-#define SETTING_ID "EBX.r4"
-
-#define OPMODE_MQTT "mqtt"
-#define OPMODE_DISPLAY "always"
-#define MHZ_USE_PWM "yes_pwm"
-#define MHZ_USE_UART "yes_uart"
-#define MHZ_NOUSE "no"
 
 // setup時は、setup用SSID。 normal時は接続先SSID
 String ssid = "";
