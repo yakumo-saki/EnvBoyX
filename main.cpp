@@ -86,23 +86,3 @@ void loop() {
     loop_normal(); 
   }
 }
-
-void list_dir() {
-  char cwdName[2];
-
-  Serial.println(">>> LittleFS directory listing");
-
-  strcpy(cwdName,"/");
-  Dir dir = LittleFS.openDir(cwdName);
-  
-  while( dir.next()) {
-    String fn, fs;
-    fn = dir.fileName();
-    fn.remove(0, 1);
-    fs = String(dir.fileSize());
-    Serial.println("<" + fn + "> size=" + fs);
-  } // end while
-
-  Serial.println("===");
-
-}

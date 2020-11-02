@@ -7,15 +7,6 @@ void httplog(String msg) {
   Serial.println("HTTP: " + msg);
 }
 
-void http_setup() {
-  httplog("HTTP web server initializing");
-  server.on ( "/ping", http_handle_ping );
-  server.on ( "/", http_handle_data );
-  server.onNotFound ( http_handle_not_found );
-  server.begin(); 
-  httplog("HTTP web server initialized");
-}
-
 void http_loop() {
   server.handleClient();
 }
@@ -76,4 +67,13 @@ void http_handle_ping() {
   httplog("return ping: " + String(temp));
   server.send ( 200, F("application/json"), temp );
   // digitalWrite(BUZZER_PIN, LOW );
+}
+
+void http_setup() {
+  httplog("HTTP web server initializing");
+  server.on ( "/ping", http_handle_ping );
+  server.on ( "/", http_handle_data );
+  server.onNotFound ( http_handle_not_found );
+  server.begin(); 
+  httplog("HTTP web server initialized");
 }

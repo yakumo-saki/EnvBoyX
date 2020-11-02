@@ -12,6 +12,17 @@ void adtlog(String msg) {
   Serial.println("ADT7410: " + msg);
 }
 
+bool has_adt7410() {
+
+  Wire.beginTransmission(ADT7410_ADDR);  // S.C発行,CB送信
+  byte error = Wire.endTransmission();
+
+//  if (error != 0) {
+//    Serial.print("Error adt7410 connection: " + error);
+//  }
+  return (error == 0); 
+}
+
 // 初期化
 void adt_setup(void) {
 
@@ -25,17 +36,6 @@ void adt_setup(void) {
   Wire.write(0x00 | 0x80);          
   Wire.endTransmission();
   use_adt7410 = true;           
-}
-
-bool has_adt7410() {
-
-  Wire.beginTransmission(ADT7410_ADDR);  // S.C発行,CB送信
-  byte error = Wire.endTransmission();
-
-//  if (error != 0) {
-//    Serial.print("Error adt7410 connection: " + error);
-//  }
-  return (error == 0); 
 }
 
 // メインループ
