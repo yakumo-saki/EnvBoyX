@@ -1,5 +1,8 @@
-// https://github.com/piot-jp-Team/mhz19_uart/
-#include <MHZ19_uart.h>
+#include <SoftwareSerial.h>
+#include <MHZ19.h>
+
+#include "define.h"
+#include "global_extern.h"
 
 // ■ 動作モード ■
 bool USE_PWM = true;
@@ -25,11 +28,13 @@ int CO2_IN = -1;
 int mhz_high_ms = 0;
 int mhz_low_ms = 0;
 
-MHZ19_uart mhz19;
+MHZ19 mhz19;
+SoftwareSerial mhzSerial(MHZ_RX_PIN, MHZ_TX_PIN);
 
 unsigned long mhzGetDataTimer = 0;                     
 
-extern int lastPpm;
+void setRange(int range);
+void printErrorCode();
 
 void mhzlog(String msg) {
   Serial.println("MHZ19B: " + msg);
@@ -67,14 +72,34 @@ void mhz_setup_uart() {
   lastPpm = CO2_PPM_INVALID;
 
   mhzlog("Enabled (UART mode).");
-  
-  mhz19.begin(MHZ_RX_PIN, MHZ_TX_PIN);
-  mhz19.setAutoCalibration(AUTO_BASELINE_CORRECTION);
-  if (AUTO_BASELINE_CORRECTION) {
-    mhzlog("WARNING -------------------------- WARNING");
-    mhzlog("     Auto Baseline Correction is ON!");
-    mhzlog("WARNING -------------------------- WARNING");
-  }
+
+  mhzSerial.begin(MHZ_BAUDRATE);
+  mhz19.begin(mhzSerial);
+  setRange(2000);
+
+  // mhz19.setAutoCalibration(AUTO_BASELINE_CORRECTION);
+  // if (AUTO_BASELINE_CORRECTION) {
+  //   mhzlog("WARNING -------------------------- WARNING");
+  //   mhzlog("     Auto Baseline Correction is ON!");
+  //   mhzlog("WARNING -------------------------- WARNING");
+  // }
+
+  // see https://platformio.org/lib/show/6091/MH-Z19
+  if (mhz19.errorCode == RESULT_OK)
+        mhz19.calibrateZero();                            // Calibrate
+    else
+      printErrorCode();
+
+  if (mhz19.errorCode == RESULT_OK)
+      mhz19.setSpan(2000);                               // Set Span 2000
+  else
+      printErrorCode();
+
+  if (mhz19.errorCode == RESULT_OK)
+      mhz19.autoCalibration(false);                       // Turn auto calibration OFF
+  else
+      printErrorCode();
+
   mhzlog("initialized.");
  
 }
@@ -95,13 +120,12 @@ void mhz_read_data() {
 
 void mhz_read_data_uart() {
 
-  if ( (millis() - mhzGetDataTimer) > 3000) {
-    mhz19.updateSensor();   
-    mhzGetDataTimer = millis();
-    mhzlog("Update Sensor: status=" + String(mhz19.getStatus()) );
+  if ( (millis() - mhzGetDataTimer) < 3000) {
+    return;
   }
 
-  int co2ppm = mhz19.getPPM();
+  mhzGetDataTimer = millis();
+  int co2ppm = mhz19.getCO2();
   int temp = mhz19.getTemperature();
   
   mhzlog("CO2 (ppm): " + String(co2ppm) + " Temp: " + String(temp) );

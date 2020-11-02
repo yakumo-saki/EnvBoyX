@@ -5,6 +5,7 @@
 #define MHZ_USE_PWM "yes_pwm"
 #define MHZ_USE_UART "yes_uart"
 #define MHZ_NOUSE "no"
+#define MHZ_BAUDRATE 9600
 
 // Wi-Fi設定保存ファイル
 String settings = "/wifi_settings.txt";
