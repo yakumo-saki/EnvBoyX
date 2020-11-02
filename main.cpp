@@ -1,3 +1,10 @@
+/**
+ * 
+ * EnvBoy X main
+ * 
+ */
+#include <Arduino.h>
+
 #include <MQTTClient.h>
 #include <MQTT.h>
 

@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 // using sodaq_lps22hb ver 1.0.0
 #include <Sodaq_LPS22HB.h>
 

@@ -2,6 +2,8 @@
 // BME280 Temparature , 
 //
 
+#include <Arduino.h>
+
 #include <BME280I2C.h>
 #include <Wire.h>
 

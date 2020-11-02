@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include <Wire.h>
 
 const uint8_t ADT7410_ADDR = 0x48;

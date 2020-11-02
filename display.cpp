@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 // 最後に取得した温度
 extern float lastTemp;
 extern float lastHumidity;

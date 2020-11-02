@@ -1,6 +1,7 @@
 //
 // LPS22HB barometric sensor
 //
+#include <Arduino.h>
 
 #include <Wire.h>
 

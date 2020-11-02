@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include <Wire.h>
 
 const uint8_t AM2320_ADDR = 0x5C;

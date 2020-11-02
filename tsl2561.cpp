@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include <Wire.h>
 #include <Tsl2561.h>
 
