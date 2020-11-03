@@ -1,8 +1,7 @@
 #include <SoftwareSerial.h>
 #include <MHZ19.h>
 
-#include "define.h"
-#include "global_extern.h"
+#include "global.h"
 
 // ■ 動作モード ■
 bool USE_PWM = true;

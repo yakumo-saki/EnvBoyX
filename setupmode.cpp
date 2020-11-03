@@ -1,9 +1,8 @@
 #include <Arduino.h>
 #include <LittleFS.h>
 
-#include "define.h"
 #include "display.h"
-#include "global_extern.h"
+#include "global.h"
 
 /**
  * GET 設定画面

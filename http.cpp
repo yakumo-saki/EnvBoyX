@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
-#include "define.h"
-#include "global_extern.h"
+#include "global.h"
 
 void httplog(String msg) {
   Serial.println("HTTP: " + msg);

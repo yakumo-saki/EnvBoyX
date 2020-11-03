@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
-#include "define.h"
-#include "global_extern.h"
+#include "global.h"
 
 #include <SSD1306.h>
 #include <WiFiClient.h> 

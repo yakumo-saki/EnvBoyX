@@ -5,12 +5,11 @@
  */
 #include <Arduino.h>
 
-#include "define.h"
+#include "global.h"
 #include "setupmode.h"
 #include "normalmode.h"
 
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 
 #include <WiFiClient.h> 
@@ -20,17 +19,7 @@
 #include <FS.h>
 #include <LittleFS.h>
  
-ESP8266WebServer server(80);
-
-// setup時は、setup用SSID。 normal時は接続先SSID
-String ssid = "";
-String password = "";
-String mDNS = "";
-String opMode = "";
-String use_mhz19b = ""; // MHZ-19Bはコードから接続されているかわからない
-String mhz19b_pwmpin = "";
-String mqttBroker = "";
-String mqttName = "";
+// #include "global.cpp"
 
 bool isNormal = false;
 

@@ -3,8 +3,7 @@
 #include <MQTTClient.h>
 #include <LittleFS.h>
 
-#include "global_extern.h"
-#include "define.h"
+#include "global.h"
 #include "display.h"
 #include "bme280.h"
 #include "adt7410.h"
