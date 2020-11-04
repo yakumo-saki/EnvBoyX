@@ -3,8 +3,8 @@
 
 #include "global.h"
 
-void log(String msg) {
-  Serial.println("MHZ19B: " + msg);
+void cfglog(String msg) {
+  Serial.println("CONFIG: " + msg);
 }
 
 /**
@@ -13,7 +13,7 @@ void log(String msg) {
 void list_dir() {
   char cwdName[2];
 
-  Serial.println(">>> LittleFS directory listing");
+  cfglog(">>> LittleFS directory listing");
 
   strcpy(cwdName,"/");
   Dir dir = LittleFS.openDir(cwdName);
@@ -23,10 +23,10 @@ void list_dir() {
     fn = dir.fileName();
     fn.remove(0, 1);
     fs = String(dir.fileSize());
-    Serial.println("<" + fn + "> size=" + fs);
+    cfglog("<" + fn + "> size=" + fs);
   } // end while
 
-  Serial.println("===");
+  cfglog("===");
 }
 
 /**
@@ -97,15 +97,15 @@ void read_config() {
   mqttBroker.trim();
   mqttName.trim();
 
-  log("S-ID: " + settingId);
-  log("SSID: " + ssid);
-  log("PASS: " + password);
-  log("mDNS: " + mDNS);
-  log("opMode: " + opMode);
-  log("use MHZ19B: " + use_mhz19b);
-  log("   PWM PIN: " + mhz19b_pwmpin);
-  log("use MHZ19B: " + mhz19b_txpin);
-  log("use MHZ19B: " + mhz19b_rxpin);
-  log("MQTT Broker: " + mqttBroker);
-  log("MQTT Name  : " + mqttName);  
+  cfglog("S-ID: " + settingId);
+  cfglog("SSID: " + ssid);
+  cfglog("PASS: " + password);
+  cfglog("mDNS: " + mDNS);
+  cfglog("opMode: " + opMode);
+  cfglog("use MHZ19B: " + use_mhz19b);
+  cfglog("   PWM PIN: " + mhz19b_pwmpin);
+  cfglog("use MHZ19B: " + mhz19b_txpin);
+  cfglog("use MHZ19B: " + mhz19b_rxpin);
+  cfglog("MQTT Broker: " + mqttBroker);
+  cfglog("MQTT Name  : " + mqttName);  
 }
