@@ -3,6 +3,7 @@
 
 #include "display.h"
 #include "global.h"
+#include "config.h"
 
 /**
  * GET 設定画面
@@ -36,16 +37,22 @@ void handle_get_root() {
   html += "  <input type='radio' name='opmode' value='mqtt' id='opmode_mqtt'><label for='opmode_mqtt'>MQTTモード（間欠動作・ディープスリープ）</label><br>";
   html += "  <br>";
   html += "  MH-Z19B CO2センサー有無（金色のセンサー）<br>";  
-  html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_NOUSE)  + "' id='mhz19b_no' checked><label for='mhz19b_no'>使用しない（通常はこちら）</label>";
+  html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_NOUSE)  + "' id='mhz19b_no' checked><label for='mhz19b_no'>使用しない（通常はこちら）</label><br>";
   html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_USE_UART) + "' id='mhz19b_uart'><label for='mhz19b_uart'>使用する（UARTモード）</label><br>";
   html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_USE_PWM) + "' id='mhz19b_pwm'><label for='mhz19b_pwm'>使用する（PWMモード・5000ppm）</label><br>";
   html += "  <br>";
   html += "  ＜MH-Z19B PWM モード専用。それ以外では入力不要です＞<br>";
-  html += "  MH-Z19BがのPWMピンが接続されているGPIOピン番号<br>";
-  html += "  <input type='text' name='mhz19b_pwmpin' placeholder='GPIOピン番号' value='14'><br>";
+  html += "  MH-Z19BのPWMピンが接続されているGPIOピン番号<br>";
+  html += "  <input type='text' name='mhz19b_pwmpin' placeholder='GPIOピン番号' value='14' placeholder='14'><br>";
+  html += "  <br>";
+  html += "  ＜MH-Z19B UART モード専用。それ以外では入力不要です＞<br>";
+  html += "  MH-Z19BのUART Rxピンが接続されているGPIOピン番号(ex 13)<br>";
+  html += "  <input type='text' name='mhz19b_rxpin' placeholder='GPIOピン番号' value='13' placeholder='13'><br>";
+  html += "  MH-Z19BのUART Txピンが接続されているGPIOピン番号<br>";
+  html += "  <input type='text' name='mhz19b_txpin' placeholder='GPIOピン番号' value='15'  placeholder='15'><br>";
   html += "  <br>";
   html += "  ＜MQTTモード専用。それ以外では入力不要です＞<br>";
-  html += "  MQTTブローカーのIPアドレスです。ホスト名も可能ですが、mDNSは使用出来ません。<br>";
+  html += "  MQTTブローカーのIPアドレスです。ホスト名も可能ですが、mDNS(bonjour, avahi)は使用出来ません。<br>";
   html += "  <input type='text' name='mqttbroker' placeholder='mqttbroker' value='"; html += "'><br>";
   html += "  <br>";
   html += "  ＜MQTTモード専用。それ以外では入力不要です＞<br>";
@@ -56,7 +63,7 @@ void handle_get_root() {
   html += "</form>";
   html += "<br>";
   html += "<hr>";
-  html += product_long + ", Copyright 2018-2020 ziomatrix.org.";
+  html += product_long + ", Copyright 2018-2020 Yakumo Saki / ziomatrix.org.";
   html += "</html>";
 
   server.send(200, "text/html", html);
@@ -66,34 +73,18 @@ void handle_get_root() {
  * Post 設定 ( config の post。 ファイルに設定を保存）
  */
 void handle_post_root() {
-  String ssid = server.arg("ssid");
-  String pass = server.arg("pass");
-  String mdnsname = server.arg("mdnsname");
-  String opmode = server.arg("opmode");
-  String mhz19b = server.arg("use_mhz19b");
-  String mhz19b_pwmpin = server.arg("mhz19b_pwmpin");
-  String mqttbroker = server.arg("mqttbroker");
-  String mqttname = server.arg("mqttname");
+  ssid = server.arg("ssid");
+  password = server.arg("pass");
+  mDNS = server.arg("mdnsname");
+  opMode = server.arg("opmode");
+  use_mhz19b = server.arg("use_mhz19b");
+  mhz19b_pwmpin = server.arg("mhz19b_pwmpin");
+  mhz19b_txpin = server.arg("mhz19b_txpin");
+  mhz19b_rxpin = server.arg("mhz19b_rxpin");
+  mqttBroker = server.arg("mqttbroker");
+  mqttName = server.arg("mqttname");
 
-  LittleFS.begin();
-
-  // 設定ファイル
-  File f = LittleFS.open(settings, "w");
-  f.println(String(SETTING_ID));
-  f.println(ssid);
-  f.println(pass);
-  f.println(mdnsname);
-  f.println(opmode);
-  f.println(mhz19b);
-  f.println(mhz19b_pwmpin);
-  f.println(mqttbroker);
-  f.println(mqttname); 
-  f.close();
-
-  // 設定済みフラグファイル
-  File f2 = LittleFS.open(configured_file, "w");
-  f2.println("ok");
-  f2.close();
+  save_config();
 
   String html = "";
   html += "<html>";
@@ -106,40 +97,45 @@ void handle_post_root() {
   html += "</head>";
 
   html += "<h1>" + product + " setting done</h1>";
-  if (opmode == "always") {
+  if (opMode == "always") {
     html += "動作モード：常時稼働モード<br>";    
     html += "SSID " + ssid + "<br>";
-    html += "PASS " + pass + "<br>";
-    html += "mDNS " + mdnsname + "<br>";
-    if (mhz19b == MHZ_USE_UART) {
+    html += "PASS " + password + "<br>";
+    html += "mDNS " + mDNS + "<br>";
+    if (use_mhz19b == MHZ_USE_UART) {
       html += "MHZ19B を使用する（UART）<br>";
-    } else if (mhz19b == MHZ_USE_PWM) {
+      html += " UART Rxピン番号=" + String(mhz19b_rxpin) + "<br>";
+      html += " UART Txピン番号=" + String(mhz19b_txpin) + "<br>";
+    } else if (use_mhz19b == MHZ_USE_PWM) {
       html += "MHZ19B を使用する（PWM）";
       html += " GPIOピン番号=" + String(mhz19b_pwmpin) + "<br>";
-    } else if (mhz19b == MHZ_NOUSE) {
+    } else if (use_mhz19b == MHZ_NOUSE) {
       html += "MHZ19B を使用しない、または接続されていない<br>";
     } else {
       html += "【バグ】MHZ19B設定が異常です。 =>" + use_mhz19b + "<br>";           
     }
 
-  } else if (opmode == "mqtt") {
+  } else if (opMode == "mqtt") {
     html += "動作モード：MQTT間欠動作モード<br>";
     html += "SSID " + ssid + "<br>";
-    html += "PASS " + pass + "<br>";
-    html += "mDNS " + mdnsname + "<br>";
-    html += "MQTT broker " + mqttbroker + "<br>";
-    html += "MQTT name   " + mqttname + "<br>";
-    if (mhz19b == MHZ_USE_UART) {
+    html += "PASS " + password + "<br>";
+    html += "mDNS " + mDNS + "<br>";
+    html += "MQTT broker " + mqttBroker + "<br>";
+    html += "MQTT name   " + mqttName + "<br>";
+    if (use_mhz19b == MHZ_USE_UART) {
       html += "MHZ19B を使用する（UARTモード）<br>";     
-    } else if (mhz19b == MHZ_USE_PWM) {
+      html += " UART Rxピン番号=" + String(mhz19b_rxpin) + "<br>";
+      html += " UART Txピン番号=" + String(mhz19b_txpin) + "<br>";
+    } else if (use_mhz19b == MHZ_USE_PWM) {
       html += "MHZ19B を使用する(PWMモード)<br>";     
-    } else if (mhz19b == MHZ_NOUSE) {
+      html += " GPIOピン番号=" + String(mhz19b_pwmpin) + "<br>";
+    } else if (use_mhz19b == MHZ_NOUSE) {
       html += "MHZ19B を使用しない、または接続されていない<br>";     
     } else {
       html += "【バグ】MHZ19B設定が異常です。 =>" + use_mhz19b + "<br>";           
     }
   } else {
-    html += "動作モード：不明" + opmode + "<br>";    
+    html += "動作モード：不明" + opMode + "<br>";    
   }
 
   html += "<br>";

@@ -7,8 +7,10 @@
 bool USE_PWM = true;
 
 // MHZ用software serial のピン
-const int MHZ_RX_PIN = 9;
-const int MHZ_TX_PIN = 10;
+// const int MHZ_RX_PIN = 9;
+// const int MHZ_TX_PIN = 10;
+const int MHZ_RX_PIN = 13;
+const int MHZ_TX_PIN = 15;
 
 const int CO2_PPM_INVALID = -999;
 
@@ -38,6 +40,25 @@ void mhzlog(String msg) {
 
 void printErrorCode() {
   // mhzlog(String(mhz19.errorCode));
+}
+
+void mhz_setup_check_device_uart() {
+
+  char myVersion[4];          
+  mhz19.getVersion(myVersion);
+
+  mhzlog("\nFirmware Version: " + String(myVersion));
+  // for(byte i = 0; i < 4; i++)
+  // {
+  //   Serial.print(myVersion[i]);
+  //   if(i == 1)
+  //     Serial.print(".");    
+  // }
+
+   mhzlog("Range: " + String(mhz19.getRange()));
+   mhzlog("Background CO2: " + String(mhz19.getBackgroundCO2()));
+  //  mhzlog("Temperature Cal: " + String(mhz19.getTempAdjustment()));
+   mhzlog("ABC Status: " + String(mhz19.getABC() ? Serial.println("ON") :  Serial.println("OFF")));
 }
 
 void mhz_setup_uart() {
@@ -71,6 +92,8 @@ void mhz_setup_uart() {
       mhz19.autoCalibration(false);                       // Turn auto calibration OFF
   else
       printErrorCode();
+
+  mhz_setup_check_device_uart();
 
   mhzlog("initialized.");
  
@@ -280,8 +303,10 @@ void mhz_setup() {
   USE_PWM = (use_mhz19b == MHZ_USE_PWM);
 
   if (USE_PWM) {
+    mhzlog("Using PWM mode. Some features are disabled.");
     mhz_setup_pwm();
   } else {
+    mhzlog("Using UART mode.");
     mhz_setup_uart();
   }
 }

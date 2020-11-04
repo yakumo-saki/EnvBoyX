@@ -24,6 +24,8 @@ extern String mDNS;
 extern String opMode;
 extern String use_mhz19b; // MHZ-19Bはコードから接続されているかわからない
 extern String mhz19b_pwmpin;
+extern String mhz19b_rxpin;  // since 2.0
+extern String mhz19b_txpin;  // since 2.0
 extern String mqttBroker;
 extern String mqttName;
 

@@ -2,7 +2,7 @@
 #include <ESP8266WebServer.h>
 
 // 定数
-String SETTING_ID = "EBX.r4";
+String SETTING_ID = "EBX.v20";
 String OPMODE_MQTT = "mqtt";
 String OPMODE_DISPLAY = "always";
 String MHZ_USE_PWM = "yes_pwm";
@@ -28,5 +28,7 @@ String mDNS = "";
 String opMode = "";
 String use_mhz19b = ""; // MHZ-19Bはコードから接続されているかわからない
 String mhz19b_pwmpin = "";
+String mhz19b_rxpin = "";
+String mhz19b_txpin = "";
 String mqttBroker = "";
 String mqttName = "";

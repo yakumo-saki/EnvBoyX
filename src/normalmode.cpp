@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <MQTTClient.h>
-#include <LittleFS.h>
 
 #include "global.h"
 #include "display.h"
@@ -12,6 +11,7 @@
 #include "mhz19.h"
 #include "tsl2561.h"
 #include "http.h"
+#include "config.h"
 
 // test purpose only. false for production
 bool NO_DEEP_SLEEP = false;
@@ -35,40 +35,6 @@ float lastPressure;
 float lastLuxFull;
 float lastLuxIr;
 int lastPpm;
-
-//
-// 設定読込
-void read_config() {
-  File f = LittleFS.open(settings, "r");
-  String settingId = f.readStringUntil('\n'); // 使わない
-  ssid = f.readStringUntil('\n');
-  password = f.readStringUntil('\n');
-  mDNS = f.readStringUntil('\n');  
-  opMode = f.readStringUntil('\n');
-  use_mhz19b = f.readStringUntil('\n');
-  mhz19b_pwmpin = f.readStringUntil('\n');
-  mqttBroker = f.readStringUntil('\n');
-  mqttName = f.readStringUntil('\n');  
-  f.close();
-
-  settingId.trim();
-  ssid.trim();
-  password.trim();
-  mDNS.trim();
-  opMode.trim();
-  use_mhz19b.trim();
-  mqttBroker.trim();
-  mqttName.trim();
-
-  Serial.println("S-ID: " + settingId);
-  Serial.println("SSID: " + ssid);
-  Serial.println("PASS: " + password);
-  Serial.println("mDNS: " + mDNS);
-  Serial.println("opMode: " + opMode);
-  Serial.println("use MHZ19B: " + use_mhz19b);
-  Serial.println("MQTT Broker: " + mqttBroker);
-  Serial.println("MQTT Name  : " + mqttName);  
-}
 
 void begin_mqtt_connection() {
   
@@ -195,25 +161,6 @@ void make_sure_wifi_connected() {
   Serial.println(WiFi.localIP());
 }
 
-void list_dir() {
-  char cwdName[2];
-
-  Serial.println(">>> LittleFS directory listing");
-
-  strcpy(cwdName,"/");
-  Dir dir = LittleFS.openDir(cwdName);
-  
-  while( dir.next()) {
-    String fn, fs;
-    fn = dir.fileName();
-    fn.remove(0, 1);
-    fs = String(dir.fileSize());
-    Serial.println("<" + fn + "> size=" + fs);
-  } // end while
-
-  Serial.println("===");
-}
-
 //
 // SETUP
 //
@@ -226,15 +173,13 @@ void setup_normal() {
   // setupモードに入りやすくするための処理
   if (opMode == OPMODE_DISPLAY) {
     Serial.println(">>> Reset to reconfig start.");
-    LittleFS.remove(configured_file);
+    remove_configure_flag_file();
     list_dir();
 
     disp_wait_for_reconfig();
   
     // 設定済みフラグファイル
-    File f = LittleFS.open(configured_file, "w");
-    f.println("ok");
-    f.close();
+    create_configure_flag_file();
 
     list_dir();
     Serial.println("=== reconfigure timeout. continue.");
