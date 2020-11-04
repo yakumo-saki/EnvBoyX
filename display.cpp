@@ -1,3 +1,10 @@
+#include <Arduino.h>
+
+#include "global.h"
+
+#include <SSD1306.h>
+#include <WiFiClient.h> 
+
 // 最後に取得した温度
 extern float lastTemp;
 extern float lastHumidity;
@@ -8,7 +15,6 @@ extern int lastPpm;
 
 const byte DISP_ADDR = 0x3c;
 
-// LCD Display https://github.com/ThingPulse/esp8266-oled-ssd1306
 //SSD1306 display(0x3c, 5, 4);
 SSD1306 display(DISP_ADDR, 5, 4);
 

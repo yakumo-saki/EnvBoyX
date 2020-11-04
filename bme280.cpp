@@ -2,8 +2,11 @@
 // BME280 Temparature , 
 //
 
-#include <BME280I2C.h>
+#include <Arduino.h>
 #include <Wire.h>
+
+#define USING_BRZO 1
+#include "BME280I2C_BRZO.h"
 
 BME280I2C bme;   // Default : forced mode, standby time = 1000 ms
                  // Oversampling = pressure ×1, temperature ×1, humidity ×1, filter off,
@@ -19,6 +22,19 @@ extern float lastPressure;
 
 void bmelog(String msg) {
   Serial.println("BME280: " + msg);
+}
+
+bool has_bme() {
+  // check i2c 0x76
+  Wire.beginTransmission(BME_ADDR);
+  byte error = Wire.endTransmission();
+
+  if (error != 0) {
+    // bmelog("Error bme280 connection: " + String(error));
+    return false;
+  }
+
+  return true;
 }
 
 void bme_setup() {
@@ -39,19 +55,6 @@ void bme_setup() {
 
   bmelog("Enabled");
   use_bme = true;
-}
-
-bool has_bme() {
-  // check i2c 0x76
-  Wire.beginTransmission(BME_ADDR);
-  byte error = Wire.endTransmission();
-
-  if (error != 0) {
-    // bmelog("Error bme280 connection: " + String(error));
-    return false;
-  }
-
-  return true;
 }
 
 void bme_read_data() {

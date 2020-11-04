@@ -1,8 +1,10 @@
 //
 // LPS22HB barometric sensor
 //
-
+#include <Arduino.h>
 #include <Wire.h>
+
+#include <Sodaq_LPS22HB.h>
 
 Sodaq_LPS22HB lps22hb;
 

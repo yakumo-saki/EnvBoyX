@@ -1,5 +1,7 @@
-// https://github.com/piot-jp-Team/mhz19_uart/
-#include <MHZ19_uart.h>
+#include <SoftwareSerial.h>
+#include <MHZ19.h>
+
+#include "global.h"
 
 // ■ 動作モード ■
 bool USE_PWM = true;
@@ -25,41 +27,17 @@ int CO2_IN = -1;
 int mhz_high_ms = 0;
 int mhz_low_ms = 0;
 
-MHZ19_uart mhz19;
+MHZ19 mhz19;
+SoftwareSerial mhzSerial(MHZ_RX_PIN, MHZ_TX_PIN);
 
 unsigned long mhzGetDataTimer = 0;                     
-
-extern int lastPpm;
 
 void mhzlog(String msg) {
   Serial.println("MHZ19B: " + msg);
 }
 
-void mhz_setup() {
-  if (use_mhz19b == MHZ_NOUSE) {
-    mhzlog("disabled.");
-    return;
-  } 
-  
-  USE_PWM = (use_mhz19b == MHZ_USE_PWM);
-
-  if (USE_PWM) {
-    mhz_setup_pwm();
-  } else {
-    mhz_setup_uart();
-  }
-}
-
-void mhz_setup_pwm() {
-  
-  if (use_mhz19b == MHZ_NOUSE) {
-    mhzlog("disabled.");
-    return;
-  }
-
-  CO2_IN = mhz19b_pwmpin.toInt();
-
-  mhzlog("Enabled (PWM mode). GPIO pin = " + String(CO2_IN) );
+void printErrorCode() {
+  // mhzlog(String(mhz19.errorCode));
 }
 
 void mhz_setup_uart() {
@@ -67,41 +45,45 @@ void mhz_setup_uart() {
   lastPpm = CO2_PPM_INVALID;
 
   mhzlog("Enabled (UART mode).");
-  
-  mhz19.begin(MHZ_RX_PIN, MHZ_TX_PIN);
-  mhz19.setAutoCalibration(AUTO_BASELINE_CORRECTION);
-  if (AUTO_BASELINE_CORRECTION) {
-    mhzlog("WARNING -------------------------- WARNING");
-    mhzlog("     Auto Baseline Correction is ON!");
-    mhzlog("WARNING -------------------------- WARNING");
-  }
+
+  mhzSerial.begin(MHZ_BAUDRATE);
+  mhz19.begin(mhzSerial);
+
+  // mhz19.setAutoCalibration(AUTO_BASELINE_CORRECTION);
+  // if (AUTO_BASELINE_CORRECTION) {
+  //   mhzlog("WARNING -------------------------- WARNING");
+  //   mhzlog("     Auto Baseline Correction is ON!");
+  //   mhzlog("WARNING -------------------------- WARNING");
+  // }
+
+  // see https://platformio.org/lib/show/6091/MH-Z19
+  if (mhz19.errorCode == RESULT_OK)
+        mhz19.calibrateZero();                            // Calibrate
+    else
+      printErrorCode();
+
+  if (mhz19.errorCode == RESULT_OK)
+      mhz19.setSpan(2000);                               // Set Span 2000
+  else
+      printErrorCode();
+
+  if (mhz19.errorCode == RESULT_OK)
+      mhz19.autoCalibration(false);                       // Turn auto calibration OFF
+  else
+      printErrorCode();
+
   mhzlog("initialized.");
  
 }
 
-void mhz_read_data() {
+void mhz_read_data_uart() {
 
-  if (use_mhz19b == MHZ_NOUSE) {
+  if ( (millis() - mhzGetDataTimer) < 3000) {
     return;
   }
 
-  if (USE_PWM) {
-    mhz_read_data_pwm();
-  } else {
-    mhz_read_data_uart();
-  }
-
-}
-
-void mhz_read_data_uart() {
-
-  if ( (millis() - mhzGetDataTimer) > 3000) {
-    mhz19.updateSensor();   
-    mhzGetDataTimer = millis();
-    mhzlog("Update Sensor: status=" + String(mhz19.getStatus()) );
-  }
-
-  int co2ppm = mhz19.getPPM();
+  mhzGetDataTimer = millis();
+  int co2ppm = mhz19.getCO2();
   int temp = mhz19.getTemperature();
   
   mhzlog("CO2 (ppm): " + String(co2ppm) + " Temp: " + String(temp) );
@@ -148,37 +130,6 @@ String mhz_code_to_msg(int error_code) {
   }
 
   return "UNKNOWN CODE " + String(error_code); 
-}
-
-/**
- * 
- */
-int mhz_read_data_pwm() {
-
-  mhz_read_pwm_ms();
-
-  if (mhz_high_ms < 0 || mhz_low_ms < 0) {
-    mhzlog("PWM timeout, set lastppm = -999");
-    lastPpm = CO2_PPM_INVALID;
-    return CO2_PPM_INVALID;
-  }
-
-  // total may 1004ms +- 5%
-  mhzlog("mhz_high_ms = " + String(mhz_high_ms) + " mhz_low_ms  = " + String(mhz_low_ms) 
-                 + " total = " + String(mhz_high_ms + mhz_low_ms));
-
-  float ppm = 5000 * (mhz_high_ms - 2) / ((mhz_high_ms + mhz_low_ms) - 4);
-
-  mhzlog("PPM = " + String(ppm,2) + " ppm");
-
-  // PWMでよんだときに多少ブレてしまい、390台になるので、そこは400にごまかす
-  if (385 < ppm && ppm < 399) {
-    mhzlog("PPM is near 400. Result PPM adjusted to 400.");
-    ppm = 400.0;
-  }
-
-  lastPpm = ppm;
-  return (int) ppm;
 }
 
 /**
@@ -261,4 +212,76 @@ void mhz_read_pwm_ms() {
   mhzlog("PWM Timeout");
   mhz_high_ms = -1;
   mhz_low_ms = -1;
+}
+
+/**
+ * 
+ */
+int mhz_read_data_pwm() {
+
+  mhz_read_pwm_ms();
+
+  if (mhz_high_ms < 0 || mhz_low_ms < 0) {
+    mhzlog("PWM timeout, set lastppm = -999");
+    lastPpm = CO2_PPM_INVALID;
+    return CO2_PPM_INVALID;
+  }
+
+  // total may 1004ms +- 5%
+  mhzlog("mhz_high_ms = " + String(mhz_high_ms) + " mhz_low_ms  = " + String(mhz_low_ms) 
+                 + " total = " + String(mhz_high_ms + mhz_low_ms));
+
+  float ppm = 5000 * (mhz_high_ms - 2) / ((mhz_high_ms + mhz_low_ms) - 4);
+
+  mhzlog("PPM = " + String(ppm,2) + " ppm");
+
+  // PWMでよんだときに多少ブレてしまい、390台になるので、そこは400にごまかす
+  if (385 < ppm && ppm < 399) {
+    mhzlog("PPM is near 400. Result PPM adjusted to 400.");
+    ppm = 400.0;
+  }
+
+  lastPpm = ppm;
+  return (int) ppm;
+}
+
+void mhz_setup_pwm() {
+  
+  if (use_mhz19b == MHZ_NOUSE) {
+    mhzlog("disabled.");
+    return;
+  }
+
+  CO2_IN = mhz19b_pwmpin.toInt();
+
+  mhzlog("Enabled (PWM mode). GPIO pin = " + String(CO2_IN) );
+}
+
+void mhz_read_data() {
+
+  if (use_mhz19b == MHZ_NOUSE) {
+    return;
+  }
+
+  if (USE_PWM) {
+    mhz_read_data_pwm();
+  } else {
+    mhz_read_data_uart();
+  }
+
+}
+
+void mhz_setup() {
+  if (use_mhz19b == MHZ_NOUSE) {
+    mhzlog("disabled.");
+    return;
+  } 
+  
+  USE_PWM = (use_mhz19b == MHZ_USE_PWM);
+
+  if (USE_PWM) {
+    mhz_setup_pwm();
+  } else {
+    mhz_setup_uart();
+  }
 }

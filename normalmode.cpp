@@ -1,5 +1,17 @@
-// using sodaq_lps22hb ver 1.0.0
-#include <Sodaq_LPS22HB.h>
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <MQTTClient.h>
+#include <LittleFS.h>
+
+#include "global.h"
+#include "display.h"
+#include "bme280.h"
+#include "adt7410.h"
+#include "am2320.h"
+#include "lps22hb.h"
+#include "mhz19.h"
+#include "tsl2561.h"
+#include "http.h"
 
 // test purpose only. false for production
 bool NO_DEEP_SLEEP = false;
@@ -23,103 +35,6 @@ float lastPressure;
 float lastLuxFull;
 float lastLuxIr;
 int lastPpm;
-
-//
-// SETUP
-//
-void setup_normal() {
-  
-  read_config();
-
-  disp_normal_startup_screen(product_long);
-  
-  // setupモードに入りやすくするための処理
-  if (opMode == OPMODE_DISPLAY) {
-    Serial.println(">>> Reset to reconfig start.");
-    LittleFS.remove(configured_file);
-    list_dir();
-
-    disp_wait_for_reconfig();
-  
-    // 設定済みフラグファイル
-    File f = LittleFS.open(configured_file, "w");
-    f.println("ok");
-    f.close();
-
-    list_dir();
-    Serial.println("=== reconfigure timeout. continue.");
-
-    http_setup();
-  }
-
-  // start WiFi
-  make_sure_wifi_connected();
-  disp_wifi_info(WiFi.localIP().toString(), mDNS);
-
-  Serial.println(">>> Initializing sensors start.");
-  bme_setup();
-  adt_setup();
-  am_setup();
-  lps_setup();
-  tsl_setup();
-
-  if (use_mhz19b != MHZ_NOUSE) {
-    mhz_setup();
-  }
-  Serial.println("=== Initializing sensors done.");
-
-}
-
-//
-// LOOP
-//
-void loop_normal() {
-
-  Serial.println("");
-
-  // WiFiが繋がってなければ意味がないので接続チェック
-  make_sure_wifi_connected();
-
-  // MQTT
-  if (opMode == OPMODE_MQTT) {
-    begin_mqtt_connection();
-    
-    mqttClient.loop();
-    delay(10);  // <- fixes some issues with WiFi stability
-  
-    Serial.println("MQTT Connect");
-    while (!mqttClient.connect(mDNS.c_str(), "", "")) { // username and password not support
-      Serial.print(".");
-      delay(1000);
-    }
-    Serial.println("");
-  }
-  
-  read_data();
-
-  // sleep to next.
-  if (opMode == OPMODE_MQTT) {
-    disp_sensor_value(WiFi.localIP().toString(), mDNS);
-    delay(1000);
-    disp_power_off();
-  
-    if (NO_DEEP_SLEEP) {
-      Serial.println("!!! NOT deep sleep because of NO_DEEP_SLEEP is set !!!");
-      delay(NO_DEEP_SLEEP_DURATION);
-      Serial.println("!!! Going to next loop                             !!!");
-    } else {
-      delay(500);
-      Serial.println("*** Goto deep sleep ***");
-      ESP.deepSleep(NORMAL_DURATION, WAKE_RF_DEFAULT);
-      delay(10000);
-    }
-  } else if (opMode == OPMODE_DISPLAY) {  
-    disp_sensor_value(WiFi.localIP().toString(), mDNS);
-    http_loop();
-    Serial.println("display: next tick.");
-    delay(1500);
-  }
-}
 
 //
 // 設定読込
@@ -278,4 +193,120 @@ void make_sure_wifi_connected() {
   Serial.println("WiFi (re) connected.");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+}
+
+void list_dir() {
+  char cwdName[2];
+
+  Serial.println(">>> LittleFS directory listing");
+
+  strcpy(cwdName,"/");
+  Dir dir = LittleFS.openDir(cwdName);
+  
+  while( dir.next()) {
+    String fn, fs;
+    fn = dir.fileName();
+    fn.remove(0, 1);
+    fs = String(dir.fileSize());
+    Serial.println("<" + fn + "> size=" + fs);
+  } // end while
+
+  Serial.println("===");
+}
+
+//
+// SETUP
+//
+void setup_normal() {
+  
+  read_config();
+
+  disp_normal_startup_screen(product_long);
+  
+  // setupモードに入りやすくするための処理
+  if (opMode == OPMODE_DISPLAY) {
+    Serial.println(">>> Reset to reconfig start.");
+    LittleFS.remove(configured_file);
+    list_dir();
+
+    disp_wait_for_reconfig();
+  
+    // 設定済みフラグファイル
+    File f = LittleFS.open(configured_file, "w");
+    f.println("ok");
+    f.close();
+
+    list_dir();
+    Serial.println("=== reconfigure timeout. continue.");
+
+    http_setup();
+  }
+
+  // start WiFi
+  make_sure_wifi_connected();
+  disp_wifi_info(WiFi.localIP().toString(), mDNS);
+
+  Serial.println(">>> Initializing sensors start.");
+  bme_setup();
+  adt_setup();
+  am_setup();
+  lps_setup();
+  tsl_setup();
+
+  if (use_mhz19b != MHZ_NOUSE) {
+    mhz_setup();
+  }
+  Serial.println("=== Initializing sensors done.");
+
+}
+
+//
+// LOOP
+//
+void loop_normal() {
+
+  Serial.println("");
+
+  // WiFiが繋がってなければ意味がないので接続チェック
+  make_sure_wifi_connected();
+
+  // MQTT
+  if (opMode == OPMODE_MQTT) {
+    begin_mqtt_connection();
+    
+    mqttClient.loop();
+    delay(10);  // <- fixes some issues with WiFi stability
+  
+    Serial.println("MQTT Connect");
+    while (!mqttClient.connect(mDNS.c_str(), "", "")) { // username and password not support
+      Serial.print(".");
+      delay(1000);
+    }
+    Serial.println("");
+  }
+  
+  read_data();
+
+  // sleep to next.
+  if (opMode == OPMODE_MQTT) {
+    disp_sensor_value(WiFi.localIP().toString(), mDNS);
+    delay(1000);
+    disp_power_off();
+  
+    if (NO_DEEP_SLEEP) {
+      Serial.println("!!! NOT deep sleep because of NO_DEEP_SLEEP is set !!!");
+      delay(NO_DEEP_SLEEP_DURATION);
+      Serial.println("!!! Going to next loop                             !!!");
+    } else {
+      delay(500);
+      Serial.println("*** Goto deep sleep ***");
+      ESP.deepSleep(NORMAL_DURATION, WAKE_RF_DEFAULT);
+      delay(10000);
+    }
+  } else if (opMode == OPMODE_DISPLAY) {  
+    disp_sensor_value(WiFi.localIP().toString(), mDNS);
+    http_loop();
+    Serial.println("display: next tick.");
+    delay(1500);
+  }
 }

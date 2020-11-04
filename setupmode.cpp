@@ -1,16 +1,8 @@
+#include <Arduino.h>
+#include <LittleFS.h>
 
-/**
- * 初期化
- */
-void setup_setupmode() {
-  // ファイルシステム初期化
-  setup_server();
-  disp_setup_startup_screen();
-}
-
-void loop_setupmode() {
-  server.handleClient();
-}
+#include "display.h"
+#include "global.h"
 
 /**
  * GET 設定画面
@@ -183,4 +175,17 @@ void setup_server() {
   server.on("/", HTTP_POST, handle_post_root);
   server.begin();
   Serial.println("HTTP server started.");
+}
+
+/**
+ * 初期化
+ */
+void setup_setupmode() {
+  // ファイルシステム初期化
+  setup_server();
+  disp_setup_startup_screen();
+}
+
+void loop_setupmode() {
+  server.handleClient();
 }
