@@ -47,9 +47,9 @@ void handle_get_root() {
   html += "  <br>";
   html += "  ＜MH-Z19B UART モード専用。それ以外では入力不要です＞<br>";
   html += "  MH-Z19BのUART Rxピンが接続されているGPIOピン番号(ex 13)<br>";
-  html += "  <input type='text' name='mhz19b_rxpin' placeholder='GPIOピン番号' value='13' placeholder='13'><br>";
+  html += "  <input type='text' name='mhz19b_rxpin' placeholder='GPIOピン番号' value='14' placeholder='14'><br>";
   html += "  MH-Z19BのUART Txピンが接続されているGPIOピン番号<br>";
-  html += "  <input type='text' name='mhz19b_txpin' placeholder='GPIOピン番号' value='15'  placeholder='15'><br>";
+  html += "  <input type='text' name='mhz19b_txpin' placeholder='GPIOピン番号' value='12'  placeholder='12'><br>";
   html += "  <br>";
   html += "  ＜MQTTモード専用。それ以外では入力不要です＞<br>";
   html += "  MQTTブローカーのIPアドレスです。ホスト名も可能ですが、mDNS(bonjour, avahi)は使用出来ません。<br>";

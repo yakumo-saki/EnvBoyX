@@ -122,6 +122,7 @@ void read_data() {
 }
 
 void make_sure_wifi_connected() {
+  return;
   WiFi.softAPdisconnect(true);
   WiFi.enableAP(false);
 
