@@ -1,9 +1,10 @@
 # EnvBoyX
+
 Arduino environment monitor Unified version of Envboy and Envboy MQTT
 
-# Moved to Platform IO since 2.0
+## Moved to Platform IO since 2.0
 
-last version of Arduino IDE, look last_arduino_ide tag.
+last version of Arduino IDE, look `last_arduino_ide` tag.
 
 # spec
 
