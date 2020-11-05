@@ -32,3 +32,11 @@ String mhz19b_rxpin = "";
 String mhz19b_txpin = "";
 String mqttBroker = "";
 String mqttName = "";
+
+// 最後に取得した値
+float lastTemp;
+float lastHumidity;
+float lastPressure;
+float lastLuxFull;
+float lastLuxIr;
+int lastPpm;

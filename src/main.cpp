@@ -1,7 +1,5 @@
 /**
- * 
  * EnvBoy X main
- * 
  */
 #include <Arduino.h>
 
@@ -19,8 +17,6 @@
 #include <FS.h>
 #include <LittleFS.h>
  
-// #include "global.cpp"
-
 bool isNormal = false;
 
 void setup()
@@ -33,31 +29,7 @@ void setup()
   // Init I2C Serial
   Wire.begin(5, 4);
 
-  LittleFS.begin();
-  delay(50);
-
-  // ファイルが存在しないか、バージョン違いであればセットアップモード
-  isNormal = false;
-
-  if (!LittleFS.exists(configured_file)) {
-    // reconfigure用ファイルがなければセットアップモード
-    // wait for reconfigure でリセットされたとき。
-    Serial.println("configured_file not found. goto setup mode");
-    isNormal = false;
-  } else if (LittleFS.exists(settings)) {
-    File f = LittleFS.open(settings, "r");
-    String settingId = f.readStringUntil('\n');   
-    settingId.trim();
-    f.close();
-
-    if (String(SETTING_ID).equals(settingId)) {
-      Serial.println("SETTING_ID verified.");
-      isNormal = true;
-    } else {
-      Serial.println("SETTING_ID NOT match!");      
-      isNormal = false;
-    }
-  }
+  bool isNormal = has_valid_config_file();
 
   if (!isNormal) {
     Serial.println("Entering setup mode.");

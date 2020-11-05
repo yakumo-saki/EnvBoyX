@@ -178,6 +178,8 @@ void setup_server() {
  */
 void setup_setupmode() {
   // ファイルシステム初期化
+  set_default_config_value();
+  
   setup_server();
   disp_setup_startup_screen();
 }

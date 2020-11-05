@@ -28,14 +28,6 @@ int sensorPin = A0;    // select the input pin for the potentiometer
 
 int counter;
 
-// 最後に取得した値
-float lastTemp;
-float lastHumidity;
-float lastPressure;
-float lastLuxFull;
-float lastLuxIr;
-int lastPpm;
-
 void begin_mqtt_connection() {
   
   Serial.println("MQTT Begin");
