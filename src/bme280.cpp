@@ -8,6 +8,8 @@
 #define USING_BRZO 1
 #include "BME280I2C_BRZO.h"
 
+#include "log.h"
+
 BME280I2C bme;   // Default : forced mode, standby time = 1000 ms
                  // Oversampling = pressure ×1, temperature ×1, humidity ×1, filter off,
                  // Address 0x76
@@ -19,10 +21,6 @@ static bool use_bme = false;
 extern float lastTemp;
 extern float lastHumidity;
 extern float lastPressure;
-
-void bmelog(String msg) {
-  Serial.println("BME280: " + msg);
-}
 
 bool has_bme() {
   // check i2c 0x76

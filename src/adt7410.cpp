@@ -1,16 +1,13 @@
 #include <Arduino.h>
-
 #include <Wire.h>
+
+#include "log.h"
 
 const uint8_t ADT7410_ADDR = 0x48;
 
 bool use_adt7410 = false;
 
 extern float lastTemp;
-
-void adtlog(String msg) {
-  Serial.println("ADT7410: " + msg);
-}
 
 bool has_adt7410() {
 

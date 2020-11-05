@@ -3,16 +3,14 @@
 #include <Wire.h>
 #include <Tsl2561.h>
 
+#include "log.h"
+
 Tsl2561 Tsl(Wire);
 
 bool use_tsl = false;
 
 extern float lastLuxFull;
 extern float lastLuxIr;
-
-void tsllog(String msg) {
-  Serial.println("TSL2561: " + msg);
-}
 
 void tsl_setup() {
   // init TSL2561

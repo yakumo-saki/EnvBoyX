@@ -1,6 +1,7 @@
 #include <Arduino.h>
-
 #include <Wire.h>
+
+#include "log.h"
 
 const uint8_t AM2320_ADDR = 0x5C;
 
@@ -8,10 +9,6 @@ extern float lastTemp;
 extern float lastHumidity;
 
 bool use_am2320 = false;
-
-void amlog(String msg) {
-  Serial.println("AM2320: " + msg);
-}
 
 void am_setup(void) {
   // wake from sleep

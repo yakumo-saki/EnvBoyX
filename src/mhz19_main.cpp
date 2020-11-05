@@ -3,6 +3,8 @@
 #include <SoftwareSerial.h>
 #include <MHZ19.h>
 
+#include "log.h"
+
 #include "global.h"
 #include "mhz19_pwm.h"
 #include "mhz19_uart.h"
@@ -11,10 +13,6 @@
 bool USE_PWM = true;
 
 int CO2_PPM_INVALID = -999;
-
-void mhzlog(String msg) {
-  Serial.println("MHZ19B: " + msg);
-}
 
 void mhz_read_data() {
 

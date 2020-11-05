@@ -4,8 +4,9 @@
 #include <Arduino.h>
 
 #include "global.h"
-#include "setupmode.h"
-#include "normalmode.h"
+#include "config.h"
+#include "main_setup.h"
+#include "main_normal.h"
 
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
@@ -14,9 +15,6 @@
 
 #include <Wire.h>
 
-#include <FS.h>
-#include <LittleFS.h>
- 
 bool isNormal = false;
 
 void setup()

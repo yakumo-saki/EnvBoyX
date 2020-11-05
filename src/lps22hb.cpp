@@ -6,15 +6,13 @@
 
 #include <Sodaq_LPS22HB.h>
 
+#include "log.h"
+
 Sodaq_LPS22HB lps22hb;
 
 extern float lastPressure;
 
 bool use_lps22hb = false;
-
-void lpslog(String msg) {
-  Serial.println("LPS22HB: " + msg);
-}
 
 void lps_setup(void) {
 

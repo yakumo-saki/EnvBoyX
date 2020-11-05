@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "log.h"
 #include "global.h"
 #include "mhz19_main.h"
 
