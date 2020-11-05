@@ -19,7 +19,8 @@ bool AUTO_BASELINE_CORRECTION = false;
 unsigned long mhzGetDataTimer = 0;                     
 
 MHZ19 mhz19;
-SoftwareSerial mhzSerial(mhz19b_rxpin.toInt(), mhz19b_txpin.toInt());
+// SoftwareSerial mhzSerial(mhz19b_rxpin.toInt(), mhz19b_txpin.toInt());
+SoftwareSerial mhzSerial(14, 0);
 
 void printErrorCode() {
   mhzlog(mhz19_code_to_msg(mhz19.errorCode));
@@ -30,6 +31,7 @@ void mhz_setup_check_device_uart() {
   char myVersion[4];          
   mhz19.getVersion(myVersion);
 
+  mhzlog("Device Info ======================== ");
   mhzlog("Version       : " + String(myVersion));
   mhzlog("Range         : " + String(mhz19.getRange()));
   mhzlog("Background CO2: " + String(mhz19.getBackgroundCO2()));
@@ -41,9 +43,11 @@ void mhz_setup_uart() {
 
   lastPpm = CO2_PPM_INVALID;
 
-  mhzlog("Enabled (UART mode). RX=" + String(mhz19b_rxpin) + " TX=" + String(mhz19b_txpin));
+  mhzlog("Enabled (UART mode). RX=" + mhz19b_rxpin + " TX=" + mhz19b_txpin);
+  mhzlog("RX=" + mhz19b_rxpin);
+  mhzlog("TX=" + mhz19b_txpin);
 
-  mhzSerial.begin(MHZ_BAUDRATE);
+  mhzSerial.begin(9600);
   mhz19.begin(mhzSerial);
 
   mhz19.autoCalibration(AUTO_BASELINE_CORRECTION);

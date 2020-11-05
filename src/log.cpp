@@ -1,43 +1,53 @@
 #include <Arduino.h>
 
+void real_log(String msgString, String prefixString) {
+  char log[120];
+  char prefix[10];
+  char msg[100];
+  prefixString.toCharArray(prefix, sizeof prefix);
+  msgString.toCharArray(msg, sizeof msg);
+  snprintf(log, sizeof log, "%08lu %-10s: %s", millis(),  prefix, msg);
+  Serial.println(log);
+}
+
 void mainlog(String msg) {
-  Serial.println("MAIN    : " + msg);
+  real_log(msg, "MAIN");
 }
 
 void lpslog(String msg) {
-  Serial.println("LPS22HB : " + msg);
+  real_log(msg, "LPS22HB");
 }
 
 void mhzlog(String msg) {
-  Serial.println("MHZ19B  : " + msg);
+  real_log(msg, "MHZ19B");
 }
 
 void tsllog(String msg) {
-  Serial.println("TSL2561 : " + msg);
+  real_log(msg, "TSL2561");
 }
 
 void bmelog(String msg) {
-  Serial.println("BME280  : " + msg);
+  real_log(msg, "BME280");
 }
 
 void amlog(String msg) {
-  Serial.println("AM2320  : " + msg);
+  real_log(msg, "AM2320");
 }
 
 void adtlog(String msg) {
-  Serial.println("ADT7410 : " + msg);
+  real_log(msg, "ADT7410");
 }
 
 void cfglog(String msg) {
-  Serial.println("CONFIG  : " + msg);
+  real_log(msg, "CONFIG");
 }
 
 void httplog(String msg) {
-  Serial.println("HTTP    : " + msg);
+  real_log(msg, "HTTP");
 }
 
 void sectionlog(String msg) {
   Serial.println("");
-  Serial.println("========: " + msg);
+  real_log(msg, "========");
   Serial.println("");
 }

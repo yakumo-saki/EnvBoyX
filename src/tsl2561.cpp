@@ -42,7 +42,7 @@ bool read_data_tsl2561() {
   Tsl.irLuminosity(ir);
 
   char log[80];
-  snprintf(log, sizeof log, "TSL2561 at 0x%02x(id=0x%02x) luminosity is %5u (full) and %5u (ir)\n", Tsl.address(), id, full, ir);
+  snprintf(log, sizeof log, "TSL2561 at 0x%02x(id=0x%02x) luminosity is %5u (full) and %5u (ir)", Tsl.address(), id, full, ir);
   tsllog(String(log));
 
   lastLuxFull = full;
