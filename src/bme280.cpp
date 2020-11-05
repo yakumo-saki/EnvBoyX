@@ -73,7 +73,7 @@ void bme_read_data() {
   pres = pres / 100;
 
   char log[80];
-  snprintf(log, sizeof log, "Temp: %.2f C Humidity: %.2f %% Pressure: %.2f hpa", temp, hum, pres);
+  snprintf(log, sizeof log, "Temp: %.2fc   Humidity: %.2f%%   Pressure: %.2fhPa", temp, hum, pres);
   bmelog(String(log));
 
   lastTemp = temp;

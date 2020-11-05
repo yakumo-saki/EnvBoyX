@@ -30,25 +30,18 @@ void mhz_setup_check_device_uart() {
   char myVersion[4];          
   mhz19.getVersion(myVersion);
 
-  // mhzlog("\nFirmware Version: " + String(myVersion));
-  // for(byte i = 0; i < 4; i++)
-  // {
-  //   Serial.print(myVersion[i]);
-  //   if(i == 1)
-  //     Serial.print(".");    
-  // }
-
-   mhzlog("Range: " + String(mhz19.getRange()));
-   mhzlog("Background CO2: " + String(mhz19.getBackgroundCO2()));
+  mhzlog("Version       : " + String(myVersion));
+  mhzlog("Range         : " + String(mhz19.getRange()));
+  mhzlog("Background CO2: " + String(mhz19.getBackgroundCO2()));
   //  mhzlog("Temperature Cal: " + String(mhz19.getTempAdjustment()));
-   mhzlog("ABC Status: " + String(mhz19.getABC() ? Serial.println("ON") :  Serial.println("OFF")));
+  mhzlog("ABC Status    : " + String(mhz19.getABC()) + " " + String(mhz19.getABC() ? "ON" : "OFF"));
 }
 
 void mhz_setup_uart() {
 
   lastPpm = CO2_PPM_INVALID;
 
-  mhzlog("Enabled (UART mode).");
+  mhzlog("Enabled (UART mode). RX=" + String(mhz19b_rxpin) + " TX=" + String(mhz19b_txpin));
 
   mhzSerial.begin(MHZ_BAUDRATE);
   mhz19.begin(mhzSerial);

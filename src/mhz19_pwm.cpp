@@ -132,6 +132,6 @@ void mhz_setup_pwm() {
   }
 
   CO2_IN = mhz19b_pwmpin.toInt();
-
+  pinMode(CO2_IN, INPUT);
   mhzlog("Enabled (PWM mode). GPIO pin = " + String(CO2_IN) );
 }
