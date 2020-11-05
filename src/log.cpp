@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 void mainlog(String msg) {
-  Serial.println("MAIN: " + msg);
+  Serial.println("MAIN   : " + msg);
 }
 
 void lpslog(String msg) {
@@ -9,7 +9,7 @@ void lpslog(String msg) {
 }
 
 void mhzlog(String msg) {
-  Serial.println("MHZ19B: " + msg);
+  Serial.println("MHZ19B : " + msg);
 }
 
 void tsllog(String msg) {
@@ -17,13 +17,17 @@ void tsllog(String msg) {
 }
 
 void bmelog(String msg) {
-  Serial.println("BME280: " + msg);
+  Serial.println("BME280 : " + msg);
 }
 
 void amlog(String msg) {
-  Serial.println("AM2320: " + msg);
+  Serial.println("AM2320 : " + msg);
 }
 
 void adtlog(String msg) {
   Serial.println("ADT7410: " + msg);
+}
+
+void sectionlog(String msg) {
+  Serial.println("=======: " + msg);
 }

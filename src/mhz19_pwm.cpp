@@ -16,10 +16,10 @@ int mhz_low_ms = 0;
  */
 void mhz_read_pwm_ms() {
 
-  const int TIMEOUT_MS = 2500;
-  
-  long high_start_ms = 0;
-  long low_start_ms = 0;
+  const unsigned long TIMEOUT_MS = 2500;
+
+  unsigned long high_start_ms = 0;
+  unsigned long low_start_ms = 0;
 
   bool is_ready = false;
 
@@ -29,8 +29,8 @@ void mhz_read_pwm_ms() {
 //  bool log_wait_for_high = false;
   bool log_ignore_high = false;
 
-  long timeout_start_ms = millis();
-  long timeout_end_ms = timeout_start_ms + TIMEOUT_MS;
+  unsigned long timeout_start_ms = millis();
+  unsigned long timeout_end_ms = timeout_start_ms + TIMEOUT_MS;
   mhzlog("read_mhz_pwm start " + String(timeout_start_ms));
 
   while (millis() < timeout_end_ms) {
@@ -47,10 +47,10 @@ void mhz_read_pwm_ms() {
         mhzlog("LOW wait for first HIGH ms=" + String(millis()) );
       } else if (WAIT_TGT == "LOW") {
         // 計測開始後、HIGH→LOW になった時(HIGH計測終了）。次はLOW計測
-        long end_ms = millis();
+        unsigned long end_ms = millis();
         low_start_ms = end_ms;
         WAIT_TGT = "HIGH2";
-        long elapsed = end_ms - high_start_ms;
+        unsigned long elapsed = end_ms - high_start_ms;
         mhz_high_ms = elapsed;
 
         mhzlog("LOW measure HIGH done. next: measure LOW. waiting HIGH ms=" + String(low_start_ms) );     

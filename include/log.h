@@ -7,3 +7,4 @@ void tsllog(String msg);
 void bmelog(String msg);
 void amlog(String msg);
 void adtlog(String msg);
+void sectionlog(String msg);

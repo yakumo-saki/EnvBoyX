@@ -3,6 +3,7 @@
  */
 #include <Arduino.h>
 
+#include "log.h"
 #include "global.h"
 #include "config.h"
 #include "main_setup.h"
@@ -30,10 +31,10 @@ void setup()
   bool isNormal = has_valid_config_file();
 
   if (!isNormal) {
-    Serial.println("Entering setup mode.");
+    sectionlog("Entering setup mode.");
     setup_setupmode(); 
   } else {
-    Serial.println("Entering normal mode.");
+    sectionlog("Entering normal mode.");
     setup_normal();
   }
 }

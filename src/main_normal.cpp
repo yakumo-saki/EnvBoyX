@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <MQTTClient.h>
 
+#include "log.h"
 #include "global.h"
 #include "display.h"
 #include "bme280.h"
@@ -122,7 +123,7 @@ void make_sure_wifi_connected() {
     return;
   }
 
-  Serial.println("WiFi is down or not initialized. connecting");
+  mainlog("WiFi is down or not initialized. connecting");
   WiFi.disconnect();
 
   int retryCount = 0;
@@ -136,22 +137,21 @@ void make_sure_wifi_connected() {
       WiFi.disconnect();   
       delay(100);
       WiFi.begin(ssid.c_str(), password.c_str());
-      Serial.println("");
-      Serial.println("Still reconnecting WiFi");
+      mainlog("");
+      mainlog("Still reconnecting WiFi");
     }
 
     if (retryCount > 38) {
-      Serial.println("");
-      Serial.println("WiFi connect failure. restarting");
+      mainlog("");
+      mainlog("WiFi connect failure. restarting");
       ESP.deepSleep(REBOOT_NOW, WAKE_RF_DEFAULT);
       delay(10000);
     }
   }
 
-  Serial.println("");
-  Serial.println("WiFi (re) connected.");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  mainlog("");
+  mainlog("WiFi (re) connected.");
+  mainlog("IP address: " + WiFi.localIP().toString());
 }
 
 //
@@ -165,7 +165,7 @@ void setup_normal() {
   
   // setupモードに入りやすくするための処理
   if (opMode == OPMODE_DISPLAY) {
-    Serial.println(">>> Reset to reconfig start.");
+    sectionlog("Reset to reconfig start.");
     remove_configure_flag_file();
     list_dir();
 
@@ -175,7 +175,7 @@ void setup_normal() {
     create_configure_flag_file();
 
     list_dir();
-    Serial.println("=== reconfigure timeout. continue.");
+    sectionlog("reconfigure timeout. continue.");
 
     http_setup();
   }
@@ -184,7 +184,7 @@ void setup_normal() {
   make_sure_wifi_connected();
   disp_wifi_info(WiFi.localIP().toString(), mDNS);
 
-  Serial.println(">>> Initializing sensors start.");
+  sectionlog(">>> Initializing sensors start.");
   bme_setup();
   adt_setup();
   am_setup();
@@ -194,7 +194,7 @@ void setup_normal() {
   if (use_mhz19b != MHZ_NOUSE) {
     mhz_setup();
   }
-  Serial.println("=== Initializing sensors done.");
+  sectionlog(">>> Initializing sensors done.");
 
 }
 
@@ -232,19 +232,19 @@ void loop_normal() {
     disp_power_off();
   
     if (NO_DEEP_SLEEP) {
-      Serial.println("!!! NOT deep sleep because of NO_DEEP_SLEEP is set !!!");
+      mainlog("!!! NOT deep sleep because of NO_DEEP_SLEEP is set !!!");
       delay(NO_DEEP_SLEEP_DURATION);
-      Serial.println("!!! Going to next loop                             !!!");
+      mainlog("!!! Going to next loop                             !!!");
     } else {
       delay(500);
-      Serial.println("*** Goto deep sleep ***");
+      mainlog("*** Goto deep sleep ***");
       ESP.deepSleep(NORMAL_DURATION, WAKE_RF_DEFAULT);
       delay(10000);
     }
   } else if (opMode == OPMODE_DISPLAY) {  
     disp_sensor_value(WiFi.localIP().toString(), mDNS);
     http_loop();
-    Serial.println("display: next tick.");
+    sectionlog("Wait for Next tick.");
     delay(1500);
   }
 }
