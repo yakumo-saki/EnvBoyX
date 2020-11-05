@@ -1,10 +1,7 @@
 #include <Arduino.h>
 
+#include "log.h"
 #include "global.h"
-
-void httplog(String msg) {
-  Serial.println("HTTP: " + msg);
-}
 
 void http_loop() {
   server.handleClient();

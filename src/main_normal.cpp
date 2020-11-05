@@ -51,6 +51,8 @@ void mqtt_publish(String topic, String value) {
 
 void read_data() {
 
+  mainlog("Reading data start.");
+
   // 電圧
 //  if (true) {
 //    int s0 = analogRead(0); 
@@ -115,7 +117,7 @@ void read_data() {
 }
 
 void make_sure_wifi_connected() {
-  return;
+  
   WiFi.softAPdisconnect(true);
   WiFi.enableAP(false);
 
@@ -175,7 +177,7 @@ void setup_normal() {
     create_configure_flag_file();
 
     list_dir();
-    sectionlog("reconfigure timeout. continue.");
+    sectionlog("Reconfigure timeout. continue.");
 
     http_setup();
   }
@@ -184,7 +186,7 @@ void setup_normal() {
   make_sure_wifi_connected();
   disp_wifi_info(WiFi.localIP().toString(), mDNS);
 
-  sectionlog(">>> Initializing sensors start.");
+  sectionlog("Initializing sensors start.");
   bme_setup();
   adt_setup();
   am_setup();
@@ -194,7 +196,7 @@ void setup_normal() {
   if (use_mhz19b != MHZ_NOUSE) {
     mhz_setup();
   }
-  sectionlog(">>> Initializing sensors done.");
+  sectionlog("Initializing sensors done.");
 
 }
 
@@ -203,10 +205,12 @@ void setup_normal() {
 //
 void loop_normal() {
 
-  Serial.println("");
+  mainlog("loop start");
 
   // WiFiが繋がってなければ意味がないので接続チェック
   make_sure_wifi_connected();
+
+  mainlog("WiFi connected.");
 
   // MQTT
   if (opMode == OPMODE_MQTT) {

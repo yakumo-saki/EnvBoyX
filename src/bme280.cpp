@@ -72,16 +72,9 @@ void bme_read_data() {
 
   pres = pres / 100;
 
-  Serial.print("BME280: ");
-  Serial.print("Temp: ");
-  Serial.print(temp, 2);
-  Serial.print("C");
-  Serial.print("\t\tHumidity: ");
-  Serial.print(hum, 2);
-  Serial.print("%");
-  Serial.print("\t\tPressure: ");
-  Serial.print(pres, 2);
-  Serial.println("hPa");
+  char log[80];
+  snprintf(log, sizeof log, "Temp: %.2f C Humidity: %.2f %% Pressure: %.2f hpa", temp, hum, pres);
+  bmelog(String(log));
 
   lastTemp = temp;
   lastHumidity = hum;

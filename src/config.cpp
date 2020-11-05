@@ -1,12 +1,8 @@
 #include <Arduino.h>
 #include <LittleFS.h>
 
+#include "log.h"
 #include "global.h"
-
-void cfglog(String msg)
-{
-  Serial.println("CONFIG: " + msg);
-}
 
 /**
  * とりあえずのデフォルト値をグローバル変数にセットする
@@ -41,12 +37,12 @@ void list_dir()
   {
     String fn, fs;
     fn = dir.fileName();
-    fn.remove(0, 1);
+    // fn.remove(0, 1);
     fs = String(dir.fileSize());
-    cfglog("<" + fn + "> size=" + fs);
+    cfglog("name=" + fn + " size=" + fs);
   } // end while
 
-  cfglog("===");
+  cfglog("<<< End listing");
 }
 
 /**

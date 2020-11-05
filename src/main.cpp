@@ -9,11 +9,6 @@
 #include "main_setup.h"
 #include "main_normal.h"
 
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
-
-#include <WiFiClient.h> 
-
 #include <Wire.h>
 
 bool isNormal = false;
@@ -28,7 +23,7 @@ void setup()
   // Init I2C Serial
   Wire.begin(5, 4);
 
-  bool isNormal = has_valid_config_file();
+  isNormal = has_valid_config_file();
 
   if (!isNormal) {
     sectionlog("Entering setup mode.");
@@ -37,6 +32,8 @@ void setup()
     sectionlog("Entering normal mode.");
     setup_normal();
   }
+
+  sectionlog("setup done.");
 }
  
 void loop() {
