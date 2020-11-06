@@ -1,8 +1,5 @@
 #include <Arduino.h>
 
-#include <SoftwareSerial.h>
-#include <MHZ19.h>
-
 #include "log.h"
 
 #include "global.h"

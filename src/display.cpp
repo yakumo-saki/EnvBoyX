@@ -15,6 +15,8 @@ extern int lastPpm;
 
 const byte DISP_ADDR = 0x3c;
 
+const int WAIT_PER_BAR = 60;
+
 //SSD1306 display(0x3c, 5, 4);
 SSD1306 display(DISP_ADDR, 5, 4);
 
@@ -129,7 +131,9 @@ void disp_wifi_error() {
 
 }
 
-// wait for reconfigure 画面を出しながら待つ
+/**
+ * wait for reconfigure 画面を出しながら待つ
+ */
 void disp_wait_for_reconfig() {
 
   if (!has_ssd1306()) return;
@@ -168,7 +172,7 @@ void disp_wait_for_reconfig() {
 
     display.drawString(0, 16, bar);
     display.display();
-    delay(100);
+    delay(WAIT_PER_BAR);
     now = now + 1;
   }
 

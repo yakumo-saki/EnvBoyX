@@ -54,10 +54,10 @@ void read_data() {
   mainlog("Reading data start.");
 
   // 電圧
-//  if (true) {
-//    int s0 = analogRead(0); 
-//    mqtt_publish("battery", String(s0));
-//  }
+  //  if (true) {
+  //    int s0 = analogRead(0); 
+  //    mqtt_publish("battery", String(s0));
+  //  }
 
   // 精度の怪しいものから順に値を上書きしていく。
   bme_read_data();  // temp humi pres

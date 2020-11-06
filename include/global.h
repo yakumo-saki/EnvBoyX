@@ -9,6 +9,9 @@ extern const String MHZ_USE_UART;
 extern const String MHZ_NOUSE;
 extern const int MHZ_BAUDRATE;
 
+extern const int I2C_SDA;
+extern const int I2C_SCL;
+
 extern const String settings;
 extern const String configured_file;
 

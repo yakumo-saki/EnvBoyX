@@ -21,7 +21,7 @@ void setup()
   Serial.println("Starting " + product);
 
   // Init I2C Serial
-  Wire.begin(5, 4);
+  Wire.begin(I2C_SDA, I2C_SCL);
 
   isNormal = has_valid_config_file();
 

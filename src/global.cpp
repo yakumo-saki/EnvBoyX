@@ -10,6 +10,9 @@ String MHZ_USE_UART = "yes_uart";
 String MHZ_NOUSE = "no";
 int MHZ_BAUDRATE = 9600;
 
+const int I2C_SDA = 5;
+const int I2C_SCL = 4;
+
 // Wi-Fi設定保存ファイル
 String settings = "/wifi_settings.txt";
 String configured_file = "/config_ok.txt";
