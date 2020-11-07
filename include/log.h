@@ -9,4 +9,5 @@ void amlog(String msg);
 void adtlog(String msg);
 void cfglog(String msg);
 void httplog(String msg);
+void displog(String msg);
 void sectionlog(String msg);

@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <ESP8266WebServer.h>
 
 // 定数
 String SETTING_ID = "EBX.v20";
@@ -8,10 +7,15 @@ String OPMODE_DISPLAY = "always";
 String MHZ_USE_PWM = "yes_pwm";
 String MHZ_USE_UART = "yes_uart";
 String MHZ_NOUSE = "no";
-int MHZ_BAUDRATE = 9600;
+extern const int MHZ_BAUDRATE = 9600;
 
-const int I2C_SDA = 5;
-const int I2C_SCL = 4;
+#ifdef ESP32
+extern const int I2C_SDA = 21;
+extern const int I2C_SCL = 22;
+#elif defined(ESP8266)
+extern const int I2C_SDA = 5;
+extern const int I2C_SCL = 4;
+#endif
 
 // Wi-Fi設定保存ファイル
 String settings = "/wifi_settings.txt";
@@ -21,8 +25,6 @@ String product_short = "ebx";
 String product = "EnvBoyX";
 String ver = "2.0";
 String product_long = product + " Ver." + ver;
-
-ESP8266WebServer server(80);
 
 // setup時は、setup用SSID。 normal時は接続先SSID
 String ssid = "";

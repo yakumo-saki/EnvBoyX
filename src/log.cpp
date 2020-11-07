@@ -46,6 +46,10 @@ void httplog(String msg) {
   real_log(msg, "HTTP");
 }
 
+void displog(String msg) {
+  real_log(msg, "DISPLAY");
+}
+
 void sectionlog(String msg) {
   Serial.println("");
   real_log(msg, "========");

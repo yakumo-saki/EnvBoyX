@@ -1,8 +1,16 @@
 #include <Arduino.h>
+
+#ifdef ESP32
+#include "FS.h"
+#include <LITTLEFS.h>
+#elif defined(ESP8266)
 #include <LittleFS.h>
+#endif
 
 #include "log.h"
 #include "global.h"
+
+#define FORMAT_LITTLEFS_IF_FAILED true
 
 /**
  * とりあえずのデフォルト値をグローバル変数にセットする
@@ -26,21 +34,27 @@ void set_default_config_value()
  */
 void list_dir()
 {
-  char cwdName[2];
+  cfglog(">>> LITTLEFS directory listing");
 
-  cfglog(">>> LittleFS directory listing");
+  File root = LITTLEFS.open("/");
+  if (!root) {
+      cfglog("- failed to open directory");
+      return;
+  }
+  if (!root.isDirectory()){
+      cfglog(" - not a directory");
+      return;
+  }
 
-  strcpy(cwdName, "/");
-  Dir dir = LittleFS.openDir(cwdName);
-
-  while (dir.next())
-  {
-    String fn, fs;
-    fn = dir.fileName();
-    // fn.remove(0, 1);
-    fs = String(dir.fileSize());
-    cfglog("name=" + fn + " size=" + fs);
-  } // end while
+  File file = root.openNextFile();
+  while(file){
+      if(file.isDirectory()){
+          cfglog("  DIR : " + String(file.name()));
+      } else {
+          cfglog("  FILE: " + String(file.name()) + "  SIZE: " + String(file.size()));
+      }
+      file = root.openNextFile();
+  }
 
   cfglog("<<< End listing");
 }
@@ -50,7 +64,7 @@ void list_dir()
  */
 void create_configure_flag_file()
 {
-  File f2 = LittleFS.open(configured_file, "w");
+  File f2 = LITTLEFS.open(configured_file, "w");
   f2.println("ok");
   f2.close();
 }
@@ -60,7 +74,7 @@ void create_configure_flag_file()
  */
 void remove_configure_flag_file()
 {
-  LittleFS.remove(configured_file);
+  LITTLEFS.remove(configured_file);
 }
 
 /**
@@ -69,10 +83,10 @@ void remove_configure_flag_file()
  */
 void save_config()
 {
-  LittleFS.begin();
+  LITTLEFS.begin();
 
   // 設定ファイル
-  File f = LittleFS.open(settings, "w");
+  File f = LITTLEFS.open(settings, "w");
   f.println(String(SETTING_ID));
   f.println(ssid);
   f.println(password);
@@ -94,7 +108,7 @@ void save_config()
  */
 void read_config()
 {
-  File f = LittleFS.open(settings, "r");
+  File f = LITTLEFS.open(settings, "r");
   String settingId = f.readStringUntil('\n'); // 使わない
   ssid = f.readStringUntil('\n');
   password = f.readStringUntil('\n');
@@ -131,17 +145,17 @@ void read_config()
 }
 
 bool has_valid_config_file() {
-  LittleFS.begin();
+  LITTLEFS.begin();
   delay(50);
 
   // ファイルが存在しないか、バージョン違いであればセットアップモード
-  if (!LittleFS.exists(configured_file)) {
+  if (!LITTLEFS.exists(configured_file)) {
     // reconfigure用ファイルがなければセットアップモード
     // wait for reconfigure でリセットされたとき。
     cfglog("configured_file not found.");
     return false;
-  } else if (LittleFS.exists(settings)) {
-    File f = LittleFS.open(settings, "r");
+  } else if (LITTLEFS.exists(settings)) {
+    File f = LITTLEFS.open(settings, "r");
     String settingId = f.readStringUntil('\n');   
     settingId.trim();
     f.close();
@@ -157,4 +171,14 @@ bool has_valid_config_file() {
 
   cfglog("Unknown state. Assuming config not found");
   return false;
+}
+
+void config_setup() {
+  if (!LITTLEFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
+    cfglog("LITTLEFS Mount Failed.");
+    return;
+  }
+
+  cfglog("LITTLEFS Mount success.");
+  
 }

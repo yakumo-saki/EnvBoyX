@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include "global.h"
+#include "log.h"
 
 #include <SSD1306.h>
 #include <WiFiClient.h> 
@@ -24,11 +25,12 @@ SSD1306 display(DISP_ADDR, 5, 4);
 bool needFlip = false;
 
 bool has_ssd1306() {
+  return true;
   Wire.beginTransmission(DISP_ADDR);
-  byte error = Wire.endTransmission();
+  int error = Wire.endTransmission();
 
   if (error != 0) {
-    Serial.print("Error display connection: " + error);
+    displog("Error display connection: " + String(error));
   }
   return (error == 0);
    
@@ -61,7 +63,7 @@ void disp_normal_startup_screen(String product_long) {
 /**
  * セットアップモード時のディスプレイ表示
  */
-void disp_setup_startup_screen() {
+void disp_setup_startup_screen(String ipAddr) {
 
   if (!has_ssd1306()) return;
 
@@ -76,7 +78,7 @@ void disp_setup_startup_screen() {
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.drawString(0, 0,  product_long);
   display.drawString(0, 16, "Setup mode.");
-  display.drawString(0, 33, "http://" + WiFi.softAPIP().toString() + "/" );
+  display.drawString(0, 33, "http://" + ipAddr + "/" );
   display.setFont(ArialMT_Plain_10);
   display.drawString(0, 52, ssid);
   display.display();

@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <ESP8266WebServer.h>
+#include <WiFiClient.h>
 
 extern String SETTING_ID;
 extern String OPMODE_MQTT;
@@ -31,8 +31,6 @@ extern String mhz19b_rxpin;  // since 2.0
 extern String mhz19b_txpin;  // since 2.0
 extern String mqttBroker;
 extern String mqttName;
-
-extern ESP8266WebServer server;
 
 // 測定値
 extern float lastTemp;

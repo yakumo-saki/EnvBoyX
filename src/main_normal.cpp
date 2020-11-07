@@ -1,5 +1,10 @@
 #include <Arduino.h>
+#ifdef ESP32
+#include <WiFi.h>
+#elif defined(ESP8266)
 #include <ESP8266WiFi.h>
+#endif
+
 #include <MQTTClient.h>
 
 #include "log.h"
@@ -11,7 +16,7 @@
 #include "lps22hb.h"
 #include "mhz19.h"
 #include "tsl2561.h"
-#include "http.h"
+#include "http_normal.h"
 #include "config.h"
 
 // test purpose only. false for production
@@ -146,7 +151,7 @@ void make_sure_wifi_connected() {
     if (retryCount > 38) {
       mainlog("");
       mainlog("WiFi connect failure. restarting");
-      ESP.deepSleep(REBOOT_NOW, WAKE_RF_DEFAULT);
+      ESP.deepSleep(REBOOT_NOW);
       delay(10000);
     }
   }
@@ -179,7 +184,7 @@ void setup_normal() {
     list_dir();
     sectionlog("Reconfigure timeout. continue.");
 
-    http_setup();
+    http_setup_normal();
   }
 
   // start WiFi
@@ -242,12 +247,12 @@ void loop_normal() {
     } else {
       delay(500);
       mainlog("*** Goto deep sleep ***");
-      ESP.deepSleep(NORMAL_DURATION, WAKE_RF_DEFAULT);
+      ESP.deepSleep(NORMAL_DURATION);
       delay(10000);
     }
   } else if (opMode == OPMODE_DISPLAY) {  
     disp_sensor_value(WiFi.localIP().toString(), mDNS);
-    http_loop();
+    http_loop_normal();
     sectionlog("Wait for Next tick.");
     delay(1500);
   }

@@ -1,12 +1,12 @@
-# EnvBoyX
+# EnvBoyX32
 
 Arduino environment monitor Unified version of Envboy and Envboy MQTT
 
-## Moved to Platform IO since 2.0
-
-last version of Arduino IDE, look `last_arduino_ide` tag.
-
 # spec
+
+## target boards
+
+* ESP32 DevKitC
 
 ## sensors
 
@@ -23,7 +23,7 @@ All sensors are optional.
 
 * upload (use `pio run` )
 * boot (as setup mode)
-* connect to ESP8266 wifi (SSID ebx*******, no password)
+* connect to ESP32 wifi (SSID ebx*******, no password)
 * access http://192.168.4.1/ and setting.
 * reset
 * boot (as normal mode)

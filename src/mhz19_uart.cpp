@@ -1,6 +1,4 @@
 #include <Arduino.h>
-
-#include <SoftwareSerial.h>
 #include <MHZ19.h>
 
 #include "log.h"
@@ -12,8 +10,8 @@
 #define MHZ_TX_PIN 0      // Tx pin which the MHZ19 Rx pin is attached to
 
 // wait for co2 sensor warmup (maybe forever).
-bool WAIT_FOR_CO2_WARMUP = false;
-bool WAIT_FOR_CO2_WARMUP_FOREVER = false;
+// bool WAIT_FOR_CO2_WARMUP = false;
+// bool WAIT_FOR_CO2_WARMUP_FOREVER = false;
 
 // 400ppmの校正(ABC)を行う。これをするには、20分以上外気に晒し続ける必要がある。
 // 終了後は false に戻す。
@@ -23,8 +21,14 @@ unsigned long mhzGetDataTimer = 0;
 
 MHZ19 mhz19;
 
-// SoftwareSerial mhzSerial(mhz19b_rxpin.toInt(), mhz19b_txpin.toInt());
+#ifdef ARDUINO_ARCH_ESP32
+//include ESP32 specific libs
+HardwareSerial mhzSerial(2);                  
+#elif defined(ARDUINO_ARCH_ESP8266) 
+//include esp8266 specific libs
+#include <SoftwareSerial.h>                                // Remove if using HardwareSerial or Arduino package without SoftwareSerial support
 SoftwareSerial mhzSerial(MHZ_RX_PIN, MHZ_TX_PIN);
+#endif
 
 void printErrorCode() {
   mhzlog(mhz19_code_to_msg(mhz19.errorCode));

@@ -35,7 +35,10 @@ void mhz_read_pwm_ms() {
 
   while (millis() < timeout_end_ms) {
     int pwmValue = digitalRead(CO2_IN);
+
+#ifdef ESP8266
     ESP.wdtFeed();
+#endif
 
     // Serial.println(pwmValue);
     
