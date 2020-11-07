@@ -6,13 +6,6 @@
 #include "mhz19_main.h"
 #include "mhz19_util.h"
 
-#define MHZ_RX_PIN 14     // Rx pin which the MHZ19 Tx pin is attached to
-#define MHZ_TX_PIN 0      // Tx pin which the MHZ19 Rx pin is attached to
-
-// wait for co2 sensor warmup (maybe forever).
-// bool WAIT_FOR_CO2_WARMUP = false;
-// bool WAIT_FOR_CO2_WARMUP_FOREVER = false;
-
 // 400ppmの校正(ABC)を行う。これをするには、20分以上外気に晒し続ける必要がある。
 // 終了後は false に戻す。
 bool AUTO_BASELINE_CORRECTION = false;
@@ -27,11 +20,15 @@ HardwareSerial mhzSerial(2);
 #elif defined(ARDUINO_ARCH_ESP8266) 
 //include esp8266 specific libs
 #include <SoftwareSerial.h>                                // Remove if using HardwareSerial or Arduino package without SoftwareSerial support
+#define MHZ_RX_PIN 14     // Rx pin which the MHZ19 Tx pin is attached to
+#define MHZ_TX_PIN 0      // Tx pin which the MHZ19 Rx pin is attached to
 SoftwareSerial mhzSerial(MHZ_RX_PIN, MHZ_TX_PIN);
 #endif
 
 void printErrorCode() {
-  mhzlog(mhz19_code_to_msg(mhz19.errorCode));
+  if (mhz19.errorCode != 1) {
+    mhzlog(mhz19_code_to_msg(mhz19.errorCode));
+  }
 }
 
 void mhz_setup_check_device_uart() {
@@ -58,12 +55,12 @@ void mhz_setup_uart() {
   mhz19.begin(mhzSerial);
 
   mhzlog("setRange()");
-  mhz19.setRange(2000);
+  mhz19.setRange(5000);
   printErrorCode();
 
-  mhzlog("setSpan()");
-  mhz19.setSpan(2000);                  
-  printErrorCode();
+  // mhzlog("setSpan()");
+  // mhz19.setSpan(2000);                  
+  // printErrorCode();
 
   mhzlog("setAutoCalibration()");
   mhz19.autoCalibration(AUTO_BASELINE_CORRECTION);
@@ -89,10 +86,13 @@ void mhz_read_data_uart() {
 
   mhzGetDataTimer = millis();
 
-  mhzlog("Range: " + String(mhz19.getRange()));
+  String range = String(mhz19.getRange());
   printErrorCode();
 
   mhz19.verify();
+  printErrorCode();
+
+  String acc = String(mhz19.getAccuracy());
   printErrorCode();
 
   int co2ppm = mhz19.getCO2(false);
@@ -101,7 +101,7 @@ void mhz_read_data_uart() {
   int temp = mhz19.getTemperature();
   printErrorCode();
   
-  mhzlog("CO2 (ppm): " + String(co2ppm) + " Temp: " + String(temp) );
+  mhzlog("CO2 (ppm): " + String(co2ppm) + " Accuracy: " + acc + " Temp: " + String(temp) + " CO2 range: "+ range);
   lastPpm = co2ppm;
 
 }

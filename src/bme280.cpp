@@ -72,7 +72,7 @@ void bme_read_data() {
   // pres = pres / 100;
 
   temp = bme.getTemperature();
-  pres = bme.getPressure();
+  pres = bme.getPressure() / 100;
   hum = bme.getHumidity();
 
   char log[80];

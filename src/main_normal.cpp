@@ -180,13 +180,15 @@ void setup_normal() {
     // list_dir();
     sectionlog("Reconfigure timeout. continue.");
 
-    http_setup_normal();
   }
 
   // start WiFi
   sectionlog("Connecting WiFi.");
   make_sure_wifi_connected();
   disp_wifi_info(WiFi.localIP().toString(), mDNS);
+
+  sectionlog("Starting HTTP server.");  
+  http_setup_normal();
 
   sectionlog("Initializing sensors start.");
   bme_setup();
