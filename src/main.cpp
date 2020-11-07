@@ -22,7 +22,7 @@ void setup()
 
   sectionlog("Initializing LittleFS.");
   config_setup();
-  isNormal = has_valid_config_file();
+  isNormal = has_valid_config();
 
   if (!isNormal) {
     sectionlog("Entering setup mode.");

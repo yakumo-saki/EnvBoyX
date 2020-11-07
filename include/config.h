@@ -5,4 +5,5 @@ void create_configure_flag_file();
 void remove_configure_flag_file();
 void set_default_config_value();
 bool has_valid_config_file();
+bool has_valid_config();
 void config_setup();

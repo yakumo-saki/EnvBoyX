@@ -23,8 +23,6 @@ void set_default_config_value()
   opMode = OPMODE_DISPLAY;
   use_mhz19b = MHZ_NOUSE;
   mhz19b_pwmpin = "14";
-  mhz19b_rxpin = "14";
-  mhz19b_txpin = "12";
   mqttBroker = "";
   mqttName = "";
 }
@@ -96,8 +94,6 @@ void save_config()
   f.println(opMode);
   f.println(use_mhz19b);
   f.println(mhz19b_pwmpin);
-  f.println(mhz19b_txpin);
-  f.println(mhz19b_rxpin);
   f.println(mqttBroker);
   f.println(mqttName);
   f.close();
@@ -118,8 +114,6 @@ void read_config()
   opMode = f.readStringUntil('\n');
   use_mhz19b = f.readStringUntil('\n');
   mhz19b_pwmpin = f.readStringUntil('\n');
-  mhz19b_txpin = f.readStringUntil('\n');
-  mhz19b_rxpin = f.readStringUntil('\n');
   mqttBroker = f.readStringUntil('\n');
   mqttName = f.readStringUntil('\n');
   f.close();
@@ -140,23 +134,22 @@ void read_config()
   cfglog("opMode: " + opMode);
   cfglog("use MHZ19B: " + use_mhz19b);
   cfglog("   PWM PIN: " + mhz19b_pwmpin);
-  cfglog("   UART TX: " + mhz19b_txpin);
-  cfglog("   UART RX: " + mhz19b_rxpin);
   cfglog("MQTT Broker: " + mqttBroker);
   cfglog("MQTT Name  : " + mqttName);
 }
 
+/**
+ * configファイルが存在して、SETTING_IDが一致するかだけを判定する
+ * ＝フラグファイルはみない
+ */
 bool has_valid_config_file() {
   LITTLEFS.begin();
   delay(50);
 
-  // ファイルが存在しないか、バージョン違いであればセットアップモード
-  if (!LITTLEFS.exists(configured_file)) {
-    // reconfigure用ファイルがなければセットアップモード
-    // wait for reconfigure でリセットされたとき。
-    cfglog("configured_file not found.");
+  if (!LITTLEFS.exists(settings)) {
+    cfglog(settings + " not found.");
     return false;
-  } else if (LITTLEFS.exists(settings)) {
+  } else {
     File f = LITTLEFS.open(settings, "r");
     String settingId = f.readStringUntil('\n');   
     settingId.trim();
@@ -174,6 +167,24 @@ bool has_valid_config_file() {
   cfglog("Unknown state. Assuming config not found");
   return false;
 }
+
+/**
+ * configファイルの存在とバージョン一致とconfigフラグファイルの存在をチェックする
+ */
+bool has_valid_config() {
+  LITTLEFS.begin();
+  delay(50);
+
+  if (!LITTLEFS.exists(configured_file)) {
+    // reconfigure用ファイルがなければセットアップモード
+    // => wait for reconfigure でリセットされたとき。
+    cfglog("configured_file not found.");
+    return false;
+  } 
+
+  return has_valid_config_file();
+}
+
 
 void config_setup() {
   if (!LITTLEFS.begin(FORMAT_LITTLEFS_IF_FAILED)){

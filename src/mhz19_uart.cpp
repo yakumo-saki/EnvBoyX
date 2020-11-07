@@ -51,9 +51,7 @@ void mhz_setup_uart() {
 
   lastPpm = CO2_PPM_INVALID;
 
-  mhzlog("Enabled (UART mode). RX=" + mhz19b_rxpin + " TX=" + mhz19b_txpin);
-  mhzlog("RX=" + mhz19b_rxpin);
-  mhzlog("TX=" + mhz19b_txpin);
+  mhzlog("Enabled (UART mode).");
 
   mhzlog("begin()");
   mhzSerial.begin(9600);

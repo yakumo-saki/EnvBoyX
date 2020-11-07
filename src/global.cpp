@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 // 定数
-String SETTING_ID = "EBX.v20";
+String SETTING_ID = "EBX.v2.1";
 String OPMODE_MQTT = "mqtt";
 String OPMODE_DISPLAY = "always";
 String MHZ_USE_PWM = "yes_pwm";
@@ -23,7 +23,7 @@ String configured_file = "/config_ok.txt";
 
 String product_short = "ebx";
 String product = "EnvBoyX";
-String ver = "2.0";
+String ver = "2.1";
 String product_long = product + " Ver." + ver;
 
 // setup時は、setup用SSID。 normal時は接続先SSID
@@ -33,8 +33,6 @@ String mDNS = "";
 String opMode = "";
 String use_mhz19b = ""; // MHZ-19Bはコードから接続されているかわからない
 String mhz19b_pwmpin = "";
-String mhz19b_rxpin = "";
-String mhz19b_txpin = "";
 String mqttBroker = "";
 String mqttName = "";
 
