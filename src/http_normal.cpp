@@ -30,16 +30,18 @@ void http_handle_data(AsyncWebServerRequest *request) {
   int hr = (int) ((min / 60) % 60);
 
   char temp[16], hum[16], pres[16];
-  char lux[16], luxIr[16],ppm[16];
+  char lux[16], luxIr[16],ppm[16], acc[16];
   char product[32];
   product_long.toCharArray(product, sizeof(product), 0);
 
   snprintf ( buf, sizeof buf,
     "{ \"product\": \"%s\", \"uptime\": \"%02d:%02d:%02d\", \"uptimeMills\": \"%lu\", \"temparature\": \"%s\","
-    " \"humidity\": \"%s\", \"pressure\": \"%s\",\"luminous\": \"%s\", \"luminousIr\": \"%s\", \"co2ppm\": \"%s\" }"
+    " \"humidity\": \"%s\", \"pressure\": \"%s\",\"luminous\": \"%s\", \"luminousIr\": \"%s\""
+    ", \"co2ppm\": \"%s\", \"co2ppmAccuracy\": \"%s\" }"
     , product, hr, min, sec, millis()
     , dtostrf(lastTemp, 0, 2, temp), dtostrf(lastHumidity, 0, 2, hum), dtostrf(lastPressure, 0, 2, pres)
-    , dtostrf(lastLuxFull, 0, 0, lux), dtostrf(lastLuxIr, 0, 0, luxIr), dtostrf(lastPpm, 0, 0, ppm)
+    , dtostrf(lastLuxFull, 0, 0, lux), dtostrf(lastLuxIr, 0, 0, luxIr)
+    , dtostrf(lastPpm, 0, 0, ppm), lastPpmAccuracy
   );
 
   httplog("return json: " + String(buf));

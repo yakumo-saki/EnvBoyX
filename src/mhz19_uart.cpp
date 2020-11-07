@@ -103,5 +103,5 @@ void mhz_read_data_uart() {
   
   mhzlog("CO2 (ppm): " + String(co2ppm) + " Accuracy: " + acc + " Temp: " + String(temp) + " CO2 range: "+ range);
   lastPpm = co2ppm;
-
+  lastPpmAccuracy = acc;
 }

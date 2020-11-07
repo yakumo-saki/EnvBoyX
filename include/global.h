@@ -37,3 +37,4 @@ extern float lastPressure;
 extern float lastLuxFull;
 extern float lastLuxIr;
 extern int lastPpm;
+extern String lastPpmAccuracy;

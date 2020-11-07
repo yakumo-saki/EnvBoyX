@@ -23,7 +23,7 @@ String configured_file = "/config_ok.txt";
 
 String product_short = "ebx";
 String product = "EnvBoyX";
-String ver = "2.1";
+String ver = "2.2";
 String product_long = product + " Ver." + ver;
 
 // setup時は、setup用SSID。 normal時は接続先SSID
@@ -43,3 +43,4 @@ float lastPressure;
 float lastLuxFull;
 float lastLuxIr;
 int lastPpm;
+String lastPpmAccuracy;
