@@ -67,6 +67,7 @@ void create_configure_flag_file()
   File f2 = LITTLEFS.open(configured_file, "w");
   f2.println("ok");
   f2.close();
+  cfglog("Create " + configured_file);
 }
 
 /**
@@ -75,6 +76,7 @@ void create_configure_flag_file()
 void remove_configure_flag_file()
 {
   LITTLEFS.remove(configured_file);
+  cfglog(configured_file + " removed.");
 }
 
 /**

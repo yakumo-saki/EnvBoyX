@@ -137,26 +137,22 @@ void make_sure_wifi_connected() {
   WiFi.begin(ssid.c_str(), password.c_str());
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    Serial.print(".");
     retryCount++;
     if (retryCount % 10 == 0) {
       delay(100);
       WiFi.disconnect();   
       delay(100);
       WiFi.begin(ssid.c_str(), password.c_str());
-      mainlog("");
       mainlog("Still reconnecting WiFi");
     }
 
     if (retryCount > 38) {
-      mainlog("");
       mainlog("WiFi connect failure. restarting");
       ESP.deepSleep(REBOOT_NOW);
       delay(10000);
     }
   }
 
-  mainlog("");
   mainlog("WiFi (re) connected.");
   mainlog("IP address: " + WiFi.localIP().toString());
 }
@@ -174,20 +170,21 @@ void setup_normal() {
   if (opMode == OPMODE_DISPLAY) {
     sectionlog("Reset to reconfig start.");
     remove_configure_flag_file();
-    list_dir();
+    // list_dir();
 
     disp_wait_for_reconfig();
   
     // 設定済みフラグファイル
     create_configure_flag_file();
 
-    list_dir();
+    // list_dir();
     sectionlog("Reconfigure timeout. continue.");
 
     http_setup_normal();
   }
 
   // start WiFi
+  sectionlog("Connecting WiFi.");
   make_sure_wifi_connected();
   disp_wifi_info(WiFi.localIP().toString(), mDNS);
 

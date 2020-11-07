@@ -2,6 +2,7 @@
 
 #include <WiFi.h>
 
+#include "log.h"
 #include "display.h"
 #include "global.h"
 #include "config.h"
@@ -20,7 +21,7 @@ void setup_wifi() {
     ssid += String(mac[i], HEX);
   }
   
-  Serial.println("SSID: " + ssid);
+  mainlog("SSID: " + ssid);
   // Serial.println("PASS: " + pass);
 
   /* You can remove the password parameter if you want the AP to be open. */

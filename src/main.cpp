@@ -32,7 +32,10 @@ void setup()
 
     // Init I2C Serial
     sectionlog("Initializing I2C SDA=" + String(I2C_SDA) + " SCL=" + String(I2C_SCL));
-    Wire.begin(I2C_SDA, I2C_SCL);
+    bool ret = Wire.begin(I2C_SDA, I2C_SCL);
+    if (!ret) {
+      mainlog("error initializing I2C");
+    }
 
     setup_normal();
   }

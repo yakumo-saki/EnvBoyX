@@ -19,7 +19,7 @@ const byte DISP_ADDR = 0x3c;
 const int WAIT_PER_BAR = 60;
 
 //SSD1306 display(0x3c, 5, 4);
-SSD1306 display(DISP_ADDR, 5, 4);
+SSD1306 display(DISP_ADDR, I2C_SDA, I2C_SCL);
 
 // 画面反転がいるかどうか。Envboy 3までは true。 3.5からは不要
 bool needFlip = false;
