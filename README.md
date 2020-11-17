@@ -1,4 +1,4 @@
-# EnvBoyX32
+# EnvBoyX
 
 Arduino environment monitor Unified version of Envboy and Envboy MQTT
 
@@ -7,7 +7,7 @@ Arduino environment monitor Unified version of Envboy and Envboy MQTT
 ## target boards
 
 * ESP32 DevKitC
-* (not well tested) ESP8266 boards
+* (not well tested, compile only) ESP8266 boards
 
 ## pin assign
 
@@ -43,7 +43,7 @@ All sensors are optional.
 
 * upload (use `pio run` )
 * boot (as setup mode)
-* connect to ESP32 wifi (SSID ebx*******, no password)
+* connect to ESP wifi (SSID ebx*******, no password)
 * access http://192.168.4.1/ and setting.
 * reset
 * boot (as normal mode)
@@ -57,7 +57,8 @@ if SSD1306 is connected, sensor value are displayed in SSD1306
 
 ### http server
 
-endpoints
-
-* / : returns sensor value as JSON.
-* /ping : returns pong.
+| ENDPOINT      | description                |
+| ------------- | -------------------------- |
+| /             | returns sensor value as JSON.|
+| /ping         | returns pong. |
+| /powersave    | NOT YET. setting display on/off |
