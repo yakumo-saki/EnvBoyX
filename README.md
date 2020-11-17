@@ -7,12 +7,32 @@ Arduino environment monitor Unified version of Envboy and Envboy MQTT
 ## target boards
 
 * ESP32 DevKitC
+* (not well tested) ESP8266 boards
+
+## pin assign
+
+### I2C
+
+Defined at `global.cpp`
+
+| TYPE  | SDA | SCL  |
+| ----- | ----| ---- |
+|ESP32  |  21 | 22   |
+|ESP8266|   5 |  4   |
+
+### MH-Z19 Serial(UART)
+
+Defined at `mhz19_uart.cpp`
+
+| TYPE  | Rx  | Tx  |
+| ----- | ----| ---- |
+|ESP32  |  16 | 17   |
+|ESP8266|  14 |  0   |
 
 ## sensors
 
 All sensors are optional.
 
-* ESP8266
 * BME280
 * SSD1306
 * TSL2561
@@ -41,17 +61,3 @@ endpoints
 
 * / : returns sensor value as JSON.
 * /ping : returns pong.
-
-# old version
-
-these are only for old version
-
-## how to use
-
-* write sketch
-* boot (as setup mode)
-* connect to wifi (SSID is eb********)
-* access http://192.168.4.1/ and setting.
-* reset
-* boot (as normal mode)
-* enjoy!

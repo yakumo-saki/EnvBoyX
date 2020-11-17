@@ -36,12 +36,20 @@ void mhz_setup_check_device_uart() {
   char myVersion[4];          
   mhz19.getVersion(myVersion);
 
+  String version = "";
+  for(byte i = 0; i < 4; i++)
+  {
+    version = version + String(myVersion[i]);
+    if(i == 1)
+      version = version + ".";    
+  }  
+
   mhzlog("Device Info ======================== ");
-  mhzlog("Version       : " + String(myVersion));
-  mhzlog("Range         : " + String(mhz19.getRange()));
-  mhzlog("Background CO2: " + String(mhz19.getBackgroundCO2()));
-  //  mhzlog("Temperature Cal: " + String(mhz19.getTempAdjustment()));
-  mhzlog("ABC Status    : " + String(mhz19.getABC()) + " " + String(mhz19.getABC() ? "ON" : "OFF"));
+  mhzlog("Version        : " + version);
+  mhzlog("Range          : " + String(mhz19.getRange()));
+  mhzlog("Background CO2 : " + String(mhz19.getBackgroundCO2()));
+  mhzlog("Temperature Cal: " + String(mhz19.getTempAdjustment()));
+  mhzlog("ABC Status     : " + String(mhz19.getABC()) + " " + String(mhz19.getABC() ? "ON" : "OFF"));
 }
 
 void mhz_setup_uart() {
@@ -62,7 +70,7 @@ void mhz_setup_uart() {
   // mhz19.setSpan(2000);                  
   // printErrorCode();
 
-  mhzlog("setAutoCalibration()");
+  mhzlog("setAutoCalibration() " + String(AUTO_BASELINE_CORRECTION));
   mhz19.autoCalibration(AUTO_BASELINE_CORRECTION);
   printErrorCode();
 
@@ -72,7 +80,7 @@ void mhz_setup_uart() {
     mhzlog("WARNING -------------------------- WARNING");
   }
 
-  // mhz_setup_check_device_uart();
+  mhz_setup_check_device_uart();
 
   mhzlog("initialized.");
  

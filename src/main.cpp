@@ -6,6 +6,7 @@
 #include "log.h"
 #include "global.h"
 #include "config.h"
+#include "i2c.h"
 #include "main_setup.h"
 #include "main_normal.h"
 
@@ -32,7 +33,8 @@ void setup()
 
     // Init I2C Serial
     sectionlog("Initializing I2C SDA=" + String(I2C_SDA) + " SCL=" + String(I2C_SCL));
-    bool ret = Wire.begin(I2C_SDA, I2C_SCL);
+
+    bool ret = init_i2c(I2C_SDA, I2C_SCL);
     if (!ret) {
       mainlog("error initializing I2C");
     }

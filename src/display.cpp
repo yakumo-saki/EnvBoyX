@@ -16,10 +16,13 @@ extern int lastPpm;
 
 const byte DISP_ADDR = 0x3c;
 
-const int WAIT_PER_BAR = 60;
+const int WAIT_PER_BAR = 30;
 
 //SSD1306 display(0x3c, 5, 4);
 SSD1306 display(DISP_ADDR, I2C_SDA, I2C_SCL);
+
+// 右下のver表示を点滅させる為のフラグ
+bool blink_ver = true;
 
 // 画面反転がいるかどうか。Envboy 3までは true。 3.5からは不要
 bool needFlip = false;
@@ -82,8 +85,6 @@ void disp_setup_startup_screen(String ipAddr) {
   display.setFont(ArialMT_Plain_10);
   display.drawString(0, 52, ssid);
   display.display();
-
-  delay(1000);  
 }
 
 void disp_wifi_info(String ip, String mDNS) {
@@ -108,7 +109,7 @@ void disp_wifi_info(String ip, String mDNS) {
   display.drawString(0, 48, "Starting up...");
   display.display();
 
-  delay(1000);
+  delay(300);
    
 }
 
@@ -214,7 +215,14 @@ void disp_sensor_value(String ip, String mdns) {
 
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(ArialMT_Plain_10);
-  display.drawString(127, 54, ver); 
+  display.drawString(127, 54, ver);
+
+  if (blink_ver) {
+    display.setTextAlignment(TEXT_ALIGN_RIGHT);
+    display.setFont(ArialMT_Plain_10);
+    display.drawString(49, 0, "*");
+  }
+  blink_ver = !blink_ver;
   
   display.display();
 

@@ -253,6 +253,6 @@ void loop_normal() {
     disp_sensor_value(WiFi.localIP().toString(), mDNS);
     http_loop_normal();
     sectionlog("Wait for Next tick.");
-    delay(1500);
+    delay(750);
   }
 }
