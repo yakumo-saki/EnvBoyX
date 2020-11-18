@@ -62,3 +62,21 @@ if SSD1306 is connected, sensor value are displayed in SSD1306
 | /             | returns sensor value as JSON.|
 | /ping         | returns pong. |
 | /powersave    | NOT YET. setting display on/off |
+
+## History
+
+### v2.3
+
+Unifing EnvBoyX (ESP8266) and EnvBoyX32 (ESP32) again.
+
+### v2.2
+
+missing version due to bug.
+
+### v2.1
+
+Split EnvBoyX (8266) and EnvBoyX32 (ESP32)
+
+### v2.0
+
+Move to Platform.IO from Arduino IDE 
