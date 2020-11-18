@@ -8,6 +8,7 @@
 #include "config.h"
 
 #include "http_normal.h"
+#include "display.h"
 
 #include <ESP8266WebServer.h>
 extern ESP8266WebServer server;
@@ -27,10 +28,18 @@ void http_handle_ping() {
   server.send(200, "text/html", message);
 }
 
+void http_handle_brightness() {
+  String value = server.arg("value");
+  int brightness = value.toInt();
+  String msg = disp_set_brightness(brightness);
+  server.send(200, "text/plain", "OK\n" + msg);
+}
+
 void http_setup_normal() {
   httplog("HTTP web server initializing");
   server.on ( "/ping", HTTP_GET, http_handle_ping);
   server.on ( "/", HTTP_GET, http_handle_data );
+  server.on ( "/brightness", HTTP_GET, http_handle_brightness );
   server.onNotFound ( http_handle_not_found );
   server.begin(); 
   httplog("HTTP web server initialized");

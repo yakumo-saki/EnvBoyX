@@ -258,3 +258,25 @@ void disp_power_off() {
 
   display.displayOff();
 }
+
+String disp_set_brightness(int brightness) {
+  const String PWR_OFF = "Display Power-Off";
+  const String MAX = "Set Display brightness MAX(255)";
+  const String VALUE = "Set Display brightness (0-255) = ";
+
+  if (brightness == 0) {
+    displog(PWR_OFF);
+    display.displayOff();
+    return PWR_OFF;
+  } else if (brightness == 255) {
+    display.displayOn();
+    display.setContrast(255, 255, 255);
+    return MAX;
+  } else {
+    String msg = VALUE + String(brightness);
+    displog(msg);
+    display.displayOn();
+    display.setBrightness(brightness);
+    return msg;
+  }
+}

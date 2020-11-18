@@ -143,10 +143,13 @@ void make_sure_wifi_connected() {
   delay(300);
 
   while (WiFi.status() != WL_CONNECTED) {
-    mainlog("Waiting for wifi connection");
-    delay(1000);
+    delay(100);
     retryCount++;
+
     if (retryCount % 10 == 0) {
+      mainlog("Waiting for wifi connection");
+    }
+    if (retryCount % 100 == 0) {
       delay(100);
       WiFi.disconnect();   
       delay(100);
@@ -154,7 +157,7 @@ void make_sure_wifi_connected() {
       mainlog("RETRY connecting WiFi from start");
     }
 
-    if (retryCount > 38) {
+    if (retryCount > 300) {
       mainlog("WiFi connect failure. restarting");
       ESP.deepSleep(REBOOT_NOW);
       delay(10000);

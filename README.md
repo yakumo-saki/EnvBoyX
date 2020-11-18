@@ -57,13 +57,19 @@ if SSD1306 is connected, sensor value are displayed in SSD1306
 
 ### http server
 
+All endpoints are using GET Method
+
 | ENDPOINT      | description                |
 | ------------- | -------------------------- |
 | /             | returns sensor value as JSON.|
 | /ping         | returns pong. |
-| /powersave    | NOT YET. setting display on/off |
+| /brightness?value=<brightness> | set display brightness (0-255) 0 means OFF |
 
 ## History
+
+### v2.4
+
+Add /brightness endpoint.
 
 ### v2.3
 
