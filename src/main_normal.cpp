@@ -121,6 +121,9 @@ void read_data() {
   
 }
 
+/**
+ * WiFi接続する
+ */
 void make_sure_wifi_connected() {
   
   WiFi.softAPdisconnect(true);
@@ -132,18 +135,23 @@ void make_sure_wifi_connected() {
 
   mainlog("WiFi is down or not initialized. connecting");
   WiFi.disconnect();
+  delay(100);
 
   int retryCount = 0;
+  mainlog("ssid " + ssid + " pass " + password);
   WiFi.begin(ssid.c_str(), password.c_str());
+  delay(300);
+
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    mainlog("Waiting for wifi connection");
+    delay(1000);
     retryCount++;
     if (retryCount % 10 == 0) {
       delay(100);
       WiFi.disconnect();   
       delay(100);
       WiFi.begin(ssid.c_str(), password.c_str());
-      mainlog("Still reconnecting WiFi");
+      mainlog("RETRY connecting WiFi from start");
     }
 
     if (retryCount > 38) {
@@ -184,6 +192,7 @@ void setup_normal() {
 
   // start WiFi
   sectionlog("Connecting WiFi.");
+  disp_wifi_starting(1);
   make_sure_wifi_connected();
   disp_wifi_info(WiFi.localIP().toString(), mDNS);
 

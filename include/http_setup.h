@@ -22,4 +22,4 @@ void setup_http_setup();
 /**
  * ループ
  */
-void http_loop_setup();
+void loop_http_setup();

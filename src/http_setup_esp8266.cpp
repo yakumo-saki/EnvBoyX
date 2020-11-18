@@ -27,6 +27,17 @@ void handle_get_root() {
  */
 void handle_post_root() {
   
+  ssid = server.arg("ssid");
+  password = server.arg("pass");
+  mDNS = server.arg("mdnsname");
+  opMode = server.arg("opmode");
+  use_mhz19b = server.arg("use_mhz19b");
+  mhz19b_pwmpin = server.arg("mhz19b_pwmpin");
+  mqttBroker = server.arg("mqttbroker");
+  mqttName = server.arg("mqttname");
+
+  httplog(ssid);
+
   String html = http_setup_post_root_content();
 
   server.send(200, "text/html", html);

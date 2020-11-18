@@ -87,6 +87,31 @@ void disp_setup_startup_screen(String ipAddr) {
   display.display();
 }
 
+/**
+ * WiFi接続中表示
+ * @param wait_print_row Please wait を何行目に表示するか(0,1,2)
+ */
+void disp_wifi_starting(int wait_print_row) {
+
+  if (!has_ssd1306()) return;
+
+  int row = (wait_print_row % 3) + 1;
+
+  display.init();
+ 
+  if (needFlip) {
+    display.flipScreenVertically();
+  }
+  display.clear();
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_10);
+  display.setFont(ArialMT_Plain_16);
+  display.drawString(0, 0, "WiFi Connecting");
+  display.drawString(0, 16*row, "Please wait...");
+
+  display.display();
+}
+
 void disp_wifi_info(String ip, String mDNS) {
 
   if (!has_ssd1306()) return;
