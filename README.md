@@ -69,6 +69,10 @@ All endpoints are using GET Method
 
 ## History
 
+### v2.5
+
+Add /display endpoint.
+
 ### v2.4
 
 Add /brightness endpoint.
