@@ -42,11 +42,30 @@ void http_handle_brightness(AsyncWebServerRequest *request) {
   request->send ( 200, F("text/plain"), message );
 }
 
+void http_handle_power(AsyncWebServerRequest *request) {
+  if (!request->hasParam("value")) {
+    request->send ( 400, F("text/plain"), "no value param");
+    return;
+  }
+  
+  int power = request->getParam("value")->value().toInt();
+
+  if (power == 1) {
+    disp_set_power(true);
+  } else {
+    disp_set_power(false);
+  }
+
+  String message = "OK";
+  request->send ( 200, F("text/plain"), message );
+}
+
 void http_setup_normal() {
   httplog("HTTP web server initializing");
   server.on ( "/ping", HTTP_GET, http_handle_ping);
   server.on ( "/", HTTP_GET, http_handle_data );
-  server.on ( "/brightness", HTTP_GET, http_handle_data );
+  server.on ( "/brightness", HTTP_GET, http_handle_brightness );
+  server.on ( "/display", HTTP_GET, http_handle_brightness );
   server.onNotFound ( http_handle_not_found );
   server.begin(); 
   httplog("HTTP web server initialized");

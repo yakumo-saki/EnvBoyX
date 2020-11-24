@@ -65,6 +65,7 @@ All endpoints are using GET Method
 | /             | returns sensor value as JSON.|
 | /ping         | returns pong. |
 | /brightness?value=<brightness> | set display brightness (0-255) 0 means OFF |
+| /display?value=<1 or 0> | set display power (1 = ON / 0 = OFF) |
 
 ## History
 

@@ -13,3 +13,9 @@ void disp_power_off();
  * @return 応答メッセージ
  */
 String disp_set_brightness(int brightness);
+
+/**
+ * 液晶のON/OFFを設定する
+ * @param poweron true = ONにする false = offにする
+ */
+void disp_set_power(bool poweron);

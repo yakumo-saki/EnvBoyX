@@ -280,3 +280,12 @@ String disp_set_brightness(int brightness) {
     return msg;
   }
 }
+
+void disp_set_power(bool poweron) {
+  if (!poweron) {
+    display.displayOff();
+  } else { 
+    display.displayOn();
+  }
+
+}
