@@ -69,6 +69,10 @@ All endpoints are using GET Method
 
 ## History
 
+### v2.6 (WIP)
+
+Fix mDNS not working
+
 ### v2.5
 
 Add /display endpoint.
