@@ -3,8 +3,8 @@
 #include "log.h"
 
 #include "global.h"
-#include "mhz19_pwm.h"
-#include "mhz19_uart.h"
+#include "sensors/mhz19_pwm.h"
+#include "sensors/mhz19_uart.h"
 
 // ■ 動作モード ■
 bool USE_PWM = true;

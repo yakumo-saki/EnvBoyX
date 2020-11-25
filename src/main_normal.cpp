@@ -1,36 +1,22 @@
 #include <Arduino.h>
-#ifdef ESP32
-#include <WiFi.h>
-#elif defined(ESP8266)
-#include <ESP8266WiFi.h>
-#endif
 
 #include <MQTTClient.h>
 
 #include "log.h"
 #include "global.h"
 #include "display.h"
-#include "bme280.h"
-#include "adt7410.h"
-#include "am2320.h"
-#include "lps22hb.h"
-#include "mhz19.h"
-#include "tsl2561.h"
+#include "sensors/bme280.h"
+#include "sensors/adt7410.h"
+#include "sensors/am2320.h"
+#include "sensors/lps22hb.h"
+#include "sensors/mhz19.h"
+#include "sensors/tsl2561.h"
 #include "http_normal.h"
 #include "config.h"
-
-// test purpose only. false for production
-bool NO_DEEP_SLEEP = false;
+#include "wifi.h"
 
 WiFiClient net;
 MQTTClient mqttClient;
-
-// deepsleep duration (us)
-const int REBOOT_NOW = 1 * 1000 * 1000;         // us
-const int NO_DEEP_SLEEP_DURATION = 10 * 1000;   // ms
-const int NORMAL_DURATION = 180 * 1000 * 1000;   // us
-
-int sensorPin = A0;    // select the input pin for the potentiometer
 
 int counter;
 
@@ -121,53 +107,6 @@ void read_data() {
   
 }
 
-/**
- * WiFi接続する
- */
-void make_sure_wifi_connected() {
-  
-  WiFi.softAPdisconnect(true);
-  WiFi.enableAP(false);
-
-  if (WiFi.status() == WL_CONNECTED) {
-    return;
-  }
-
-  mainlog("WiFi is down or not initialized. connecting");
-  WiFi.disconnect();
-  delay(100);
-
-  int retryCount = 0;
-  mainlog("ssid " + ssid + " pass " + password);
-  WiFi.begin(ssid.c_str(), password.c_str());
-  delay(300);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
-    retryCount++;
-
-    if (retryCount % 10 == 0) {
-      mainlog("Waiting for wifi connection");
-    }
-    if (retryCount % 100 == 0) {
-      delay(100);
-      WiFi.disconnect();   
-      delay(100);
-      WiFi.begin(ssid.c_str(), password.c_str());
-      mainlog("RETRY connecting WiFi from start");
-    }
-
-    if (retryCount > 300) {
-      mainlog("WiFi connect failure. restarting");
-      ESP.deepSleep(REBOOT_NOW);
-      delay(10000);
-    }
-  }
-
-  mainlog("WiFi (re) connected.");
-  mainlog("IP address: " + WiFi.localIP().toString());
-}
-
 //
 // SETUP
 //
@@ -197,7 +136,7 @@ void setup_normal() {
   sectionlog("Connecting WiFi.");
   disp_wifi_starting(1);
   make_sure_wifi_connected();
-  disp_wifi_info(WiFi.localIP().toString(), mDNS);
+  disp_wifi_info(get_wifi_ip_addr(), mDNS);
 
   sectionlog("Starting HTTP server.");  
   http_setup_normal();
@@ -247,22 +186,22 @@ void loop_normal() {
 
   // sleep to next.
   if (opMode == OPMODE_MQTT) {
-    disp_sensor_value(WiFi.localIP().toString(), mDNS);
+    disp_sensor_value(get_wifi_ip_addr(), mDNS);
     delay(1000);
     disp_power_off();
   
-    if (NO_DEEP_SLEEP) {
-      mainlog("!!! NOT deep sleep because of NO_DEEP_SLEEP is set !!!");
-      delay(NO_DEEP_SLEEP_DURATION);
-      mainlog("!!! Going to next loop                             !!!");
-    } else {
-      delay(500);
-      mainlog("*** Goto deep sleep ***");
-      ESP.deepSleep(NORMAL_DURATION);
-      delay(10000);
-    }
+    // if (NO_DEEP_SLEEP) {
+    //   mainlog("!!! NOT deep sleep because of NO_DEEP_SLEEP is set !!!");
+    //   delay(NO_DEEP_SLEEP_DURATION);
+    //   mainlog("!!! Going to next loop                             !!!");
+    // } else {
+    //   delay(500);
+    //   mainlog("*** Goto deep sleep ***");
+    //   ESP.deepSleep(NORMAL_DURATION);
+    //   delay(10000);
+    // }
   } else if (opMode == OPMODE_DISPLAY) {  
-    disp_sensor_value(WiFi.localIP().toString(), mDNS);
+    disp_sensor_value(get_wifi_ip_addr(), mDNS);
     http_loop_normal();
     sectionlog("Wait for Next tick.");
     delay(750);

@@ -2,7 +2,7 @@
 
 #include "log.h"
 #include "global.h"
-#include "mhz19_main.h"
+#include "sensors/mhz19_main.h"
 
 // PWM
 int CO2_IN = -1;

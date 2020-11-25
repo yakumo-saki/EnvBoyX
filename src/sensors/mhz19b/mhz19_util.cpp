@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "mhz19_main.h"
+#include "sensors/mhz19_main.h"
 
 String mhz19_code_to_msg(byte error_code) {
 

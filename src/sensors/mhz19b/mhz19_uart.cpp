@@ -3,8 +3,8 @@
 
 #include "log.h"
 #include "global.h"
-#include "mhz19_main.h"
-#include "mhz19_util.h"
+#include "sensors/mhz19_main.h"
+#include "sensors/mhz19_util.h"
 
 // 400ppmの校正(ABC)を行う。これをするには、20分以上外気に晒し続ける必要がある。
 // 終了後は false に戻す。
