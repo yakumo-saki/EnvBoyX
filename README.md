@@ -1,8 +1,7 @@
 # EnvBoyX
 
 Arduino environment monitor Unified version of Envboy and Envboy MQTT
-
-Current release is v2.3 , see v2.3 tag.
+To obtain release version, see vX.Y tag. (ex v2.6)
 # spec
 
 ## target boards
