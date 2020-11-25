@@ -138,6 +138,9 @@ void setup_normal() {
   make_sure_wifi_connected();
   disp_wifi_info(get_wifi_ip_addr(), mDNS);
 
+  sectionlog("Starting mDNS server.");  
+  start_mdns(mDNS);
+
   sectionlog("Starting HTTP server.");  
   http_setup_normal();
 

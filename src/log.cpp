@@ -50,6 +50,10 @@ void displog(String msg) {
   real_log(msg, "DISPLAY");
 }
 
+void mdnslog(String msg) {
+  real_log(msg, "mDNS");
+}
+
 void sectionlog(String msg) {
   Serial.println("");
   real_log(msg, "========");

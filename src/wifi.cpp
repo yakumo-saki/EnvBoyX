@@ -1,8 +1,17 @@
 #include <Arduino.h>
+
+// WiFi
 #ifdef ESP32
 #include <WiFi.h>
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
+#endif
+
+// mDNS
+#ifdef ESP32
+#include <ESPmDNS.h>
+#elif defined(ESP8266)
+#include <ESP8266mDNS.h>
 #endif
 
 #include "log.h"
@@ -108,4 +117,17 @@ void start_wifi_access_point() {
  */
 String get_wifi_ip_addr() {
   return WiFi.localIP().toString();
+}
+
+
+bool start_mdns(String name) {
+  char n[name.length() + 1];
+  name.toCharArray(n, sizeof n);
+
+  if (!MDNS.begin(n)) {
+    mdnslog("Error setting up MDNS responder!");
+    return false;
+  }
+  mdnslog("mDNS responder started");
+  return true;
 }
