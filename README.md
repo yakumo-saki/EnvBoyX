@@ -69,7 +69,11 @@ All endpoints are using GET Method
 
 ## History
 
-### v2.6 (WIP)
+### v2.7 (WIP)
+
+Refactoring
+
+### v2.6
 
 Fix mDNS not working
 
