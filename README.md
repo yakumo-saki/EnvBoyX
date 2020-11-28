@@ -6,8 +6,20 @@ To obtain release version, see vX.Y tag. (ex v2.6)
 
 ## target boards
 
-* ESP32 DevKitC
-* (not well tested, compile only) ESP8266 boards
+### `ESP32 DevKitC`
+
+Main target for now.
+with SSD1306 I2C OLED (128x64px)
+
+### `LilyGo TTGO T-DISPLAY`
+
+ESP32 with ST7789V SPI 1.14 inch 160x128px display.
+Display not yet supported. 
+
+### ESP8266 boards
+
+Sub target less tested, but maybe working.
+with SSD1306 I2C OLED (128x64px)
 
 ## pin assign
 
