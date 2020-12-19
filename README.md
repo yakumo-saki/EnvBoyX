@@ -78,6 +78,14 @@ All endpoints are using GET Method
 | /brightness?value=<brightness> | set display brightness (0-255) 0 means OFF |
 | /display?value=<1 or 0> | set display power (1 = ON / 0 = OFF) |
 
+## how to write 
+
+use esptools.py
+
+```
+esptool.py write_flash 0x1000 filename.bin
+```
+
 ## History
 
 ### v2.7
