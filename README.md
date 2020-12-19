@@ -80,9 +80,15 @@ All endpoints are using GET Method
 
 ## History
 
-### v2.7 (WIP)
+### v2.7
 
-Refactoring
+Display item change.
+
+* Delete alive indicator "*" after EnvBoyX string.
+* Add alive indicator. EnvBoyX's "X" character now blinks.
+* Delete prefix "IP:" before IP address
+* Add mDNS name display. IP/mDNS display switches 3 sec interval.
+* Abort TFT display implementation.
 
 ### v2.6
 
