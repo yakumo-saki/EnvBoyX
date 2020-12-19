@@ -80,11 +80,12 @@ All endpoints are using GET Method
 
 ## how to write 
 
-use esptools.py
+use esptools.py or PlatformIO IDE.
 
 ```
 esptool.py write_flash 0x1000 filename.bin
 ```
+Get binary from releases page.(not every version have binary file, sorry)
 
 ## History
 
