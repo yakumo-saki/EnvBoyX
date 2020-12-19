@@ -22,7 +22,8 @@ const int WAIT_PER_BAR = 30;
 SSD1306 display(DISP_ADDR, I2C_SDA, I2C_SCL);
 
 // 右下のver表示を点滅させる為のフラグ
-bool blink_ver = true;
+// 0~5 奇数 偶数= EnvBoyXのXの点滅 0,1,2 = IP表示 3,4,5 = mDNS名表示
+int disp_switch = 0;  
 
 // 画面反転がいるかどうか。Envboy 3までは true。 3.5からは不要
 bool needFlip = false;
@@ -206,24 +207,16 @@ void disp_wait_for_reconfig() {
 
 }
 
+/**
+ * 通常画面
+ */
 void disp_sensor_value(String ip, String mdns) {
 
   if (!has_ssd1306()) return;
 
   display.clear();
 
-  // ヘッダ1行目
-  display.setTextAlignment(TEXT_ALIGN_RIGHT);
-  display.setFont(ArialMT_Plain_10);
-  display.drawString(127, 0, "IP:" + ip); 
-  display.setTextAlignment(TEXT_ALIGN_LEFT);
-  display.drawString(0, 0, product); 
-
-  // ヘッダ2行目
-  // display.drawString(127, 9, mDNS); 
-
-  // データ ヘッダ2行時のY座標19,34,49
-  display.setFont(ArialMT_Plain_16);
+  // CO2の値がエラーであれば表示を変える
   String ppm = String(lastPpm);
   if (lastPpm < 0) {
     ppm = "****";  // 計測エラー
@@ -233,21 +226,41 @@ void disp_sensor_value(String ip, String mdns) {
     ppm = String(lastPpm);       // OK
   }
 
+  // 測定値表示部分
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_16);
   display.drawString(0, 12, "  " + String(lastTemp, 2) + "c" + "    " + String(lastHumidity, 2) + "%" ); 
   display.drawString(0, 29, "" + String(lastPressure, 1) + "hpa " + String(lastLuxFull, 0) + "lx"); 
   display.drawString(0, 47, String("CO2:") + ppm + "ppm" ); 
   // "L:" + String(lastLuxFull, 0) + " " + "Ir:" + String(lastLuxIr, 0)
 
+  // 左下、バージョン表示
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(ArialMT_Plain_10);
   display.drawString(127, 54, ver);
 
-  if (blink_ver) {
-    display.setTextAlignment(TEXT_ALIGN_RIGHT);
-    display.setFont(ArialMT_Plain_10);
-    display.drawString(49, 0, "*");
+  // 左上、EnvBoyX の表示
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_10);
+  if ((disp_switch % 2) == 0) {
+    display.drawString(0, 0, product); 
+  } else {
+    display.drawString(0, 0, product.substring(0, product.length() - 1)); 
   }
-  blink_ver = !blink_ver;
+  
+  // みぎ上、IPアドレス or mDNS名表示
+  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+  display.setFont(ArialMT_Plain_10);
+  if (disp_switch < 3) {
+    display.drawString(127, 0, ip); 
+  } else {
+    display.drawString(127, 0, mDNS); 
+  }
+
+  disp_switch++;
+  if (disp_switch > 5) {
+    disp_switch = 0;
+  }
   
   display.display();
 
