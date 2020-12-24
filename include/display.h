@@ -19,3 +19,5 @@ String disp_set_brightness(int brightness);
  * @param poweron true = ONにする false = offにする
  */
 void disp_set_power(bool poweron);
+
+void setup_display();

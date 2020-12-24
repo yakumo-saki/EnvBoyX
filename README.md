@@ -53,19 +53,34 @@ All sensors are optional.
 
 ## how to use
 
-* upload (use `pio run` )
+### first time
+
+* upload (use `pio run` or esptool.py etc)
 * boot (as setup mode)
-* connect to ESP wifi (SSID ebx*******, no password)
-* access http://192.168.4.1/ and setting.
-* reset
+* connect to ESP wifi (SSID ebx_******* (MAC adderess of your ESP), no password)
+* Open web browser and open http://192.168.4.1/ and setup.
+* reset(use hardware button or disconnect power plug)
 * boot (as normal mode)
 * enjoy!
 
+### change setting
+
+* Poweroff or reset on waiting for resetting screen.
+ 
+### version up
+
+* upload
+* boot (if config version changed, automatically start on setup mode.)
+
 ## functions
 
-### read sensor value and display
+### Display
 
 if SSD1306 is connected, sensor value are displayed in SSD1306
+
+(v3.0)
+ST7789 is supported. Activate on config screen.
+In setup mode, no output.
 
 ### http server
 
@@ -88,6 +103,10 @@ esptool.py write_flash 0x1000 filename.bin
 Get binary from releases page.(not every version have binary file, sorry)
 
 ## History
+
+### v3.0
+
+Add ST77 Support (T-Display)
 
 ### v2.7
 

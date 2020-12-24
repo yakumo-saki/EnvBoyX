@@ -114,6 +114,7 @@ void setup_normal() {
   
   read_config();
 
+  setup_display();
   disp_normal_startup_screen(product_long);
   
   // setupモードに入りやすくするための処理

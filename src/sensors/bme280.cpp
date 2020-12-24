@@ -36,11 +36,9 @@ bool has_bme() {
 
 void bme_setup() {
 
-  bmelog("Initialize");
-
   if (!has_bme()) {
     use_bme = false;
-    bmelog("Module not found. disable.");
+    bmelog("Module not found. BME280 disable.");
     return;
   }
  
