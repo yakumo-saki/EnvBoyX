@@ -2,12 +2,16 @@
 
 #include "global.h"
 #include "log.h"
+#include "structs.h"
 
 #include <SSD1306.h>
 #include <WiFiClient.h> 
 
+#include "display_formatter.h"
 #include "display_ssd1306.h"
 #include "display_st7789.h"
+
+disp_values_t disp_values;
 
 /** 右下のver表示を点滅させる為のフラグ
  * 0~5 奇数 偶数= EnvBoyXのXの点滅 0,1,2 = IP表示 3,4,5 = mDNS名表示
@@ -113,11 +117,17 @@ void disp_all_initialize_complete() {
  * 通常画面
  */
 void disp_sensor_value(String ip, String mdns) {
+	
+	disp_values_t last_values = disp_values;
+	disp_values = create_disp_values();
+	disp_values.ip = ip;
+	disp_values.mDNS = mdns;
+	
 	if (use_ssd1306()) {
 		disp_ssd1306_sensor_value(ip, mdns);
 	}
 	if (use_st7789()) {
-		disp_st7789_sensor_value(ip, mdns);
+		disp_st7789_sensor_value(disp_values, last_values);
 	}
 
 }
