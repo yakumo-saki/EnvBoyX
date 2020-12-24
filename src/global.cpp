@@ -5,7 +5,7 @@
 // --------------------------------------------------------------------
 String product_short = "ebx";
 String product = "EnvBoyX";
-String ver = "2.7";
+String ver = "3.0";
 String product_long = product + " Ver." + ver;
 
 // --------------------------------------------------------------------

@@ -20,7 +20,7 @@ void setup()
   Serial.println(""); // 1行目にゴミが出るので改行しないと読めない
   Serial.println("");
   Serial.println("Starting " + product);
-  Serial.println(""); // 1行目にゴミが出るので改行しないと読めない
+  Serial.println(""); 
   Serial.println("");
 
   sectionlog("Initializing LittleFS.");

@@ -107,9 +107,9 @@ void read_data() {
   
 }
 
-//
-// SETUP
-//
+/**
+ * 通常起動モードのSETUP
+ */
 void setup_normal() {
   
   read_config();
@@ -157,11 +157,14 @@ void setup_normal() {
   }
   sectionlog("Initializing sensors done.");
 
+  // 初期化終了時に画面表示をどうにかできるフック
+  disp_all_initialize_complete();
+
 }
 
-//
-// LOOP
-//
+/**
+ * LOOP
+ */
 void loop_normal() {
 
   mainlog("loop start");
@@ -208,6 +211,6 @@ void loop_normal() {
     disp_sensor_value(get_wifi_ip_addr(), mDNS);
     http_loop_normal();
     sectionlog("Wait for Next tick.");
-    delay(750);
+    delay(1000);
   }
 }

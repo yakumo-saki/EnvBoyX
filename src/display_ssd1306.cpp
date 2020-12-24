@@ -195,6 +195,11 @@ void disp_ssd1306_wait_for_reconfig() {
 
 }
 
+void disp_ssd1306_all_initialize_complete() {
+  // do nothing. ssd1306 code is everytime rewrite entire screen.
+}
+
+
 /**
  * 通常画面
  */

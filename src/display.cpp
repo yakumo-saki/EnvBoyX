@@ -100,6 +100,15 @@ void disp_wait_for_reconfig() {
 	}
 }
 
+void disp_all_initialize_complete() {
+	if (use_ssd1306()) {
+		disp_ssd1306_all_initialize_complete();
+	}
+	if (use_st7789()) {
+		disp_st7789_all_initialize_complete();
+	}
+}
+
 /**
  * 通常画面
  */
