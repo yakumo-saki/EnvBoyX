@@ -96,11 +96,11 @@ void disp_wait_for_reconfig() {
 	// TODO 併用すると待ち時間が二倍になるので構造変更必要
 	// ループをこっちに持ってきてバーをn本表示する的な構造に。
 
-	if (use_ssd1306()) {
-		disp_ssd1306_wait_for_reconfig();
-	}
 	if (use_st7789()) {
 		disp_st7789_wait_for_reconfig();
+	}
+	if (use_ssd1306()) {
+		disp_ssd1306_wait_for_reconfig();
 	}
 }
 

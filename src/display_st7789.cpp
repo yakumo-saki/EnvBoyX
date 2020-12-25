@@ -28,14 +28,17 @@ const int HEAD_WIDTH = 32;
 const int LEFT_HEAD_X = 0;
 const int RIGHT_HEAD_X = 124;
 
+const int LEFT_VAL_X = LEFT_HEAD_X + HEAD_WIDTH;
+const int RIGHT_VAL_X = RIGHT_HEAD_X + HEAD_WIDTH;
+
+const int VALUE_WIDTH = RIGHT_HEAD_X - LEFT_HEAD_X - HEAD_WIDTH;
+
 const int ROW_HEIGHT = 27;
 const int ROW1_Y = 26;
 const int ROW2_Y = ROW1_Y + ROW_HEIGHT;
 const int ROW3_Y = ROW2_Y + ROW_HEIGHT;
 const int ROW4_Y = ROW3_Y + ROW_HEIGHT;
 
-const int LEFT_VAL_X = LEFT_HEAD_X + HEAD_WIDTH;
-const int RIGHT_VAL_X = RIGHT_HEAD_X + HEAD_WIDTH;
 
 /**
  * 起動時の画面表示（共通）
@@ -252,12 +255,20 @@ void _disp_header(String ip, String mDNS) {
 	// Logo
 	tft.setTextDatum(TL_DATUM);
 
-	tft.drawString(product.substring(0, product.length() - 1), 0, 5, SMALL_FONT);
+  // EnvBoy
+  tft.setTextColor(TFT_DARKGREY);
 	tft.drawString(product.substring(0, product.length() - 1), 1, 6, SMALL_FONT);
+  tft.setTextColor(TFT_WHITE);
+	tft.drawString(product.substring(0, product.length() - 1), 0, 5, SMALL_FONT);
 
-	tft.drawString("X", 49, 0, DEFAULT_FONT);
+  // X 影→本体の順で書かないと重なった部分が上書きされるのに注意
+  tft.setTextColor(TFT_DARKGREY);
 	tft.drawString("X", 53, 0, DEFAULT_FONT);
+  tft.setTextColor(TFT_WHITE);
+	tft.drawString("X", 49, 0, DEFAULT_FONT);
 
+  // version 
+  tft.setTextColor(TFT_WHITE);
 	tft.drawString(ver, 70, 0, XSMALL_FONT);
 
 	tft.setTextSize(1);
@@ -292,6 +303,32 @@ void disp_st7789_power_off() {
 }
 
 /**
+ * @param val 値
+ * @param erase true => 黒文字で書く（要するに消す） false => 普通に書く
+ * eraseは一応機能するが
+ */
+void _disp_sensor_value(disp_values_t val) {
+
+	tft.setTextColor(TFT_WHITE, TFT_BLACK);
+	tft.setTextSize(1);
+
+	// Row 1
+  tft.setTextPadding(VALUE_WIDTH);
+	tft.drawString(val.temperature, LEFT_VAL_X, ROW1_Y, DEFAULT_FONT);
+
+	tft.drawString(val.lux, RIGHT_VAL_X, ROW1_Y, DEFAULT_FONT);
+
+	// Row 2
+	tft.drawString(val.humidity, LEFT_VAL_X, ROW2_Y, DEFAULT_FONT);
+
+	// Row 3
+	tft.drawString(val.pressure, LEFT_VAL_X, ROW3_Y, DEFAULT_FONT);
+
+	// Row 4
+	tft.drawString(val.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, DEFAULT_FONT);  
+}
+
+/**
  * メイン画面に移る前の初期化
  */
 void disp_st7789_all_initialize_complete(String ip, String mdns) {
@@ -310,47 +347,13 @@ void disp_st7789_sensor_value(disp_values_t new_values, disp_values_t last_value
 
 	// setTextDatum( XY_DATUM: X=Top,Middle,Bottom / Y=Left,Right,Center)
 
-	displog("new " + new_values.temperature + " old " + last_values.temperature);
+	// tft.startWrite();
 
-	tft.startWrite();
+  _disp_sensor_value(new_values);
 
-	tft.setTextColor(TFT_WHITE);
-
-	// Logo
-	tft.setTextDatum(TL_DATUM);
-
-	tft.drawString(product.substring(0, product.length() - 1), 0, 5, SMALL_FONT);
-	tft.drawString(product.substring(0, product.length() - 1), 1, 6, SMALL_FONT);
-
-	tft.drawString("X", 49, 0, DEFAULT_FONT);
-	tft.drawString("X", 53, 0, DEFAULT_FONT);
-
-	tft.drawString(ver, 70, 0, XSMALL_FONT);
-
-	tft.setTextSize(1);
-
-	// Row 1
-	tft.setTextColor(TFT_WHITE);
-	tft.drawString(new_values.temperature, LEFT_VAL_X, ROW1_Y, DEFAULT_FONT);
-
-	tft.drawString(new_values.lux, RIGHT_VAL_X, ROW1_Y, DEFAULT_FONT);
-
-	// Row 2
-	tft.setTextColor(TFT_WHITE);
-	tft.drawString(new_values.humidity, LEFT_VAL_X, ROW2_Y, DEFAULT_FONT);
-
-	// Row 3
-	tft.setTextColor(TFT_WHITE);
-	tft.drawString(new_values.pressure, LEFT_VAL_X, ROW3_Y, DEFAULT_FONT);
-
-	// Row 4
-	tft.setTextColor(TFT_WHITE);
-	tft.drawString(new_values.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, DEFAULT_FONT);
-
-	tft.endWrite();
+	// tft.endWrite();
 
 }
-
 
 String disp_st7789_set_brightness(int brightness) {
   const String PWR_OFF = "Display Power-Off";
