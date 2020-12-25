@@ -16,10 +16,10 @@ bool isNormal = false;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println(""); // 1行目にゴミが出るので改行しないと読めない
   Serial.println("");
-  Serial.println("Starting " + product);
+  Serial.println("Starting " + product_long);
   Serial.println(""); 
   Serial.println("");
 

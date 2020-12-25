@@ -65,7 +65,7 @@ void make_sure_wifi_connected() {
 
     mainlog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
 
-    delay(100);
+    delay(300);
     retryCount++;
 
     if (retryCount % 10 == 0) {

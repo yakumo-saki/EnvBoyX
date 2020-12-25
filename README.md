@@ -36,10 +36,10 @@ Defined at `global.cpp`
 
 Defined at `mhz19_uart.cpp`
 
-| TYPE  | Rx  | Tx  |
-| ----- | ----| ---- |
-|ESP32  |  16 | 17   |
-|ESP8266|  14 |  0   |
+| TYPE  | Rx  | Tx   | note             |
+| ----- | ----| ---- | ---------------- |
+|ESP32  |  16 | 17   | HardwareSerial 2 |
+|ESP8266|  14 |  0   | SoftwareSerial   |
 
 ## sensors
 
