@@ -243,27 +243,11 @@ void disp_st7789_wait_for_reconfig() {
 
 }
 
-void disp_st7789_all_initialize_complete() {
-	// clear entire screen. because of sensor value screen uses partial update
-	// to prevent screen flickering.
-	tft.startWrite();
-	tft.fillScreen(TFT_BLACK);
-	tft.endWrite();
-}
-
 /**
- * 通常画面
+ * ヘッダ部分のみを表示する（この部分は変更されない）
  */
-void disp_st7789_sensor_value(disp_values_t new_values, disp_values_t last_values) {
-
-	// setTextDatum( XY_DATUM: X=Top,Middle,Bottom / Y=Left,Right,Center)
-
-	displog("new " + new_values.temperature + " old " + last_values.temperature);
-
-	tft.startWrite();
-
-	tft.fillScreen(TFT_BLACK);
-	tft.setTextColor(TFT_WHITE);
+void _disp_header(String ip, String mDNS) {
+  tft.setTextColor(TFT_WHITE);
 
 	// Logo
 	tft.setTextDatum(TL_DATUM);
@@ -280,40 +264,93 @@ void disp_st7789_sensor_value(disp_values_t new_values, disp_values_t last_value
 
 	// Header
 	tft.setTextDatum(TR_DATUM);
-	tft.drawString(new_values.ip, 240, 0, XSMALL_FONT);
-	tft.drawString(new_values.mDNS, 240, 12, XSMALL_FONT);
+	tft.drawString(ip, 240, 0, XSMALL_FONT);
+	tft.drawString(mDNS, 240, 12, XSMALL_FONT);
 	tft.setTextDatum(TL_DATUM);
 
 	// Row 1
 	tft.setTextColor(TFT_WHITE);
 	tft.drawString("T:", LEFT_HEAD_X, ROW1_Y, DEFAULT_FONT);
-	tft.drawString(new_values.temperature, LEFT_VAL_X, ROW1_Y, DEFAULT_FONT);
 
 	tft.drawString("L:", RIGHT_HEAD_X, ROW1_Y, DEFAULT_FONT);
-	tft.drawString(new_values.lux, RIGHT_VAL_X, ROW1_Y, DEFAULT_FONT);
 
 	// Row 2
 	tft.setTextColor(TFT_WHITE);
 	tft.drawString("H:", LEFT_HEAD_X, ROW2_Y, DEFAULT_FONT);
-	tft.drawString(new_values.humidity, LEFT_VAL_X, ROW2_Y, DEFAULT_FONT);
 
 	// Row 3
 	tft.setTextColor(TFT_WHITE);
 	tft.drawString("P:", LEFT_HEAD_X, ROW3_Y, DEFAULT_FONT);
-	tft.drawString(new_values.pressure, LEFT_VAL_X, ROW3_Y, DEFAULT_FONT);
 
 	// Row 4
 	tft.setTextColor(TFT_WHITE);
 	tft.drawString("CO2:", LEFT_HEAD_X, ROW4_Y, DEFAULT_FONT);
+}
+
+void disp_st7789_power_off() {
+  // display.displayOff();
+}
+
+/**
+ * メイン画面に移る前の初期化
+ */
+void disp_st7789_all_initialize_complete(String ip, String mdns) {
+	// clear entire screen. because of sensor value screen uses partial update
+	// to prevent screen flickering.
+	tft.startWrite();
+	tft.fillScreen(TFT_BLACK);
+  _disp_header(ip, mdns);
+	tft.endWrite();
+}
+
+/**
+ * 通常画面
+ */
+void disp_st7789_sensor_value(disp_values_t new_values, disp_values_t last_values) {
+
+	// setTextDatum( XY_DATUM: X=Top,Middle,Bottom / Y=Left,Right,Center)
+
+	displog("new " + new_values.temperature + " old " + last_values.temperature);
+
+	tft.startWrite();
+
+	tft.setTextColor(TFT_WHITE);
+
+	// Logo
+	tft.setTextDatum(TL_DATUM);
+
+	tft.drawString(product.substring(0, product.length() - 1), 0, 5, SMALL_FONT);
+	tft.drawString(product.substring(0, product.length() - 1), 1, 6, SMALL_FONT);
+
+	tft.drawString("X", 49, 0, DEFAULT_FONT);
+	tft.drawString("X", 53, 0, DEFAULT_FONT);
+
+	tft.drawString(ver, 70, 0, XSMALL_FONT);
+
+	tft.setTextSize(1);
+
+	// Row 1
+	tft.setTextColor(TFT_WHITE);
+	tft.drawString(new_values.temperature, LEFT_VAL_X, ROW1_Y, DEFAULT_FONT);
+
+	tft.drawString(new_values.lux, RIGHT_VAL_X, ROW1_Y, DEFAULT_FONT);
+
+	// Row 2
+	tft.setTextColor(TFT_WHITE);
+	tft.drawString(new_values.humidity, LEFT_VAL_X, ROW2_Y, DEFAULT_FONT);
+
+	// Row 3
+	tft.setTextColor(TFT_WHITE);
+	tft.drawString(new_values.pressure, LEFT_VAL_X, ROW3_Y, DEFAULT_FONT);
+
+	// Row 4
+	tft.setTextColor(TFT_WHITE);
 	tft.drawString(new_values.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, DEFAULT_FONT);
 
 	tft.endWrite();
 
 }
 
-void disp_st7789_power_off() {
-  // display.displayOff();
-}
 
 String disp_st7789_set_brightness(int brightness) {
   const String PWR_OFF = "Display Power-Off";

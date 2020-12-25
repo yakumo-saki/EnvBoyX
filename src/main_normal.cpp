@@ -158,7 +158,7 @@ void setup_normal() {
   sectionlog("Initializing sensors done.");
 
   // 初期化終了時に画面表示をどうにかできるフック
-  disp_all_initialize_complete();
+  disp_all_initialize_complete(get_wifi_ip_addr(), mDNS);
 
 }
 

@@ -2,7 +2,6 @@
 
 #include <Arduino.h>
 
-#include "http.h"
 #include "log.h"
 #include "global.h"
 #include "config.h"

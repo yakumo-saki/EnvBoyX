@@ -6,7 +6,6 @@
 #include <ESP8266WiFi.h>
 #endif
 
-#include "http.h"
 #include "log.h"
 #include "display.h"
 #include "global.h"
