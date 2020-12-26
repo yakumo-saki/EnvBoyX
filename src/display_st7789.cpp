@@ -32,6 +32,7 @@ const int LEFT_VAL_X = LEFT_HEAD_X + HEAD_WIDTH;
 const int RIGHT_VAL_X = RIGHT_HEAD_X + HEAD_WIDTH;
 
 const int VALUE_WIDTH = RIGHT_HEAD_X - LEFT_HEAD_X - HEAD_WIDTH;
+const int VALUE_WIDTH_LONG = 180; // Pressure or CO2 ppm
 
 const int ROW_HEIGHT = 27;
 const int ROW1_Y = 26;
@@ -257,9 +258,9 @@ void _disp_header(String ip, String mDNS) {
 
   // EnvBoy
   tft.setTextColor(TFT_DARKGREY);
-	tft.drawString(product.substring(0, product.length() - 1), 1, 6, SMALL_FONT);
+	tft.drawString(product.substring(0, product.length() - 1), 3, 7, SMALL_FONT);
   tft.setTextColor(TFT_WHITE);
-	tft.drawString(product.substring(0, product.length() - 1), 0, 5, SMALL_FONT);
+	tft.drawString(product.substring(0, product.length() - 1), 2, 6, SMALL_FONT);
 
   // X 影→本体の順で書かないと重なった部分が上書きされるのに注意
   tft.setTextColor(TFT_DARKGREY);
@@ -282,7 +283,6 @@ void _disp_header(String ip, String mDNS) {
 	// Row 1
 	tft.setTextColor(TFT_WHITE);
 	tft.drawString("T:", LEFT_HEAD_X, ROW1_Y, DEFAULT_FONT);
-
 	tft.drawString("L:", RIGHT_HEAD_X, ROW1_Y, DEFAULT_FONT);
 
 	// Row 2
@@ -316,15 +316,19 @@ void _disp_sensor_value(disp_values_t val) {
   tft.setTextPadding(VALUE_WIDTH);
 	tft.drawString(val.temperature, LEFT_VAL_X, ROW1_Y, DEFAULT_FONT);
 
+  tft.setTextPadding(VALUE_WIDTH);
 	tft.drawString(val.lux, RIGHT_VAL_X, ROW1_Y, DEFAULT_FONT);
 
 	// Row 2
+  tft.setTextPadding(VALUE_WIDTH);
 	tft.drawString(val.humidity, LEFT_VAL_X, ROW2_Y, DEFAULT_FONT);
 
 	// Row 3
+  tft.setTextPadding(VALUE_WIDTH_LONG);
 	tft.drawString(val.pressure, LEFT_VAL_X, ROW3_Y, DEFAULT_FONT);
 
 	// Row 4
+  tft.setTextPadding(VALUE_WIDTH_LONG);
 	tft.drawString(val.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, DEFAULT_FONT);  
 }
 
