@@ -45,15 +45,15 @@ String wl_status_t_to_string(wl_status_t wl_stat) {
  */
 void make_sure_wifi_connected() {
   
-  WiFi.softAPdisconnect(true);
-  WiFi.enableAP(false);
-
   if (WiFi.status() == WL_CONNECTED) {
     return;
   }
 
   mainlog("WiFi is down or not initialized. connecting");
   WiFi.disconnect();
+  WiFi.softAPdisconnect(true);
+  WiFi.enableAP(false);
+
   delay(100);
 
   int retryCount = 0;
@@ -63,24 +63,27 @@ void make_sure_wifi_connected() {
 
   while (WiFi.status() != WL_CONNECTED) {
 
-    mainlog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
-
-    delay(300);
+    delay(100);
     retryCount++;
 
     if (retryCount % 10 == 0) {
-      mainlog("Waiting for wifi connection");
+      mainlog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
+      mainlog("Still waiting for wifi connection");
     }
-    if (retryCount % 100 == 0) {
+    if (retryCount % 50 == 0) {
+      mainlog("Restarting WiFi");
       delay(100);
+      mainlog("WiFi disconnect.");
       WiFi.disconnect();   
       delay(100);
       WiFi.begin(ssid.c_str(), password.c_str());
       mainlog("RETRY connecting WiFi from start");
     }
 
-    if (retryCount > 300) {
-      mainlog("WiFi connect failure. restarting");
+    if (retryCount > 100) {
+      mainlog("WiFi connect failure.");
+      mainlog("Restarting");
+      mainlog("ESP8266 note: must connect proper pins, otherwise device hangs");
       ESP.deepSleep(1 * 1000 * 1000);
       delay(10000);
     }
