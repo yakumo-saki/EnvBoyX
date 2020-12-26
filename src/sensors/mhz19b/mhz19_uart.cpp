@@ -15,11 +15,10 @@ unsigned long mhzGetDataTimer = 0;
 MHZ19 mhz19;
 
 #ifdef ARDUINO_ARCH_ESP32
-//include ESP32 specific libs
 HardwareSerial mhzSerial(2);
 #elif defined(ARDUINO_ARCH_ESP8266) 
 //include esp8266 specific libs
-#include <SoftwareSerial.h>                                // Remove if using HardwareSerial or Arduino package without SoftwareSerial support
+#include <SoftwareSerial.h>
 #define MHZ_RX_PIN 14     // Rx pin which the MHZ19 Tx pin is attached to
 #define MHZ_TX_PIN 0      // Tx pin which the MHZ19 Rx pin is attached to
 SoftwareSerial mhzSerial(MHZ_RX_PIN, MHZ_TX_PIN);
@@ -60,7 +59,7 @@ void mhz_setup_uart() {
 
 #ifdef ARDUINO_ARCH_ESP32
   mhzlog("ESP32 serial begin");
-  mhzSerial.begin(9600, SERIAL_8N1, 37, 36);
+  mhzSerial.begin(9600, SERIAL_8N1, 32, 33);
 #elif defined(ARDUINO_ARCH_ESP8266) 
   mhzSerial.begin(9600);
 #endif
