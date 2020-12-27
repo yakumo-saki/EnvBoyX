@@ -38,6 +38,7 @@ void handle_post_root() {
   config.mqttBroker = server.arg("mqttbroker");
   config.mqttName = server.arg("mqttname");
 
+  trim_config();
   String html = http_setup_post_root_content();
 
   server.send(200, "text/html", html);

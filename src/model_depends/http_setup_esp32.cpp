@@ -41,6 +41,7 @@ void handle_post_root(AsyncWebServerRequest *request) {
   config.mqttBroker = request->getParam("mqttbroker", true)->value();
   config.mqttName = request->getParam("mqttname", true)->value();
 
+  trim_config();
   String html = http_setup_post_root_content();
 
   request->send(200, "text/html", html);

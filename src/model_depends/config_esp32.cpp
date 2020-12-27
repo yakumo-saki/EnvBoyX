@@ -7,6 +7,7 @@
 
 #include "log.h"
 #include "global.h"
+#include "config.h"
 
 #define FORMAT_LITTLEFS_IF_FAILED true
 
@@ -68,6 +69,8 @@ void save_config()
 {
   LITTLEFS.begin();
 
+  trim_config();
+
   // 設定ファイル
   File f = LITTLEFS.open(settings, "w");
   f.println(String(SETTING_ID));
@@ -98,30 +101,17 @@ void read_config()
   config.password = f.readStringUntil('\n');
   config.mDNS = f.readStringUntil('\n');
   config.opMode = f.readStringUntil('\n');
+  config.st7789 = f.readStringUntil('\n');
   config.use_mhz19b = f.readStringUntil('\n');
   config.mhz19b_pwmpin = f.readStringUntil('\n');
+  config.mhz19b_rxpin = f.readStringUntil('\n');
+  config.mhz19b_txpin = f.readStringUntil('\n');
   config.mqttBroker = f.readStringUntil('\n');
   config.mqttName = f.readStringUntil('\n');
   f.close();
 
-  config.settingId.trim();
-  config.ssid.trim();
-  config.password.trim();
-  config.mDNS.trim();
-  config.opMode.trim();
-  config.use_mhz19b.trim();
-  config.mqttBroker.trim();
-  config.mqttName.trim();
-
-  cfglog("S-ID: " + config.settingId);
-  cfglog("SSID: " + config.ssid);
-  cfglog("PASS: " + config.password);
-  cfglog("mDNS: " + config.mDNS);
-  cfglog("opMode: " + config.opMode);
-  cfglog("use MHZ19B: " + config.use_mhz19b);
-  cfglog("   PWM PIN: " + config.mhz19b_pwmpin);
-  cfglog("MQTT Broker: " + config.mqttBroker);
-  cfglog("MQTT Name  : " + config.mqttName);
+  trim_config();
+  print_config();
 }
 
 /**

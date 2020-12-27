@@ -31,13 +31,13 @@ String http_setup_get_root_content() {
   html += "<meta charset='UTF-8'>";
  	html += "<meta name='viewport' content='width=device-width'>";
   html += "<meta name='format-detection' content='telephone=no' />";
-  html += "<title>" + product + " setting (" + SETTING_ID + ")</title>";
+  html += "<title>" + product + " setting</title>";
   html += "<style>";
   html += "  input[type='text'] { width:200px }";
   html += "  input[type='submit'] { width:200px; height: 48px;}";
   html += "</style>";
   html += "</head>";
-  html += "<h1>" + product + " Settings</h1>";
+  html += "<h1>" + product + " Settings  (" + SETTING_ID + ")</h1>";
   html += "<form method='post'>";
   html += "  <br>";
   html += "<fieldset><legend>ネットワーク設定</legend>";
@@ -62,13 +62,15 @@ String http_setup_get_root_content() {
 
   html += "<fieldset><legend>デバイス設定</legend>";
 
+  cfglog("|" + config.st7789 + "|");
   String st7789_use_checked = (config.st7789 == ST7789_USE ? " checked" : "");
   String st7789_nouse_checked = (config.st7789 == ST7789_NOUSE ? " checked" : "");
+  cfglog("USE = " + String(st7789_use_checked) + " NOUSE = " + String(st7789_nouse_checked));
   html += "  <strong>ST7789 SPI液晶の有無</strong><br>";
   html += "  ※ MQTTモードでは無効。<br>";
   html += "  ※ SPIピンはビルドオプションで指定<br>";
   html += "  <input type='radio' name='st7789' value='" + ST7789_NOUSE + "' id='st7789_no'" + st7789_nouse_checked + "><label for='st7789_no'>使用しない</label><br>";
-  html += "  <input type='radio' name='st7789' value='" + ST7789_USE + "' id='st7789_yes'" + st7789_use_checked + "><label for='st7789_yes'>使用する（LilyGO TTGO T-DISPLAY）</label></label><br>";
+  html += "  <input type='radio' name='st7789' value='" + ST7789_USE + "' id='st7789_yes'" + st7789_use_checked + "><label for='st7789_yes'>使用する</label></label><br>";
   html += "  <br>";
 
   String mhz19b_nouse_checked = (config.use_mhz19b == MHZ_NOUSE ? " checked" : "");
