@@ -13,9 +13,6 @@ extern int disp_switch;
 
 TFT_eSPI tft = TFT_eSPI();  // Invoke library
 
-// temp あとで消す
-int count = 1;
-
 // フォント番号は0,2,4,6 は同一フォントのサイズ違い。
 // フォント番号 7 は8セグフォント
 const int XSMALL_FONT = 1;
@@ -195,7 +192,7 @@ void disp_st7789_wifi_error() {
 /**
  * wait for reconfigure 画面を出しながら待つ
  */
-void disp_st7789_wait_for_reconfig() {
+void disp_st7789_wait_for_reconfig_init() {
 
 	tft.startWrite();
 
@@ -207,44 +204,11 @@ void disp_st7789_wait_for_reconfig() {
 
 	tft.endWrite();
 
-  // display.init();
- 
-  // if (needFlip) {
-  //   display.flipScreenVertically();
-  // }
-  // display.clear();
-  // display.setTextAlignment(TEXT_ALIGN_LEFT);
-  // display.setFont(ArialMT_Plain_16);
-  // display.drawString(0, 0, "Wait for re-config");
-  // display.drawString(0, 33, "Power off now");
-  // display.drawString(0, 48, " to re-configure");
+}
 
-  // // バーを生成する
-  // // 下の幅の部分を先に書かせてしまう。
-  // int MAX_UNDER_BAR = 20;  // _ の数。プロポーショナルフォントなので幅注意
-  // String bar = "";
-  // for (int n = 0; n < MAX_UNDER_BAR ; n++) {
-  //   bar = bar + "_";
-  //   display.drawString(0, 16, bar);
-  //   display.drawString(0, 0, bar);
-  //   display.display();
-  // }
-
-  // int MAX_BAR = 31;  // _ の数。プロポーショナルフォントなので幅注意  
-  // int now = 1;
-  // for (int i = 0; i < MAX_BAR; i++) {
-  //   bar = "|";
-    
-  //   for (int n = 0; n < now ; n++) {
-  //     bar = bar + "|";
-  //   }
-
-  //   display.drawString(0, 16, bar);
-  //   display.display();
-  //   delay(WAIT_PER_BAR);
-  //   now = now + 1;
-  // }
-
+void disp_st7789_wait_for_reconfig_bar(int now, const int max) {
+  tft.setCursor(0 + (now * 8), 100, DEFAULT_FONT);
+  tft.print("-");
 }
 
 /**

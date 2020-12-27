@@ -7,7 +7,8 @@
 
 void disp_st7789_wifi_info(String ip, String mDNS);
 void disp_st7789_normal_startup_screen(String product_long);
-void disp_st7789_wait_for_reconfig();
+void disp_st7789_wait_for_reconfig_init();
+void disp_st7789_wait_for_reconfig_bar(int now, const int max);
 void disp_st7789_wifi_starting(int wait_print_row);
 void disp_st7789_all_initialize_complete(String ip, String mdns);
 void disp_st7789_sensor_value(disp_values_t new_values, disp_values_t last_values);

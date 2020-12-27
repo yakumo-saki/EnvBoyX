@@ -8,8 +8,6 @@
 
 extern int disp_switch;
 
-const int WAIT_PER_BAR = 30;
-
 //SSD1306 display(0x3c, 5, 4);
 SSD1306 display(SSD1306_I2C_ADDR, I2C_SDA, I2C_SCL);
 
@@ -106,10 +104,7 @@ void disp_ssd1306_wifi_info(String ip, String mDNS) {
   if (!has_ssd1306()) return;
 
   display.init();
-
-//  String ssidStr = "SSID ";
-//  ssidStr.concat(ssid);
-  
+ 
   if (needFlip) {
     display.flipScreenVertically();
   }
@@ -151,7 +146,7 @@ void disp_ssd1306_wifi_error() {
 /**
  * wait for reconfigure 画面を出しながら待つ
  */
-void disp_ssd1306_wait_for_reconfig() {
+void disp_ssd1306_wait_for_reconfig_init() {
 
   if (!has_ssd1306()) return;
 
@@ -177,22 +172,17 @@ void disp_ssd1306_wait_for_reconfig() {
     display.drawString(0, 0, bar);
     display.display();
   }
+}
 
-  int MAX_BAR = 31;  // _ の数。プロポーショナルフォントなので幅注意  
-  int now = 1;
-  for (int i = 0; i < MAX_BAR; i++) {
-    bar = "|";
-    
-    for (int n = 0; n < now ; n++) {
-      bar = bar + "|";
-    }
-
-    display.drawString(0, 16, bar);
-    display.display();
-    delay(WAIT_PER_BAR);
-    now = now + 1;
+void disp_ssd1306_wait_for_reconfig_bar(int now, const int max) {
+  String bar = "|";
+  
+  for (int n = 0; n < now ; n++) {
+    bar = bar + "|";
   }
 
+  display.drawString(0, 16, bar);
+  display.display();
 }
 
 void disp_ssd1306_all_initialize_complete() {

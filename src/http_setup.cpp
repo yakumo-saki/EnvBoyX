@@ -62,10 +62,8 @@ String http_setup_get_root_content() {
 
   html += "<fieldset><legend>デバイス設定</legend>";
 
-  cfglog("|" + config.st7789 + "|");
   String st7789_use_checked = (config.st7789 == ST7789_USE ? " checked" : "");
   String st7789_nouse_checked = (config.st7789 == ST7789_NOUSE ? " checked" : "");
-  cfglog("USE = " + String(st7789_use_checked) + " NOUSE = " + String(st7789_nouse_checked));
   html += "  <strong>ST7789 SPI液晶の有無</strong><br>";
   html += "  ※ MQTTモードでは無効。<br>";
   html += "  ※ SPIピンはビルドオプションで指定<br>";

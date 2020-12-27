@@ -27,8 +27,7 @@ bool use_ssd1306() {
 }
 
 bool use_st7789() {
-	// TODO: config読む
-	return true;
+	return (config.st7789 == ST7789_USE);
 }
 
 /**
@@ -93,14 +92,27 @@ void disp_wifi_error() {
  */
 void disp_wait_for_reconfig() {
 
-	// TODO 併用すると待ち時間が二倍になるので構造変更必要
-	// ループをこっちに持ってきてバーをn本表示する的な構造に。
+	const int WAIT_PER_BAR = 30;
+	const int MAX_BAR = 31;
 
 	if (use_st7789()) {
-		disp_st7789_wait_for_reconfig();
+		disp_st7789_wait_for_reconfig_init();
 	}
 	if (use_ssd1306()) {
-		disp_ssd1306_wait_for_reconfig();
+		disp_ssd1306_wait_for_reconfig_init();
+	}
+
+	for (int i = 0; i < MAX_BAR; i++)
+	{
+		displog("Wait for reconfigure " + String(i) + " / " + String(MAX_BAR));
+		if (use_st7789()) {
+			disp_st7789_wait_for_reconfig_bar(i, MAX_BAR);
+		}
+		if (use_ssd1306()) {
+			disp_ssd1306_wait_for_reconfig_bar(i, MAX_BAR);
+		}
+	
+	    delay(WAIT_PER_BAR);
 	}
 }
 
