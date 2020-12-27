@@ -36,10 +36,10 @@ Defined at `global.cpp`
 
 Defined at `mhz19_uart.cpp`
 
-| TYPE  | Rx  | Tx   | note             |
-| ----- | ----| ---- | ---------------- |
-|ESP32  |  16 | 17   | HardwareSerial 2 |
-|ESP8266|  14 |  0   | SoftwareSerial   |
+| TYPE  | Rx  | Tx   | note                            |
+| ----- | ----| ---- | ------------------------------- |
+|ESP32  |  16 | 17   | HardwareSerial 2, configuarable |
+|ESP8266|  14 |  0   | SoftwareSerial , fixed          |
 
 ## sensors
 
@@ -106,7 +106,8 @@ Get binary from releases page.(not every version have binary file, sorry)
 
 ### v3.0
 
-Add ST77 Support (T-Display)
+* Add ST7789 Support (T-Display)
+* ST7789 is initial support, some screens are simplifyed.
 
 ### v2.7
 
