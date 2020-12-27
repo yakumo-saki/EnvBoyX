@@ -113,7 +113,7 @@ void start_wifi_access_point() {
   /* You can remove the password parameter if you want the AP to be open. */
   // WiFi.softAP(ssid.c_str(), pass.c_str());
   WiFi.softAP(config.ssid.c_str());
-  mainlog("WiFi AP Started. SSID=" + config.ssid);
+  wifilog("WiFi AP Started. SSID=" + config.ssid);
 }
 
 /**

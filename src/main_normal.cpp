@@ -42,7 +42,7 @@ void mqtt_publish(String topic, String value) {
 
 void read_data() {
 
-  mainlog("Reading data start.");
+  mainlog("Reading sensor data start.");
 
   // 電圧
   //  if (true) {
@@ -87,6 +87,8 @@ void read_data() {
       // MH-Z19B read error. do nothing.
     }
   } 
+
+  mainlog("Reading sensor data complete.");
 
   // MQTT
   char buf[24] = "";
@@ -167,7 +169,7 @@ void setup_normal() {
  */
 void loop_normal() {
 
-  mainlog("loop start");
+  sectionlog("loop start");
 
   // WiFiが繋がってなければ意味がないので接続チェック
   make_sure_wifi_connected();
@@ -210,7 +212,7 @@ void loop_normal() {
   } else if (config.opMode == OPMODE_DISPLAY) {  
     disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
     http_loop_normal();
-    sectionlog("Wait for Next tick.");
+    mainlog("Wait for Next tick.");
     delay(1000);
   }
 }

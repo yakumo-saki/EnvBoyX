@@ -88,8 +88,8 @@ String http_setup_get_root_content() {
 
   html += "  <strong>MH-Z19BのUARTが接続されているGPIOピン番号</strong><br>";
   html += "  ※ MH-Z19Bを使用しない場合は設定不要<br>";
+  html += "  ※ ESP8266では RX 14 TX 0 で固定<br>";
   html += "  ※ ボードによって使用可能なピンが異なるので動作しない場合は他のピンを試してください。<br>";
-  html += "  ※ 例： ESP8266 RX 14 TX 0 / ESP32 RX 32 TX 33<br>";
   html += "  RXピン <input type='text' name='mhz19b_rxpin' placeholder='MHZ-19B RXピン番号' value='" + config.mhz19b_rxpin + "' placeholder='16'><br>";
   html += "  TXピン <input type='text' name='mhz19b_txpin' placeholder='MHZ-19B TXピン番号' value='" + config.mhz19b_txpin + "' placeholder='17'><br>";
   html += "</fieldset>";

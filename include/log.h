@@ -11,4 +11,5 @@ void cfglog(String msg);
 void httplog(String msg);
 void displog(String msg);
 void mdnslog(String msg);
+void wifilog(String msg);
 void sectionlog(String msg);

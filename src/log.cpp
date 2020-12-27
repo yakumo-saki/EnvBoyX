@@ -54,6 +54,10 @@ void mdnslog(String msg) {
   real_log(msg, "mDNS");
 }
 
+void wifilog(String msg) {
+  real_log(msg, "WiFi");
+}
+
 void sectionlog(String msg) {
   Serial.println("");
   real_log(msg, "========");
