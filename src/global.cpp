@@ -1,14 +1,17 @@
 #include <Arduino.h>
+#include "structs.h"
 
-// 定数
-String SETTING_ID = "EBX.v2.1";
-String OPMODE_MQTT = "mqtt";
-String OPMODE_DISPLAY = "always";
-String MHZ_USE_PWM = "yes_pwm";
-String MHZ_USE_UART = "yes_uart";
-String MHZ_NOUSE = "no";
-extern const int MHZ_BAUDRATE = 9600;
+// --------------------------------------------------------------------
+// プロダクト名定数
+// --------------------------------------------------------------------
+String product_short = "ebx";
+String product = "EnvBoyX";
+String ver = "3.0";
+String product_long = product + " Ver." + ver;
 
+// --------------------------------------------------------------------
+// デバイス周りの定数
+// --------------------------------------------------------------------
 #ifdef ESP32
 extern const int I2C_SDA = 21;
 extern const int I2C_SCL = 22;
@@ -17,26 +20,34 @@ extern const int I2C_SDA = 5;
 extern const int I2C_SCL = 4;
 #endif
 
-// Wi-Fi設定保存ファイル
+extern const byte SSD1306_I2C_ADDR = 0x3c;
+extern const int MHZ_BAUDRATE = 9600;
+
+// --------------------------------------------------------------------
+// 設定ファイル用定数
+// --------------------------------------------------------------------
 String settings = "/wifi_settings.txt";
 String configured_file = "/config_ok.txt";
 
-String product_short = "ebx";
-String product = "EnvBoyX";
-String ver = "2.7";
-String product_long = product + " Ver." + ver;
+String SETTING_ID = "EBXCFG.v3b1";
+String OPMODE_MQTT = "mqtt";
+String OPMODE_DISPLAY = "always";
 
-// setup時は、setup用SSID。 normal時は接続先SSID
-String ssid = "";
-String password = "";
-String mDNS = "";
-String opMode = "";
-String use_mhz19b = ""; // MHZ-19Bはコードから接続されているかわからない
-String mhz19b_pwmpin = "";
-String mqttBroker = "";
-String mqttName = "";
+String ST7789_USE = "yes";
+String ST7789_NOUSE = "no";
 
-// 最後に取得した値
+String MHZ_USE_PWM = "yes_pwm";
+String MHZ_USE_UART = "yes_uart";
+String MHZ_NOUSE = "no";
+
+// --------------------------------------------------------------------
+// 設定値保存
+// --------------------------------------------------------------------
+config_t config;
+
+// --------------------------------------------------------------------
+// センサー値
+// --------------------------------------------------------------------
 float lastTemp;
 float lastHumidity;
 float lastPressure;

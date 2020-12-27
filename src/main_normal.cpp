@@ -23,7 +23,7 @@ int counter;
 void begin_mqtt_connection() {
   
   Serial.println("MQTT Begin");
-  mqttClient.begin(mqttBroker.c_str(), net);
+  mqttClient.begin(config.mqttBroker.c_str(), net);
   delay(10);
 
   Serial.println("MQTT Started successfully.");
@@ -31,18 +31,18 @@ void begin_mqtt_connection() {
 
 void mqtt_publish(String topic, String value) {
 
-  if (opMode != OPMODE_MQTT) {
+  if (config.opMode != OPMODE_MQTT) {
     return;
   }
   
-  String t = "/" + mqttName + "/" + topic;
+  String t = "/" + config.mqttName + "/" + topic;
   Serial.println("MQTT Publish topic=>" + t + " value=>" + value);
   mqttClient.publish(t, value);
 }
 
 void read_data() {
 
-  mainlog("Reading data start.");
+  mainlog("Reading sensor data start.");
 
   // 電圧
   //  if (true) {
@@ -69,11 +69,11 @@ void read_data() {
     lastLuxIr = 0;
   }
 
-  if (use_mhz19b) {
+  if (config.use_mhz19b) {
     // 
     mhz_read_data();
 
-    if (opMode == OPMODE_MQTT) {
+    if (config.opMode == OPMODE_MQTT) {
       delay(3050);       // MHZデータ取得待ち
       mhz_read_data();   // ここは adhoc 
     }
@@ -87,6 +87,8 @@ void read_data() {
       // MH-Z19B read error. do nothing.
     }
   } 
+
+  mainlog("Reading sensor data complete.");
 
   // MQTT
   char buf[24] = "";
@@ -107,17 +109,18 @@ void read_data() {
   
 }
 
-//
-// SETUP
-//
+/**
+ * 通常起動モードのSETUP
+ */
 void setup_normal() {
   
   read_config();
 
+  setup_display();
   disp_normal_startup_screen(product_long);
   
   // setupモードに入りやすくするための処理
-  if (opMode == OPMODE_DISPLAY) {
+  if (config.opMode == OPMODE_DISPLAY) {
     sectionlog("Reset to reconfig start.");
     remove_configure_flag_file();
     // list_dir();
@@ -136,10 +139,10 @@ void setup_normal() {
   sectionlog("Connecting WiFi.");
   disp_wifi_starting(1);
   make_sure_wifi_connected();
-  disp_wifi_info(get_wifi_ip_addr(), mDNS);
+  disp_wifi_info(get_wifi_ip_addr(), config.mDNS);
 
   sectionlog("Starting mDNS server.");  
-  start_mdns(mDNS);
+  start_mdns(config.mDNS);
 
   sectionlog("Starting HTTP server.");  
   http_setup_normal();
@@ -151,19 +154,22 @@ void setup_normal() {
   lps_setup();
   tsl_setup();
 
-  if (use_mhz19b != MHZ_NOUSE) {
+  if (config.use_mhz19b != MHZ_NOUSE) {
     mhz_setup();
   }
   sectionlog("Initializing sensors done.");
 
+  // 初期化終了時に画面表示をどうにかできるフック
+  disp_all_initialize_complete(get_wifi_ip_addr(), config.mDNS);
+
 }
 
-//
-// LOOP
-//
+/**
+ * LOOP
+ */
 void loop_normal() {
 
-  mainlog("loop start");
+  sectionlog("loop start");
 
   // WiFiが繋がってなければ意味がないので接続チェック
   make_sure_wifi_connected();
@@ -171,14 +177,14 @@ void loop_normal() {
   mainlog("WiFi connected.");
 
   // MQTT
-  if (opMode == OPMODE_MQTT) {
+  if (config.opMode == OPMODE_MQTT) {
     begin_mqtt_connection();
     
     mqttClient.loop();
     delay(10);  // <- fixes some issues with WiFi stability
   
     Serial.println("MQTT Connect");
-    while (!mqttClient.connect(mDNS.c_str(), "", "")) { // username and password not support
+    while (!mqttClient.connect(config.mDNS.c_str(), "", "")) { // username and password not support
       Serial.print(".");
       delay(1000);
     }
@@ -188,8 +194,8 @@ void loop_normal() {
   read_data();
 
   // sleep to next.
-  if (opMode == OPMODE_MQTT) {
-    disp_sensor_value(get_wifi_ip_addr(), mDNS);
+  if (config.opMode == OPMODE_MQTT) {
+    disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
     delay(1000);
     disp_power_off();
   
@@ -203,10 +209,10 @@ void loop_normal() {
     //   ESP.deepSleep(NORMAL_DURATION);
     //   delay(10000);
     // }
-  } else if (opMode == OPMODE_DISPLAY) {  
-    disp_sensor_value(get_wifi_ip_addr(), mDNS);
+  } else if (config.opMode == OPMODE_DISPLAY) {  
+    disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
     http_loop_normal();
-    sectionlog("Wait for Next tick.");
-    delay(750);
+    mainlog("Wait for Next tick.");
+    delay(1000);
   }
 }

@@ -2,7 +2,6 @@
 
 #include <Arduino.h>
 
-#include "http.h"
 #include "log.h"
 #include "global.h"
 #include "config.h"
@@ -27,17 +26,22 @@ void handle_get_root() {
  */
 void handle_post_root() {
   
-  ssid = server.arg("ssid");
-  password = server.arg("pass");
-  mDNS = server.arg("mdnsname");
-  opMode = server.arg("opmode");
-  use_mhz19b = server.arg("use_mhz19b");
-  mhz19b_pwmpin = server.arg("mhz19b_pwmpin");
-  mqttBroker = server.arg("mqttbroker");
-  mqttName = server.arg("mqttname");
+  config.ssid = server.arg("ssid");
+  config.password = server.arg("pass");
+  config.mDNS = server.arg("mdnsname");
+  config.opMode = server.arg("opmode");
+  config.st7789 = server.arg("st7789");
+  config.use_mhz19b = server.arg("use_mhz19b");
+  config.mhz19b_pwmpin = server.arg("mhz19b_pwmpin");
+  // config.mhz19b_rxpin = server.arg("mhz19b_rxpin");
+  // config.mhz19b_txpin = server.arg("mhz19b_txpin");
+  // SoftwareSerialの初期化時にこれを渡す方法がわからないので固定
+  config.mhz19b_rxpin = "14";
+  config.mhz19b_txpin = "0";
+  config.mqttBroker = server.arg("mqttbroker");
+  config.mqttName = server.arg("mqttname");
 
-  httplog(ssid);
-
+  trim_config();
   String html = http_setup_post_root_content();
 
   server.send(200, "text/html", html);

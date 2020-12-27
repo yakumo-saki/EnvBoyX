@@ -45,42 +45,45 @@ String wl_status_t_to_string(wl_status_t wl_stat) {
  */
 void make_sure_wifi_connected() {
   
-  WiFi.softAPdisconnect(true);
-  WiFi.enableAP(false);
-
   if (WiFi.status() == WL_CONNECTED) {
     return;
   }
 
   mainlog("WiFi is down or not initialized. connecting");
   WiFi.disconnect();
+  WiFi.softAPdisconnect(true);
+  WiFi.enableAP(false);
+
   delay(100);
 
   int retryCount = 0;
-  mainlog("ssid " + ssid + " pass " + password);
-  WiFi.begin(ssid.c_str(), password.c_str());
+  mainlog("ssid " + config.ssid + " pass " + config.password);
+  WiFi.begin(config.ssid.c_str(), config.password.c_str());
   delay(300);
 
   while (WiFi.status() != WL_CONNECTED) {
-
-    mainlog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
 
     delay(100);
     retryCount++;
 
     if (retryCount % 10 == 0) {
-      mainlog("Waiting for wifi connection");
+      mainlog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
+      mainlog("Still waiting for wifi connection");
     }
-    if (retryCount % 100 == 0) {
+    if (retryCount % 50 == 0) {
+      mainlog("Restarting WiFi");
       delay(100);
+      mainlog("WiFi disconnect.");
       WiFi.disconnect();   
       delay(100);
-      WiFi.begin(ssid.c_str(), password.c_str());
+      WiFi.begin(config.ssid.c_str(), config.password.c_str());
       mainlog("RETRY connecting WiFi from start");
     }
 
-    if (retryCount > 300) {
-      mainlog("WiFi connect failure. restarting");
+    if (retryCount > 100) {
+      mainlog("WiFi connect failure.");
+      mainlog("Restarting");
+      mainlog("ESP8266 note: must connect proper pins, otherwise device hangs");
       ESP.deepSleep(1 * 1000 * 1000);
       delay(10000);
     }
@@ -98,18 +101,19 @@ void start_wifi_access_point() {
   byte mac[6];
   WiFi.macAddress(mac);
 
-  // SSID は macaddress をSUFFIXする
-  ssid = product_short + "_";
-  for (int i = 0; i < 6; i++) {
-    ssid += String(mac[i], HEX);
+  // SSID は macaddress をSUFFIXする。前半はespressifのIDなので後半3つだけ
+  config.ssid = "_SETUP_" + product_short + "_";
+  for (int i = 3; i < 6; i++) {
+    config.ssid += String(mac[i], HEX);
   }
   
-  mainlog("SSID: " + ssid);
+  mainlog("SSID: " + config.ssid);
   // Serial.println("PASS: " + pass);
 
   /* You can remove the password parameter if you want the AP to be open. */
   // WiFi.softAP(ssid.c_str(), pass.c_str());
-  WiFi.softAP(ssid.c_str());
+  WiFi.softAP(config.ssid.c_str());
+  wifilog("WiFi AP Started. SSID=" + config.ssid);
 }
 
 /**

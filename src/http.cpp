@@ -1,3 +1,4 @@
+// NORMAL_MODEとSETUPMODEでserverを共有するため
 #ifdef ESP32
 #include <WiFi.h>
 #include <AsyncTCP.h>
@@ -10,4 +11,3 @@ AsyncWebServer server(80);
 
 ESP8266WebServer server(80);
 #endif
-

@@ -13,7 +13,7 @@ int CO2_PPM_INVALID = -999;
 
 void mhz_read_data() {
 
-  if (use_mhz19b == MHZ_NOUSE) {
+  if (config.use_mhz19b == MHZ_NOUSE) {
     return;
   }
 
@@ -26,12 +26,12 @@ void mhz_read_data() {
 }
 
 void mhz_setup() {
-  if (use_mhz19b == MHZ_NOUSE) {
+  if (config.use_mhz19b == MHZ_NOUSE) {
     mhzlog("disabled.");
     return;
   } 
   
-  USE_PWM = (use_mhz19b == MHZ_USE_PWM);
+  USE_PWM = (config.use_mhz19b == MHZ_USE_PWM);
 
   if (USE_PWM) {
     mhzlog("Using PWM mode. Some features are disabled.");

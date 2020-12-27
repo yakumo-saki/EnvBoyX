@@ -22,6 +22,7 @@ void setup_setupmode() {
 
   start_wifi_access_point();
   setup_http_setup();
+  setup_display();
   disp_setup_startup_screen(WiFi.softAPIP().toString());
 }
 
