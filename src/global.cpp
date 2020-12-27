@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "structs.h"
 
 // --------------------------------------------------------------------
 // プロダクト名定数
@@ -28,9 +29,13 @@ extern const int MHZ_BAUDRATE = 9600;
 String settings = "/wifi_settings.txt";
 String configured_file = "/config_ok.txt";
 
-String SETTING_ID = "EBX.v2.1";
+String SETTING_ID = "EBXCFG.v3b1";
 String OPMODE_MQTT = "mqtt";
 String OPMODE_DISPLAY = "always";
+
+String ST7789_USE = "yes";
+String ST7789_NOUSE = "no";
+
 String MHZ_USE_PWM = "yes_pwm";
 String MHZ_USE_UART = "yes_uart";
 String MHZ_NOUSE = "no";
@@ -38,15 +43,7 @@ String MHZ_NOUSE = "no";
 // --------------------------------------------------------------------
 // 設定値保存
 // --------------------------------------------------------------------
-// setup時は、setup用SSID。 normal時は接続先SSID
-String ssid = "";
-String password = "";
-String mDNS = "";
-String opMode = "";
-String use_mhz19b = ""; // MHZ-19Bはコードから接続されているかわからない
-String mhz19b_pwmpin = "";
-String mqttBroker = "";
-String mqttName = "";
+config_t config;
 
 // --------------------------------------------------------------------
 // センサー値

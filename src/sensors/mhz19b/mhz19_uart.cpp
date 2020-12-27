@@ -14,16 +14,6 @@ unsigned long mhzGetDataTimer = 0;
 
 MHZ19 mhz19;
 
-#ifdef ARDUINO_ARCH_ESP32
-HardwareSerial mhzSerial(2);
-#elif defined(ARDUINO_ARCH_ESP8266) 
-//include esp8266 specific libs
-#include <SoftwareSerial.h>
-#define MHZ_RX_PIN 14     // Rx pin which the MHZ19 Tx pin is attached to
-#define MHZ_TX_PIN 0      // Tx pin which the MHZ19 Rx pin is attached to
-SoftwareSerial mhzSerial(MHZ_RX_PIN, MHZ_TX_PIN);
-#endif
-
 void printErrorCode() {
   if (mhz19.errorCode != 1) {
     mhzlog(mhz19_code_to_msg(mhz19.errorCode));
@@ -58,9 +48,11 @@ void mhz_setup_uart() {
   mhzlog("Enabled (UART mode).");
 
 #ifdef ARDUINO_ARCH_ESP32
+  HardwareSerial mhzSerial(2); // use UART2
   mhzlog("ESP32 serial begin");
-  mhzSerial.begin(9600, SERIAL_8N1, 32, 33);
+  mhzSerial.begin(9600, SERIAL_8N1, config.mhz19b_rxpin.toInt(), config.mhz19b_txpin.toInt());
 #elif defined(ARDUINO_ARCH_ESP8266) 
+  SoftwareSerial mhzSerial(config.mhz19b_rxpin.toInt(), config.mhz19b_txpin.toInt());
   mhzSerial.begin(9600);
 #endif
 

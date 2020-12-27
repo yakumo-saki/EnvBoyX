@@ -57,8 +57,8 @@ void make_sure_wifi_connected() {
   delay(100);
 
   int retryCount = 0;
-  mainlog("ssid " + ssid + " pass " + password);
-  WiFi.begin(ssid.c_str(), password.c_str());
+  mainlog("ssid " + config.ssid + " pass " + config.password);
+  WiFi.begin(config.ssid.c_str(), config.password.c_str());
   delay(300);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -76,7 +76,7 @@ void make_sure_wifi_connected() {
       mainlog("WiFi disconnect.");
       WiFi.disconnect();   
       delay(100);
-      WiFi.begin(ssid.c_str(), password.c_str());
+      WiFi.begin(config.ssid.c_str(), config.password.c_str());
       mainlog("RETRY connecting WiFi from start");
     }
 
@@ -102,18 +102,18 @@ void start_wifi_access_point() {
   WiFi.macAddress(mac);
 
   // SSID は macaddress をSUFFIXする
-  ssid = product_short + "_";
+  config.ssid = "_SETUP_" + product_short + "_";
   for (int i = 0; i < 6; i++) {
-    ssid += String(mac[i], HEX);
+    config.ssid += String(mac[i], HEX);
   }
   
-  mainlog("SSID: " + ssid);
+  mainlog("SSID: " + config.ssid);
   // Serial.println("PASS: " + pass);
 
   /* You can remove the password parameter if you want the AP to be open. */
   // WiFi.softAP(ssid.c_str(), pass.c_str());
-  WiFi.softAP(ssid.c_str());
-  mainlog("WiFi AP Started. SSID=" + ssid);
+  WiFi.softAP(config.ssid.c_str());
+  mainlog("WiFi AP Started. SSID=" + config.ssid);
 }
 
 /**

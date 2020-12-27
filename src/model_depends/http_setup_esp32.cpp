@@ -29,14 +29,18 @@ void handle_get_root(AsyncWebServerRequest *request) {
  */
 void handle_post_root(AsyncWebServerRequest *request) {
 
-  ssid = request->getParam("ssid", true)->value();
-  password = request->getParam("pass", true)->value();
-  mDNS = request->getParam("mdnsname", true)->value();
-  opMode = request->getParam("opmode", true)->value();
-  use_mhz19b = request->getParam("use_mhz19b", true)->value();
-  mhz19b_pwmpin = request->getParam("mhz19b_pwmpin", true)->value();
-  mqttBroker = request->getParam("mqttbroker", true)->value();
-  mqttName = request->getParam("mqttname", true)->value();
+  httplog("post");
+  config.ssid = request->getParam("ssid", true)->value();
+  config.password = request->getParam("pass", true)->value();
+  config.mDNS = request->getParam("mdnsname", true)->value();
+  config.opMode = request->getParam("opmode", true)->value();
+  config.st7789 = request->getParam("st7789", true)->value();
+  config.use_mhz19b = request->getParam("use_mhz19b", true)->value();
+  config.mhz19b_pwmpin = request->getParam("mhz19b_pwmpin", true)->value();
+  config.mhz19b_rxpin = request->getParam("mhz19b_rxpin", true)->value();
+  config.mhz19b_txpin = request->getParam("mhz19b_txpin", true)->value();
+  config.mqttBroker = request->getParam("mqttbroker", true)->value();
+  config.mqttName = request->getParam("mqttname", true)->value();
 
   String html = http_setup_post_root_content();
 

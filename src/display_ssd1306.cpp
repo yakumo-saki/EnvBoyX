@@ -72,7 +72,7 @@ void disp_ssd1306_setup_startup_screen(String ipAddr) {
   display.drawString(0, 16, "Setup mode.");
   display.drawString(0, 33, "http://" + ipAddr + "/" );
   display.setFont(ArialMT_Plain_10);
-  display.drawString(0, 52, ssid);
+  display.drawString(0, 52, config.ssid);
   display.display();
 }
 
@@ -117,7 +117,7 @@ void disp_ssd1306_wifi_info(String ip, String mDNS) {
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_10);
   display.setFont(ArialMT_Plain_16);
-  display.drawString(0, 0, ssid);
+  display.drawString(0, 0, config.ssid);
   display.drawString(0, 16, ip);
   display.drawString(0, 32, mDNS);
   display.drawString(0, 48, "Starting up...");
@@ -247,7 +247,7 @@ void disp_ssd1306_sensor_value(String ip, String mdns) {
   if (disp_switch < 3) {
     display.drawString(127, 0, ip); 
   } else {
-    display.drawString(127, 0, mDNS); 
+    display.drawString(127, 0, mdns); 
   }
 
   disp_switch++;

@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <WiFiClient.h>
 
+#include "structs.h"
+
 // --------------------------------------------------------------------
 // プロダクト名定数
 // --------------------------------------------------------------------
@@ -27,22 +29,18 @@ extern const String configured_file;
 extern String SETTING_ID;
 extern String OPMODE_MQTT;
 extern String OPMODE_DISPLAY;
-extern const String MHZ_USE_PWM;
-extern const String MHZ_USE_UART;
-extern const String MHZ_NOUSE;
+
+extern String ST7789_USE;
+extern String ST7789_NOUSE;
+
+extern String MHZ_USE_PWM;
+extern String MHZ_USE_UART;
+extern String MHZ_NOUSE;
 
 // --------------------------------------------------------------------
 // 設定値保存
 // --------------------------------------------------------------------
-// setup時は、setup用SSID。 normal時は接続先SSID
-extern String ssid;
-extern String password;
-extern String mDNS;
-extern String opMode;
-extern String use_mhz19b; // MHZ-19Bはコードから接続されているかわからない
-extern String mhz19b_pwmpin;
-extern String mqttBroker;
-extern String mqttName;
+extern config_t config;
 
 // --------------------------------------------------------------------
 // センサー値

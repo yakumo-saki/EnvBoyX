@@ -28,59 +28,81 @@ String http_setup_get_root_content() {
   html += "<!doctype html>";
   html += "<html>";
   html += "<head>";
-  html += "<title>" + product + " setting</title>";
   html += "<meta charset='UTF-8'>";
+ 	html += "<meta name='viewport' content='width=device-width'>";
+  html += "<meta name='format-detection' content='telephone=no' />";
+  html += "<title>" + product + " setting (" + SETTING_ID + ")</title>";
   html += "<style>";
   html += "  input[type='text'] { width:200px }";
-  html += "  input[type='submit'] { width:200px;}";
+  html += "  input[type='submit'] { width:200px; height: 48px;}";
   html += "</style>";
   html += "</head>";
   html += "<h1>" + product + " Settings</h1>";
   html += "<form method='post'>";
   html += "  <br>";
-  html += "  接続先WiFiの情報です。面倒ですが正しく設定して下さい。<br>";
-  html += "  2.4GHz帯のみ対応しています。<br>";
-  html += "  <input type='text' name='ssid' placeholder='ssid' autofocus value='" + ssid + "'><br>";
-  html += "  <input type='text' name='pass' placeholder='pass' value='" + password + "'><br>";
-  html += "  mDNS(Rendezvous) の名前です。LAN内の他の端末等と重複しないようにして下さい。<br>";
-  html += "  ハイフン、アンダースコアを使用すると名前解決に失敗する可能性があるため非推奨です。<br>";
-  html += "  <input type='text' name='mdnsname' placeholder='mdnsname' value='" + mDNS + "'><br>";
+  html += "<fieldset><legend>ネットワーク設定</legend>";
+  html += "  <strong>WiFi接続情報</strong><br>";
+  html += "  ※ 2.4GHz帯のみ対応しています。<br>";
+  html += "  <input type='text' name='ssid' placeholder='ssid' autofocus value='" + config.ssid + "'><br>";
+  html += "  <input type='text' name='pass' placeholder='pass' value='" + config.password + "'><br>";
   html += "  <br>";
-  html += "  動作モード<br>";
-  html += "  <br>";
-  
-  String opmode_always_checked = (opMode == OPMODE_DISPLAY ? " checked" : "");
-  String opmode_mqtt_checked = (opMode == OPMODE_MQTT ? " checked" : "");
-  html += "  <input type='radio' name='opmode' value='" + OPMODE_DISPLAY + "' id='opmode_always'" + opmode_always_checked + "><label for='opmode_always'>常時起動モード（測定値常時表示）</label></label>";
-  html += "  <input type='radio' name='opmode' value='" + OPMODE_MQTT + "' id='opmode_mqtt'" + opmode_mqtt_checked + "><label for='opmode_mqtt'>MQTTモード（間欠動作・ディープスリープ）</label><br>";
-  html += "  <br>";
-  html += "  MH-Z19B CO2センサー有無（金色のセンサー）<br>";
+  html += "  <strong>mDNS名(a.k.a Rendezvous, avahi-daemon)</strong><br>";
+  html += "  ※ mDNS名.local で他端末から本機にアクセスすることができます。<br>";
+  html += "  <input type='text' name='mdnsname' placeholder='mdnsname' value='" + config.mDNS + "'><br>";
+  html += "</fieldset>";
+ 
+  html += "<fieldset><legend>動作モード設定</legend>";
+  html += "  <strong>動作モード</strong><br>";
+  html += "  ※ ESP8266でMQTTモードを使用するにはIO16ピンとRSTピンを接続する必要があります。<br>";
+  String opmode_always_checked = (config.opMode == OPMODE_DISPLAY ? " checked" : "");
+  String opmode_mqtt_checked = (config.opMode == OPMODE_MQTT ? " checked" : "");
+  html += "  <input type='radio' name='opmode' value='" + OPMODE_DISPLAY + "' id='opmode_always'" + opmode_always_checked + "><label for='opmode_always'>常時起動モード（測定値常時表示, HTTPサーバーあり）</label></label><br>";
+  html += "  <input type='radio' name='opmode' value='" + OPMODE_MQTT + "' id='opmode_mqtt'" + opmode_mqtt_checked + "><label for='opmode_mqtt'>MQTTモード（間欠動作・MQTT送信後ディープスリープ）</label><br>";
+  html += "</fieldset>";
 
-  String mhz19b_nouse_checked = (use_mhz19b == MHZ_NOUSE ? " checked" : "");
-  String mhz19b_uart_checked = (use_mhz19b == MHZ_USE_UART ? " checked" : "");
-  String mhz19b_pwm_checked = (use_mhz19b == MHZ_USE_PWM ? " checked" : "");
+  html += "<fieldset><legend>デバイス設定</legend>";
 
+  String st7789_use_checked = (config.st7789 == ST7789_USE ? " checked" : "");
+  String st7789_nouse_checked = (config.st7789 == ST7789_NOUSE ? " checked" : "");
+  html += "  <strong>ST7789 SPI液晶の有無</strong><br>";
+  html += "  ※ MQTTモードでは無効。<br>";
+  html += "  ※ SPIピンはビルドオプションで指定<br>";
+  html += "  <input type='radio' name='st7789' value='" + ST7789_NOUSE + "' id='st7789_no'" + st7789_nouse_checked + "><label for='st7789_no'>使用しない</label><br>";
+  html += "  <input type='radio' name='st7789' value='" + ST7789_USE + "' id='st7789_yes'" + st7789_use_checked + "><label for='st7789_yes'>使用する（LilyGO TTGO T-DISPLAY）</label></label><br>";
+  html += "  <br>";
+
+  String mhz19b_nouse_checked = (config.use_mhz19b == MHZ_NOUSE ? " checked" : "");
+  String mhz19b_uart_checked = (config.use_mhz19b == MHZ_USE_UART ? " checked" : "");
+  String mhz19b_pwm_checked = (config.use_mhz19b == MHZ_USE_PWM ? " checked" : "");
+  html += "  <strong>MH-Z19B CO2センサー有無（金色のセンサー）</strong><br>";
   html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_NOUSE)  + "' id='mhz19b_no'" + mhz19b_nouse_checked + "><label for='mhz19b_no'>使用しない（通常はこちら）</label><br>";
   html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_USE_UART) + "' id='mhz19b_uart'" + mhz19b_uart_checked + "><label for='mhz19b_uart'>使用する（UARTモード）</label><br>";
-  html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_USE_PWM) + "' id='mhz19b_pwm'" + mhz19b_pwm_checked + "><label for='mhz19b_pwm'>使用する（PWMモード・5000ppm）</label><br>";
+  
+  //html += "  <br>";
+  // html += "  <strong>MH-Z19BのPWMピンが接続されているGPIOピン番号</strong><br>";
+  // html += "  <input type='text' name='mhz19b_pwmpin' placeholder='GPIOピン番号' value='" + config.mhz19b_pwmpin + "' placeholder='14'><br>";
   html += "  <br>";
 
-  html += "  ＜MH-Z19B PWM モード専用。それ以外では入力不要です＞<br>";
-  html += "  MH-Z19BのPWMピンが接続されているGPIOピン番号<br>";
-  html += "  <input type='text' name='mhz19b_pwmpin' placeholder='GPIOピン番号' value='" + mhz19b_pwmpin + "' placeholder='14'><br>";
+  html += "  <strong>MH-Z19BのUARTが接続されているGPIOピン番号</strong><br>";
+  html += "  ※ MH-Z19Bを使用しない場合は設定不要<br>";
+  html += "  ※ ボードによって使用可能なピンが異なるので動作しない場合は他のピンを試してください。<br>";
+  html += "  ※ 例： ESP8266 RX 14 TX 0 / ESP32 RX 32 TX 33<br>";
+  html += "  RXピン <input type='text' name='mhz19b_rxpin' placeholder='MHZ-19B RXピン番号' value='" + config.mhz19b_rxpin + "' placeholder='16'><br>";
+  html += "  TXピン <input type='text' name='mhz19b_txpin' placeholder='MHZ-19B TXピン番号' value='" + config.mhz19b_txpin + "' placeholder='17'><br>";
+  html += "</fieldset>";
+ 
+  html += "<fieldset><legend>MQTTモード専用設定</legend>";
+  html += "  <strong>＜MQTTモード以外の場合は入力不要＞</strong><br>";
   html += "  <br>";
-  html += "  ＜MH-Z19B UART モード専用。変更できません＞<br>";
-  html += "  MH-Z19BのUART Rxピンが接続されているGPIOピン番号(ex 13)<br>";
-  html += "  ESP8266 Rx = 14 Tx = 0<br>";
-  html += "  ESP32   Rx = 16 Tx = 17<br>";
+  html += "  <strong>MQTTブローカーのIPアドレス</strong><br>";
+  html += "  ※ ホスト名も可能ですが、mDNS(bonjour, avahi)は使用出来ません。<br>";
+  html += "  <input type='text' name='mqttbroker' placeholder='mqttbroker' value='" + config.mqttBroker + "'><br>";
   html += "  <br>";
-  html += "  ＜MQTTモード専用。それ以外では入力不要です＞<br>";
-  html += "  MQTTブローカーのIPアドレスです。ホスト名も可能ですが、mDNS(bonjour, avahi)は使用出来ません。<br>";
-  html += "  <input type='text' name='mqttbroker' placeholder='mqttbroker' value='" + mqttBroker + "'><br>";
-  html += "  <br>";
-  html += "  ＜MQTTモード専用。それ以外では入力不要です＞<br>";
-  html += "  MQTT名です。クライアント名とトピック名に使用されます。<br>";
-  html += "  <input type='text' name='mqttname' placeholder='mqttname' value='" + mqttName + "'><br>";
+  html += "  <strong>MQTT名</strong><br>";
+  html += "  ※ クライアント名とトピック名として使用<br>";
+  html += "  <input type='text' name='mqttname' placeholder='mqttname' value='" + config.mqttName + "'><br>";
+  html += "</fieldset>";
+
   html += "  <br>";
   html += "  <input type='submit' value='設定する'><br>";
   html += "</form>";
@@ -110,41 +132,52 @@ String http_setup_post_root_content() {
   html += "</head>";
 
   html += "<h1>" + product + " setting done</h1>";
-  if (opMode == "always") {
+  if (config.opMode == "always") {
     html += "動作モード：常時稼働モード<br>";    
-    html += "SSID " + ssid + "<br>";
-    html += "PASS " + password + "<br>";
-    html += "mDNS " + mDNS + "<br>";
-    if (use_mhz19b == MHZ_USE_UART) {
-      html += "MHZ19B を使用する（UART）<br>";
-    } else if (use_mhz19b == MHZ_USE_PWM) {
-      html += "MHZ19B を使用する（PWM）";
-      html += " GPIOピン番号=" + String(mhz19b_pwmpin) + "<br>";
-    } else if (use_mhz19b == MHZ_NOUSE) {
-      html += "MHZ19B を使用しない、または接続されていない<br>";
+    html += "SSID " + config.ssid + "<br>";
+    html += "PASS " + config.password + "<br>";
+    html += "mDNS " + config.mDNS + "<br>";
+
+    if (config.st7789 == ST7789_USE) {
+      html += "ST7789 を使用する<br>";
+    } else if (config.st7789 == ST7789_NOUSE) {
+      html += "ST7789 を使用しない<br>";
     } else {
-      html += "【バグ】MHZ19B設定が異常です。 =>" + use_mhz19b + "<br>";           
+      html += "【バグ】ST7789設定が異常です => " + config.st7789 + "<br>";
     }
 
-  } else if (opMode == "mqtt") {
+    if (config.use_mhz19b == MHZ_USE_UART) {
+      html += "MHZ19B を使用する（UART）<br>";
+      html += "  RXピン番号=" + String(config.mhz19b_rxpin) + "<br>";
+      html += "  TXピン番号=" + String(config.mhz19b_txpin) + "<br>";
+    } else if (config.use_mhz19b == MHZ_USE_PWM) {
+      html += "MHZ19B を使用する（PWM） ※ 廃止されたモードです";
+      html += " GPIOピン番号=" + String(config.mhz19b_pwmpin) + "<br>";
+    } else if (config.use_mhz19b == MHZ_NOUSE) {
+      html += "MHZ19B を使用しない、または接続されていない<br>";
+    } else {
+      html += "【バグ】MHZ19B設定が異常です。 =>" + config.use_mhz19b + "<br>";           
+    }
+
+  } else if (config.opMode == "mqtt") {
     html += "動作モード：MQTT間欠動作モード<br>";
-    html += "SSID " + ssid + "<br>";
-    html += "PASS " + password + "<br>";
-    html += "mDNS " + mDNS + "<br>";
-    html += "MQTT broker " + mqttBroker + "<br>";
-    html += "MQTT name   " + mqttName + "<br>";
-    if (use_mhz19b == MHZ_USE_UART) {
+    html += "SSID " + config.ssid + "<br>";
+    html += "PASS " + config.password + "<br>";
+    html += "mDNS " + config.mDNS + "<br>";
+    html += "MQTT broker " + config.mqttBroker + "<br>";
+    html += "MQTT name   " + config.mqttName + "<br>";
+    if (config.use_mhz19b == MHZ_USE_UART) {
       html += "MHZ19B を使用する（UARTモード）<br>";
-    } else if (use_mhz19b == MHZ_USE_PWM) {
+    } else if (config.use_mhz19b == MHZ_USE_PWM) {
       html += "MHZ19B を使用する(PWMモード)<br>";     
-      html += " GPIOピン番号=" + String(mhz19b_pwmpin) + "<br>";
-    } else if (use_mhz19b == MHZ_NOUSE) {
+      html += " GPIOピン番号=" + String(config.mhz19b_pwmpin) + "<br>";
+    } else if (config.use_mhz19b == MHZ_NOUSE) {
       html += "MHZ19B を使用しない、または接続されていない<br>";     
     } else {
-      html += "【バグ】MHZ19B設定が異常です。 =>" + use_mhz19b + "<br>";           
+      html += "【バグ】MHZ19B設定が異常です。 =>" + config.use_mhz19b + "<br>";           
     }
   } else {
-    html += "動作モード：不明" + opMode + "<br>";    
+    html += "動作モード：不明" + config.opMode + "<br>";    
   }
 
   html += "<br>";
