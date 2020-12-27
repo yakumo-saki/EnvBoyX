@@ -75,8 +75,11 @@ void save_config()
   f.println(config.password);
   f.println(config.mDNS);
   f.println(config.opMode);
+  f.println(config.st7789);
   f.println(config.use_mhz19b);
   f.println(config.mhz19b_pwmpin);
+  f.println(config.mhz19b_rxpin);
+  f.println(config.mhz19b_txpin);
   f.println(config.mqttBroker);
   f.println(config.mqttName);
   f.close();

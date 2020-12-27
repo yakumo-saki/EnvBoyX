@@ -63,14 +63,17 @@ void save_config()
   // 設定ファイル
   File f = LittleFS.open(settings, "w");
   f.println(String(SETTING_ID));
-  f.println(ssid);
-  f.println(password);
-  f.println(mDNS);
-  f.println(opMode);
-  f.println(use_mhz19b);
-  f.println(mhz19b_pwmpin);
-  f.println(mqttBroker);
-  f.println(mqttName);
+  f.println(config.ssid);
+  f.println(config.password);
+  f.println(config.mDNS);
+  f.println(config.opMode);
+  f.println(config.st7789);
+  f.println(config.use_mhz19b);
+  f.println(config.mhz19b_pwmpin);
+  f.println(config.mhz19b_rxpin);
+  f.println(config.mhz19b_txpin);
+  f.println(config.mqttBroker);
+  f.println(config.mqttName);
   f.close();
 
   create_configure_flag_file();
@@ -83,34 +86,44 @@ void read_config()
 {
   File f = LittleFS.open(settings, "r");
   String settingId = f.readStringUntil('\n'); // 使わない
-  ssid = f.readStringUntil('\n');
-  password = f.readStringUntil('\n');
-  mDNS = f.readStringUntil('\n');
-  opMode = f.readStringUntil('\n');
-  use_mhz19b = f.readStringUntil('\n');
-  mhz19b_pwmpin = f.readStringUntil('\n');
-  mqttBroker = f.readStringUntil('\n');
-  mqttName = f.readStringUntil('\n');
+  config.ssid = f.readStringUntil('\n');
+  config.password = f.readStringUntil('\n');
+  config.mDNS = f.readStringUntil('\n');
+  config.opMode = f.readStringUntil('\n');
+  config.st7789 = f.readStringUntil('\n');
+  config.use_mhz19b = f.readStringUntil('\n');
+  config.mhz19b_pwmpin = f.readStringUntil('\n');
+  config.mhz19b_rxpin = f.readStringUntil('\n');
+  config.mhz19b_txpin = f.readStringUntil('\n');
+  config.mqttBroker = f.readStringUntil('\n');
+  config.mqttName = f.readStringUntil('\n');
   f.close();
 
   settingId.trim();
-  ssid.trim();
-  password.trim();
-  mDNS.trim();
-  opMode.trim();
-  use_mhz19b.trim();
-  mqttBroker.trim();
-  mqttName.trim();
+  config.ssid.trim();
+  config.password.trim();
+  config.mDNS.trim();
+  config.opMode.trim();
+  config.st7789.trim();
+  config.use_mhz19b.trim();
+  config.mhz19b_pwmpin.trim();
+  config.mhz19b_rxpin.trim();
+  config.mhz19b_txpin.trim();
+  config.mqttBroker.trim();
+  config.mqttName.trim();
 
   cfglog("S-ID: " + settingId);
-  cfglog("SSID: " + ssid);
-  cfglog("PASS: " + password);
-  cfglog("mDNS: " + mDNS);
-  cfglog("opMode: " + opMode);
-  cfglog("use MHZ19B: " + use_mhz19b);
-  cfglog("   PWM PIN: " + mhz19b_pwmpin);
-  cfglog("MQTT Broker: " + mqttBroker);
-  cfglog("MQTT Name  : " + mqttName);
+  cfglog("SSID: " + config.ssid);
+  cfglog("PASS: " + config.password);
+  cfglog("mDNS: " + config.mDNS);
+  cfglog("opMode: " + config.opMode);
+  cfglog("ST7789: " + config.st7789);
+  cfglog("use MHZ19B: " + config.use_mhz19b);
+  cfglog("   PWM PIN: " + config.mhz19b_pwmpin);
+  cfglog("   RX  PIN: " + config.mhz19b_rxpin);
+  cfglog("   TX  PIN: " + config.mhz19b_txpin);
+  cfglog("MQTT Broker: " + config.mqttBroker);
+  cfglog("MQTT Name  : " + config.mqttName);
 }
 
 /**

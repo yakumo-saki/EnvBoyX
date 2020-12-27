@@ -101,9 +101,9 @@ void start_wifi_access_point() {
   byte mac[6];
   WiFi.macAddress(mac);
 
-  // SSID は macaddress をSUFFIXする
+  // SSID は macaddress をSUFFIXする。前半はespressifのIDなので後半3つだけ
   config.ssid = "_SETUP_" + product_short + "_";
-  for (int i = 0; i < 6; i++) {
+  for (int i = 3; i < 6; i++) {
     config.ssid += String(mac[i], HEX);
   }
   

@@ -81,6 +81,7 @@ String http_setup_get_root_content() {
   //html += "  <br>";
   // html += "  <strong>MH-Z19BのPWMピンが接続されているGPIOピン番号</strong><br>";
   // html += "  <input type='text' name='mhz19b_pwmpin' placeholder='GPIOピン番号' value='" + config.mhz19b_pwmpin + "' placeholder='14'><br>";
+  html += "  <input type='hidden' name='mhz19b_pwmpin' value='14'>";
   html += "  <br>";
 
   html += "  <strong>MH-Z19BのUARTが接続されているGPIOピン番号</strong><br>";

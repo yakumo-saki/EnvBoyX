@@ -29,7 +29,6 @@ void handle_get_root(AsyncWebServerRequest *request) {
  */
 void handle_post_root(AsyncWebServerRequest *request) {
 
-  httplog("post");
   config.ssid = request->getParam("ssid", true)->value();
   config.password = request->getParam("pass", true)->value();
   config.mDNS = request->getParam("mdnsname", true)->value();

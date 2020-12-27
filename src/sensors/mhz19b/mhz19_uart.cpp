@@ -10,6 +10,10 @@
 // 終了後は false に戻す。
 bool AUTO_BASELINE_CORRECTION = false;
 
+#ifdef ESP8266
+#include <SoftwareSerial.h>
+#endif
+
 unsigned long mhzGetDataTimer = 0;                     
 
 MHZ19 mhz19;
