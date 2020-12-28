@@ -13,8 +13,7 @@ with SSD1306 I2C OLED (128x64px)
 
 ### `LilyGo TTGO T-DISPLAY`
 
-ESP32 with ST7789V SPI 1.14 inch 160x128px display.
-Display not yet supported. 
+ESP32 with ST7789V SPI 1.14 inch 240x135px display.
 
 ### ESP8266 boards
 
@@ -27,10 +26,10 @@ with SSD1306 I2C OLED (128x64px)
 
 Defined at `global.cpp`
 
-| TYPE  | SDA | SCL  |
-| ----- | ----| ---- |
-|ESP32  |  21 | 22   |
-|ESP8266|   5 |  4   |
+| TYPE  | SDA | SCL  | note             |
+| ----- | ----| ---- | ---------------- |
+|ESP32  |  21 | 22   | not configurable |
+|ESP8266|   5 |  4   | not configurable |
 
 ### MH-Z19 Serial(UART)
 
@@ -38,7 +37,7 @@ Defined at `mhz19_uart.cpp`
 
 | TYPE  | Rx  | Tx   | note                            |
 | ----- | ----| ---- | ------------------------------- |
-|ESP32  |  16 | 17   | HardwareSerial 2, configuarable |
+|ESP32  |  16 | 17   | HardwareSerial 2, configurable |
 |ESP8266|  14 |  0   | SoftwareSerial , fixed          |
 
 ## sensors
@@ -103,6 +102,10 @@ esptool.py write_flash 0x1000 filename.bin
 Get binary from releases page.(not every version have binary file, sorry)
 
 ## History
+
+### v3.1
+
+* Refactoring
 
 ### v3.0
 
