@@ -193,28 +193,18 @@ void disp_ssd1306_all_initialize_complete() {
 /**
  * 通常画面
  */
-void disp_ssd1306_sensor_value(String ip, String mdns) {
+void disp_ssd1306_sensor_value(disp_values_t val) {
 
   if (!has_ssd1306()) return;
 
   display.clear();
 
-  // CO2の値がエラーであれば表示を変える
-  String ppm = String(lastPpm);
-  if (lastPpm < 0) {
-    ppm = "****";  // 計測エラー
-  } else if (lastPpm < 399) {
-    ppm = "*" + String(lastPpm); // あり得ない値(最低399ppmなはず）
-  } else {
-    ppm = String(lastPpm);       // OK
-  }
-
   // 測定値表示部分
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_16);
-  display.drawString(0, 12, "  " + String(lastTemp, 2) + "c" + "    " + String(lastHumidity, 2) + "%" ); 
-  display.drawString(0, 29, "" + String(lastPressure, 1) + "hpa " + String(lastLuxFull, 0) + "lx"); 
-  display.drawString(0, 47, String("CO2:") + ppm + "ppm" ); 
+  display.drawString(0, 12, "  " + val.temperature + "    " + val.humidity ); 
+  display.drawString(0, 29, "" + val.pressure + " " + val.lux); 
+  display.drawString(0, 47, String("CO2:") + val.co2ppm); 
   // "L:" + String(lastLuxFull, 0) + " " + "Ir:" + String(lastLuxIr, 0)
 
   // 左下、バージョン表示
@@ -235,9 +225,9 @@ void disp_ssd1306_sensor_value(String ip, String mdns) {
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(ArialMT_Plain_10);
   if (disp_switch < 3) {
-    display.drawString(127, 0, ip); 
+    display.drawString(127, 0, val.ip); 
   } else {
-    display.drawString(127, 0, mdns); 
+    display.drawString(127, 0, val.mDNS); 
   }
 
   disp_switch++;

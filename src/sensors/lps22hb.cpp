@@ -6,11 +6,10 @@
 
 #include <Sodaq_LPS22HB.h>
 
+#include "global.h"
 #include "log.h"
 
 Sodaq_LPS22HB lps22hb;
-
-extern float lastPressure;
 
 bool use_lps22hb = false;
 
@@ -35,7 +34,7 @@ void lps_read_data() {
   float tempPres(NAN);
   tempPres = lps22hb.readPressureHPA();
   if (tempPres != 0) {
-    lastPressure = tempPres;
+    sensorValues.pressure = tempPres;
     
     Serial.print("LPS22HB: ");
     Serial.print("Pressure=");

@@ -59,14 +59,14 @@ void read_data() {
   if (read_data_tsl2561()) { 
     // MQTT
     char buf[24] = "";
-    sprintf(buf, "%2f", lastLuxFull);
+    sprintf(buf, "%2f", sensorValues.lux);
     mqtt_publish("lux", buf);
   
-    sprintf(buf, "%2f", lastLuxIr);
+    sprintf(buf, "%2f", sensorValues.luxIr);
     mqtt_publish("luxIr", buf);
   } else {
-    lastLuxFull = 0;
-    lastLuxIr = 0;
+    sensorValues.lux = 0;
+    sensorValues.luxIr = 0;
   }
 
   if (config.use_mhz19b) {
@@ -79,9 +79,9 @@ void read_data() {
     }
     
     // MQTT: if ppm == -1 , MH-Z19 error.
-    if (lastPpm > 0) {
+    if (sensorValues.co2ppm > 0) {
       char buf[24] = "";
-      sprintf(buf, "%d", lastPpm);
+      sprintf(buf, "%d", sensorValues.co2ppm);
       mqtt_publish("co2ppm", buf);
     } else {
       // MH-Z19B read error. do nothing.
@@ -92,18 +92,18 @@ void read_data() {
 
   // MQTT
   char buf[24] = "";
-  if (lastTemp != NAN) {
-    sprintf(buf, "%2f", lastTemp);
+  if (sensorValues.temperature != NAN) {
+    sprintf(buf, "%2f", sensorValues.temperature);
     mqtt_publish("temp", buf);
   }
   
-  if (lastHumidity != NAN) {
-    sprintf(buf, "%2f", lastHumidity);
+  if (sensorValues.humidity != NAN) {
+    sprintf(buf, "%2f", sensorValues.humidity);
     mqtt_publish("humi", buf);
   }
 
-  if (lastPressure != NAN) {
-    sprintf(buf, "%2f", lastPressure);
+  if (sensorValues.pressure != NAN) {
+    sprintf(buf, "%2f", sensorValues.pressure);
     mqtt_publish("pres", buf);
   }
   

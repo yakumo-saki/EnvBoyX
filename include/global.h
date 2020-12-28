@@ -45,11 +45,5 @@ extern config_t config;
 // --------------------------------------------------------------------
 // センサー値
 // --------------------------------------------------------------------
-extern float lastTemp;
-extern float lastHumidity;
-extern float lastPressure;
-extern float lastLuxFull;
-extern float lastLuxIr;
-extern int lastPpm;
-extern String lastPpmAccuracy;
+extern sensor_values_t sensorValues;
 

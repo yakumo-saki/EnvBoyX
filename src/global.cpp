@@ -4,9 +4,12 @@
 // --------------------------------------------------------------------
 // プロダクト名定数
 // --------------------------------------------------------------------
+// ebx
 String product_short = "ebx";
+// EnvBoyX
 String product = "EnvBoyX";
-String ver = "3.0";
+String ver = "3.1";
+// EnvBoyX Ver.3.0
 String product_long = product + " Ver." + ver;
 
 // --------------------------------------------------------------------
@@ -29,6 +32,7 @@ extern const int MHZ_BAUDRATE = 9600;
 String settings = "/wifi_settings.txt";
 String configured_file = "/config_ok.txt";
 
+// 次からv3 -> ただの連番にして単純カウントアップにする
 String SETTING_ID = "EBXCFG.v3b1";
 String OPMODE_MQTT = "mqtt";
 String OPMODE_DISPLAY = "always";
@@ -48,10 +52,4 @@ config_t config;
 // --------------------------------------------------------------------
 // センサー値
 // --------------------------------------------------------------------
-float lastTemp;
-float lastHumidity;
-float lastPressure;
-float lastLuxFull;
-float lastLuxIr;
-int lastPpm;
-String lastPpmAccuracy;
+sensor_values_t sensorValues;

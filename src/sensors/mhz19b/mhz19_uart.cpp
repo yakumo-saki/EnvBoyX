@@ -50,7 +50,7 @@ void mhz_setup_check_device_uart() {
 
 void mhz_setup_uart() {
 
-  lastPpm = CO2_PPM_INVALID;
+  sensorValues.co2ppm = CO2_PPM_INVALID;
 
   mhzlog("Enabled (UART mode).");
 
@@ -116,6 +116,6 @@ void mhz_read_data_uart() {
   printErrorCode();
   
   mhzlog("CO2 (ppm): " + String(co2ppm) + " Accuracy: " + acc + " Temp: " + String(temp) + " CO2 range: "+ range);
-  lastPpm = co2ppm;
-  lastPpmAccuracy = acc;
+  sensorValues.co2ppm = co2ppm;
+  sensorValues.co2ppmAccuracy = acc;
 }

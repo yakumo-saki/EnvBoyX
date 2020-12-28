@@ -7,6 +7,7 @@
 
 #include "Seeed_BME280.h"
 
+#include "global.h"
 #include "log.h"
 
 BME280 bme;   // Default : forced mode, standby time = 1000 ms
@@ -16,10 +17,6 @@ BME280 bme;   // Default : forced mode, standby time = 1000 ms
 const uint8_t BME_ADDR = 0x76;
 
 static bool use_bme = false;
-
-extern float lastTemp;
-extern float lastHumidity;
-extern float lastPressure;
 
 bool has_bme() {
   // check i2c 0x76
@@ -77,7 +74,7 @@ void bme_read_data() {
   snprintf(log, sizeof log, "Temp: %.2fc   Humidity: %.2f%%   Pressure: %.2fhPa", temp, hum, pres);
   bmelog(String(log));
 
-  lastTemp = temp;
-  lastHumidity = hum;
-  lastPressure = pres;
+  sensorValues.temperature = temp;
+  sensorValues.humidity = hum;
+  sensorValues.pressure = pres;
 }

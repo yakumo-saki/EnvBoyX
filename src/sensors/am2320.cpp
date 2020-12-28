@@ -1,12 +1,10 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+#include "global.h"
 #include "log.h"
 
 const uint8_t AM2320_ADDR = 0x5C;
-
-extern float lastTemp;
-extern float lastHumidity;
 
 bool use_am2320 = false;
 
@@ -98,7 +96,7 @@ void am_read_data() {
     Serial.print(rh);
     Serial.println("%");
 
-    lastTemp = tp;
-    lastHumidity = rh;
+    sensorValues.temperature = tp;
+    sensorValues.humidity = rh;
   }
 }

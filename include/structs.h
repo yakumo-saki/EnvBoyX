@@ -2,6 +2,17 @@
 #define STRUCTS_H
 
 #include <Arduino.h>
+
+typedef struct {
+  float temperature;
+  float humidity;
+  float pressure;
+  float lux;
+  float luxIr;
+  int co2ppm;
+  String co2ppmAccuracy;
+} sensor_values_t;
+
 typedef struct {
     String ip;
     String mDNS;
