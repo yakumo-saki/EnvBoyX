@@ -3,14 +3,12 @@
 #include <Wire.h>
 #include <Tsl2561.h>
 
+#include "global.h"
 #include "log.h"
 
 Tsl2561 Tsl(Wire);
 
 bool use_tsl = false;
-
-extern float lastLuxFull;
-extern float lastLuxIr;
 
 void tsl_setup() {
   // init TSL2561
@@ -45,8 +43,8 @@ bool read_data_tsl2561() {
   snprintf(log, sizeof log, "TSL2561 at 0x%02x(id=0x%02x) luminosity is %5u (full) and %5u (ir)", Tsl.address(), id, full, ir);
   tsllog(String(log));
 
-  lastLuxFull = full;
-  lastLuxIr = ir;
+  sensorValues.lux = full;
+  sensorValues.luxIr = ir;
 
   Tsl.off(); 
 

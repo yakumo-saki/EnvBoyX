@@ -25,9 +25,13 @@ String http_normal_data_json() {
     " \"humidity\": \"%s\", \"pressure\": \"%s\",\"luminous\": \"%s\", \"luminousIr\": \"%s\""
     ", \"co2ppm\": \"%s\", \"co2ppmAccuracy\": \"%s\" }"
     , product, hr, min, sec, millis()
-    , dtostrf(lastTemp, 0, 2, temp), dtostrf(lastHumidity, 0, 2, hum), dtostrf(lastPressure, 0, 2, pres)
-    , dtostrf(lastLuxFull, 0, 0, lux), dtostrf(lastLuxIr, 0, 0, luxIr)
-    , dtostrf(lastPpm, 0, 0, ppm), lastPpmAccuracy.c_str()
+    , dtostrf(sensorValues.temperature, 0, 2, temp)
+    , dtostrf(sensorValues.humidity, 0, 2, hum)
+    , dtostrf(sensorValues.pressure, 0, 2, pres)
+    , dtostrf(sensorValues.lux, 0, 0, lux)
+    , dtostrf(sensorValues.luxIr, 0, 0, luxIr)
+    , dtostrf(sensorValues.co2ppm, 0, 0, ppm)
+    , sensorValues.co2ppmAccuracy.c_str()
   );
 
   String json = String(buf);

@@ -32,6 +32,8 @@ extern String OPMODE_DISPLAY;
 
 extern String ST7789_USE;
 extern String ST7789_NOUSE;
+extern String ST7789_MODE_BIG;
+extern String ST7789_MODE_NORMAL;
 
 extern String MHZ_USE_PWM;
 extern String MHZ_USE_UART;
@@ -45,11 +47,5 @@ extern config_t config;
 // --------------------------------------------------------------------
 // センサー値
 // --------------------------------------------------------------------
-extern float lastTemp;
-extern float lastHumidity;
-extern float lastPressure;
-extern float lastLuxFull;
-extern float lastLuxIr;
-extern int lastPpm;
-extern String lastPpmAccuracy;
+extern sensor_values_t sensorValues;
 

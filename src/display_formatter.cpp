@@ -25,7 +25,7 @@ String format_co2_ppm(int ppm) {
 	String result = String(ppm);
 	if (ppm < 0) {
 	  result = "****";  // 計測エラー
-	} else if (lastPpm < 399) {
+	} else if (ppm < 399) {
 	  result = "*" + String(ppm); // あり得ない値(最低399ppmなはず）
 	} else {
 	  result = String(ppm);       // OK
@@ -40,11 +40,11 @@ String format_co2_ppm(int ppm) {
  */
 disp_values_t create_disp_values() {
 	disp_values_t ret;
-	ret.temperature = format_temparature(lastTemp);
-	ret.humidity = format_humidity(lastHumidity);
-	ret.pressure = format_pressure(lastPressure);
-	ret.co2ppm = format_co2_ppm(lastPpm);
-	ret.lux = format_lux(lastLuxFull);
+	ret.temperature = format_temparature(sensorValues.temperature);
+	ret.humidity = format_humidity(sensorValues.humidity);
+	ret.pressure = format_pressure(sensorValues.pressure);
+	ret.co2ppm = format_co2_ppm(sensorValues.co2ppm);
+	ret.lux = format_lux(sensorValues.lux);
 	
 	return ret;
 }

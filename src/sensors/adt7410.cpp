@@ -1,13 +1,12 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+#include "global.h"
 #include "log.h"
 
 const uint8_t ADT7410_ADDR = 0x48;
 
 bool use_adt7410 = false;
-
-extern float lastTemp;
 
 bool has_adt7410() {
 
@@ -59,5 +58,5 @@ void adt_read_data(void) {
 
   adtlog("Temp is " + String(tmp0));
 
-  lastTemp = tmp0;
+  sensorValues.temperature = tmp0;
 }

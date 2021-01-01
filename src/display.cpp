@@ -136,7 +136,7 @@ void disp_sensor_value(String ip, String mdns) {
 	disp_values.mDNS = mdns;
 	
 	if (use_ssd1306()) {
-		disp_ssd1306_sensor_value(ip, mdns);
+		disp_ssd1306_sensor_value(disp_values);
 	}
 	if (use_st7789()) {
 		disp_st7789_sensor_value(disp_values, last_values);

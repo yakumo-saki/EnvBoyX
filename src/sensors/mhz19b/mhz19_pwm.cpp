@@ -105,7 +105,7 @@ int mhz_read_data_pwm() {
 
   if (mhz_high_ms < 0 || mhz_low_ms < 0) {
     mhzlog("PWM timeout, set lastppm = -999");
-    lastPpm = CO2_PPM_INVALID;
+    sensorValues.co2ppm = CO2_PPM_INVALID;
     return CO2_PPM_INVALID;
   }
 
@@ -123,7 +123,7 @@ int mhz_read_data_pwm() {
     ppm = 400.0;
   }
 
-  lastPpm = ppm;
+  sensorValues.co2ppm = ppm;
   return (int) ppm;
 }
 
