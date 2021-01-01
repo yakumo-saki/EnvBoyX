@@ -31,10 +31,9 @@ void handle_post_root() {
   config.mDNS = server.arg("mdnsname");
   config.opMode = server.arg("opmode");
   config.st7789 = server.arg("st7789");
+  config.st7789Mode = server.arg("st7789Mode");
   config.use_mhz19b = server.arg("use_mhz19b");
   config.mhz19b_pwmpin = server.arg("mhz19b_pwmpin");
-  // config.mhz19b_rxpin = server.arg("mhz19b_rxpin");
-  // config.mhz19b_txpin = server.arg("mhz19b_txpin");
   // SoftwareSerialの初期化時にこれを渡す方法がわからないので固定
   config.mhz19b_rxpin = "14";
   config.mhz19b_txpin = "0";

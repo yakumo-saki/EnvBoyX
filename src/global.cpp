@@ -33,12 +33,14 @@ String settings = "/wifi_settings.txt";
 String configured_file = "/config_ok.txt";
 
 // 次からv3 -> ただの連番にして単純カウントアップにする
-String SETTING_ID = "EBXCFG.v3b1";
+String SETTING_ID = "EBXCFG.v6";
 String OPMODE_MQTT = "mqtt";
 String OPMODE_DISPLAY = "always";
 
 String ST7789_USE = "yes";
 String ST7789_NOUSE = "no";
+String ST7789_MODE_BIG = "st7789_BIG";
+String ST7789_MODE_NORMAL = "st7789_normal";
 
 String MHZ_USE_PWM = "yes_pwm";
 String MHZ_USE_UART = "yes_uart";

@@ -64,11 +64,18 @@ String http_setup_get_root_content() {
 
   String st7789_use_checked = (config.st7789 == ST7789_USE ? " checked" : "");
   String st7789_nouse_checked = (config.st7789 == ST7789_NOUSE ? " checked" : "");
+  
+  String st7789_big_checked = (config.st7789Mode == ST7789_MODE_BIG ? " checked" : "");
+  String st7789_normal_checked = (config.st7789Mode == ST7789_MODE_NORMAL ? " checked" : "");
   html += "  <strong>ST7789 SPI液晶の有無</strong><br>";
   html += "  ※ MQTTモードでは無効。<br>";
   html += "  ※ SPIピンはビルドオプションで指定<br>";
   html += "  <input type='radio' name='st7789' value='" + ST7789_NOUSE + "' id='st7789_no'" + st7789_nouse_checked + "><label for='st7789_no'>使用しない</label><br>";
   html += "  <input type='radio' name='st7789' value='" + ST7789_USE + "' id='st7789_yes'" + st7789_use_checked + "><label for='st7789_yes'>使用する</label></label><br>";
+
+  html += "  <strong>ST7789 表示モード</strong><br>";
+  html += "  <input type='radio' name='st7789Mode' value='" + ST7789_MODE_NORMAL + "' id='st7789_normal'" + st7789_normal_checked + "><label for='st7789_normal'>横表示モード</label></label><br>";
+  html += "  <input type='radio' name='st7789Mode' value='" + ST7789_MODE_BIG + "' id='st7789_big'" + st7789_big_checked + "><label for='st7789_big'>縦表示モード（デカ文字）</label><br>";
   html += "  <br>";
 
   String mhz19b_nouse_checked = (config.use_mhz19b == MHZ_NOUSE ? " checked" : "");
@@ -140,6 +147,15 @@ String http_setup_post_root_content() {
     html += "mDNS " + config.mDNS + "<br>";
 
     if (config.st7789 == ST7789_USE) {
+      html += "ST7789 を使用する<br>";
+
+      if (config.st7789Mode == ST7789_MODE_BIG) {
+        html += "ST7789表示モード：縦（デカ文字）<br>";
+      } else if (config.st7789Mode == ST7789_MODE_NORMAL) {
+        html += "ST7789表示モード：横（標準）<br>";
+      } else {
+        html += "【バグ】ST7789表示モード設定が異常です => " + config.st7789Mode + "<br>";
+      }
       html += "ST7789 を使用する<br>";
     } else if (config.st7789 == ST7789_NOUSE) {
       html += "ST7789 を使用しない<br>";

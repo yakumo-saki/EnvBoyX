@@ -22,6 +22,7 @@ typedef struct {
     String lux;
     String luxIr;
     String co2ppm;
+    sensor_values_t rawValues;
 } disp_values_t;
 typedef struct {
   String settingId;
@@ -34,6 +35,7 @@ typedef struct {
   String mhz19b_rxpin;
   String mhz19b_txpin;
   String st7789;
+  String st7789Mode;
   String mqttBroker;
   String mqttName;
 } config_t;
