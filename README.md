@@ -105,6 +105,7 @@ Get binary from releases page.(not every version have binary file, sorry)
 
 ### v3.1
 
+* Add vertical display mode(bigger font. ST7789 only)
 * Refactoring
 
 ### v3.0
