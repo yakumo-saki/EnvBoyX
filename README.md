@@ -103,6 +103,10 @@ Get binary from releases page.(not every version have binary file, sorry)
 
 ## History
 
+### v3.2
+
+* Avoid using delay
+
 ### v3.1
 
 * Add vertical display mode(bigger font. ST7789 only)

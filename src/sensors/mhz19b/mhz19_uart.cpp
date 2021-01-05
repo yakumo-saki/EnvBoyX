@@ -58,7 +58,6 @@ void mhz_setup_uart() {
   mhzlog("ESP32 serial begin RX=" + String(config.mhz19b_rxpin.toInt()) + " TX=" + String(config.mhz19b_txpin.toInt()));
   mhzSerial.begin(MHZ_BAUDRATE, SERIAL_8N1, config.mhz19b_rxpin.toInt(), config.mhz19b_txpin.toInt());
 #elif defined(ARDUINO_ARCH_ESP8266) 
-  SoftwareSerial mhzSerial(config.mhz19b_rxpin.toInt(), config.mhz19b_txpin.toInt());
   mhzSerial.begin(MHZ_BAUDRATE);
 #endif
 

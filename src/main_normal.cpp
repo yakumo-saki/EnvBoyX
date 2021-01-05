@@ -71,21 +71,22 @@ void read_data() {
 
   if (config.use_mhz19b) {
     // 
-    mhz_read_data();
-
     if (config.opMode == OPMODE_MQTT) {
-      delay(3050);       // MHZデータ取得待ち
-      mhz_read_data();   // ここは adhoc 
-    }
-    
-    // MQTT: if ppm == -1 , MH-Z19 error.
-    if (sensorValues.co2ppm > 0) {
-      char buf[24] = "";
-      sprintf(buf, "%d", sensorValues.co2ppm);
-      mqtt_publish("co2ppm", buf);
+		delay(3050);       // MHZデータ取得待ち
+		mhz_read_data();   // ここは adhoc 
+
+		// MQTT: if ppm == -1 , MH-Z19 error.
+		if (sensorValues.co2ppm > 0) {
+		char buf[24] = "";
+		sprintf(buf, "%d", sensorValues.co2ppm);
+		mqtt_publish("co2ppm", buf);
+		} else {
+		// MH-Z19B read error. do nothing.
+		}
     } else {
-      // MH-Z19B read error. do nothing.
-    }
+		mhz_read_data();
+	}
+    
   } 
 
   mainlog("Reading sensor data complete.");
@@ -192,6 +193,7 @@ void loop_normal() {
   }
   
   read_data();
+  delay(1000);
 
   // sleep to next.
   if (config.opMode == OPMODE_MQTT) {
