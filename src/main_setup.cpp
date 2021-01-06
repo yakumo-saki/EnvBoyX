@@ -29,4 +29,3 @@ void setup_setupmode() {
 void loop_setupmode() {
   loop_http_setup();
 }
-

@@ -6,11 +6,8 @@
 #include "log.h"
 #include "global.h"
 #include "config.h"
-#include "i2c.h"
 #include "main_setup.h"
 #include "main_normal.h"
-
-#include <Wire.h>
 
 bool isNormal = false;
 
@@ -28,16 +25,6 @@ void setup()
   sectionlog("Initializing LittleFS.");
   config_setup();
   isNormal = has_valid_config();
-
-  // Init I2C Serial
-  sectionlog("Initializing I2C SDA=" + String(I2C_SDA) + " SCL=" + String(I2C_SCL));
-
-  bool ret = init_i2c(I2C_SDA, I2C_SCL);
-  if (ret) {
-    mainlog("I2C initialized.");
-  } else {
-    mainlog("error initializing I2C");
-  }
 
   if (!isNormal) {
     sectionlog("Entering setup mode.");

@@ -58,6 +58,16 @@ void wifilog(String msg) {
   real_log(msg, "WiFi");
 }
 
+void i2clog(String msg) {
+  real_log(msg, "I2C");
+}
+void ssdlog(String msg) {
+  real_log(msg, "SSD1306");
+}
+void stlog(String msg) {
+  real_log(msg, "ST7789");
+}
+
 void sectionlog(String msg) {
   Serial.println("");
   real_log(msg, "========");

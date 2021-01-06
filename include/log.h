@@ -12,4 +12,7 @@ void httplog(String msg);
 void displog(String msg);
 void mdnslog(String msg);
 void wifilog(String msg);
+void i2clog(String msg);
+void stlog(String msg);
+void ssdlog(String msg);
 void sectionlog(String msg);

@@ -278,5 +278,9 @@ void disp_ssd1306_set_power(bool poweron) {
 }
 
 void setup_disp_ssd1306() {
-  displog("SSD1306: Nothing to do.");
+  if (has_ssd1306()) {
+    ssdlog("Initialized.");
+  } else {
+    ssdlog("SSD1306 NOT FOUND.");
+  }
 }

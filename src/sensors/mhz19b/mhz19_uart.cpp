@@ -97,24 +97,20 @@ void mhz_read_data_uart() {
     return;
   }
 
-  mhzGetDataTimer = millis();
+  int co2ppm = mhz19.getCO2(false);
+  if (mhz19.errorCode == 1) {
+    mhzGetDataTimer = millis();
+  } else {
+    printErrorCode();
+  }
 
-  String range = String(mhz19.getRange());
-  printErrorCode();
-
-  mhz19.verify();
+  int temp = mhz19.getTemperature();
   printErrorCode();
 
   String acc = String(mhz19.getAccuracy());
   printErrorCode();
 
-  int co2ppm = mhz19.getCO2(false);
-  printErrorCode();
-
-  int temp = mhz19.getTemperature();
-  printErrorCode();
-  
-  mhzlog("CO2 (ppm): " + String(co2ppm) + " Accuracy: " + acc + " Temp: " + String(temp) + " CO2 range: "+ range);
+  mhzlog("CO2 (ppm): " + String(co2ppm) + " Accuracy: " + acc + " Temp: " + String(temp));
   sensorValues.co2ppm = co2ppm;
   sensorValues.co2ppmAccuracy = acc;
 }
