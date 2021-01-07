@@ -78,9 +78,6 @@ void write_config_file(File f) {
 
 void read_config_file(File f) {
   String settingId = f.readStringUntil('\n'); // 使わない
-  if (settingId != SETTING_ID) {
-    cfglog("Setting id is not equal. file=" + settingId + " code=" + SETTING_ID);
-  }
   config.ssid = f.readStringUntil('\n');
   config.password = f.readStringUntil('\n');
   config.mDNS = f.readStringUntil('\n');

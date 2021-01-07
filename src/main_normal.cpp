@@ -19,9 +19,6 @@
 #include "main_normal_mqtt.h"
 
 WiFiClient net;
-MQTTClient mqttClient;
-
-int counter;
 
 void read_data() {
 
@@ -87,12 +84,7 @@ void setup_normal() {
   read_config();
 
   // Init I2C Serial
-  bool ret = init_i2c(I2C_SDA, I2C_SCL);
-  if (ret) {
-    mainlog("I2C initialized.");
-  } else {
-    mainlog("error initializing I2C");
-  }
+  init_i2c(I2C_SDA, I2C_SCL);
 
   if (config.opMode == OPMODE_MQTT) {
     setup_normal_mqtt();
@@ -105,14 +97,12 @@ void setup_normal() {
   // setupモードに入りやすくするための処理
   sectionlog("Reset to reconfig start.");
   remove_configure_flag_file();
-  // list_dir();
 
   disp_wait_for_reconfig();
 
   // 設定済みフラグファイル
   create_configure_flag_file();
 
-  // list_dir();
   sectionlog("Reconfigure timeout. continue.");
 
   // start WiFi
@@ -126,6 +116,8 @@ void setup_normal() {
 
   sectionlog("Starting HTTP server.");  
   http_setup_normal();
+
+  init_sensors();
 
   // 初期化終了時に画面表示をどうにかできるフック
   disp_all_initialize_complete(get_wifi_ip_addr(), config.mDNS);
@@ -142,7 +134,7 @@ void loop_normal() {
   // WiFiが繋がってなければ意味がないので接続チェック
   make_sure_wifi_connected();
 
-  mainlog("WiFi connected.");
+  mainlog("WiFi connected. IP=" + get_wifi_ip_addr());
   
   read_data();
 

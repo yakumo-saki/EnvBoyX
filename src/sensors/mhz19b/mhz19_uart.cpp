@@ -97,7 +97,7 @@ void mhz_read_data_uart() {
     return;
   }
 
-  int co2ppm = mhz19.getCO2(false);
+  int co2ppm = mhz19.getCO2();
   if (mhz19.errorCode == 1) {
     mhzGetDataTimer = millis();
   } else {

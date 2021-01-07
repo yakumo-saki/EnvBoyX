@@ -8,7 +8,7 @@
 #include "wifi.h"
 #include "main_normal.h"
 
-WiFiClient net;
+extern WiFiClient net;
 MQTTClient mqttClient;
 
 bool NO_DEEP_SLEEP = false;

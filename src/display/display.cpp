@@ -102,9 +102,9 @@ void disp_wait_for_reconfig() {
 		disp_ssd1306_wait_for_reconfig_init();
 	}
 
+	displog("Wait for reconfigure start");
 	for (int i = 0; i < MAX_BAR; i++)
 	{
-		displog("Wait for reconfigure " + String(i) + " / " + String(MAX_BAR));
 		if (use_st7789()) {
 			disp_st7789_wait_for_reconfig_bar(i, MAX_BAR);
 		}
@@ -114,6 +114,8 @@ void disp_wait_for_reconfig() {
 	
 	    delay(WAIT_PER_BAR);
 	}
+	displog("Wait for reconfigure end");
+
 }
 
 void disp_all_initialize_complete(String ip, String mdns) {
@@ -178,9 +180,10 @@ void disp_set_power(bool poweron) {
 }
 
 void setup_display() {
-	displog("Setup");
 	if (use_ssd1306()) {
 		setup_disp_ssd1306();
+	} else {
+		displog("SSD1306 not found.");
 	}
 	if (use_st7789()) {
 		setup_disp_st7789();

@@ -1,3 +1,5 @@
+#ifdef DENVBOY_ST7789_SUPPORT
+
 #include <Arduino.h>
 
 #include "global.h"
@@ -355,3 +357,5 @@ void setup_disp_st7789()
 	tft.fillScreen(TFT_BLACK);
 	stlog("ST7789 Initialized.");
 }
+
+#endif
