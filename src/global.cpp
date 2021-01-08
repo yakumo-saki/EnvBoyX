@@ -16,10 +16,14 @@ String product_long = product + " Ver." + ver;
 // デバイス周りの定数
 // --------------------------------------------------------------------
 #ifdef ESP32
+// ESP32 SDA
 extern const int I2C_SDA = 21;
+// ESP32 SCL
 extern const int I2C_SCL = 22;
 #elif defined(ESP8266)
+// ESP8266 SDA
 extern const int I2C_SDA = 5;
+// ESP8266 SCL
 extern const int I2C_SCL = 4;
 #endif
 

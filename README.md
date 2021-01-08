@@ -79,7 +79,11 @@ if SSD1306 is connected, sensor value are displayed in SSD1306
 
 (v3.0)
 ST7789 is supported. Activate on config screen.
-In setup mode, no output.
+In setup mode, no output on ST7789, it's normal.
+
+(v3.2)
+ST7789 support is now ESP32 only.
+Maybe I can support ST7789 on ESP8266. but not in TODO.
 
 ### http server
 
@@ -101,7 +105,33 @@ esptool.py write_flash 0x1000 filename.bin
 ```
 Get binary from releases page.(not every version have binary file, sorry)
 
-## History
+## Setups I am using
+
+* T-Display with BME280, MHZ-19B
+* NodeMCU V3 V2 ESP32 with SSD1306, BME280, MH-Z19B
+* NodeMCU V3 ESP8266 with BME280, MH-Z19B
+
+## Boards I tested (at least once)
+
+### ESP32
+
+* LilyGO TTGO T-DISPLAY (ESP32 and ST7789 TFT)
+* NodeMCU V3 V2 ESP32
+
+### ESP8266
+
+* D-Duino (ESP8266 and ST1306 OLED board)
+* WeMos D1mini
+* NodeMCU V3
+
+## Version History
+
+### v3.2
+
+* Avoid using delay
+* ADD: I2C scan on startup.
+* BUGFIX: ESP8266: I2C not working
+* DROP: ESP8266: ST7789 is not supported (because of Pin config)
 
 ### v3.1
 

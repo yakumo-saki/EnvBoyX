@@ -14,41 +14,16 @@
 #include "http_normal.h"
 #include "config.h"
 #include "wifi.h"
+#include "mdns_client.h"
+
+#include "i2c.h"
+#include "main_normal_mqtt.h"
 
 WiFiClient net;
-MQTTClient mqttClient;
-
-int counter;
-
-void begin_mqtt_connection() {
-  
-  Serial.println("MQTT Begin");
-  mqttClient.begin(config.mqttBroker.c_str(), net);
-  delay(10);
-
-  Serial.println("MQTT Started successfully.");
-}
-
-void mqtt_publish(String topic, String value) {
-
-  if (config.opMode != OPMODE_MQTT) {
-    return;
-  }
-  
-  String t = "/" + config.mqttName + "/" + topic;
-  Serial.println("MQTT Publish topic=>" + t + " value=>" + value);
-  mqttClient.publish(t, value);
-}
 
 void read_data() {
 
   mainlog("Reading sensor data start.");
-
-  // 電圧
-  //  if (true) {
-  //    int s0 = analogRead(0); 
-  //    mqtt_publish("battery", String(s0));
-  //  }
 
   // 精度の怪しいものから順に値を上書きしていく。
   bme_read_data();  // temp humi pres
@@ -60,10 +35,7 @@ void read_data() {
     // MQTT
     char buf[24] = "";
     sprintf(buf, "%2f", sensorValues.lux);
-    mqtt_publish("lux", buf);
-  
-    sprintf(buf, "%2f", sensorValues.luxIr);
-    mqtt_publish("luxIr", buf);
+      sprintf(buf, "%2f", sensorValues.luxIr);
   } else {
     sensorValues.lux = 0;
     sensorValues.luxIr = 0;
@@ -71,82 +43,27 @@ void read_data() {
 
   if (config.use_mhz19b) {
     // 
-    mhz_read_data();
-
     if (config.opMode == OPMODE_MQTT) {
-      delay(3050);       // MHZデータ取得待ち
-      mhz_read_data();   // ここは adhoc 
+        delay(3050);       // MHZデータ取得待ち
+        mhz_read_data();   // ここは adhoc 
+
+      // MQTT: if ppm == -1 , MH-Z19 error.
+      if (sensorValues.co2ppm > 0) {
+        char buf[24] = "";
+        sprintf(buf, "%d", sensorValues.co2ppm);
+      } else {
+      // MH-Z19B read error. do nothing.
+      }
+    } else {
+        mhz_read_data();
     }
     
-    // MQTT: if ppm == -1 , MH-Z19 error.
-    if (sensorValues.co2ppm > 0) {
-      char buf[24] = "";
-      sprintf(buf, "%d", sensorValues.co2ppm);
-      mqtt_publish("co2ppm", buf);
-    } else {
-      // MH-Z19B read error. do nothing.
-    }
   } 
 
-  mainlog("Reading sensor data complete.");
-
-  // MQTT
-  char buf[24] = "";
-  if (sensorValues.temperature != NAN) {
-    sprintf(buf, "%2f", sensorValues.temperature);
-    mqtt_publish("temp", buf);
-  }
-  
-  if (sensorValues.humidity != NAN) {
-    sprintf(buf, "%2f", sensorValues.humidity);
-    mqtt_publish("humi", buf);
-  }
-
-  if (sensorValues.pressure != NAN) {
-    sprintf(buf, "%2f", sensorValues.pressure);
-    mqtt_publish("pres", buf);
-  }
-  
+  mainlog("Reading sensor data complete."); 
 }
 
-/**
- * 通常起動モードのSETUP
- */
-void setup_normal() {
-  
-  read_config();
-
-  setup_display();
-  disp_normal_startup_screen(product_long);
-  
-  // setupモードに入りやすくするための処理
-  if (config.opMode == OPMODE_DISPLAY) {
-    sectionlog("Reset to reconfig start.");
-    remove_configure_flag_file();
-    // list_dir();
-
-    disp_wait_for_reconfig();
-  
-    // 設定済みフラグファイル
-    create_configure_flag_file();
-
-    // list_dir();
-    sectionlog("Reconfigure timeout. continue.");
-
-  }
-
-  // start WiFi
-  sectionlog("Connecting WiFi.");
-  disp_wifi_starting(1);
-  make_sure_wifi_connected();
-  disp_wifi_info(get_wifi_ip_addr(), config.mDNS);
-
-  sectionlog("Starting mDNS server.");  
-  start_mdns(config.mDNS);
-
-  sectionlog("Starting HTTP server.");  
-  http_setup_normal();
-
+void init_sensors() {
   sectionlog("Initializing sensors start.");
   bme_setup();
   adt_setup();
@@ -158,6 +75,49 @@ void setup_normal() {
     mhz_setup();
   }
   sectionlog("Initializing sensors done.");
+}
+
+/**
+ * 通常起動モードのSETUP
+ */
+void setup_normal() {
+  
+  read_config();
+
+  // Init I2C Serial
+  init_i2c(I2C_SDA, I2C_SCL);
+
+  if (config.opMode == OPMODE_MQTT) {
+    setup_normal_mqtt();
+    return; // MQTTモードの場合はもう戻ってこない（ディープスリープする）
+  }
+
+  setup_display();
+  disp_normal_startup_screen(product_long);
+  
+  // setupモードに入りやすくするための処理
+  sectionlog("Reset to reconfig start.");
+  remove_configure_flag_file();
+
+  disp_wait_for_reconfig();
+
+  // 設定済みフラグファイル
+  create_configure_flag_file();
+
+  sectionlog("Reconfigure timeout. continue.");
+
+  // start WiFi
+  sectionlog("Connecting WiFi.");
+  disp_wifi_starting(1);
+  make_sure_wifi_connected();
+  disp_wifi_info(get_wifi_ip_addr(), config.mDNS);
+
+  mdns_setup();
+
+  sectionlog("Starting HTTP server.");  
+  http_setup_normal();
+
+  init_sensors();
 
   // 初期化終了時に画面表示をどうにかできるフック
   disp_all_initialize_complete(get_wifi_ip_addr(), config.mDNS);
@@ -174,45 +134,14 @@ void loop_normal() {
   // WiFiが繋がってなければ意味がないので接続チェック
   make_sure_wifi_connected();
 
-  mainlog("WiFi connected.");
-
-  // MQTT
-  if (config.opMode == OPMODE_MQTT) {
-    begin_mqtt_connection();
-    
-    mqttClient.loop();
-    delay(10);  // <- fixes some issues with WiFi stability
-  
-    Serial.println("MQTT Connect");
-    while (!mqttClient.connect(config.mDNS.c_str(), "", "")) { // username and password not support
-      Serial.print(".");
-      delay(1000);
-    }
-    Serial.println("");
-  }
+  mainlog("WiFi connected. IP=" + get_wifi_ip_addr());
   
   read_data();
 
-  // sleep to next.
-  if (config.opMode == OPMODE_MQTT) {
-    disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
-    delay(1000);
-    disp_power_off();
-  
-    // if (NO_DEEP_SLEEP) {
-    //   mainlog("!!! NOT deep sleep because of NO_DEEP_SLEEP is set !!!");
-    //   delay(NO_DEEP_SLEEP_DURATION);
-    //   mainlog("!!! Going to next loop                             !!!");
-    // } else {
-    //   delay(500);
-    //   mainlog("*** Goto deep sleep ***");
-    //   ESP.deepSleep(NORMAL_DURATION);
-    //   delay(10000);
-    // }
-  } else if (config.opMode == OPMODE_DISPLAY) {  
-    disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
-    http_loop_normal();
-    mainlog("Wait for Next tick.");
-    delay(1000);
-  }
+  disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
+
+  http_loop_normal();
+
+  mainlog("Wait for Next tick.");
+  delay(1000);
 }

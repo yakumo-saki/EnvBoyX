@@ -6,6 +6,8 @@
 #include "sensors/mhz19_main.h"
 #include "sensors/mhz19_util.h"
 
+const int MHZ_RESULT_OK = 1;
+
 // 400ppmの校正(ABC)を行う。これをするには、20分以上外気に晒し続ける必要がある。
 // 終了後は false に戻す。
 bool AUTO_BASELINE_CORRECTION = false;
@@ -58,14 +60,12 @@ void mhz_setup_uart() {
   mhzlog("ESP32 serial begin RX=" + String(config.mhz19b_rxpin.toInt()) + " TX=" + String(config.mhz19b_txpin.toInt()));
   mhzSerial.begin(MHZ_BAUDRATE, SERIAL_8N1, config.mhz19b_rxpin.toInt(), config.mhz19b_txpin.toInt());
 #elif defined(ARDUINO_ARCH_ESP8266) 
-  SoftwareSerial mhzSerial(config.mhz19b_rxpin.toInt(), config.mhz19b_txpin.toInt());
   mhzSerial.begin(MHZ_BAUDRATE);
 #endif
 
   mhzlog("Wait for MHZ UART serial");
   while(!mhzSerial);
 
-  mhzlog("MHZ-19B begin()");
   mhz19.begin(mhzSerial);
 
   mhzlog("setRange()");
@@ -98,24 +98,26 @@ void mhz_read_data_uart() {
     return;
   }
 
-  mhzGetDataTimer = millis();
-
-  String range = String(mhz19.getRange());
-  printErrorCode();
-
   mhz19.verify();
+  if (mhz19.errorCode == 1) {
+    printErrorCode();
+    mhzlog("MH-Z19B connection failed. abort.");
+  }
+
+  int co2ppm = mhz19.getCO2();
+  if (mhz19.errorCode == 1) {
+    mhzGetDataTimer = millis();
+  } else {
+    printErrorCode();
+  }
+
+  int temp = mhz19.getTemperature();
   printErrorCode();
 
   String acc = String(mhz19.getAccuracy());
   printErrorCode();
 
-  int co2ppm = mhz19.getCO2(false);
-  printErrorCode();
-
-  int temp = mhz19.getTemperature();
-  printErrorCode();
-  
-  mhzlog("CO2 (ppm): " + String(co2ppm) + " Accuracy: " + acc + " Temp: " + String(temp) + " CO2 range: "+ range);
+  mhzlog("CO2 (ppm): " + String(co2ppm) + " Accuracy: " + acc + " Temp: " + String(temp));
   sensorValues.co2ppm = co2ppm;
   sensorValues.co2ppmAccuracy = acc;
 }
