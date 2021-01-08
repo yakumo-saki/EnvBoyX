@@ -105,12 +105,18 @@ esptool.py write_flash 0x1000 filename.bin
 ```
 Get binary from releases page.(not every version have binary file, sorry)
 
+## Setups I am using
+
+* T-Display with BME280, MHZ-19B
+* NodeMCU V3 V2 ESP32 with SSD1306, BME280, MH-Z19B
+* NodeMCU V3 ESP8266 with BME280, MH-Z19B
+
 ## Boards I tested (at least once)
 
 ### ESP32
 
 * LilyGO TTGO T-DISPLAY (ESP32 and ST7789 TFT)
-* NodeMCU V3 V2 ESP32 D1MINI
+* NodeMCU V3 V2 ESP32
 
 ### ESP8266
 
@@ -123,6 +129,7 @@ Get binary from releases page.(not every version have binary file, sorry)
 ### v3.2
 
 * Avoid using delay
+* ADD: I2C scan on startup.
 * BUGFIX: ESP8266: I2C not working
 * DROP: ESP8266: ST7789 is not supported (because of Pin config)
 

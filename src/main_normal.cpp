@@ -14,6 +14,7 @@
 #include "http_normal.h"
 #include "config.h"
 #include "wifi.h"
+#include "mdns_client.h"
 
 #include "i2c.h"
 #include "main_normal_mqtt.h"
@@ -111,8 +112,7 @@ void setup_normal() {
   make_sure_wifi_connected();
   disp_wifi_info(get_wifi_ip_addr(), config.mDNS);
 
-  sectionlog("Starting mDNS server.");  
-  start_mdns(config.mDNS);
+  mdns_setup();
 
   sectionlog("Starting HTTP server.");  
   http_setup_normal();
