@@ -6,6 +6,8 @@
 #include "sensors/mhz19_main.h"
 #include "sensors/mhz19_util.h"
 
+const int MHZ_RESULT_OK = 1;
+
 // 400ppmの校正(ABC)を行う。これをするには、20分以上外気に晒し続ける必要がある。
 // 終了後は false に戻す。
 bool AUTO_BASELINE_CORRECTION = false;
@@ -64,7 +66,6 @@ void mhz_setup_uart() {
   mhzlog("Wait for MHZ UART serial");
   while(!mhzSerial);
 
-  mhzlog("MHZ-19B begin()");
   mhz19.begin(mhzSerial);
 
   mhzlog("setRange()");
@@ -95,6 +96,12 @@ void mhz_read_data_uart() {
 
   if ( (millis() - mhzGetDataTimer) < 3000) {
     return;
+  }
+
+  mhz19.verify();
+  if (mhz19.errorCode == 1) {
+    printErrorCode();
+    mhzlog("MH-Z19B connection failed. abort.");
   }
 
   int co2ppm = mhz19.getCO2();
