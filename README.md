@@ -139,6 +139,7 @@ esptool.py write_flash 0x1000 filename.bin
 
 * BUGFIX: MH-Z19B wrong message
 * BUGFIX: Wrong uptime on JSON
+* ADD: ST7789 Brightness change
 
 ### v3.2
 

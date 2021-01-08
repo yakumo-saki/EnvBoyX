@@ -143,5 +143,6 @@ void loop_normal() {
   http_loop_normal();
 
   mainlog("Wait for Next tick.");
+  yield();
   delay(1000);
 }

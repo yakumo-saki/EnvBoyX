@@ -1,4 +1,4 @@
-#ifdef DENVBOY_ST7789_SUPPORT
+#ifdef ESP32
 
 #include <Arduino.h>
 
@@ -12,6 +12,11 @@
 #include <SPI.h>
 
 extern int disp_switch;
+const int ST7789_PWM_LED_CHANNEL = 0;
+const int ST7789_PWM_FREQ = 5000;
+const int ST7789_PWM_RESOLUTION = 8;
+
+int st7789_last_brightness = 255;
 
 TFT_eSPI tft = TFT_eSPI(); // Invoke library
 
@@ -341,13 +346,23 @@ void disp_st7789_sensor_value(disp_values_t new_values, disp_values_t last_value
 
 String disp_st7789_set_brightness(int brightness)
 {
-	// TFT_eSPI not has this
-	return "not impl";
+	ledcSetup(ST7789_PWM_LED_CHANNEL, ST7789_PWM_FREQ, ST7789_PWM_RESOLUTION);
+	ledcAttachPin(TFT_BL, ST7789_PWM_LED_CHANNEL);
+
+	ledcWrite(ST7789_PWM_LED_CHANNEL, brightness);
+
+	st7789_last_brightness = brightness;
+
+	return "PWM Setting done.";
 }
 
 void disp_st7789_set_power(bool poweron)
 {
-	// TFT_eSPI not has this
+	if (poweron) {
+		disp_st7789_set_brightness(st7789_last_brightness);
+	} else {
+		disp_st7789_set_brightness(0);
+	}
 }
 
 void setup_disp_st7789()
