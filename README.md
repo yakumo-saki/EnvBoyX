@@ -96,6 +96,10 @@ All endpoints are using GET Method
 | /brightness?value=<brightness> | set display brightness (0-255) 0 means OFF |
 | /display?value=<1 or 0> | set display power (1 = ON / 0 = OFF) |
 
+#### note
+
+* brightness and display power function is NOT WORKING in ST7789 (v3.0)
+
 ## how to write 
 
 use esptools.py or PlatformIO IDE.
@@ -103,7 +107,8 @@ use esptools.py or PlatformIO IDE.
 ```
 esptool.py write_flash 0x1000 filename.bin
 ```
-Get binary from releases page.(not every version have binary file, sorry)
+
+* Get binary from releases page.
 
 ## Setups I am using
 
@@ -125,6 +130,8 @@ Get binary from releases page.(not every version have binary file, sorry)
 * NodeMCU V3
 
 ## Version History
+
+### v3.3
 
 ### v3.2
 

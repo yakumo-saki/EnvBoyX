@@ -8,7 +8,7 @@
 String product_short = "ebx";
 // EnvBoyX
 String product = "EnvBoyX";
-String ver = "3.1";
+String ver = "3.3";
 // EnvBoyX Ver.3.0
 String product_long = product + " Ver." + ver;
 
