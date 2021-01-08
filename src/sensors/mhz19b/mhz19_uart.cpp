@@ -99,9 +99,10 @@ void mhz_read_data_uart() {
   }
 
   mhz19.verify();
-  if (mhz19.errorCode == 1) {
+  if (mhz19.errorCode != MHZ_RESULT_OK) {
     printErrorCode();
     mhzlog("MH-Z19B connection failed. abort.");
+    return;
   }
 
   int co2ppm = mhz19.getCO2();

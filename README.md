@@ -6,19 +6,20 @@ To obtain release version, see vX.Y tag. (ex v2.6)
 
 ## target boards
 
-### `ESP32 DevKitC`
+* ESP32 based boards
+* ESP8266 based boards
 
-Main target for now.
-with SSD1306 I2C OLED (128x64px)
+## functions
 
-### `LilyGo TTGO T-DISPLAY`
+* HTTP Server
+* MQTT publisher
+* Display
+* mDNS
 
-ESP32 with ST7789V SPI 1.14 inch 240x135px display.
+### note
 
-### ESP8266 boards
-
-Sub target less tested, but maybe working.
-with SSD1306 I2C OLED (128x64px)
+* ESP8266 mDNS is unstable.
+* ESP8266 MH-Z19B is unstable
 
 ## pin assign
 
@@ -35,20 +36,22 @@ Defined at `global.cpp`
 
 Defined at `mhz19_uart.cpp`
 
-| TYPE  | Rx  | Tx   | note                            |
-| ----- | ----| ---- | ------------------------------- |
-|ESP32  |  16 | 17   | HardwareSerial 2, configurable |
-|ESP8266|  14 |  0   | SoftwareSerial , fixed          |
+| TYPE  | Rx  | Tx   | note                                          |
+| ----- | ----| ---- | --------------------------------------------- |
+|ESP32  |  32 | 33   | HardwareSerial 2, configurable via web config |
+|ESP8266|  14 |  0   | SoftwareSerial , fixed                        |
 
-## sensors
+## sensors and devices
 
-All sensors are optional.
+All are optional.
 
-* BME280
-* SSD1306
-* TSL2561
-* LPS22HB
-* AM2302 (got wrong value at first time)
+* BME280 (Temperature, Humidity, Pressure sensor)
+* TSL2561 (luminous sensor)
+* LPS22HB (Pressure sensor)
+* AM2302 (Temperature sensor, got wrong value at first time)
+* MH-Z19B (CO2 sensor UART mode)
+* SSD1306 (I2C OLED 128x64px)
+* ST7789 (SPI TFT 240x135px)
 
 ## how to use
 
@@ -75,7 +78,8 @@ All sensors are optional.
 
 ### Display
 
-if SSD1306 is connected, sensor value are displayed in SSD1306
+* SSD1306: Auto detect
+* ST7789: Must configure in web config
 
 (v3.0)
 ST7789 is supported. Activate on config screen.
@@ -132,6 +136,9 @@ esptool.py write_flash 0x1000 filename.bin
 ## Version History
 
 ### v3.3
+
+* BUGFIX: MH-Z19B wrong message
+* BUGFIX: Wrong uptime on JSON
 
 ### v3.2
 
