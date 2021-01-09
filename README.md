@@ -135,11 +135,13 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
+
 ### v3.3
 
 * BUGFIX: MH-Z19B wrong message
 * BUGFIX: Wrong uptime on JSON
 * ADD: ST7789 Brightness change
+* ADD: Watchdog timer (ESP32 only)
 
 ### v3.2
 

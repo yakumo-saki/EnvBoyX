@@ -18,6 +18,7 @@
 
 #include "i2c.h"
 #include "main_normal_mqtt.h"
+#include "watchdog.h"
 
 WiFiClient net;
 
@@ -92,6 +93,8 @@ void setup_normal() {
     return; // MQTTモードの場合はもう戻ってこない（ディープスリープする）
   }
 
+  setup_watchdog();
+
   setup_display();
   disp_normal_startup_screen(product_long);
   
@@ -130,6 +133,7 @@ void setup_normal() {
 void loop_normal() {
 
   sectionlog("loop start");
+  watchdog_feed();
 
   // WiFiが繋がってなければ意味がないので接続チェック
   make_sure_wifi_connected();
@@ -143,6 +147,7 @@ void loop_normal() {
   http_loop_normal();
 
   mainlog("Wait for Next tick.");
-  yield();
+  
   delay(1000);
+  watchdog_feed();
 }

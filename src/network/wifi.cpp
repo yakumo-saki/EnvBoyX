@@ -9,6 +9,7 @@
 
 #include "log.h"
 #include "global.h"
+#include "watchdog.h"
 
 String wl_status_t_to_string(wl_status_t wl_stat) {
     if (wl_stat == WL_NO_SHIELD) {
@@ -42,48 +43,55 @@ void make_sure_wifi_connected() {
     return;
   }
 
-  mainlog("WiFi is down or not initialized. connecting");
+  watchdog_feed();
+
+  wifilog("WiFi is down or not initialized. connecting");
   WiFi.disconnect();
   WiFi.softAPdisconnect(true);
   WiFi.enableAP(false);
 
   delay(100);
+  watchdog_feed();
 
   int retryCount = 0;
-  mainlog("ssid " + config.ssid + " pass " + config.password);
+  wifilog("ssid " + config.ssid + " pass " + config.password);
   WiFi.begin(config.ssid.c_str(), config.password.c_str());
+  
   delay(300);
-
+  watchdog_feed();
+  
   while (WiFi.status() != WL_CONNECTED) {
 
+    watchdog_feed();
     delay(100);
     retryCount++;
 
     if (retryCount % 10 == 0) {
-      mainlog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
-      mainlog("Still waiting for wifi connection");
+      wifilog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
+      wifilog("Still waiting for wifi connection");
     }
     if (retryCount % 50 == 0) {
-      mainlog("Restarting WiFi");
+      wifilog("Restarting WiFi");
       delay(100);
-      mainlog("WiFi disconnect.");
+      wifilog("WiFi disconnect.");
+
       WiFi.disconnect();   
       delay(100);
       WiFi.begin(config.ssid.c_str(), config.password.c_str());
-      mainlog("RETRY connecting WiFi from start");
+      wifilog("RETRY connecting WiFi from start");
     }
 
     if (retryCount > 100) {
-      mainlog("WiFi connect failure.");
-      mainlog("Restarting");
-      mainlog("ESP8266 note: must connect proper pins, otherwise device hangs");
+      wifilog("WiFi connect failure.");
+      wifilog("Restarting");
+      wifilog("ESP8266 note: must connect proper pins, otherwise device hangs");
       ESP.deepSleep(1 * 1000 * 1000);
       delay(10000);
     }
   }
 
-  mainlog("WiFi (re) connected.");
-  mainlog("IP address: " + WiFi.localIP().toString());
+  wifilog("WiFi (re) connected.");
+  wifilog("IP address: " + WiFi.localIP().toString());
 }
 
 
@@ -100,7 +108,7 @@ void start_wifi_access_point() {
     config.ssid += String(mac[i], HEX);
   }
   
-  mainlog("SSID: " + config.ssid);
+  wifilog("SSID: " + config.ssid);
   // Serial.println("PASS: " + pass);
 
   /* You can remove the password parameter if you want the AP to be open. */

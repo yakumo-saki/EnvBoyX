@@ -68,6 +68,10 @@ void stlog(String msg) {
   real_log(msg, "ST7789");
 }
 
+void debuglog(String msg) {
+  real_log(msg, "DEBUG");
+}
+
 void sectionlog(String msg) {
   Serial.println("");
   real_log(msg, "========");
