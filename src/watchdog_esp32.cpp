@@ -20,7 +20,7 @@ void IRAM_ATTR watchdog_feed() {
 }
 
 void setup_watchdog() {
-    int WATCHDOG_TIMEOUT_MS = 5000;
+    int WATCHDOG_TIMEOUT_MS = 10000;
     
     watchdogTimer = timerBegin(WATCHDOG_TIMER_NO, 80, true);
     timerAttachInterrupt(watchdogTimer, &resetModule, true);

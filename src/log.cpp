@@ -68,6 +68,10 @@ void stlog(String msg) {
   real_log(msg, "ST7789");
 }
 
+void statlog(String msg) {
+  real_log(msg, "STAT");
+}
+
 void debuglog(String msg) {
   real_log(msg, "DEBUG");
 }

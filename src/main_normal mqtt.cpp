@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include <MQTTClient.h>
+#include <TimerCall.h>
 
 #include "log.h"
 #include "global.h"
@@ -14,6 +15,8 @@ MQTTClient mqttClient;
 bool NO_DEEP_SLEEP = false;
 const int NO_DEEP_SLEEP_DURATION = 3000;
 const int NORMAL_DURATION = 1000;
+
+extern TimerCall timer;
 
 void begin_mqtt_connection() {
   
@@ -48,21 +51,20 @@ void send_and_sleep() {
   mainlog("WiFi connected.");
 
   // MQTT
-  if (config.opMode == OPMODE_MQTT) {
-    begin_mqtt_connection();
-    
-    mqttClient.loop();
-    delay(10);  // <- fixes some issues with WiFi stability
+  begin_mqtt_connection();
   
-    mainlog("MQTT Connect begin");
-    while (!mqttClient.connect(config.mDNS.c_str(), "", "")) { // username and password not support
-      Serial.print(".");
-      delay(1000);
-    }
-    mainlog("MQTT Connect OK");
+  mqttClient.loop();
+  delay(10);  // <- fixes some issues with WiFi stability
+  
+  mainlog("MQTT Connect begin");
+  while (!mqttClient.connect(config.mDNS.c_str(), "", "")) { // username and password not support
+    Serial.print(".");
+    delay(1000);
   }
+  mainlog("MQTT Connect OK");
   
-  read_data();
+  init_timer();
+  timer.forceOnce();
 
   mqtt_publish("lux", String(sensorValues.lux, 0));
   mqtt_publish("luxIr", String(sensorValues.luxIr, 0));

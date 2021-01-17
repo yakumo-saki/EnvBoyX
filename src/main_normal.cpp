@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include <MQTTClient.h>
+#include <TimerCall.h>
 
 #include "log.h"
 #include "global.h"
@@ -22,132 +23,128 @@
 
 WiFiClient net;
 
-void read_data() {
+TimerCall timer = TimerCall();
 
-  mainlog("Reading sensor data start.");
+void init_sensors()
+{
+	sectionlog("Initializing sensors start.");
+	bme_setup();
+	adt_setup();
+	am_setup();
+	lps_setup();
+	tsl_setup();
 
-  // 精度の怪しいものから順に値を上書きしていく。
-  bme_read_data();  // temp humi pres
-  am_read_data();   // temp humi
-  adt_read_data();  // temp
-  lps_read_data();  // pres
-
-  if (read_data_tsl2561()) { 
-    // MQTT
-    char buf[24] = "";
-    sprintf(buf, "%2f", sensorValues.lux);
-      sprintf(buf, "%2f", sensorValues.luxIr);
-  } else {
-    sensorValues.lux = 0;
-    sensorValues.luxIr = 0;
-  }
-
-  if (config.use_mhz19b) {
-    // 
-    if (config.opMode == OPMODE_MQTT) {
-        delay(3050);       // MHZデータ取得待ち
-        mhz_read_data();   // ここは adhoc 
-
-      // MQTT: if ppm == -1 , MH-Z19 error.
-      if (sensorValues.co2ppm > 0) {
-        char buf[24] = "";
-        sprintf(buf, "%d", sensorValues.co2ppm);
-      } else {
-      // MH-Z19B read error. do nothing.
-      }
-    } else {
-        mhz_read_data();
-    }
-    
-  } 
-
-  mainlog("Reading sensor data complete."); 
+	if (config.use_mhz19b != MHZ_NOUSE)
+	{
+		mhz_setup();
+	}
+	sectionlog("Initializing sensors done.");
 }
 
-void init_sensors() {
-  sectionlog("Initializing sensors start.");
-  bme_setup();
-  adt_setup();
-  am_setup();
-  lps_setup();
-  tsl_setup();
+void call_disp_sensor_value() {
+	disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
+}
 
-  if (config.use_mhz19b != MHZ_NOUSE) {
-    mhz_setup();
-  }
-  sectionlog("Initializing sensors done.");
+void printStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
+    for (auto it = tasks.begin(), e = tasks.end(); it != e; ++it) {
+        statlog(
+           + "name=" + String(it->info.name)
+           + " last=" + String(it->info.lastExecMills)
+           + " last exec=" + String(it->info.lastElapsedMills)
+           + " total=" + String(it->info.totalElapsedMills)
+           + " count=" + String(it->info.callCount)
+        );
+    }
+}
+
+void init_timer() {
+	mainlog("TimerCall version:" + String(timer.VERSION, 2));
+	timer.add(bme_read_data, "BME280", 1000); 
+	timer.add(am_read_data, "AM2320", 1000);
+	timer.add(adt_read_data, "ADT7410", 1000);
+	timer.add(lps_read_data, "LPS22HB", 1000);
+	timer.add(read_data_tsl2561, "TSL2561", 1000);
+	timer.add(mhz_read_data, "MHZ19B", 3000);
+
+	// 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する
+	timer.add(call_disp_sensor_value, "DISP", 1000);
+	timer.addStasticsFunction(printStastics, "STAT", 60000);
 }
 
 /**
  * 通常起動モードのSETUP
  */
-void setup_normal() {
-  
-  read_config();
+void setup_normal()
+{
 
-  // Init I2C Serial
-  init_i2c(I2C_SDA, I2C_SCL);
+	read_config();
 
-  if (config.opMode == OPMODE_MQTT) {
-    setup_normal_mqtt();
-    return; // MQTTモードの場合はもう戻ってこない（ディープスリープする）
-  }
+	// Init I2C Serial
+	init_i2c(I2C_SDA, I2C_SCL);
 
-  setup_watchdog();
+	if (config.opMode == OPMODE_MQTT)
+	{
+		setup_normal_mqtt();
+		return; // MQTTモードの場合はもう戻ってこない（ディープスリープする）
+	}
 
-  setup_display();
-  disp_normal_startup_screen(product_long);
-  
-  // setupモードに入りやすくするための処理
-  sectionlog("Reset to reconfig start.");
-  remove_configure_flag_file();
+	setup_watchdog();
 
-  disp_wait_for_reconfig();
+	setup_display();
+	disp_normal_startup_screen(product_long);
 
-  // 設定済みフラグファイル
-  create_configure_flag_file();
+	// setupモードに入りやすくするための処理
+	sectionlog("Reset to reconfig start.");
+	remove_configure_flag_file();
 
-  sectionlog("Reconfigure timeout. continue.");
+	disp_wait_for_reconfig();
 
-  // start WiFi
-  sectionlog("Connecting WiFi.");
-  disp_wifi_starting(1);
-  make_sure_wifi_connected();
-  disp_wifi_info(get_wifi_ip_addr(), config.mDNS);
+	// 設定済みフラグファイル
+	create_configure_flag_file();
 
-  mdns_setup();
+	sectionlog("Reconfigure timeout. continue.");
 
-  sectionlog("Starting HTTP server.");  
-  http_setup_normal();
+	// start WiFi
+	sectionlog("Connecting WiFi.");
+	disp_wifi_starting(1);
+	make_sure_wifi_connected();
+	disp_wifi_info(get_wifi_ip_addr(), config.mDNS);
 
-  init_sensors();
+	mdns_setup();
 
-  // 初期化終了時に画面表示をどうにかできるフック
-  disp_all_initialize_complete(get_wifi_ip_addr(), config.mDNS);
+	sectionlog("Starting HTTP server.");
+	http_setup_normal();
 
+	init_sensors();
+
+	// 
+	init_timer();
+
+	// 初期化終了時に画面表示をどうにかできるフック
+	disp_all_initialize_complete(get_wifi_ip_addr(), config.mDNS);
+
+	//
 }
 
 /**
  * LOOP
  */
-void loop_normal() {
+void loop_normal()
+{
+	// sectionlog("loop start");
+	watchdog_feed();
 
-  sectionlog("loop start");
-  watchdog_feed();
+	// WiFiが繋がってなければ意味がないので接続チェック
+	make_sure_wifi_connected();
 
-  // WiFiが繋がってなければ意味がないので接続チェック
-  make_sure_wifi_connected();
+	// mainlog("WiFi connected. IP=" + get_wifi_ip_addr());
 
-  mainlog("WiFi connected. IP=" + get_wifi_ip_addr());
-  
-  read_data();
+	timer.start();
+	timer.loop();
 
-  disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
+	http_loop_normal();
 
-  http_loop_normal();
+	// mainlog("Wait for Next tick.");
 
-  mainlog("Wait for Next tick.");
-  
-  delay(1000);
-  watchdog_feed();
+	watchdog_feed();
 }

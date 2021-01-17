@@ -19,13 +19,13 @@ void tsl_setup() {
 }
 
 // 
-bool read_data_tsl2561() {
+void read_data_tsl2561() {
   
   uint8_t id;
   uint16_t full, ir;
 
   if( !Tsl.available() ) {
-    return false;
+    return;
   }
 
   Tsl.on();
@@ -40,13 +40,11 @@ bool read_data_tsl2561() {
   Tsl.irLuminosity(ir);
 
   char log[80];
-  snprintf(log, sizeof log, "TSL2561 at 0x%02x(id=0x%02x) luminosity is %5u (full) and %5u (ir)", Tsl.address(), id, full, ir);
+  snprintf(log, sizeof log, "Luminosity: %5u lx IR: %5u lx", Tsl.address(), id, full, ir);
   tsllog(String(log));
 
   sensorValues.lux = full;
   sensorValues.luxIr = ir;
 
   Tsl.off(); 
-
-  return true;
 }

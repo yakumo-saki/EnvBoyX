@@ -64,7 +64,7 @@ void am_read_data() {
   Wire.write(0x04);         // 読み取りデータ数    
   Wire.endTransmission();
 
-  delay(2000);
+  delay(1);
 
   // 湿度・温度データ取得要求
   Wire.beginTransmission(AM2320_ADDR);
@@ -88,13 +88,8 @@ void am_read_data() {
     float tp = ((float)(data[4] * 256 + data[5])) / 10; // 温度
     
     // 湿度・温度の表示
-    Serial.print("AM2320: ");    
-    Serial.print("T=");
-    Serial.print(tp);
-    Serial.print("c");
-    Serial.print(" H=");
-    Serial.print(rh);
-    Serial.println("%");
+    String log = "T=" + String(tp) + "c H=" + String(rh) + "%";
+    amlog(log);
 
     sensorValues.temperature = tp;
     sensorValues.humidity = rh;

@@ -35,10 +35,7 @@ void lps_read_data() {
   tempPres = lps22hb.readPressureHPA();
   if (tempPres != 0) {
     sensorValues.pressure = tempPres;
-    
-    Serial.print("LPS22HB: ");
-    Serial.print("Pressure=");
-    Serial.print(tempPres, 2);
-    Serial.println("hPa");
+
+    lpslog("Pressure=" + String(tempPres, 2) + "hPa");
   }  
 }
