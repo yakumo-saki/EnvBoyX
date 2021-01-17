@@ -176,28 +176,33 @@ Display item change.
 
 ### v2.6
 
-Fix mDNS not working
+* Fix mDNS not working
 
 ### v2.5
 
-Add /display endpoint.
+* Add /display endpoint.
 
 ### v2.4
 
-Add /brightness endpoint.
+* Add /brightness endpoint.
 
 ### v2.3
 
-Unifing EnvBoyX (ESP8266) and EnvBoyX32 (ESP32) again.
+* Unifing EnvBoyX (ESP8266) and EnvBoyX32 (ESP32) again.
 
 ### v2.2
 
-missing version due to bug.
+* missing version due to bug.
 
 ### v2.1
 
-Split EnvBoyX (8266) and EnvBoyX32 (ESP32)
+* Split EnvBoyX (8266) and EnvBoyX32 (ESP32)
 
 ### v2.0
 
-Move to Platform.IO from Arduino IDE 
+* Move to Platform.IO from Arduino IDE 
+
+### before v2.0
+
+* https://github.com/yakumo-saki/envboy
+* https://github.com/yakumo-saki/EnvBoyMQTT
