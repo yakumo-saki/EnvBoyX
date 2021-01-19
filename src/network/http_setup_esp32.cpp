@@ -37,10 +37,10 @@ void handle_post_root(AsyncWebServerRequest *request) {
   config.displayBrightness = request->getParam("displayBrightness", true)->value();
   config.st7789 = request->getParam("st7789", true)->value();
   config.st7789Mode = request->getParam("st7789Mode", true)->value();
-  config.use_mhz19b = request->getParam("use_mhz19b", true)->value();
-  config.mhz19b_pwmpin = request->getParam("mhz19b_pwmpin", true)->value();
-  config.mhz19b_rxpin = request->getParam("mhz19b_rxpin", true)->value();
-  config.mhz19b_txpin = request->getParam("mhz19b_txpin", true)->value();
+  config.mhz19b = request->getParam("mhz19b", true)->value();
+  config.mhz19bPwmPin = request->getParam("mhz19bPwmPin", true)->value();
+  config.mhz19bRxPin = request->getParam("mhz19bRxPin", true)->value();
+  config.mhz19bTxPin = request->getParam("mhz19bTxPin", true)->value();
   config.mqttBroker = request->getParam("mqttbroker", true)->value();
   config.mqttName = request->getParam("mqttname", true)->value();
 

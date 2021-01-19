@@ -160,14 +160,19 @@ void disp_power_off() {
  * @return 応答メッセージ
  */
 String disp_set_brightness(int brightness) {
+	String ret = "";
 	String msg = "";
 	if (use_ssd1306()) {
-		msg += "\nSSD1306: " + disp_ssd1306_set_brightness(brightness);
+		msg = "SSD1306: " + disp_ssd1306_set_brightness(brightness);
+		displog(msg);
+		ret += msg + "\n";
 	}
 	if (use_st7789()) {
-		msg += "\nST7789: " + disp_st7789_set_brightness(brightness);
+		msg = "ST7789: " + disp_st7789_set_brightness(brightness);
+		displog(msg);
+		ret += msg + "\n";
 	}
-	return msg;
+	return ret;
 }
 
 void disp_set_power(bool poweron) {

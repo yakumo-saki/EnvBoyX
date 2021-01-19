@@ -30,10 +30,10 @@ typedef struct {
   String password;
   String mDNS;
   String opMode;
-  String use_mhz19b;
-  String mhz19b_pwmpin;
-  String mhz19b_rxpin;
-  String mhz19b_txpin;
+  String mhz19b;
+  String mhz19bPwmPin;
+  String mhz19bRxPin;
+  String mhz19bTxPin;
   String displayFlip;
   String displayBrightness;
   String st7789;

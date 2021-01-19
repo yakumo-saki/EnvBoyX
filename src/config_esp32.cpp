@@ -105,15 +105,14 @@ bool has_valid_config_file() {
     return false;
   } else {
     File f = LITTLEFS.open(settings, "r");
-    String settingId = f.readStringUntil('\n');   
-    settingId.trim();
+    read_config_file(f);
     f.close();
 
-    if (String(SETTING_ID).equals(settingId)) {
-      cfglog("SETTING_ID verified. " + settingId);
+    if (String(SETTING_ID).equals(config.settingId)) {
+      cfglog("SETTING_ID verified. " + config.settingId);
       return true;
     } else {
-      cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + settingId);
+      cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + config.settingId);
       return false;
     }
   }

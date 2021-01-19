@@ -149,6 +149,11 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
+### v3.5
+
+* Config: version 9 (was 8) and using JSON format
+* Config: Migration between versions
+
 ### v3.4
 
 * Config: version 8 (was 6)

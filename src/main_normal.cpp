@@ -34,7 +34,7 @@ void init_sensors()
 	lps_setup();
 	tsl_setup();
 
-	if (config.use_mhz19b != MHZ_NOUSE)
+	if (config.mhz19b != MHZ_NOUSE)
 	{
 		mhz_setup();
 	}

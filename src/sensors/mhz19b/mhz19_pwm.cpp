@@ -129,12 +129,12 @@ int mhz_read_data_pwm() {
 
 void mhz_setup_pwm() {
   
-  if (config.use_mhz19b == MHZ_NOUSE) {
+  if (config.mhz19b == MHZ_NOUSE) {
     mhzlog("disabled.");
     return;
   }
 
-  CO2_IN = config.mhz19b_pwmpin.toInt();
+  CO2_IN = config.mhz19bPwmPin.toInt();
   pinMode(CO2_IN, INPUT);
   mhzlog("Enabled (PWM mode). GPIO pin = " + String(CO2_IN) );
 }

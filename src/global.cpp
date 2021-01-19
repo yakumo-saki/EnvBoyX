@@ -36,7 +36,7 @@ extern const int MHZ_BAUDRATE = 9600;
 String settings = "/wifi_settings.txt";
 String configured_file = "/config_ok.txt";
 
-String SETTING_ID = "EBXCFG.v8";
+String SETTING_ID = "EBXCFG.v9";
 String OPMODE_MQTT = "mqtt";
 String OPMODE_DISPLAY = "always";
 
