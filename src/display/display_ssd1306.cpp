@@ -11,9 +11,6 @@ extern int disp_switch;
 //SSD1306 display(0x3c, 5, 4);
 SSD1306 display(SSD1306_I2C_ADDR, I2C_SDA, I2C_SCL);
 
-// 画面反転がいるかどうか。Envboy 3までは true。 3.5からは不要
-bool needFlip = false;
-
 bool has_ssd1306() {
   Wire.beginTransmission(SSD1306_I2C_ADDR);
   byte error = Wire.endTransmission();
@@ -26,20 +23,24 @@ bool has_ssd1306() {
    
 }
 
+void init_display() {
+  display.clear();
+
+  if (config.displayFlip == DISPLAY_FLIP_ON) {
+    display.flipScreenVertically();
+  }
+}
+
 /**
  * 起動時の画面表示（共通）
  */
 void disp_ssd1306_normal_startup_screen(String product_long) {
 
   if (!has_ssd1306()) return;
-  
-  display.init();
 
-  if (needFlip) {
-    display.flipScreenVertically();
-  }
+  init_display();
+  
   display.setFont(ArialMT_Plain_16);
-  display.clear();
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.drawString(0, 0,  "ziomatrix corp.");
   display.drawString(0, 16, product_long);
@@ -57,14 +58,9 @@ void disp_ssd1306_setup_startup_screen(String ipAddr) {
 
   if (!has_ssd1306()) return;
 
-  // display init and show initial screen
-  display.init();
-  if (needFlip) {
-    display.flipScreenVertically();
-  }
+  init_display();
 
   display.setFont(ArialMT_Plain_16);
-  display.clear();
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.drawString(0, 0,  product_long);
   display.drawString(0, 16, "Setup mode.");
@@ -84,12 +80,8 @@ void disp_ssd1306_wifi_starting(int wait_print_row) {
 
   int row = (wait_print_row % 3) + 1;
 
-  display.init();
+  init_display();
  
-  if (needFlip) {
-    display.flipScreenVertically();
-  }
-  display.clear();
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_10);
   display.setFont(ArialMT_Plain_16);
@@ -103,12 +95,8 @@ void disp_ssd1306_wifi_info(String ip, String mDNS) {
 
   if (!has_ssd1306()) return;
 
-  display.init();
- 
-  if (needFlip) {
-    display.flipScreenVertically();
-  }
-  display.clear();
+  init_display();
+
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_10);
   display.setFont(ArialMT_Plain_16);
@@ -126,12 +114,8 @@ void disp_ssd1306_wifi_error() {
 
   if (!has_ssd1306()) return;
 
-  // display init and show initial screen
-  display.init();
-  
-  if (needFlip) {
-    display.flipScreenVertically();
-  }
+  init_display();
+
   display.setFont(ArialMT_Plain_16);
   display.clear();
   display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -150,12 +134,8 @@ void disp_ssd1306_wait_for_reconfig_init() {
 
   if (!has_ssd1306()) return;
 
-  display.init();
- 
-  if (needFlip) {
-    display.flipScreenVertically();
-  }
-  display.clear();
+  init_display();
+
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_16);
   display.drawString(0, 0, "Wait for re-config");
@@ -197,7 +177,7 @@ void disp_ssd1306_sensor_value(disp_values_t val) {
 
   if (!has_ssd1306()) return;
 
-  display.clear();
+  init_display();
 
   // 測定値表示部分
   display.setTextAlignment(TEXT_ALIGN_LEFT);
@@ -279,7 +259,13 @@ void disp_ssd1306_set_power(bool poweron) {
 
 void setup_disp_ssd1306() {
   if (has_ssd1306()) {
-    ssdlog("Initialized.");
+    bool ret = display.init();
+
+    if (!ret) {
+      ssdlog("Display initialization failed.");
+    } else {
+      ssdlog("Initialized.");
+    }
   } else {
     ssdlog("SSD1306 NOT FOUND.");
   }
