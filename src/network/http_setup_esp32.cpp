@@ -34,6 +34,7 @@ void handle_post_root(AsyncWebServerRequest *request) {
   config.mDNS = request->getParam("mdnsname", true)->value();
   config.opMode = request->getParam("opmode", true)->value();
   config.displayFlip = request->getParam("displayFlip", true)->value();
+  config.displayBrightness = request->getParam("displayBrightness", true)->value();
   config.st7789 = request->getParam("st7789", true)->value();
   config.st7789Mode = request->getParam("st7789Mode", true)->value();
   config.use_mhz19b = request->getParam("use_mhz19b", true)->value();

@@ -40,6 +40,8 @@ String http_setup_get_root_content() {
   html += "<h1>" + product + " Settings  (" + SETTING_ID + ")</h1>";
   html += "<form method='post'>";
   html += "  <br>";
+
+
   html += "<fieldset><legend>ネットワーク設定</legend>";
   html += "  <strong>WiFi接続情報</strong><br>";
   html += "  ※ 2.4GHz帯のみ対応しています。<br>";
@@ -51,6 +53,7 @@ String http_setup_get_root_content() {
   html += "  <input type='text' name='mdnsname' placeholder='mdnsname' value='" + config.mDNS + "'><br>";
   html += "</fieldset>";
  
+
   html += "<fieldset><legend>動作モード設定</legend>";
   html += "  <strong>動作モード</strong><br>";
   html += "  ※ ESP8266でMQTTモードを使用するにはIO16ピンとRSTピンを接続する必要があります。<br>";
@@ -59,6 +62,7 @@ String http_setup_get_root_content() {
   html += "  <input type='radio' name='opmode' value='" + OPMODE_DISPLAY + "' id='opmode_always'" + opmode_always_checked + "><label for='opmode_always'>常時起動モード（測定値常時表示, HTTPサーバーあり）</label><br>";
   html += "  <input type='radio' name='opmode' value='" + OPMODE_MQTT + "' id='opmode_mqtt'" + opmode_mqtt_checked + "><label for='opmode_mqtt'>MQTTモード（間欠動作・MQTT送信後ディープスリープ）</label><br>";
   html += "</fieldset>";
+
 
   html += "<fieldset><legend>表示デバイス共通設定</legend>";
 
@@ -69,8 +73,10 @@ String http_setup_get_root_content() {
   html += "  <input type='radio' name='displayFlip' value='" + DISPLAY_FLIP_OFF + "' id='display_flip_no'" + display_flip_no_checked + "><label for='display_flip_no'>反転しない</label><br>";
   html += "  <input type='radio' name='displayFlip' value='" + DISPLAY_FLIP_ON + "' id='display_flip_yes'" + display_flip_yes_checked + "><label for='display_flip_yes'>反転する</label><br>";
 
-  html += "  <br>";
+  html += "  <strong>明るさ(0-255)</strong><br>";
+  html += "  <input type='text' name='displayBrightness' value='" + config.displayBrightness + "'><br>";
   html += "</fieldset>";
+
 
   html += "<fieldset><legend>ST7789 デバイス設定</legend>";
 
@@ -92,10 +98,13 @@ String http_setup_get_root_content() {
 
   html += "  <br>";
 
+
+  html += "  <strong>MH-Z19B CO2センサー有無（金色のセンサー）</strong><br>";
+
   String mhz19b_nouse_checked = (config.use_mhz19b == MHZ_NOUSE ? " checked" : "");
   String mhz19b_uart_checked = (config.use_mhz19b == MHZ_USE_UART ? " checked" : "");
   String mhz19b_pwm_checked = (config.use_mhz19b == MHZ_USE_PWM ? " checked" : "");
-  html += "  <strong>MH-Z19B CO2センサー有無（金色のセンサー）</strong><br>";
+
   html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_NOUSE)  + "' id='mhz19b_no'" + mhz19b_nouse_checked + "><label for='mhz19b_no'>使用しない（通常はこちら）</label><br>";
   html += "  <input type='radio' name='use_mhz19b' value='" + String(MHZ_USE_UART) + "' id='mhz19b_uart'" + mhz19b_uart_checked + "><label for='mhz19b_uart'>使用する（UARTモード）</label><br>";
   
@@ -113,6 +122,7 @@ String http_setup_get_root_content() {
   html += "  TXピン <input type='text' name='mhz19b_txpin' placeholder='MHZ-19B TXピン番号' value='" + config.mhz19b_txpin + "' placeholder='17'><br>";
   html += "</fieldset>";
  
+
   html += "<fieldset><legend>MQTTモード専用設定</legend>";
   html += "  <strong>＜MQTTモード以外の場合は入力不要＞</strong><br>";
   html += "  <br>";
@@ -167,6 +177,8 @@ String http_setup_post_root_content() {
     } else {
       html += "【バグ】画面反転の設定が異常です => " + config.displayFlip + "<br>";
     }
+
+    html += "画面の明るさ：" + config.displayBrightness + "<br>";
 
     if (config.st7789 == ST7789_USE) {
       html += "ST7789 を使用する<br>";

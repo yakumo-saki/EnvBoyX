@@ -232,20 +232,19 @@ String disp_ssd1306_set_brightness(int brightness) {
   const String VALUE = "Set Display brightness (0-255) = ";
 
   if (brightness == 0) {
-    displog(PWR_OFF);
+    ssdlog(PWR_OFF);
     display.displayOff();
     return PWR_OFF;
   } else if (brightness == 255) {
     display.displayOn();
     display.setContrast(255, 255, 255);
     return MAX;
-  } else {
-    String msg = VALUE + String(brightness);
-    displog(msg);
-    display.displayOn();
-    display.setBrightness(brightness);
-    return msg;
-  }
+  } 
+
+  String msg = VALUE + String(brightness);
+  display.displayOn();
+  display.setBrightness(brightness);
+  return msg;
 }
 
 void disp_ssd1306_set_power(bool poweron) {
@@ -261,10 +260,10 @@ void setup_disp_ssd1306() {
   if (has_ssd1306()) {
     bool ret = display.init();
 
-    if (!ret) {
-      ssdlog("Display initialization failed.");
-    } else {
+    if (ret) {
       ssdlog("Initialized.");
+    } else {
+      ssdlog("Initialization failed.");
     }
   } else {
     ssdlog("SSD1306 NOT FOUND.");

@@ -35,6 +35,7 @@ typedef struct {
   String mhz19b_rxpin;
   String mhz19b_txpin;
   String displayFlip;
+  String displayBrightness;
   String st7789;
   String st7789Mode;
   String mqttBroker;

@@ -149,14 +149,16 @@ esptool.py write_flash 0x1000 filename.bin
 
 ### v3.4
 
-* Config: version 7.
+* Config: version 8 (was 6)
 * BUGFIX: SSD1306 not shown in Setup Mode
+* ADD: Default Brightness setting
+* ADD: Screen Flip setting
 
 ### v3.3
 
 * BUGFIX: MH-Z19B wrong message
 * BUGFIX: Wrong uptime on JSON
-* ADD: ST7789 Brightness change
+* ADD: ST7789 Brightness change (via Web API)
 * ADD: Watchdog timer (ESP32 only)
 * CHANGE: Use TimerCall
 

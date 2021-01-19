@@ -379,7 +379,7 @@ String disp_st7789_set_brightness(int brightness)
 
 	st7789_last_brightness = brightness;
 
-	return "PWM Setting done.";
+	return "PWM Setting done. (0-255) value=" + String(brightness);
 }
 
 void disp_st7789_set_power(bool poweron)
@@ -394,9 +394,8 @@ void disp_st7789_set_power(bool poweron)
 void setup_disp_st7789()
 {
 	tft.init();
-	tft.setRotation(3);
-	tft.fillScreen(TFT_BLACK);
-	stlog("ST7789 Initialized.");
+	clear_screen();
+	stlog("Initialized.");
 }
 
 #endif
