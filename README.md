@@ -4,10 +4,12 @@ Arduino environment monitor.
 
 # images
 
-Default output image on TTGO T-Display
+## Default output image on TTGO T-Display
+
 ![Default Output Image](docs/EnvBoyX_Horizontal.jpg)
 
-Vertical Output Image on TTGO T-Display
+## Vertical Output Image on TTGO T-Display
+
 ![Vertical Output Image](docs/EnvBoyX_Vertical.jpg)
 
 # spec
