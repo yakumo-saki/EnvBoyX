@@ -1,7 +1,15 @@
 # EnvBoyX
 
-Arduino environment monitor Unified version of Envboy and Envboy MQTT
-To obtain release version, see vX.Y tag. (ex v2.6)
+Arduino environment monitor.
+
+# images
+
+Default output image on TTGO T-Display
+![Default Output Image](docs/EnvBoyX_Horizontal.jpg)
+
+Vertical Output Image on TTGO T-Display
+![Vertical Output Image](docs/EnvBoyX_Vertical.jpg)
+
 # spec
 
 ## target boards
@@ -20,6 +28,10 @@ To obtain release version, see vX.Y tag. (ex v2.6)
 
 * ESP8266 mDNS is unstable.
 * ESP8266 MH-Z19B is unstable
+	// Init I2C Serial
+	init_i2c(I2C_SDA, I2C_SCL);
+	// Init I2C Serial
+	init_i2c(I2C_SDA, I2C_SCL);
 
 ## pin assign
 
@@ -135,13 +147,20 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
+### v3.4
+
+* Config: version 8 (was 6)
+* BUGFIX: SSD1306 not shown in Setup Mode
+* ADD: Default Brightness setting
+* ADD: Screen Flip setting
 
 ### v3.3
 
 * BUGFIX: MH-Z19B wrong message
 * BUGFIX: Wrong uptime on JSON
-* ADD: ST7789 Brightness change
+* ADD: ST7789 Brightness change (via Web API)
 * ADD: Watchdog timer (ESP32 only)
+* CHANGE: Use TimerCall
 
 ### v3.2
 
@@ -172,28 +191,33 @@ Display item change.
 
 ### v2.6
 
-Fix mDNS not working
+* Fix mDNS not working
 
 ### v2.5
 
-Add /display endpoint.
+* Add /display endpoint.
 
 ### v2.4
 
-Add /brightness endpoint.
+* Add /brightness endpoint.
 
 ### v2.3
 
-Unifing EnvBoyX (ESP8266) and EnvBoyX32 (ESP32) again.
+* Unifing EnvBoyX (ESP8266) and EnvBoyX32 (ESP32) again.
 
 ### v2.2
 
-missing version due to bug.
+* missing version due to bug.
 
 ### v2.1
 
-Split EnvBoyX (8266) and EnvBoyX32 (ESP32)
+* Split EnvBoyX (8266) and EnvBoyX32 (ESP32)
 
 ### v2.0
 
-Move to Platform.IO from Arduino IDE 
+* Move to Platform.IO from Arduino IDE 
+
+### before v2.0
+
+* https://github.com/yakumo-saki/envboy
+* https://github.com/yakumo-saki/EnvBoyMQTT

@@ -162,10 +162,10 @@ void disp_power_off() {
 String disp_set_brightness(int brightness) {
 	String msg = "";
 	if (use_ssd1306()) {
-		msg += disp_ssd1306_set_brightness(brightness);
+		msg += "\nSSD1306: " + disp_ssd1306_set_brightness(brightness);
 	}
 	if (use_st7789()) {
-		msg += disp_st7789_set_brightness(brightness);
+		msg += "\nST7789: " + disp_st7789_set_brightness(brightness);
 	}
 	return msg;
 }
@@ -183,9 +183,13 @@ void setup_display() {
 	if (use_ssd1306()) {
 		setup_disp_ssd1306();
 	} else {
-		displog("SSD1306 not found.");
+		ssdlog("SSD1306 not found.");
 	}
 	if (use_st7789()) {
 		setup_disp_st7789();
 	}
+
+	// initialize configured brightness
+	displog(disp_set_brightness(config.displayBrightness.toInt()));
+
 }

@@ -17,7 +17,7 @@ void disp_st7789_power_off() {};
 
 void disp_st7789_wifi_error() {};
 
-String disp_st7789_set_brightness(int brightness) { return ""; }
+String disp_st7789_set_brightness(int brightness) { return "Not Supported"; }
 
 /**
  * 液晶のON/OFFを設定する

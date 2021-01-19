@@ -35,6 +35,9 @@ extern String ST7789_NOUSE;
 extern String ST7789_MODE_BIG;
 extern String ST7789_MODE_NORMAL;
 
+extern String DISPLAY_FLIP_ON;
+extern String DISPLAY_FLIP_OFF;
+
 extern String MHZ_USE_PWM;
 extern String MHZ_USE_UART;
 extern String MHZ_NOUSE;

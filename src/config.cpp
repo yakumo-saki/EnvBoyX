@@ -23,8 +23,12 @@ void set_default_config_value()
   config.mhz19b_txpin = "0";
   #endif
 
+  config.displayFlip = DISPLAY_FLIP_OFF;
+  config.displayBrightness = "255";
+
   config.st7789 = ST7789_NOUSE;
   config.st7789Mode = ST7789_MODE_NORMAL;
+
   config.mqttBroker = "";
   config.mqttName = "";
 }
@@ -34,6 +38,9 @@ void print_config() {
   cfglog("PASS: " + config.password);
   cfglog("mDNS: " + config.mDNS);
   cfglog("opMode: " + config.opMode);
+  cfglog("DISPLAY:");
+  cfglog("   Flip: " + config.displayFlip);
+  cfglog("   Brightness:" + config.displayBrightness);
   cfglog("ST7789: " + config.st7789);
   cfglog("   MODE: " + config.st7789Mode);
   cfglog("use MHZ19B: " + config.use_mhz19b);
@@ -50,6 +57,8 @@ void trim_config() {
   config.password.trim();
   config.mDNS.trim();
   config.opMode.trim();
+  config.displayFlip.trim();
+  config.displayBrightness.trim();
   config.st7789.trim();
   config.st7789Mode.trim();
   config.use_mhz19b.trim();
@@ -66,6 +75,8 @@ void write_config_file(File f) {
   f.println(config.password);
   f.println(config.mDNS);
   f.println(config.opMode);
+  f.println(config.displayFlip);
+  f.println(config.displayBrightness);
   f.println(config.st7789);
   f.println(config.st7789Mode);
   f.println(config.use_mhz19b);
@@ -82,6 +93,8 @@ void read_config_file(File f) {
   config.password = f.readStringUntil('\n');
   config.mDNS = f.readStringUntil('\n');
   config.opMode = f.readStringUntil('\n');
+  config.displayFlip = f.readStringUntil('\n');
+  config.displayBrightness = f.readStringUntil('\n');
   config.st7789 = f.readStringUntil('\n');
   config.st7789Mode = f.readStringUntil('\n');
   config.use_mhz19b = f.readStringUntil('\n');

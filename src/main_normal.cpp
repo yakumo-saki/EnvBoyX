@@ -58,7 +58,7 @@ void printStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
 }
 
 void init_timer() {
-	mainlog("TimerCall version:" + String(timer.VERSION, 2));
+	mainlog("TimerCall version: " + String(timer.VERSION, 2));
 	timer.add(bme_read_data, "BME280", 1000); 
 	timer.add(am_read_data, "AM2320", 1000);
 	timer.add(adt_read_data, "ADT7410", 1000);

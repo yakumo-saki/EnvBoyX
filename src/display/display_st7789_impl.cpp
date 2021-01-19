@@ -54,6 +54,26 @@ bool isBigMode()
 	return config.st7789Mode == ST7789_MODE_BIG;
 }
 
+void clear_screen() {
+	tft.fillScreen(TFT_BLACK);
+
+	if (config.st7789Mode == ST7789_MODE_BIG) {
+		// 縦画面
+		if (config.displayFlip == DISPLAY_FLIP_OFF) {
+			tft.setRotation(2);
+		} else {
+			tft.setRotation(0);
+		}
+	} else {
+		// 横画面
+		if (config.displayFlip == DISPLAY_FLIP_OFF) {
+			tft.setRotation(1);
+		} else {
+			tft.setRotation(3);
+		}
+	}
+}
+
 /**
  * 起動時の画面表示（共通）
  */
@@ -86,7 +106,7 @@ void disp_st7789_wifi_starting(int wait_print_row)
 {
 
 	tft.startWrite();
-	tft.fillScreen(TFT_BLACK);
+	clear_screen();
 	tft.setCursor(0, 0, DEFAULT_FONT);
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
@@ -99,7 +119,7 @@ void disp_st7789_wifi_info(String ip, String mDNS)
 {
 
 	tft.startWrite();
-	tft.fillScreen(TFT_BLACK);
+	clear_screen();
 	tft.setCursor(0, 0, DEFAULT_FONT);
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
@@ -114,6 +134,7 @@ void disp_st7789_wifi_error()
 {
 
 	tft.startWrite();
+	clear_screen();
 	tft.fillScreen(TFT_RED);
 	tft.setCursor(0, 0, DEFAULT_FONT);
 	tft.setTextColor(TFT_YELLOW, TFT_BLACK);
@@ -131,7 +152,7 @@ void disp_st7789_wait_for_reconfig_init()
 
 	tft.startWrite();
 
-	tft.fillScreen(TFT_BLACK);
+	clear_screen();
 	tft.setCursor(0, 0, DEFAULT_FONT);
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
@@ -151,7 +172,11 @@ void disp_st7789_wait_for_reconfig_bar(int now, const int max)
  */
 void _disp_header_big(String ip, String mDNS)
 {
-	tft.setRotation(2);
+	if (config.displayFlip == DISPLAY_FLIP_OFF) {
+		tft.setRotation(2);
+	} else {
+		tft.setRotation(0);
+	}
 }
 
 /**
@@ -159,6 +184,8 @@ void _disp_header_big(String ip, String mDNS)
  */
 void _disp_header_normal(String ip, String mDNS)
 {
+	clear_screen();
+
 	tft.setTextColor(TFT_WHITE);
 
 	// Logo
@@ -283,7 +310,6 @@ void _disp_sensor_value_big(disp_values_t val)
  */
 void _disp_sensor_value_normal(disp_values_t val)
 {
-
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 	tft.setTextSize(1);
 
@@ -353,7 +379,7 @@ String disp_st7789_set_brightness(int brightness)
 
 	st7789_last_brightness = brightness;
 
-	return "PWM Setting done.";
+	return "PWM Setting done. (0-255) value=" + String(brightness);
 }
 
 void disp_st7789_set_power(bool poweron)
@@ -368,9 +394,8 @@ void disp_st7789_set_power(bool poweron)
 void setup_disp_st7789()
 {
 	tft.init();
-	tft.setRotation(3);
-	tft.fillScreen(TFT_BLACK);
-	stlog("ST7789 Initialized.");
+	clear_screen();
+	stlog("Initialized.");
 }
 
 #endif
