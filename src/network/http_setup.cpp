@@ -56,26 +56,40 @@ String http_setup_get_root_content() {
   html += "  ※ ESP8266でMQTTモードを使用するにはIO16ピンとRSTピンを接続する必要があります。<br>";
   String opmode_always_checked = (config.opMode == OPMODE_DISPLAY ? " checked" : "");
   String opmode_mqtt_checked = (config.opMode == OPMODE_MQTT ? " checked" : "");
-  html += "  <input type='radio' name='opmode' value='" + OPMODE_DISPLAY + "' id='opmode_always'" + opmode_always_checked + "><label for='opmode_always'>常時起動モード（測定値常時表示, HTTPサーバーあり）</label></label><br>";
+  html += "  <input type='radio' name='opmode' value='" + OPMODE_DISPLAY + "' id='opmode_always'" + opmode_always_checked + "><label for='opmode_always'>常時起動モード（測定値常時表示, HTTPサーバーあり）</label><br>";
   html += "  <input type='radio' name='opmode' value='" + OPMODE_MQTT + "' id='opmode_mqtt'" + opmode_mqtt_checked + "><label for='opmode_mqtt'>MQTTモード（間欠動作・MQTT送信後ディープスリープ）</label><br>";
   html += "</fieldset>";
 
-  html += "<fieldset><legend>デバイス設定</legend>";
+  html += "<fieldset><legend>表示デバイス共通設定</legend>";
+
+  String display_flip_no_checked = (config.displayFlip == DISPLAY_FLIP_OFF ? " checked" : "");
+  String display_flip_yes_checked = (config.displayFlip == DISPLAY_FLIP_ON ? " checked" : "");
+
+  html += "  <strong>画面反転</strong><br>";
+  html += "  <input type='radio' name='displayFlip' value='" + DISPLAY_FLIP_OFF + "' id='display_flip_no'" + display_flip_no_checked + "><label for='display_flip_no'>反転しない</label><br>";
+  html += "  <input type='radio' name='displayFlip' value='" + DISPLAY_FLIP_ON + "' id='display_flip_yes'" + display_flip_yes_checked + "><label for='display_flip_yes'>反転する</label><br>";
+
+  html += "  <br>";
+  html += "</fieldset>";
+
+  html += "<fieldset><legend>ST7789 デバイス設定</legend>";
 
   String st7789_use_checked = (config.st7789 == ST7789_USE ? " checked" : "");
   String st7789_nouse_checked = (config.st7789 == ST7789_NOUSE ? " checked" : "");
   
   String st7789_big_checked = (config.st7789Mode == ST7789_MODE_BIG ? " checked" : "");
   String st7789_normal_checked = (config.st7789Mode == ST7789_MODE_NORMAL ? " checked" : "");
+
   html += "  <strong>ST7789 SPI液晶の有無</strong><br>";
   html += "  ※ MQTTモードでは無効。<br>";
   html += "  ※ SPIピンはビルドオプションで指定<br>";
   html += "  <input type='radio' name='st7789' value='" + ST7789_NOUSE + "' id='st7789_no'" + st7789_nouse_checked + "><label for='st7789_no'>使用しない</label><br>";
-  html += "  <input type='radio' name='st7789' value='" + ST7789_USE + "' id='st7789_yes'" + st7789_use_checked + "><label for='st7789_yes'>使用する</label></label><br>";
+  html += "  <input type='radio' name='st7789' value='" + ST7789_USE + "' id='st7789_yes'" + st7789_use_checked + "><label for='st7789_yes'>使用する</label><br>";
 
   html += "  <strong>ST7789 表示モード</strong><br>";
-  html += "  <input type='radio' name='st7789Mode' value='" + ST7789_MODE_NORMAL + "' id='st7789_normal'" + st7789_normal_checked + "><label for='st7789_normal'>横表示モード</label></label><br>";
+  html += "  <input type='radio' name='st7789Mode' value='" + ST7789_MODE_NORMAL + "' id='st7789_normal'" + st7789_normal_checked + "><label for='st7789_normal'>横表示モード</label><br>";
   html += "  <input type='radio' name='st7789Mode' value='" + ST7789_MODE_BIG + "' id='st7789_big'" + st7789_big_checked + "><label for='st7789_big'>縦表示モード（デカ文字）</label><br>";
+
   html += "  <br>";
 
   String mhz19b_nouse_checked = (config.use_mhz19b == MHZ_NOUSE ? " checked" : "");
@@ -146,6 +160,14 @@ String http_setup_post_root_content() {
     html += "PASS " + config.password + "<br>";
     html += "mDNS " + config.mDNS + "<br>";
 
+    if (config.displayFlip == DISPLAY_FLIP_OFF) {
+      html += "画面反転：反転しない<br>";
+    } else if (config.displayFlip == DISPLAY_FLIP_ON) {
+      html += "画面反転：反転する<br>";
+    } else {
+      html += "【バグ】画面反転の設定が異常です => " + config.displayFlip + "<br>";
+    }
+
     if (config.st7789 == ST7789_USE) {
       html += "ST7789 を使用する<br>";
 
@@ -156,7 +178,6 @@ String http_setup_post_root_content() {
       } else {
         html += "【バグ】ST7789表示モード設定が異常です => " + config.st7789Mode + "<br>";
       }
-      html += "ST7789 を使用する<br>";
     } else if (config.st7789 == ST7789_NOUSE) {
       html += "ST7789 を使用しない<br>";
     } else {

@@ -14,7 +14,9 @@ void tsl_setup() {
   // init TSL2561
   Tsl.begin();
   if( !Tsl.available() ) {
-    tsllog("No Tsl2561 found. Tsl2561 disabled.");
+    tsllog("No TSL2561 found. Tsl2561 disabled.");
+  } else {
+    tsllog("TSL2561 found. Enabled.");
   }
 }
 
@@ -24,7 +26,7 @@ void read_data_tsl2561() {
   uint8_t id;
   uint16_t full, ir;
 
-  if( !Tsl.available() ) {
+  if( !use_tsl || !Tsl.available() ) {
     return;
   }
 
@@ -40,7 +42,7 @@ void read_data_tsl2561() {
   Tsl.irLuminosity(ir);
 
   char log[80];
-  snprintf(log, sizeof log, "Luminosity: %5u lx IR: %5u lx", Tsl.address(), id, full, ir);
+  snprintf(log, sizeof log, "Luminosity: %5u lx IR: %5u lx", full, ir);
   tsllog(String(log));
 
   sensorValues.lux = full;

@@ -36,8 +36,7 @@ extern const int MHZ_BAUDRATE = 9600;
 String settings = "/wifi_settings.txt";
 String configured_file = "/config_ok.txt";
 
-// 次からv3 -> ただの連番にして単純カウントアップにする
-String SETTING_ID = "EBXCFG.v6";
+String SETTING_ID = "EBXCFG.v7";
 String OPMODE_MQTT = "mqtt";
 String OPMODE_DISPLAY = "always";
 
@@ -45,6 +44,10 @@ String ST7789_USE = "yes";
 String ST7789_NOUSE = "no";
 String ST7789_MODE_BIG = "st7789_BIG";
 String ST7789_MODE_NORMAL = "st7789_normal";
+
+// SSD1306 , ST7789 Flip
+String DISPLAY_FLIP_ON = "yes";
+String DISPLAY_FLIP_OFF = "no";
 
 String MHZ_USE_PWM = "yes_pwm";
 String MHZ_USE_UART = "yes_uart";

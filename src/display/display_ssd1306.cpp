@@ -15,14 +15,14 @@ SSD1306 display(SSD1306_I2C_ADDR, I2C_SDA, I2C_SCL);
 bool needFlip = false;
 
 bool has_ssd1306() {
-  return true;
   Wire.beginTransmission(SSD1306_I2C_ADDR);
-  int error = Wire.endTransmission();
+  byte error = Wire.endTransmission();
 
   if (error != 0) {
-    displog("Error display connection: " + String(error));
+    ssdlog("Error display connection Addr: " + String(SSD1306_I2C_ADDR) + " ErrorNo: " + String(error));
+    return false;
   }
-  return (error == 0);
+  return true;
    
 }
 

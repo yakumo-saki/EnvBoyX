@@ -137,7 +137,7 @@ esptool.py write_flash 0x1000 filename.bin
 
 ### v3.4
 
-* 
+* Config: version 7.
 
 ### v3.3
 

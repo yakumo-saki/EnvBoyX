@@ -30,6 +30,7 @@ void handle_post_root() {
   config.password = server.arg("pass");
   config.mDNS = server.arg("mdnsname");
   config.opMode = server.arg("opmode");
+  config.displayFlip = server.arg("displayFlip");
   config.st7789 = server.arg("st7789");
   config.st7789Mode = server.arg("st7789Mode");
   config.use_mhz19b = server.arg("use_mhz19b");
