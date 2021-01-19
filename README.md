@@ -1,7 +1,15 @@
 # EnvBoyX
 
-Arduino environment monitor Unified version of Envboy and Envboy MQTT
-To obtain release version, see vX.Y tag. (ex v2.6)
+Arduino environment monitor.
+
+# images
+
+Default output image on TTGO T-Display
+![Default Output Image](docs/EnvBoyX_Horizontal.jpg)
+
+Vertical Output Image on TTGO T-Display
+![Vertical Output Image](docs/EnvBoyX_Vertical.jpg)
+
 # spec
 
 ## target boards
@@ -20,6 +28,10 @@ To obtain release version, see vX.Y tag. (ex v2.6)
 
 * ESP8266 mDNS is unstable.
 * ESP8266 MH-Z19B is unstable
+	// Init I2C Serial
+	init_i2c(I2C_SDA, I2C_SCL);
+	// Init I2C Serial
+	init_i2c(I2C_SDA, I2C_SCL);
 
 ## pin assign
 
