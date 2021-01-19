@@ -34,11 +34,11 @@ void handle_post_root() {
   config.displayBrightness = server.arg("displayBrightness");
   config.st7789 = server.arg("st7789");
   config.st7789Mode = server.arg("st7789Mode");
-  config.use_mhz19b = server.arg("use_mhz19b");
-  config.mhz19b_pwmpin = server.arg("mhz19b_pwmpin");
+  config.mhz19b = server.arg("mhz19b");
+  config.mhz19bPwmPin = server.arg("mhz19bPwmPin");
   // SoftwareSerialの初期化時にこれを渡す方法がわからないので固定
-  config.mhz19b_rxpin = "14";
-  config.mhz19b_txpin = "0";
+  config.mhz19bRxPin = "14";
+  config.mhz19bTxPin = "0";
   config.mqttBroker = server.arg("mqttbroker");
   config.mqttName = server.arg("mqttname");
 

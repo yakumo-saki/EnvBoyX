@@ -8,7 +8,7 @@
 String product_short = "ebx";
 // EnvBoyX
 String product = "EnvBoyX";
-String ver = "3.4";
+String ver = "3.5";
 // EnvBoyX Ver.3.0
 String product_long = product + " Ver." + ver;
 
@@ -36,7 +36,7 @@ extern const int MHZ_BAUDRATE = 9600;
 String settings = "/wifi_settings.txt";
 String configured_file = "/config_ok.txt";
 
-String SETTING_ID = "EBXCFG.v8";
+String SETTING_ID = "EBXCFG.v9";
 String OPMODE_MQTT = "mqtt";
 String OPMODE_DISPLAY = "always";
 
