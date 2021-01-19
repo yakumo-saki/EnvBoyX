@@ -138,6 +138,7 @@ esptool.py write_flash 0x1000 filename.bin
 ### v3.4
 
 * Config: version 7.
+* BUGFIX: SSD1306 not shown in Setup Mode
 
 ### v3.3
 
