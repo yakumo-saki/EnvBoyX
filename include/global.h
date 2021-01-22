@@ -42,6 +42,10 @@ extern String MHZ_USE_PWM;
 extern String MHZ_USE_UART;
 extern String MHZ_NOUSE;
 
+extern const String MIME_HTML;
+extern const String MIME_TEXT;
+extern const String MIME_JSON;
+
 // --------------------------------------------------------------------
 // 設定値保存
 // --------------------------------------------------------------------
@@ -52,3 +56,7 @@ extern config_t config;
 // --------------------------------------------------------------------
 extern sensor_values_t sensorValues;
 
+// --------------------------------------------------------------------
+// 統計情報
+// --------------------------------------------------------------------
+extern String stasticsJSON;

@@ -2,6 +2,7 @@
 
 #include <MQTTClient.h>
 #include <TimerCall.h>
+#include <ArduinoJson.h>
 
 #include "log.h"
 #include "global.h"
@@ -24,6 +25,7 @@
 WiFiClient net;
 
 TimerCall timer = TimerCall();
+extern String stasticsJSON;
 
 void init_sensors()
 {
@@ -46,6 +48,9 @@ void call_disp_sensor_value() {
 }
 
 void printStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
+	DynamicJsonDocument doc(4096);
+
+	int idx = 0;
     for (auto it = tasks.begin(), e = tasks.end(); it != e; ++it) {
         statlog(
            + "name=" + String(it->info.name)
@@ -54,7 +59,21 @@ void printStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
            + " total=" + String(it->info.totalElapsedMills)
            + " count=" + String(it->info.callCount)
         );
+
+		// 統計
+		doc[idx]["name"] = String(it->info.name);
+        doc[idx]["lastExecMs"] = it->info.lastExecMills;
+        doc[idx]["lastElapsedMs"] = it->info.lastElapsedMills;
+        doc[idx]["totalElapsedMs"] = it->info.totalElapsedMills;
+        doc[idx]["callCount"] = it->info.callCount;
+		idx++;
     }
+
+	doc["time"] = millis();
+	String json = "";
+	serializeJson(doc, json);
+	stasticsJSON = json;
+
 }
 
 void init_timer() {
@@ -117,8 +136,9 @@ void setup_normal()
 
 	init_sensors();
 
-	// 
+	// TimerCall
 	init_timer();
+	timer.forceRunStasticsOnce();
 
 	// 初期化終了時に画面表示をどうにかできるフック
 	disp_all_initialize_complete(get_wifi_ip_addr(), config.mDNS);

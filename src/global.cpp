@@ -1,16 +1,17 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include "structs.h"
 
 // --------------------------------------------------------------------
 // プロダクト名定数
 // --------------------------------------------------------------------
 // ebx
-String product_short = "ebx";
+extern const String product_short = "ebx";
 // EnvBoyX
-String product = "EnvBoyX";
-String ver = "3.6";
+extern const String product = "EnvBoyX";
+extern const String ver = "3.6";
 // EnvBoyX Ver.3.0
-String product_long = product + " Ver." + ver;
+extern const String product_long = product + " Ver." + ver;
 
 // --------------------------------------------------------------------
 // デバイス周りの定数
@@ -33,25 +34,29 @@ extern const int MHZ_BAUDRATE = 9600;
 // --------------------------------------------------------------------
 // 設定ファイル用定数
 // --------------------------------------------------------------------
-String settings = "/wifi_settings.txt";
-String configured_file = "/config_ok.txt";
+extern const String settings = "/wifi_settings.txt";
+extern const String configured_file = "/config_ok.txt";
 
-String SETTING_ID = "EBXCFG.v9";
-String OPMODE_MQTT = "mqtt";
-String OPMODE_DISPLAY = "always";
+extern const String SETTING_ID = "EBXCFG.v9";
+extern const String OPMODE_MQTT = "mqtt";
+extern const String OPMODE_DISPLAY = "always";
 
-String ST7789_USE = "yes";
-String ST7789_NOUSE = "no";
-String ST7789_MODE_BIG = "st7789_BIG";
-String ST7789_MODE_NORMAL = "st7789_normal";
+extern const String ST7789_USE = "yes";
+extern const String ST7789_NOUSE = "no";
+extern const String ST7789_MODE_BIG = "st7789_BIG";
+extern const String ST7789_MODE_NORMAL = "st7789_normal";
 
 // SSD1306 , ST7789 Flip
-String DISPLAY_FLIP_ON = "yes";
-String DISPLAY_FLIP_OFF = "no";
+extern const String DISPLAY_FLIP_ON = "yes";
+extern const String DISPLAY_FLIP_OFF = "no";
 
-String MHZ_USE_PWM = "yes_pwm";
-String MHZ_USE_UART = "yes_uart";
-String MHZ_NOUSE = "no";
+extern const String MHZ_USE_PWM = "yes_pwm";
+extern const String MHZ_USE_UART = "yes_uart";
+extern const String MHZ_NOUSE = "no";
+
+extern const String MIME_HTML = "text/html";
+extern const String MIME_TEXT = "text/plain";
+extern const String MIME_JSON = "application/json";
 
 // --------------------------------------------------------------------
 // 設定値保存
@@ -62,3 +67,8 @@ config_t config;
 // センサー値
 // --------------------------------------------------------------------
 sensor_values_t sensorValues;
+
+// --------------------------------------------------------------------
+// 統計情報
+// --------------------------------------------------------------------
+String stasticsJSON;
