@@ -48,7 +48,11 @@ void call_disp_sensor_value() {
 }
 
 void printStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
+
+	const String STAT = "stastics";
+
 	DynamicJsonDocument doc(4096);
+	doc["time"] = millis();
 
 	int idx = 0;
     for (auto it = tasks.begin(), e = tasks.end(); it != e; ++it) {
@@ -61,15 +65,14 @@ void printStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
         );
 
 		// 統計
-		doc[idx]["name"] = String(it->info.name);
-        doc[idx]["lastExecMs"] = it->info.lastExecMills;
-        doc[idx]["lastElapsedMs"] = it->info.lastElapsedMills;
-        doc[idx]["totalElapsedMs"] = it->info.totalElapsedMills;
-        doc[idx]["callCount"] = it->info.callCount;
+		doc[STAT][idx]["name"] = String(it->info.name);
+        doc[STAT][idx]["lastExecMs"] = it->info.lastExecMills;
+        doc[STAT][idx]["lastElapsedMs"] = it->info.lastElapsedMills;
+        doc[STAT][idx]["totalElapsedMs"] = it->info.totalElapsedMills;
+        doc[STAT][idx]["callCount"] = it->info.callCount;
 		idx++;
     }
 
-	doc["time"] = millis();
 	String json = "";
 	serializeJson(doc, json);
 	stasticsJSON = json;
