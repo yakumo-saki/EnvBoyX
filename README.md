@@ -149,6 +149,10 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
+### v3.6
+
+* BUGFIX: TSL2561 can't enabled
+
 ### v3.5
 
 * Config: version 9 (was 8) and using JSON format

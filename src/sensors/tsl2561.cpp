@@ -17,6 +17,7 @@ void tsl_setup() {
     tsllog("No TSL2561 found. Tsl2561 disabled.");
   } else {
     tsllog("TSL2561 found. Enabled.");
+    use_tsl = true;
   }
 }
 
