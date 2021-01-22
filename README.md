@@ -151,6 +151,7 @@ esptool.py write_flash 0x1000 filename.bin
 
 ### v3.6
 
+* LICENSE: EnvBoyX is now under APL 2.0 , Affected to all versions. (license terms are not shown before)
 * BUGFIX: TSL2561 can't enabled
 
 ### v3.5
