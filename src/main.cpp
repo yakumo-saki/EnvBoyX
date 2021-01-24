@@ -13,7 +13,7 @@ bool isNormal = false;
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(74880);
   while (!Serial); // Serial起動待ち
   
   Serial.println(""); // 1行目にゴミが出るので改行しないと読めない
