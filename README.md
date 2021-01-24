@@ -153,6 +153,8 @@ esptool.py write_flash 0x1000 filename.bin
 
 * LICENSE: EnvBoyX is now under APL 2.0 , Affected to all versions. (license terms are not shown before)
 * BUGFIX: TSL2561 can't enabled
+* CHANGE: Serial speed changed to 74880. (was 115200)
+* BUGFIX: ping API returns invalid JSON
 
 ### v3.5
 

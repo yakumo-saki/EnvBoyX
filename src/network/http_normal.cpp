@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 #include "log.h"
 #include "global.h"
@@ -16,7 +17,7 @@ String get_time_string(unsigned long ms) {
   int min = (second / 60) % 60;
   int hr =  minute / 60;
 
-  char buf[400];
+  char buf[10];
   snprintf (buf, sizeof buf,"%02d:%02d:%02d", hr, min, sec);
   return String(buf);
 }
@@ -26,43 +27,40 @@ String http_normal_data_json() {
   unsigned long ms = millis();
   String timeString = get_time_string(ms);
 
-  char temp[16], hum[16], pres[16];
-  char lux[16], luxIr[16],ppm[16];
-  char product[32];
-  product_long.toCharArray(product, sizeof(product), 0);
+  char temp[10], hum[10], pres[10];
+  char lux[10], luxIr[10],ppm[10];
 
-  char buf[400];
-  snprintf ( buf, sizeof buf,
-    "{ \"product\": \"%s\", \"uptime\": \"%s\", \"uptimeMills\": \"%lu\", \"temparature\": \"%s\","
-    " \"humidity\": \"%s\", \"pressure\": \"%s\",\"luminous\": \"%s\", \"luminousIr\": \"%s\""
-    ", \"co2ppm\": \"%s\", \"co2ppmAccuracy\": \"%s\" }"
-    , product, timeString.c_str(), ms
-    , dtostrf(sensorValues.temperature, 0, 2, temp)
-    , dtostrf(sensorValues.humidity, 0, 2, hum)
-    , dtostrf(sensorValues.pressure, 0, 2, pres)
-    , dtostrf(sensorValues.lux, 0, 0, lux)
-    , dtostrf(sensorValues.luxIr, 0, 0, luxIr)
-    , dtostrf(sensorValues.co2ppm, 0, 0, ppm)
-    , sensorValues.co2ppmAccuracy.c_str()
-  );
+  StaticJsonDocument<2000> doc;
+  doc["product"] = product;
+  doc["uptime"] = timeString;
+  doc["uptimeMills"] = ms;
+  doc["temparature"] = dtostrf(sensorValues.temperature, 0, 2, temp);
+  doc["humidity"] = dtostrf(sensorValues.humidity, 0, 2, hum);
+  doc["pressure"] = dtostrf(sensorValues.pressure, 0, 2, pres);
+  doc["luminous"] = dtostrf(sensorValues.lux, 0, 0, lux);
+  doc["luminousIr"] = dtostrf(sensorValues.luxIr, 0, 0, luxIr);
+  doc["co2ppm"] = dtostrf(sensorValues.co2ppm, 0, 0, ppm);
+  doc["co2ppmAccuracy"] =  sensorValues.co2ppmAccuracy;
 
-  String json = String(buf);
+  String json;
+  serializeJson(doc, json);
   httplog("return json: " + json);
   return json;
 }
 
 String http_normal_ping_json() {
 
-  char temp[100];
   unsigned long ms = millis();
   String timeString = get_time_string(ms);
 
-  snprintf ( temp, sizeof temp,
-    "{ \"uptime\": \"%s\", \"uptimeMills\": \"%lu\" }\n"
-    , timeString.c_str(), ms
-  );
+  StaticJsonDocument<2000> doc;
+  doc["product"] = product;
+  doc["uptime"] = timeString;
+  doc["uptimeMills"] = ms;
 
-  String json = "return ping: " + String(temp);
+  String json;
+  serializeJson(doc, json);
+
   httplog(json);
   return json;
 }
