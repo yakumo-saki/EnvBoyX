@@ -58,10 +58,10 @@ void set_default_config_value()
   config.pressureAlerts.warning1.high = "995";
   config.pressureAlerts.caution1.low = "995";
   config.pressureAlerts.caution1.high = "1000";
-  config.pressureAlerts.caution2.low = "9999";
-  config.pressureAlerts.caution2.high = "9999";
+  config.pressureAlerts.caution2.low = "3000";
+  config.pressureAlerts.caution2.high = "3000";
   config.pressureAlerts.warning2.low = "1025";
-  config.pressureAlerts.warning2.high = "9999";
+  config.pressureAlerts.warning2.high = "3000";
 
   config.luxAlerts.warning1.low = "0";
   config.luxAlerts.warning1.high = "1";

@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 void real_log(String msgString, String prefixString) {
-  char log[120];
+  char log[130];
   char prefix[10];
   char msg[100];
   prefixString.toCharArray(prefix, sizeof prefix);
@@ -11,78 +11,78 @@ void real_log(String msgString, String prefixString) {
 }
 
 void mainlog(String msg) {
-  real_log(msg, "MAIN");
+  real_log(msg, F("MAIN"));
 }
 
 void lpslog(String msg) {
-  real_log(msg, "LPS22HB");
+  real_log(msg, F("LPS22HB"));
 }
 
 void mhzlog(String msg) {
-  real_log(msg, "MHZ19B");
+  real_log(msg, F("MHZ19B"));
 }
 
 void tsllog(String msg) {
-  real_log(msg, "TSL2561");
+  real_log(msg, F("TSL2561"));
 }
 
 void bmelog(String msg) {
-  real_log(msg, "BME280");
+  real_log(msg, F("BME280"));
 }
 
 void amlog(String msg) {
-  real_log(msg, "AM2320");
+  real_log(msg, F("AM2320"));
 }
 
 void bhlog(String msg) {
-  real_log(msg, "BH1750");
+  real_log(msg, F("BH1750"));
 }
 
 void adtlog(String msg) {
-  real_log(msg, "ADT7410");
+  real_log(msg, F("ADT7410"));
 }
 
 void cfglog(String msg) {
-  real_log(msg, "CONFIG");
+  real_log(msg, F("CONFIG"));
 }
 
 void httplog(String msg) {
-  real_log(msg, "HTTP");
+  real_log(msg, F("HTTP"));
 }
 
 void displog(String msg) {
-  real_log(msg, "DISPLAY");
+  real_log(msg, F("DISPLAY"));
 }
 
 void mdnslog(String msg) {
-  real_log(msg, "mDNS");
+  real_log(msg, F("mDNS"));
 }
 
 void wifilog(String msg) {
-  real_log(msg, "WiFi");
+  real_log(msg, F("WiFi"));
 }
 
 void i2clog(String msg) {
-  real_log(msg, "I2C");
+  real_log(msg, F("I2C"));
 }
 void ssdlog(String msg) {
-  real_log(msg, "SSD1306");
+  real_log(msg, F("SSD1306"));
 }
 void stlog(String msg) {
-  real_log(msg, "ST7789");
+  real_log(msg, F("ST7789"));
 }
 
 void statlog(String msg) {
-  real_log(msg, "STAT");
+  real_log(msg, F("STAT"));
 }
 
 void debuglog(String msg) {
-  real_log(msg, "DEBUG");
+  real_log(msg, F("DEBUG"));
 }
 
 void sectionlog(String msg) {
-  Serial.println("");
-  real_log(msg, "========");
-  Serial.println("");
+  Serial.println(F(""));
+  real_log(msg, F("========"));
+  Serial.println(F(""));
 }
 
