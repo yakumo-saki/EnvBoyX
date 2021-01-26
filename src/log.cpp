@@ -34,6 +34,10 @@ void amlog(String msg) {
   real_log(msg, "AM2320");
 }
 
+void bhlog(String msg) {
+  real_log(msg, "BH1750");
+}
+
 void adtlog(String msg) {
   real_log(msg, "ADT7410");
 }
@@ -82,19 +86,3 @@ void sectionlog(String msg) {
   Serial.println("");
 }
 
-String get_i2c_error_message(byte code) {
-    
-    if (code == 0) {
-        return "code 0:success (not error)";
-    } else if (code == 1) {
-        return "code 1:data too long to fit in transmit buffer";
-    } else if (code == 2) {
-        return "code 2:received NACK on transmit of address";
-    } else if (code == 3) {
-        return "code 3:received NACK on transmit of data";
-    } else if (code == 4) {
-        return "code 4:other error";
-    }
-       
-    return "code " + String(code) + ":unknown error";
-}

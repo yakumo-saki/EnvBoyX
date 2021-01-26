@@ -10,6 +10,7 @@
 #include "sensors/bme280.h"
 #include "sensors/adt7410.h"
 #include "sensors/am2320.h"
+#include "sensors/bh1750.h"
 #include "sensors/lps22hb.h"
 #include "sensors/mhz19.h"
 #include "sensors/tsl2561.h"
@@ -33,6 +34,7 @@ void init_sensors()
 	bme_setup();
 	adt_setup();
 	am_setup();
+	bh_setup();
 	lps_setup();
 	tsl_setup();
 
@@ -47,7 +49,7 @@ void call_disp_sensor_value() {
 	disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
 }
 
-void printStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
+void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
 
 	const String STAT = "stastics";
 
@@ -86,11 +88,12 @@ void init_timer() {
 	timer.add(adt_read_data, "ADT7410", 1000);
 	timer.add(lps_read_data, "LPS22HB", 1000);
 	timer.add(read_data_tsl2561, "TSL2561", 1000);
+	timer.add(bh_read_data, "BH1750", 2000);
 	timer.add(mhz_read_data, "MHZ19B", 3000);
 
 	// 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する
 	timer.add(call_disp_sensor_value, "DISP", 1000);
-	timer.addStasticsFunction(printStastics, "STAT", 60000);
+	timer.addStasticsFunction(updateStastics, "STAT", 60000);
 }
 
 /**

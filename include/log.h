@@ -6,6 +6,7 @@ void mhzlog(String msg);
 void tsllog(String msg);
 void bmelog(String msg);
 void amlog(String msg);
+void bhlog(String msg);
 void adtlog(String msg);
 void cfglog(String msg);
 void httplog(String msg);
