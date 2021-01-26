@@ -67,8 +67,6 @@ void remove_configure_flag_file()
  */
 void save_config()
 {
-  LITTLEFS.begin();
-
   trim_config();
 
   // 設定ファイル
@@ -99,14 +97,15 @@ void read_config()
  * ＝フラグファイルはみない
  */
 bool has_valid_config_file() {
-  LITTLEFS.begin();
-  delay(50);
 
   if (!LITTLEFS.exists(settings)) {
     cfglog(settings + " not found.");
+    LITTLEFS.end();
     return false;
   } else {
     File f = LITTLEFS.open(settings, "r");
+
+    cfglog(F("Reading config to checking version."));
     read_config_file(f);
     f.close();
 
@@ -127,15 +126,17 @@ bool has_valid_config_file() {
  * configファイルの存在とバージョン一致とconfigフラグファイルの存在をチェックする
  */
 bool has_valid_config() {
-  LITTLEFS.begin();
-  delay(50);
 
-  if (!LITTLEFS.exists(configured_file)) {
+  bool exist = LITTLEFS.exists(configured_file);
+
+  if (!exist) {
     // reconfigure用ファイルがなければセットアップモード
     // => wait for reconfigure でリセットされたとき。
-    cfglog("configured_file not found.");
+    cfglog(F("configured_file not found."));
     return false;
-  } 
+  } else {
+    cfglog(F("configured_file found"));
+  }
 
   return has_valid_config_file();
 }
@@ -143,12 +144,11 @@ bool has_valid_config() {
 
 void config_setup() {
   if (!LITTLEFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
-    cfglog("LITTLEFS Mount Failed.");
-    return;
+    cfglog(F("LITTLEFS Mount Failed."));
+  } else {
+    cfglog(F("LITTLEFS Mount success."));
   }
-
-  cfglog("LITTLEFS Mount success.");
-  
+  list_dir();
 }
 
 #endif

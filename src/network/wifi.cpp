@@ -10,24 +10,25 @@
 #include "log.h"
 #include "global.h"
 #include "watchdog.h"
+#include "display.h"
 
 String wl_status_t_to_string(wl_status_t wl_stat) {
     if (wl_stat == WL_NO_SHIELD) {
-        return "WL_NO_SHIELD";
+        return F("WL_NO_SHIELD");
     } else if (wl_stat == WL_IDLE_STATUS) {
-        return "WL_IDLE_STATUS";
+        return F("WL_IDLE_STATUS");
     } else if (wl_stat == WL_NO_SSID_AVAIL) {
-        return "WL_NO_SSID_AVAIL";
+        return F("WL_NO_SSID_AVAIL");
     } else if (wl_stat == WL_SCAN_COMPLETED) {
-        return "WL_SCAN_COMPLETED";
+        return F("WL_SCAN_COMPLETED");
     } else if (wl_stat == WL_CONNECTED) {
-        return "WL_CONNECTED";
+        return F("WL_CONNECTED");
     } else if (wl_stat == WL_CONNECT_FAILED) {
-        return "WL_CONNECT_FAILED";
+        return F("WL_CONNECT_FAILED");
     } else if (wl_stat == WL_CONNECTION_LOST) {
-        return "WL_CONNECTION_LOST";
+        return F("WL_CONNECTION_LOST");
     } else if (wl_stat == WL_DISCONNECTED) {
-        return "WL_DISCONNECTED";
+        return F("WL_DISCONNECTED");
     }
 
     return "UNKNOWN_STATUS";
@@ -63,20 +64,19 @@ void make_sure_wifi_connected() {
   while (WiFi.status() != WL_CONNECTED) {
 
     watchdog_feed();
-    delay(100);
+    delay(300);
     retryCount++;
 
     if (retryCount % 10 == 0) {
       wifilog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
       wifilog(F("Still waiting for wifi connection"));
     }
-    if (retryCount % 50 == 0) {
+    if (retryCount % 30 == 0) {
       wifilog(F("Restarting WiFi"));
       delay(100);
       wifilog(F("WiFi disconnect."));
-
       WiFi.disconnect();   
-      delay(100);
+      delay(300);
       WiFi.begin(config.ssid.c_str(), config.password.c_str());
       wifilog(F("RETRY connecting WiFi from start"));
     }
@@ -85,6 +85,7 @@ void make_sure_wifi_connected() {
       wifilog(F("WiFi connect failure."));
       wifilog(F("Restarting"));
       wifilog(F("ESP8266 note: must connect proper pins, otherwise device hangs"));
+      disp_wifi_error();
       ESP.deepSleep(1 * 1000 * 1000);
       delay(10000);
     }

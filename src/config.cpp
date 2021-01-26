@@ -6,7 +6,7 @@
 #include "log.h"
 #include "global.h"
 
-#define JSON_BUF 5000
+#define CONF_JSON_SIZE 1400
 
 /**
  * とりあえずのデフォルト値をグローバル変数にセットする
@@ -163,15 +163,15 @@ void trim_config() {
 }
 
 DynamicJsonDocument alerts_to_json(const config_alert_t& alerts) {
-  DynamicJsonDocument json(512);
-  json["warning1.low"] = alerts.warning1.low;
-  json["warning1.high"] = alerts.warning1.high;
-  json["warning2.low"] = alerts.warning2.low;
-  json["warning2.high"] = alerts.warning2.high;
-  json["caution1.low"] = alerts.caution1.low;
-  json["caution1.high"] = alerts.caution1.high;
-  json["caution2.low"] = alerts.caution2.low;
-  json["caution2.high"] = alerts.caution2.high;
+  DynamicJsonDocument json(100);
+  json["warn1.L"] = alerts.warning1.low;
+  json["warn1.H"] = alerts.warning1.high;
+  json["warn2.L"] = alerts.warning2.low;
+  json["warn2.H"] = alerts.warning2.high;
+  json["caut1.L"] = alerts.caution1.low;
+  json["caut1.H"] = alerts.caution1.high;
+  json["caut2.L"] = alerts.caution2.low;
+  json["caut2.H"] = alerts.caution2.high;
   return json;
 }
 
@@ -179,7 +179,7 @@ void write_config_file(File f) {
   
   trim_config();
 
-  StaticJsonDocument<JSON_BUF> doc;
+  DynamicJsonDocument doc(CONF_JSON_SIZE);
   doc["settingId"] = SETTING_ID;  // これから書くConfigなので必ず想定しているconfig versionを書く
   doc["ssid"] = config.ssid;
   doc["password"] = config.password;
@@ -209,7 +209,7 @@ void write_config_file(File f) {
 }
 
 // 指定されたキーが存在していれば値をセットする。存在しなければセットしない
-void set_config_value(String& cfg, StaticJsonDocument<JSON_BUF> &json, String key) {
+void set_config_value(String& cfg, DynamicJsonDocument &json, String key) {
   // https://arduinojson.org/v6/api/jsonobject/containskey/
   JsonVariant value = json[key];
   if (value.isNull()) {
@@ -219,7 +219,7 @@ void set_config_value(String& cfg, StaticJsonDocument<JSON_BUF> &json, String ke
   cfg = value.as<String>();
 }
 
-void set_config_value(String& cfg, StaticJsonDocument<JSON_BUF> &json, String key1, String key2) {
+void set_config_value(String& cfg, DynamicJsonDocument &json, String key1, String key2) {
 
   JsonVariant middleObj = json[key1];
 
@@ -239,28 +239,38 @@ void set_config_value(String& cfg, StaticJsonDocument<JSON_BUF> &json, String ke
   }
 }
 
-void read_config_alerts(config_alert_t& alerts, StaticJsonDocument<JSON_BUF> doc, String key1) {
-  set_config_value(alerts.warning1.low ,doc, key1, "warning1.low");
-  set_config_value(alerts.warning1.high ,doc, key1, "warning1.high");
-  set_config_value(alerts.caution1.low ,doc, key1, "caution1.low");
-  set_config_value(alerts.caution1.high ,doc, key1, "caution1.high");
-  set_config_value(alerts.warning2.low ,doc, key1, "warning2.low");
-  set_config_value(alerts.warning2.high ,doc, key1, "warning2.high");
-  set_config_value(alerts.caution2.low ,doc, key1, "caution2.low");
-  set_config_value(alerts.caution2.high ,doc, key1, "caution2.high");
+void read_config_alerts(config_alert_t& alerts, DynamicJsonDocument doc, String key1) {
+  set_config_value(alerts.warning1.low ,doc, key1, "warn1.L");
+  set_config_value(alerts.warning1.high ,doc, key1, "warn1.H");
+  set_config_value(alerts.caution1.low ,doc, key1, "caut1.L");
+  set_config_value(alerts.caution1.high ,doc, key1, "caut1.H");
+  set_config_value(alerts.warning2.low ,doc, key1, "warn2.L");
+  set_config_value(alerts.warning2.high ,doc, key1, "warn2.H");
+  set_config_value(alerts.caution2.low ,doc, key1, "caut2.L");
+  set_config_value(alerts.caution2.high ,doc, key1, "caut2.H");
 }
 
 void read_config_file(File f) {
 
   set_default_config_value(); // とりあえずデフォルト値をロードしておく。
 
-  StaticJsonDocument<JSON_BUF> doc;
+  cfglog("set default");
+
+  DynamicJsonDocument doc(CONF_JSON_SIZE);
+
+  cfglog("json deserialize");
+
   DeserializationError error = deserializeJson(doc, f);
+
+  cfglog("json decserialize done");
+
   if (error) {
     config.settingId = "INVALID";
     cfglog(F("Failed to read file or Parse as json failed"));
     return;
   }
+
+  cfglog("set simple conf");
 
   set_config_value(config.settingId ,doc ,"settingId");
   set_config_value(config.ssid ,doc ,"ssid");
@@ -277,6 +287,8 @@ void read_config_file(File f) {
   set_config_value(config.mhz19bTxPin ,doc ,"mhz19bTxPin");
   set_config_value(config.mqttBroker ,doc ,"mqttBroker");
   set_config_value(config.mqttName ,doc ,"mqttName");
+
+  cfglog("set alert");
 
   read_config_alerts(config.temperatureAlerts, doc, "temperatureAlerts");
   read_config_alerts(config.humidityAlerts, doc, "humidityAlerts");

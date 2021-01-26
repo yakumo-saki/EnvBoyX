@@ -16,17 +16,17 @@
 String generate_http_setup_alerts_html(String name, String prefix, const config_alert_t& alerts) {
   String html;
   html += "<fieldset><legend>" + name + "</legend>";
-  html += "注意１：<input type='number' name='" + prefix + "caution1.low' value='" + alerts.caution1.low + "'> 以上";
-  html += "<input type='number' name='" + prefix + "caution1.high' value='" + alerts.caution1.high + "'>未満<br>";
+  html += "注意１：<input type='number' class='num' name='" + prefix + "caution1.low' value='" + alerts.caution1.low + "'> 以上";
+  html += "<input type='number' class='num' name='" + prefix + "caution1.high' value='" + alerts.caution1.high + "'>未満<br>";
 
-  html += "注意２：<input type='number' name='" + prefix + "caution2.low' value='" + alerts.caution2.low + "'> 以上";
-  html += "<input type='number' name='" + prefix + "caution2.high' value='" + alerts.caution2.high + "'>未満<br>";
+  html += "注意２：<input type='number' class='num' name='" + prefix + "caution2.low' value='" + alerts.caution2.low + "'> 以上";
+  html += "<input type='number' class='num' name='" + prefix + "caution2.high' value='" + alerts.caution2.high + "'>未満<br>";
 
-  html += "警報１：<input type='number' name='" + prefix + "warning1.low' value='" + alerts.warning1.low + "'> 以上";
-  html += "<input type='number' name='" + prefix + "warning1.high' value='" + alerts.warning1.high + "'>未満<br>";
+  html += "警報１：<input type='number' class='num'name='" + prefix + "warning1.low' value='" + alerts.warning1.low + "'> 以上";
+  html += "<input type='number' class='num' name='" + prefix + "warning1.high' value='" + alerts.warning1.high + "'>未満<br>";
 
-  html += "警報２：<input type='number' name='" + prefix + "warning2.low' value='" + alerts.warning2.low + "'> 以上";
-  html += "<input type='number' name='" + prefix + "warning2.high' value='" + alerts.warning2.high + "'>未満<br>";
+  html += "警報２：<input type='number' class='num' name='" + prefix + "warning2.low' value='" + alerts.warning2.low + "'> 以上";
+  html += "<input type='number' class='num' name='" + prefix + "warning2.high' value='" + alerts.warning2.high + "'>未満<br>";
 
   html += "</fieldset>";
   return html;
@@ -51,6 +51,7 @@ String http_setup_get_root_content() {
   html += "<title>" + product + " setting</title>";
   html += "<style>";
   html += "  input[type='text'] { width:200px }";
+  html += "  input.num { width:50px }";
   html += "  input[type='submit'] { width:200px; height: 48px;}";
   html += "</style>";
   html += "</head>";

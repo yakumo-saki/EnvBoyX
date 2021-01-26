@@ -18,7 +18,7 @@ bool start_mdns(String name) {
     mdnslog(F("Error setting up MDNS responder!"));
     return false;
   }
-  mdnslog(F("mDNS responder started name=" + name));
+  mdnslog("mDNS responder started name=" + name);
   return true;
 }
 
