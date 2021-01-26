@@ -26,11 +26,23 @@ const int DIGIT_FONT = 7;
 
 const int R_HEIGHT = 56;
 const int Y_PADDING = 2;
+
+// temperature X pos
 const long R1_X = 117;
+
+// temperature Y pos
 const long R1_Y = 0;
+
+// humidity X pos
 const long R2_X = 114;
+
+// humidity Y pos
 const long R2_Y = R1_Y + R_HEIGHT;
+
+// air pressure X pos
 const long R3_X = 127;
+
+// air pressure Y pos
 const long R3_Y = R2_Y + R_HEIGHT + Y_PADDING + 4;
 const long R4_X = 127;
 const long R4_Y = R3_Y + R_HEIGHT + Y_PADDING + 6;
@@ -73,6 +85,8 @@ void _disp_sensor_value_big(disp_values_t val)
 
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
+	// LINE 1
+
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString(ver, R1_X + 3, R1_Y, XSMALL_FONT);
 
@@ -83,6 +97,8 @@ void _disp_sensor_value_big(disp_values_t val)
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString("c", R1_X + 3, R1_Y + 30, DEFAULT_FONT);
 
+	// LINE 2
+
 	tft.setTextDatum(TR_DATUM);
 	tft.setTextPadding(R2_X);
 	tft.drawString(String(v.humidity, 0), R2_X, R2_Y, DIGIT_FONT);
@@ -90,7 +106,7 @@ void _disp_sensor_value_big(disp_values_t val)
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString("%", 114, R2_Y + 24, DEFAULT_FONT);
 
-	// Row 3
+	// LINE 3
 	// この行はわざと左にはみ出るようにしているので、右揃えに出来ない
 	// 気圧は 1000しかないので、1の左の隙間を節約している
 	tft.setTextDatum(TL_DATUM);
@@ -105,21 +121,21 @@ void _disp_sensor_value_big(disp_values_t val)
 	tft.drawFastHLine(4, R3_Y + 28 + 27, TFT_WIDTH - 6, TFT_DARKGREY);
 	tft.drawFastHLine(4, R3_Y + 28 + 28, TFT_WIDTH - 6, TFT_DARKGREY);
 
-	// Row 4
+	// LINE 4
 	tft.setTextDatum(TL_DATUM);
 
 	if (config.mhz19b == MHZ_NOUSE) {
 		tft.drawString("l", R4_X + 1, R4_Y + 20, SMALL_FONT);
 		tft.drawString("x", R4_X + 1, R4_Y + 36, SMALL_FONT);
 		tft.setTextDatum(TR_DATUM);
-		tft.setTextPadding(R2_X);
+		tft.setTextPadding(R4_X);
 		tft.drawString(String(v.lux,0), R4_X, R4_Y, DIGIT_FONT);
 	} else {
 		tft.drawString("p", R4_X + 1, R4_Y + 2, SMALL_FONT);
 		tft.drawString("p", R4_X + 1, R4_Y + 20, SMALL_FONT);
 		tft.drawString("m", R4_X + 1, R4_Y + 36, SMALL_FONT);
 		tft.setTextDatum(TR_DATUM);
-		tft.setTextPadding(R2_X);
+		tft.setTextPadding(R4_X);
 		tft.drawString(String(v.co2ppm), R4_X, R4_Y, DIGIT_FONT);
 	}
 }

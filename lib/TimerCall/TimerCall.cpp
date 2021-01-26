@@ -61,11 +61,15 @@ void TimerCall::forceRunStasticsOnce() {
 };
 
 void TimerCall::loop() {
+    // startされていないなら何もしない
+    if (!this->started) return;
+
     // millisのオーバーフローしても大丈夫なコードにした。
     // https://garretlab.web.fc2.com/arduino/lab/millis/
     for (auto it = this->tasks.begin(), e = this->tasks.end(); it != e; ++it) {
         unsigned long nowMillis = millis();
         unsigned long elapsedMillis = nowMillis - it->info.lastExecMills;
+        // Serial.println("now=" + String(nowMillis) + " elapsed=" + String(elapsedMillis) + " lastExec = " + String(it->info.lastExecMills));
         if (it->info.interval < elapsedMillis) {
             this->runTask(*it);
         }
@@ -80,14 +84,14 @@ void TimerCall::loop() {
     }
 };
 
-void TimerCall::initTaskInfo(TimerCall::TimerCallTaskInfo &info, unsigned long nowMillis) {
+void TimerCall::initTaskInfo(TimerCall::TimerCallTaskInfo& info, unsigned long nowMillis) {
     info.lastExecMills = nowMillis;
     info.callCount = 0;
     info.lastElapsedMills = 0;
     info.totalElapsedMills = 0;
 };
 
-void TimerCall::updateInfo(TimerCall::TimerCallTaskInfo &info, unsigned long beforeExecMillis, unsigned long nowMillis) {
+void TimerCall::updateInfo(TimerCall::TimerCallTaskInfo& info, unsigned long beforeExecMillis, unsigned long nowMillis) {
     info.lastExecMills = nowMillis;
     info.lastElapsedMills = info.lastExecMills - beforeExecMillis;
 
@@ -95,13 +99,13 @@ void TimerCall::updateInfo(TimerCall::TimerCallTaskInfo &info, unsigned long bef
     info.callCount++;
 };
 
-void TimerCall::runTask(TimerCall::TimerCallTask task) {
+void TimerCall::runTask(TimerCall::TimerCallTask& task) {
     unsigned beforeExecMillis = millis();
     task.func();
     this->updateInfo(task.info, beforeExecMillis, millis());
 }
 
-void TimerCall::runStatTask(TimerCall::TimerCallStatTask statTask) {
+void TimerCall::runStatTask(TimerCall::TimerCallStatTask& statTask) {
     unsigned beforeExecMillis = millis();
     statTask.statFunc(this->tasks);
     this->updateInfo(statTask.info, beforeExecMillis, millis());

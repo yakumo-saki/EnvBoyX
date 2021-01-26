@@ -18,3 +18,6 @@ void ssdlog(String msg);
 void statlog(String msg);
 void debuglog(String msg);
 void sectionlog(String msg);
+
+// I2C エラーコードをメッセージに変換
+String get_i2c_error_message(byte code);

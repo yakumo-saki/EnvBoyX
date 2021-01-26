@@ -155,6 +155,7 @@ esptool.py write_flash 0x1000 filename.bin
 * BUGFIX: TSL2561 can't enabled
 * CHANGE: Serial speed changed to 74880. (was 115200)
 * BUGFIX: ping API returns invalid JSON
+* BUGFIX: Display glitch when bigmode and show lux
 
 ### v3.5
 

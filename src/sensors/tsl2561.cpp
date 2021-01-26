@@ -14,9 +14,9 @@ void tsl_setup() {
   // init TSL2561
   Tsl.begin();
   if( !Tsl.available() ) {
-    tsllog("No TSL2561 found. Tsl2561 disabled.");
+    tsllog("TSL2561 disabled.");
   } else {
-    tsllog("TSL2561 found. Enabled.");
+    tsllog("TSL2561 Enabled");
     use_tsl = true;
   }
 }

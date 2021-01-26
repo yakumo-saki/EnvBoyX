@@ -35,7 +35,7 @@ void bme_setup() {
 
   if (!has_bme()) {
     use_bme = false;
-    bmelog("Module not found. BME280 disable.");
+    bmelog("BME280 disabled.");
     return;
   }
  
@@ -45,7 +45,7 @@ void bme_setup() {
     delay(1000);
   }
 
-  bmelog("Enabled");
+  bmelog("BME280 Enabled");
   use_bme = true;
 }
 

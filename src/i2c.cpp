@@ -25,3 +25,4 @@ bool init_i2c(int sda, int scl) {
 
     return ret;
 }
+
