@@ -30,7 +30,7 @@ extern String stasticsJSON;
 
 void init_sensors()
 {
-	sectionlog("Initializing sensors start.");
+	sectionlog(F("Initializing sensors start."));
 	bme_setup();
 	adt_setup();
 	am_setup();
@@ -42,7 +42,7 @@ void init_sensors()
 	{
 		mhz_setup();
 	}
-	sectionlog("Initializing sensors done.");
+	sectionlog(F("Initializing sensors done."));
 }
 
 void call_disp_sensor_value() {
@@ -113,13 +113,16 @@ void setup_normal()
 		return; // MQTTモードの場合はもう戻ってこない（ディープスリープする）
 	}
 
+	sectionlog(F("Start watchdog"));
 	setup_watchdog();
 
+	
+	sectionlog(F("Setup display"));
 	setup_display();
 	disp_normal_startup_screen(product_long);
 
 	// setupモードに入りやすくするための処理
-	sectionlog("Reset to reconfig start.");
+	sectionlog(F("Reset to reconfig start."));
 	remove_configure_flag_file();
 
 	disp_wait_for_reconfig();
@@ -127,17 +130,17 @@ void setup_normal()
 	// 設定済みフラグファイル
 	create_configure_flag_file();
 
-	sectionlog("Reconfigure timeout. continue.");
+	sectionlog(F("Reconfigure timeout. continue."));
 
 	// start WiFi
-	sectionlog("Connecting WiFi.");
+	sectionlog(F("Connecting WiFi."));
 	disp_wifi_starting(1);
 	make_sure_wifi_connected();
 	disp_wifi_info(get_wifi_ip_addr(), config.mDNS);
 
 	mdns_setup();
 
-	sectionlog("Starting HTTP server.");
+	sectionlog(F("Starting HTTP server."));
 	http_setup_normal();
 
 	init_sensors();

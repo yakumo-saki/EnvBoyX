@@ -10,15 +10,15 @@ bool init_i2c(int sda, int scl) {
     i2clog("Initializing ESP32 I2C SDA=" + String(sda) + " SCL=" + String(scl));
     ret = Wire.begin(sda, scl);
     if (ret) {
-        i2clog("I2C initialized.");
+        i2clog(F("I2C initialized."));
     } else {
-        i2clog("error initializing I2C");
+        i2clog(F("error initializing I2C"));
     }
     #endif
     #ifdef ESP8266
     i2clog("Initializing ESP8266 I2C SDA=" + String(sda) + " SCL=" + String(scl));
     Wire.begin(sda, scl); // 8266のbeginは返り値がない
-    i2clog("I2C initialized.");
+    i2clog(F("I2C initialized."));
     #endif
 
     i2c_scan();

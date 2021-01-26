@@ -24,6 +24,19 @@ typedef struct {
     String co2ppm;
     sensor_values_t rawValues;
 } disp_values_t;
+
+typedef struct {
+  String low;
+  String high;
+} config_alert_range_t;
+
+typedef struct { 
+  config_alert_range_t caution1;
+  config_alert_range_t caution2;
+  config_alert_range_t warning1;
+  config_alert_range_t warning2;
+} config_alert_t;
+
 typedef struct {
   String settingId;
   String ssid;
@@ -40,7 +53,13 @@ typedef struct {
   String st7789Mode;
   String mqttBroker;
   String mqttName;
+  config_alert_t temperatureAlerts;
+  config_alert_t humidityAlerts;
+  config_alert_t pressureAlerts;
+  config_alert_t luxAlerts;
+  config_alert_t co2Alerts;
 } config_t;
+
 
 
 

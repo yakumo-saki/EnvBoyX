@@ -67,7 +67,7 @@ void mhz_read_pwm_ms() {
       if (!is_ready) {
         // HIGHの途中から見てしまっている可能性があるので無視
         if (!log_ignore_high) {
-          mhzlog("HIGH but !is_ready. ignore");
+          mhzlog(F("HIGH but !is_ready. ignore"));
           log_ignore_high = true;
         }
       } else if (WAIT_TGT == "HIGH") {
@@ -91,7 +91,7 @@ void mhz_read_pwm_ms() {
     }
   } // while
 
-  mhzlog("PWM Timeout");
+  mhzlog(F("PWM Timeout"));
   mhz_high_ms = -1;
   mhz_low_ms = -1;
 }
@@ -104,7 +104,7 @@ int mhz_read_data_pwm() {
   mhz_read_pwm_ms();
 
   if (mhz_high_ms < 0 || mhz_low_ms < 0) {
-    mhzlog("PWM timeout, set lastppm = -999");
+    mhzlog(F("PWM timeout, set lastppm = -999"));
     sensorValues.co2ppm = CO2_PPM_INVALID;
     return CO2_PPM_INVALID;
   }
@@ -119,7 +119,7 @@ int mhz_read_data_pwm() {
 
   // PWMでよんだときに多少ブレてしまい、390台になるので、そこは400にごまかす
   if (385 < ppm && ppm < 399) {
-    mhzlog("PPM is near 400. Result PPM adjusted to 400.");
+    mhzlog(F("PPM is near 400. Result PPM adjusted to 400."));
     ppm = 400.0;
   }
 
@@ -130,7 +130,7 @@ int mhz_read_data_pwm() {
 void mhz_setup_pwm() {
   
   if (config.mhz19b == MHZ_NOUSE) {
-    mhzlog("disabled.");
+    mhzlog(F("disabled."));
     return;
   }
 

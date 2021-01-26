@@ -44,7 +44,6 @@ String http_normal_data_json() {
 
   String json;
   serializeJson(doc, json);
-  httplog("return json: " + json);
   return json;
 }
 

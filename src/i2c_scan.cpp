@@ -37,9 +37,9 @@ void i2c_scan()
   }
 
   if (nDevices == 0) {
-    i2clog("No I2C devices found");
+    i2clog(F("No I2C devices found"));
   } else {
-    i2clog("0x39=TSL2561/0x3c=LCD/0x5c=AM2320/0x5d=LPS22HB/0x76=BME280");
+    i2clog(F("0x39=TSL2561/0x3c=LCD/0x5c=AM2320/0x5d=LPS22HB/0x76=BME280"));
   }
 
   i2clog("I2C scan done. time = " + String(millis() - start) + " ms");

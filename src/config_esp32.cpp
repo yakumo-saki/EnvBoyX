@@ -16,15 +16,15 @@
  */
 void list_dir()
 {
-  cfglog(">>> LITTLEFS directory listing");
+  cfglog(F(">>> LITTLEFS directory listing"));
 
   File root = LITTLEFS.open("/");
   if (!root) {
-      cfglog("- failed to open directory");
+      cfglog(F("- failed to open directory"));
       return;
   }
   if (!root.isDirectory()){
-      cfglog(" - not a directory");
+      cfglog(F(" - not a directory"));
       return;
   }
 
@@ -38,7 +38,7 @@ void list_dir()
       file = root.openNextFile();
   }
 
-  cfglog("<<< End listing");
+  cfglog(F("<<< End listing"));
 }
 
 /**
@@ -49,7 +49,7 @@ void create_configure_flag_file()
   File f2 = LITTLEFS.open(configured_file, "w");
   f2.println("ok");
   f2.close();
-  cfglog("Create " + configured_file);
+  cfglog(F("configured file created."));
 }
 
 /**
@@ -85,6 +85,8 @@ void save_config()
 void read_config()
 {
   File f = LITTLEFS.open(settings, "r");
+  cfglog(settings + " filesize = " + String(f.size()));
+
   read_config_file(f);
   f.close();
 

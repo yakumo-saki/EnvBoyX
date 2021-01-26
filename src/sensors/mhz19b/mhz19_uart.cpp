@@ -42,7 +42,7 @@ void mhz_setup_check_device_uart() {
       version = version + ".";    
   }  
 
-  mhzlog("Device Info ======================== ");
+  mhzlog(F("Device Info ======================== "));
   mhzlog("Version        : " + version);
   mhzlog("Range          : " + String(mhz19.getRange()));
   mhzlog("Background CO2 : " + String(mhz19.getBackgroundCO2()));
@@ -54,7 +54,7 @@ void mhz_setup_uart() {
 
   sensorValues.co2ppm = CO2_PPM_INVALID;
 
-  mhzlog("Enabled (UART mode).");
+  mhzlog(F("Enabled (UART mode)."));
 
 #ifdef ARDUINO_ARCH_ESP32
   mhzlog("ESP32 serial begin RX=" + String(config.mhz19bRxPin.toInt()) + " TX=" + String(config.mhz19bTxPin.toInt()));
@@ -63,12 +63,11 @@ void mhz_setup_uart() {
   mhzSerial.begin(MHZ_BAUDRATE);
 #endif
 
-  mhzlog("Wait for MHZ UART serial");
+  mhzlog(F("Wait for MHZ UART serial"));
   while(!mhzSerial);
 
   mhz19.begin(mhzSerial);
 
-  mhzlog("setRange()");
   mhz19.setRange(5000);
   printErrorCode();
 
@@ -81,14 +80,14 @@ void mhz_setup_uart() {
   printErrorCode();
 
   if (AUTO_BASELINE_CORRECTION) {
-    mhzlog("WARNING -------------------------- WARNING");
-    mhzlog("     Auto Baseline Correction is ON!");
-    mhzlog("WARNING -------------------------- WARNING");
+    mhzlog(F("WARNING -------------------------- WARNING"));
+    mhzlog(F("     Auto Baseline Correction is ON!"));
+    mhzlog(F("WARNING -------------------------- WARNING"));
   }
 
   mhz_setup_check_device_uart();
 
-  mhzlog("initialized.");
+  mhzlog(F("initialized."));
  
 }
 
@@ -101,7 +100,7 @@ void mhz_read_data_uart() {
   mhz19.verify();
   if (mhz19.errorCode != MHZ_RESULT_OK) {
     printErrorCode();
-    mhzlog("MH-Z19B connection failed. abort.");
+    mhzlog(F("MH-Z19B connection failed. abort."));
     return;
   }
 

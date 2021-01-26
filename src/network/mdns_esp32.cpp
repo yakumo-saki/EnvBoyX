@@ -12,18 +12,18 @@ bool start_mdns(String name) {
   char n[name.length() + 1];
   name.toCharArray(n, sizeof n);
 
-  mdnslog("mDNS responder starting");
+  mdnslog(F("mDNS responder starting"));
 
   if (!MDNS.begin(n)) {
-    mdnslog("Error setting up MDNS responder!");
+    mdnslog(F("Error setting up MDNS responder!"));
     return false;
   }
-  mdnslog("mDNS responder started name=" + name);
+  mdnslog(F("mDNS responder started name=" + name));
   return true;
 }
 
 void mdns_setup() {
-  sectionlog("Starting mDNS server.");  
+  sectionlog(F("Starting mDNS server."));  
   start_mdns(config.mDNS);
 }
 

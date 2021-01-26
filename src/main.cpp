@@ -22,20 +22,23 @@ void setup()
   Serial.println(""); 
   Serial.println("");
 
-  sectionlog("Initializing LittleFS.");
+  sectionlog(F("Initializing LittleFS."));
+  mainlog(F("Starting config"));
   config_setup();
+
+  mainlog(F("Checking config files"));
   isNormal = has_valid_config();
 
   if (!isNormal) {
-    sectionlog("Entering setup mode.");
+    sectionlog(F("Entering setup mode."));
     setup_setupmode(); 
   } else {
-    sectionlog("Entering normal mode.");
+    sectionlog(F("Entering normal mode."));
 
     setup_normal();
   }
 
-  sectionlog("setup done.");
+  sectionlog(F("setup done."));
 }
  
 void loop() {

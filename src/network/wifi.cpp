@@ -45,7 +45,7 @@ void make_sure_wifi_connected() {
 
   watchdog_feed();
 
-  wifilog("WiFi is down or not initialized. connecting");
+  wifilog(F("WiFi is down or not initialized. connecting"));
   WiFi.disconnect();
   WiFi.softAPdisconnect(true);
   WiFi.enableAP(false);
@@ -68,29 +68,29 @@ void make_sure_wifi_connected() {
 
     if (retryCount % 10 == 0) {
       wifilog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
-      wifilog("Still waiting for wifi connection");
+      wifilog(F("Still waiting for wifi connection"));
     }
     if (retryCount % 50 == 0) {
-      wifilog("Restarting WiFi");
+      wifilog(F("Restarting WiFi"));
       delay(100);
-      wifilog("WiFi disconnect.");
+      wifilog(F("WiFi disconnect."));
 
       WiFi.disconnect();   
       delay(100);
       WiFi.begin(config.ssid.c_str(), config.password.c_str());
-      wifilog("RETRY connecting WiFi from start");
+      wifilog(F("RETRY connecting WiFi from start"));
     }
 
     if (retryCount > 100) {
-      wifilog("WiFi connect failure.");
-      wifilog("Restarting");
-      wifilog("ESP8266 note: must connect proper pins, otherwise device hangs");
+      wifilog(F("WiFi connect failure."));
+      wifilog(F("Restarting"));
+      wifilog(F("ESP8266 note: must connect proper pins, otherwise device hangs"));
       ESP.deepSleep(1 * 1000 * 1000);
       delay(10000);
     }
   }
 
-  wifilog("WiFi (re) connected.");
+  wifilog(F("WiFi (re) connected."));
   wifilog("IP address: " + WiFi.localIP().toString());
 }
 

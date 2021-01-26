@@ -102,7 +102,7 @@ void disp_wait_for_reconfig() {
 		disp_ssd1306_wait_for_reconfig_init();
 	}
 
-	displog("Wait for reconfigure start");
+	displog(F("Wait for reconfigure start"));
 	for (int i = 0; i < MAX_BAR; i++)
 	{
 		if (use_st7789()) {
@@ -114,7 +114,7 @@ void disp_wait_for_reconfig() {
 	
 	    delay(WAIT_PER_BAR);
 	}
-	displog("Wait for reconfigure end");
+	displog(F("Wait for reconfigure end"));
 
 }
 
@@ -188,13 +188,13 @@ void setup_display() {
 	if (use_ssd1306()) {
 		setup_disp_ssd1306();
 	} else {
-		ssdlog("SSD1306 not found.");
+		ssdlog(F("SSD1306 not found."));
 	}
 	if (use_st7789()) {
 		setup_disp_st7789();
 	}
 
 	// initialize configured brightness
-	displog(disp_set_brightness(config.displayBrightness.toInt()));
+	disp_set_brightness(config.displayBrightness.toInt());
 
 }

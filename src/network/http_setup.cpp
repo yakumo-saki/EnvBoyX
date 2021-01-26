@@ -13,6 +13,25 @@
 
 #include "http_setup.h"
 
+String generate_http_setup_alerts_html(String name, String prefix, const config_alert_t& alerts) {
+  String html;
+  html += "<fieldset><legend>" + name + "</legend>";
+  html += "注意１：<input type='number' name='" + prefix + "caution1.low' value='" + alerts.caution1.low + "'> 以上";
+  html += "<input type='number' name='" + prefix + "caution1.high' value='" + alerts.caution1.high + "'>未満<br>";
+
+  html += "注意２：<input type='number' name='" + prefix + "caution2.low' value='" + alerts.caution2.low + "'> 以上";
+  html += "<input type='number' name='" + prefix + "caution2.high' value='" + alerts.caution2.high + "'>未満<br>";
+
+  html += "警報１：<input type='number' name='" + prefix + "warning1.low' value='" + alerts.warning1.low + "'> 以上";
+  html += "<input type='number' name='" + prefix + "warning1.high' value='" + alerts.warning1.high + "'>未満<br>";
+
+  html += "警報２：<input type='number' name='" + prefix + "warning2.low' value='" + alerts.warning2.low + "'> 以上";
+  html += "<input type='number' name='" + prefix + "warning2.high' value='" + alerts.warning2.high + "'>未満<br>";
+
+  html += "</fieldset>";
+  return html;
+}
+
 /**
  * GET 設定画面
  */
@@ -133,6 +152,16 @@ String http_setup_get_root_content() {
   html += "  <input type='text' name='mqttname' placeholder='mqttname' value='" + config.mqttName + "'><br>";
   html += "</fieldset>";
 
+  html += "<fieldset><legend>アラート設定</legend>";
+  html += generate_http_setup_alerts_html("気温", "temperatureAlerts.", config.temperatureAlerts);
+  html += generate_http_setup_alerts_html("湿度", "humidityAlerts.", config.humidityAlerts);
+  html += generate_http_setup_alerts_html("照度", "luxAlerts.", config.luxAlerts);
+  html += generate_http_setup_alerts_html("気圧", "pressureAlerts.", config.pressureAlerts);
+  html += generate_http_setup_alerts_html("CO2濃度", "co2Alerts.", config.co2Alerts);
+
+  html += "</fieldset>";
+
+
   html += "  <br>";
   html += "  <input type='submit' value='設定する'><br>";
   html += "</form>";
@@ -142,6 +171,15 @@ String http_setup_get_root_content() {
   html += "</html>";
 
   return html;
+}
+
+String generate_alerts_html(String name, const config_alert_t& alerts) {
+  String log = name + "：<br>";
+  log += "警報１ '" + alerts.warning1.low + "' 〜 '" + alerts.warning1.high + "'<br>";
+  log += "警報２ '" + alerts.warning2.low + "' 〜 '" + alerts.warning2.high + "'<br>";
+  log += "注意１ '" + alerts.caution1.low + "' 〜 '" + alerts.caution1.high + "'<br>";
+  log += "注意２ '" + alerts.caution2.low + "' 〜 '" + alerts.caution2.high + "'<br>";
+  return log;
 }
 
 /**
@@ -227,6 +265,12 @@ String http_setup_post_root_content() {
   } else {
     html += "動作モード：不明" + config.opMode + "<br>";    
   }
+
+  html += generate_alerts_html("気温", config.temperatureAlerts);
+  html += generate_alerts_html("湿度", config.humidityAlerts);
+  html += generate_alerts_html("照度", config.luxAlerts);
+  html += generate_alerts_html("気圧", config.pressureAlerts);
+  html += generate_alerts_html("CO2濃度", config.co2Alerts);
 
   html += "<br>";
   html += "Restart (power off then power on) to use above setting.<br>";

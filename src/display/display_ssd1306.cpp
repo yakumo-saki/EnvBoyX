@@ -261,11 +261,11 @@ void setup_disp_ssd1306() {
     bool ret = display.init();
 
     if (ret) {
-      ssdlog("Initialized.");
+      ssdlog(F("Initialized."));
     } else {
-      ssdlog("Initialization failed.");
+      ssdlog(F("Initialization failed."));
     }
   } else {
-    ssdlog("SSD1306 NOT FOUND.");
+    ssdlog(F("SSD1306 NOT FOUND."));
   }
 }
