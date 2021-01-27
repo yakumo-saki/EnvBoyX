@@ -180,14 +180,24 @@ void disp_ssd1306_sensor_value(disp_values_t val) {
   init_display();
 
   // 測定値表示部分
-  display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_16);
-  display.drawString(0, 12, "  " + val.temperature + "    " + val.humidity ); 
-  display.drawString(0, 29, "" + val.pressure + " " + val.lux); 
-  display.drawString(0, 47, String("CO2:") + val.co2ppm); 
-  // "L:" + String(lastLuxFull, 0) + " " + "Ir:" + String(lastLuxIr, 0)
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.drawString(0, 12, val.temperature);
 
-  // 左下、バージョン表示
+  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+  display.drawString(127, 12, val.humidity);
+
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.drawString(0, 29, val.pressure);
+
+  display.setTextAlignment(TEXT_ALIGN_RIGHT);
+  display.drawString(127, 29, val.lux); 
+
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.drawString(0, 47, "CO2:");
+  display.drawString(42, 47, val.co2ppm); 
+
+  // バージョン表示
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(ArialMT_Plain_10);
   display.drawString(127, 54, ver);
@@ -195,11 +205,7 @@ void disp_ssd1306_sensor_value(disp_values_t val) {
   // 左上、EnvBoyX の表示
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_10);
-  if ((disp_switch % 2) == 0) {
-    display.drawString(0, 0, product); 
-  } else {
-    display.drawString(0, 0, product.substring(0, product.length() - 1)); 
-  }
+  display.drawString(0, 0, product); 
   
   // みぎ上、IPアドレス or mDNS名表示
   display.setTextAlignment(TEXT_ALIGN_RIGHT);

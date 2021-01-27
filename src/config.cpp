@@ -254,23 +254,19 @@ void read_config_file(File f) {
 
   set_default_config_value(); // とりあえずデフォルト値をロードしておく。
 
-  cfglog("set default");
-
   DynamicJsonDocument doc(CONF_JSON_SIZE);
 
-  cfglog("json deserialize");
+  cfglog(F("Json deserialize start"));
 
   DeserializationError error = deserializeJson(doc, f);
 
-  cfglog("json decserialize done");
+  cfglog(F("Json deserialize done :)"));
 
   if (error) {
     config.settingId = "INVALID";
     cfglog(F("Failed to read file or Parse as json failed"));
     return;
   }
-
-  cfglog("set simple conf");
 
   set_config_value(config.settingId ,doc ,"settingId");
   set_config_value(config.ssid ,doc ,"ssid");
@@ -288,12 +284,11 @@ void read_config_file(File f) {
   set_config_value(config.mqttBroker ,doc ,"mqttBroker");
   set_config_value(config.mqttName ,doc ,"mqttName");
 
-  cfglog("set alert");
-
   read_config_alerts(config.temperatureAlerts, doc, "temperatureAlerts");
   read_config_alerts(config.humidityAlerts, doc, "humidityAlerts");
   read_config_alerts(config.pressureAlerts, doc, "pressureAlerts");
   read_config_alerts(config.luxAlerts, doc, "luxAlerts");
   read_config_alerts(config.co2Alerts, doc, "co2Alerts");
+
   print_config();
 }
