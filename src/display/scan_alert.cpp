@@ -34,7 +34,13 @@ value_alerts_t check_for_alerts() {
 	alerts.humidity = check_alert(sensorValues.humidity, config.humidityAlerts);
 	alerts.lux = check_alert(sensorValues.lux, config.luxAlerts);
 	alerts.pressure = check_alert(sensorValues.pressure, config.pressureAlerts);
-	alerts.co2 = check_alert(sensorValues.co2ppm, config.co2Alerts);
+
+	if (config.mhz19b != MHZ_NOUSE) {
+		alerts.co2 = check_alert(sensorValues.co2ppm, config.co2Alerts);
+	} else {
+		alerts.co2.caution = false;
+		alerts.co2.warning = false;
+	}
 
 	log_alert(alerts.temperature, "Temperature");
 	log_alert(alerts.humidity,    "Humidity   ");

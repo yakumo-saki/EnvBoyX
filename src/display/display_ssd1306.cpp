@@ -239,7 +239,7 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
 
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.drawString(0, R3, "CO2:");
-  write_value(38, R3, "9999ppm", alerts.co2, TEXT_ALIGN_LEFT); //values.co2ppm
+  write_value(38, R3, values.co2ppm, alerts.co2, TEXT_ALIGN_LEFT); // 9999ppm
 
   // バージョン表示
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
