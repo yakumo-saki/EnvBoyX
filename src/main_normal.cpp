@@ -49,11 +49,12 @@ void call_disp_sensor_value() {
 	disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
 }
 
+// 統計情報を取得
 void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
 
 	const String STAT = "stastics";
 
-	DynamicJsonDocument doc(4096);
+	DynamicJsonDocument doc(500);
 	doc["time"] = millis();
 
 	int idx = 0;
@@ -74,6 +75,10 @@ void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
         doc[STAT][idx]["callCount"] = it->info.callCount;
 		idx++;
     }
+
+	#ifdef ESP32
+	doc["cputemp"] = temperatureRead();  // CPU温度
+	#endif
 
 	String json = "";
 	serializeJson(doc, json);

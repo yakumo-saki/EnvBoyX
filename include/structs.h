@@ -26,6 +26,19 @@ typedef struct {
 } disp_values_t;
 
 typedef struct {
+  bool warning = false;
+  bool caution = false;
+} value_alert_t;
+
+typedef struct {
+  value_alert_t temperature;
+  value_alert_t humidity;
+  value_alert_t pressure;
+  value_alert_t lux;
+  value_alert_t co2;
+} value_alerts_t;
+
+typedef struct {
   String low;
   String high;
 } config_alert_range_t;
@@ -59,8 +72,6 @@ typedef struct {
   config_alert_t luxAlerts;
   config_alert_t co2Alerts;
 } config_t;
-
-
 
 
 #endif
