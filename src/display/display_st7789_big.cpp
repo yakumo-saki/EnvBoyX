@@ -72,6 +72,22 @@ void _disp_header_big(String ip, String mDNS)
 	}
 }
 
+void write_values(int x, int y, String value, value_alert_t alert, int align) {
+
+	if (alert.warning) {
+		tft.setTextColor(TFT_RED, TFT_BLACK);
+	} else if (alert.caution) {
+		tft.setTextColor(TFT_YELLOW, TFT_BLACK);
+	} else {
+		tft.setTextColor(TFT_WHITE, TFT_BLACK);		
+	}
+
+	tft.setTextDatum(align);
+	tft.setTextPadding(x);
+	tft.drawString(value, x, y, DIGIT_FONT);
+
+	tft.setTextColor(TFT_WHITE, TFT_BLACK);
+}
 
 /**
  * BIGモード（縦）
@@ -80,43 +96,30 @@ void _disp_header_big(String ip, String mDNS)
  */
 void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 {
-
 	sensor_values_t v = sensorValues;
 
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
 	// LINE 1
-
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString(ver, R1_X + 3, R1_Y, XSMALL_FONT);
 
-	tft.setTextDatum(TR_DATUM);
-	tft.setTextPadding(R1_X);
-	tft.drawString(String(v.temperature, 1), R1_X, R1_Y, DIGIT_FONT);
-
+	write_values(R1_X, R1_Y, String(v.temperature, 1), alerts.temperature, TR_DATUM);
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString("c", R1_X + 3, R1_Y + 30, DEFAULT_FONT);
 
 	// LINE 2
-
-	tft.setTextDatum(TR_DATUM);
-	tft.setTextPadding(R2_X);
-	tft.drawString(String(v.humidity, 0), R2_X, R2_Y, DIGIT_FONT);
-
+	write_values(R2_X, R2_Y, String(v.humidity, 0), alerts.humidity, TR_DATUM);
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString("%", 114, R2_Y + 24, DEFAULT_FONT);
 
 	// LINE 3
-	// この行はわざと左にはみ出るようにしているので、右揃えに出来ない
-	// 気圧は 1000しかないので、1の左の隙間を節約している
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString("h", R3_X + 1, R3_Y + 3, SMALL_FONT);
 	tft.drawString("p", R3_X + 1, R3_Y + 15, SMALL_FONT);
 	tft.drawString("a", R3_X + 1, R3_Y + 31, SMALL_FONT);
 
-	tft.setTextDatum(TR_DATUM);
-	tft.setTextPadding(R2_X);
-	tft.drawString(String(v.pressure, 0), R3_X, R3_Y, DIGIT_FONT);
+	write_values(R3_X, R3_Y, String(v.pressure, 0), alerts.pressure, TR_DATUM);
 
 	tft.drawFastHLine(4, R3_Y + 28 + 27, TFT_WIDTH - 6, TFT_DARKGREY);
 	tft.drawFastHLine(4, R3_Y + 28 + 28, TFT_WIDTH - 6, TFT_DARKGREY);
@@ -127,16 +130,13 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 	if (config.mhz19b == MHZ_NOUSE) {
 		tft.drawString("l", R4_X + 1, R4_Y + 20, SMALL_FONT);
 		tft.drawString("x", R4_X + 1, R4_Y + 36, SMALL_FONT);
-		tft.setTextDatum(TR_DATUM);
-		tft.setTextPadding(R4_X);
-		tft.drawString(String(v.lux,0), R4_X, R4_Y, DIGIT_FONT);
+		write_values(R4_X, R4_Y, String(v.lux, 0), alerts.lux, TR_DATUM);
+
 	} else {
 		tft.drawString("p", R4_X + 1, R4_Y + 2, SMALL_FONT);
 		tft.drawString("p", R4_X + 1, R4_Y + 20, SMALL_FONT);
 		tft.drawString("m", R4_X + 1, R4_Y + 36, SMALL_FONT);
-		tft.setTextDatum(TR_DATUM);
-		tft.setTextPadding(R4_X);
-		tft.drawString(String(v.co2ppm), R4_X, R4_Y, DIGIT_FONT);
+		write_values(R4_X, R4_Y, String(v.co2ppm, 0), alerts.co2, TR_DATUM);
 	}
 }
 
