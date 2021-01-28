@@ -113,29 +113,29 @@ void _disp_header_normal(String ip, String mDNS)
  * @param erase true => 黒文字で書く（要するに消す） false => 普通に書く
  * eraseは一応機能するが
  */
-void _disp_sensor_value_normal(disp_values_t val)
+void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 {
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 	tft.setTextSize(1);
 
 	// Row 1
 	tft.setTextPadding(VALUE_WIDTH);
-	tft.drawString(val.temperature, LEFT_VAL_X, ROW1_Y, DEFAULT_FONT);
+	tft.drawString(values.temperature, LEFT_VAL_X, ROW1_Y, DEFAULT_FONT);
 
 	tft.setTextPadding(VALUE_WIDTH);
-	tft.drawString(val.lux, RIGHT_VAL_X, ROW1_Y, DEFAULT_FONT);
+	tft.drawString(values.lux, RIGHT_VAL_X, ROW1_Y, DEFAULT_FONT);
 
 	// Row 2
 	tft.setTextPadding(VALUE_WIDTH);
-	tft.drawString(val.humidity, LEFT_VAL_X, ROW2_Y, DEFAULT_FONT);
+	tft.drawString(values.humidity, LEFT_VAL_X, ROW2_Y, DEFAULT_FONT);
 
 	// Row 3
 	tft.setTextPadding(VALUE_WIDTH_LONG);
-	tft.drawString(val.pressure, LEFT_VAL_X, ROW3_Y, DEFAULT_FONT);
+	tft.drawString(values.pressure, LEFT_VAL_X, ROW3_Y, DEFAULT_FONT);
 
 	// Row 4
 	tft.setTextPadding(VALUE_WIDTH_LONG);
-	tft.drawString(val.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, DEFAULT_FONT);
+	tft.drawString(values.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, DEFAULT_FONT);
 }
 
 #endif

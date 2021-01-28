@@ -78,7 +78,7 @@ void _disp_header_big(String ip, String mDNS)
  * @param val 値
  * @param erase true => 黒文字で書く（要するに消す） false => 普通に書く
  */
-void _disp_sensor_value_big(disp_values_t val)
+void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 {
 
 	sensor_values_t v = sensorValues;

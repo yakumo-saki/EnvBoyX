@@ -5,11 +5,11 @@
 
 String get_device_name_by_address(byte address) {
   // ("0x39=TSL2561/0x3c=LCD/0x5c=AM2320/0x5d=LPS22HB/0x76=BME280"));
-  if (address = 0x39) return "TSL2561 Lux sensor";
-  if (address = 0x3c) return "SSD1306 OLED display";
-  if (address = 0x5c) return "AM2320 Temperature and Humidity sensor";
-  if (address = 0x5d) return "LPS22HB High precision air pressure sensor";
-  if (address = 0x76) return "BME280 Temperature and Humidity and air pressure sensor";
+  if (address == 0x39) return "TSL2561 Lux sensor";
+  if (address == 0x3c) return "SSD1306 OLED display";
+  if (address == 0x5c) return "AM2320 Temperature and Humidity sensor";
+  if (address == 0x5d) return "LPS22HB High precision air pressure sensor";
+  if (address == 0x76) return "BME280 Temperature and Humidity and air pressure sensor";
 
   return "unknown device";
 }

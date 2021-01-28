@@ -169,11 +169,58 @@ void disp_ssd1306_all_initialize_complete() {
   // do nothing. ssd1306 code is everytime rewrite entire screen.
 }
 
+void write_value(int x, int y, String value, value_alert_t alert, OLEDDISPLAY_TEXT_ALIGNMENT align) {
+  const int HEIGHT = 17;
+
+  display.setTextAlignment(align);
+  int diffX = (align == TEXT_ALIGN_RIGHT ? -1 : 1);
+
+  // // 注意表示：太字
+  // 微妙なのでコメントアウト
+  // display.drawString(x, y, value);
+  // display.drawString(x + diffX, y, value);
+
+  if (alert.warning || alert.caution) {
+
+    // 警告表示：反転
+    const int MARGIN = 2;
+    int RECT_MARGIN = 1 + MARGIN;  // 枠 1px + マージン 2px
+    
+    // 右揃えの場合はマージンが逆
+    int STR_MARGIN = (align == TEXT_ALIGN_RIGHT ? -MARGIN : MARGIN);  
+
+    uint16_t width = display.getStringWidth(value) + (RECT_MARGIN * 2); // *2 = 左右
+    int startX = (align == TEXT_ALIGN_RIGHT ? x - width: x);  // 右揃えの場合、左端のXを求める
+
+    // 枠 or 塗りつぶし
+    display.setColor(WHITE);
+    if (alert.warning) {
+      display.fillRect(startX, y, width, HEIGHT);
+      display.setColor(BLACK);
+      display.drawString(x + STR_MARGIN, y, value);
+      display.drawString(x + STR_MARGIN + diffX, y, value);
+    } else if (alert.caution) {
+      display.drawRect(startX, y, width, HEIGHT);
+      display.setColor(WHITE);
+      display.drawString(x + STR_MARGIN, y, value);
+    }   
+  } else {
+    // 通常表示
+    display.drawString(x, y, value);
+  }
+
+  display.setColor(WHITE);  // 
+
+}
 
 /**
  * 通常画面
  */
-void disp_ssd1306_sensor_value(disp_values_t val) {
+void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
+
+  const int R1 = 12;
+  const int R2 = 30;
+  const int R3 = 48;
 
   if (!has_ssd1306()) return;
 
@@ -181,21 +228,18 @@ void disp_ssd1306_sensor_value(disp_values_t val) {
 
   // 測定値表示部分
   display.setFont(ArialMT_Plain_16);
-  display.setTextAlignment(TEXT_ALIGN_LEFT);
-  display.drawString(0, 12, val.temperature);
 
-  display.setTextAlignment(TEXT_ALIGN_RIGHT);
-  display.drawString(127, 12, val.humidity);
+  write_value(0, R1, values.temperature, alerts.temperature, TEXT_ALIGN_LEFT);
 
-  display.setTextAlignment(TEXT_ALIGN_LEFT);
-  display.drawString(0, 29, val.pressure);
+  write_value(127, R1, values.humidity, alerts.humidity, TEXT_ALIGN_RIGHT);
 
-  display.setTextAlignment(TEXT_ALIGN_RIGHT);
-  display.drawString(127, 29, val.lux); 
+  write_value(0, R2, values.pressure, alerts.pressure, TEXT_ALIGN_LEFT);
+
+  write_value(127, R2, values.lux, alerts.lux, TEXT_ALIGN_RIGHT);
 
   display.setTextAlignment(TEXT_ALIGN_LEFT);
-  display.drawString(0, 47, "CO2:");
-  display.drawString(42, 47, val.co2ppm); 
+  display.drawString(0, R3, "CO2:");
+  write_value(38, R3, "9999ppm", alerts.co2, TEXT_ALIGN_LEFT); //values.co2ppm
 
   // バージョン表示
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
@@ -211,9 +255,9 @@ void disp_ssd1306_sensor_value(disp_values_t val) {
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(ArialMT_Plain_10);
   if (disp_switch < 3) {
-    display.drawString(127, 0, val.ip); 
+    display.drawString(127, 0, values.ip); 
   } else {
-    display.drawString(127, 0, val.mDNS); 
+    display.drawString(127, 0, values.mDNS); 
   }
 
   disp_switch++;

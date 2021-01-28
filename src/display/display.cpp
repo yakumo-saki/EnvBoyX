@@ -7,6 +7,8 @@
 #include <SSD1306.h>
 #include <WiFiClient.h> 
 
+#include "scan_alert.h"
+
 #include "display_formatter.h"
 #include "display_ssd1306.h"
 #include "display_st7789.h"
@@ -132,16 +134,17 @@ void disp_all_initialize_complete(String ip, String mdns) {
  */
 void disp_sensor_value(String ip, String mdns) {
 	
+    value_alerts_t alerts = check_for_alerts();
 	disp_values_t last_values = disp_values;
 	disp_values = create_disp_values();
 	disp_values.ip = ip;
 	disp_values.mDNS = mdns;
 	
 	if (use_ssd1306()) {
-		disp_ssd1306_sensor_value(disp_values);
+		disp_ssd1306_sensor_value(disp_values, alerts);
 	}
 	if (use_st7789()) {
-		disp_st7789_sensor_value(disp_values, last_values);
+		disp_st7789_sensor_value(disp_values, alerts);
 	}
 
 }
