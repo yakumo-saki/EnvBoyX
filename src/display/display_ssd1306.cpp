@@ -11,7 +11,16 @@ extern int disp_switch;
 //SSD1306 display(0x3c, 5, 4);
 SSD1306 display(SSD1306_I2C_ADDR, I2C_SDA, I2C_SCL);
 
+bool ssd1306_connected = false;
+
 bool has_ssd1306() {
+  return ssd1306_connected;
+}
+
+bool has_ssd1306_i2c(bool force = false) {
+  
+  if (!force && !ssd1306_connected) return false;
+
   Wire.beginTransmission(SSD1306_I2C_ADDR);
   byte error = Wire.endTransmission();
 
@@ -307,15 +316,19 @@ void disp_ssd1306_set_power(bool poweron) {
 }
 
 void setup_disp_ssd1306() {
-  if (has_ssd1306()) {
+
+  if (has_ssd1306_i2c(true)) {
     bool ret = display.init();
 
     if (ret) {
       ssdlog(F("Initialized."));
+      ssd1306_connected = true;
     } else {
       ssdlog(F("Initialization failed."));
+      ssd1306_connected = false;
     }
   } else {
     ssdlog(F("SSD1306 NOT FOUND."));
+    ssd1306_connected = false;
   }
 }

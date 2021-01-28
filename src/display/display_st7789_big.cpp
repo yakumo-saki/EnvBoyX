@@ -131,12 +131,11 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 		tft.drawString("l", R4_X + 1, R4_Y + 20, SMALL_FONT);
 		tft.drawString("x", R4_X + 1, R4_Y + 36, SMALL_FONT);
 		write_values(R4_X, R4_Y, String(v.lux, 0), alerts.lux, TR_DATUM);
-
 	} else {
 		tft.drawString("p", R4_X + 1, R4_Y + 2, SMALL_FONT);
 		tft.drawString("p", R4_X + 1, R4_Y + 20, SMALL_FONT);
 		tft.drawString("m", R4_X + 1, R4_Y + 36, SMALL_FONT);
-		write_values(R4_X, R4_Y, String(v.co2ppm, 0), alerts.co2, TR_DATUM);
+		write_values(R4_X, R4_Y, String(v.co2ppm), alerts.co2, TR_DATUM);
 	}
 }
 
