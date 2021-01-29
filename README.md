@@ -149,6 +149,10 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
+### v40
+
+* VERSION: 40.
+
 ### v3.6
 
 * LICENSE: EnvBoyX is now under APL 2.0 , Affected to all versions. (license terms are not shown before)
