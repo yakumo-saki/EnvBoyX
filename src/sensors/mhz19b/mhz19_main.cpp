@@ -27,17 +27,17 @@ void mhz_read_data() {
 
 void mhz_setup() {
   if (config.mhz19b == MHZ_NOUSE) {
-    mhzlog("disabled.");
+    mhzlog(F("disabled."));
     return;
   } 
   
   USE_PWM = (config.mhz19b == MHZ_USE_PWM);
 
   if (USE_PWM) {
-    mhzlog("Using PWM mode. Some features are disabled.");
+    mhzlog(F("Using PWM mode. Some features are disabled."));
     mhz_setup_pwm();
   } else {
-    mhzlog("Using UART mode.");
+    mhzlog(F("Using UART mode."));
     mhz_setup_uart();
   }
 }

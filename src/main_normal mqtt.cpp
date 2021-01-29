@@ -43,12 +43,12 @@ void mqtt_publish(String topic, String value) {
  */
 void send_and_sleep() {
 
-  sectionlog("loop start");
+  sectionlog(F("loop start"));
 
   // WiFiが繋がってなければ意味がないので接続チェック
   make_sure_wifi_connected();
 
-  mainlog("WiFi connected.");
+  mainlog(F("WiFi connected."));
 
   // MQTT
   begin_mqtt_connection();
@@ -56,12 +56,12 @@ void send_and_sleep() {
   mqttClient.loop();
   delay(10);  // <- fixes some issues with WiFi stability
   
-  mainlog("MQTT Connect begin");
+  mainlog(F("MQTT Connect begin"));
   while (!mqttClient.connect(config.mDNS.c_str(), "", "")) { // username and password not support
     Serial.print(".");
     delay(1000);
   }
-  mainlog("MQTT Connect OK");
+  mainlog(F("MQTT Connect OK"));
   
   init_timer();
   timer.forceOnce();
@@ -75,12 +75,12 @@ void send_and_sleep() {
   mqtt_publish("pressure", String(sensorValues.pressure, 1));
 
   if (NO_DEEP_SLEEP) {
-    mainlog("!!! NOT deep sleep because of NO_DEEP_SLEEP is set !!!");
+    mainlog(F("!!! NOT deep sleep because of NO_DEEP_SLEEP is set !!!"));
     delay(NO_DEEP_SLEEP_DURATION);
-    mainlog("!!! Going to next loop                             !!!");
+    mainlog(F("!!! Going to next loop                             !!!"));
   } else {
     delay(500);
-    mainlog("*** Goto deep sleep ***");
+    mainlog(F("*** Goto deep sleep ***"));
     ESP.deepSleep(NORMAL_DURATION);
     delay(10000);
   }
@@ -95,7 +95,7 @@ void setup_normal_mqtt() {
   // I2C は初期化済
 
   // start WiFi
-  sectionlog("Connecting WiFi.");
+  sectionlog(F("Connecting WiFi."));
   make_sure_wifi_connected();
 
   init_sensors();

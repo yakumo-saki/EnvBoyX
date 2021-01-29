@@ -17,11 +17,11 @@ void am_setup(void) {
 
   
   if (!AM2320.isConnected()) {
-    amlog("AM2320 disabled. ");
+    amlog(F("AM2320 disabled. "));
     return;
   }
 
-  amlog("AM2320 Enabled");
+  amlog(F("AM2320 Enabled"));
   use_am2320 = true;
 }
 

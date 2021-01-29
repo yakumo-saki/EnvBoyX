@@ -167,16 +167,16 @@ void disp_st7789_all_initialize_complete(String ip, String mdns)
 /**
  * 通常画面
  */
-void disp_st7789_sensor_value(disp_values_t new_values, disp_values_t last_values)
+void disp_st7789_sensor_value(disp_values_t values, value_alerts_t alerts)
 {
 
 	if (isBigMode())
 	{
-		_disp_sensor_value_big(new_values);
+		_disp_sensor_value_big(values, alerts);
 	}
 	else
 	{
-		_disp_sensor_value_normal(new_values);
+		_disp_sensor_value_normal(values, alerts);
 	}
 }
 

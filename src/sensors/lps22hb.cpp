@@ -17,11 +17,11 @@ void lps_setup(void) {
 
   // init LPS22HB if found (0x5d)
   if (lps22hb.init()) {
-      lpslog("LPS22HB Enabled. Barometric sensor initialization succeeded!");
+      lpslog(F("LPS22HB Enabled. Barometric sensor initialization succeeded!"));
       lps22hb.enableSensor(Sodaq_LPS22HB::OdrOneShot);
       use_lps22hb = true;
   } else {
-      lpslog("LPS22HB disabled. Barometric sensor initialization failed.");
+      lpslog(F("LPS22HB disabled. Barometric sensor initialization failed."));
       use_lps22hb = false;
   }
 }

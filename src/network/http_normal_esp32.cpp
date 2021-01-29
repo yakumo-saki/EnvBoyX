@@ -66,7 +66,7 @@ void http_handle_power(AsyncWebServerRequest *request) {
 }
 
 void http_setup_normal() {
-  httplog("HTTP web server initializing");
+  httplog(F("HTTP web server initializing"));
   server.on ( "/ping", HTTP_GET, http_handle_ping);
   server.on ( "/", HTTP_GET, http_handle_data );
   server.on ( "/brightness", HTTP_GET, http_handle_brightness );
@@ -74,7 +74,7 @@ void http_setup_normal() {
   server.on ( "/stastics", HTTP_GET, http_handle_stastics );
   server.onNotFound ( http_handle_not_found );
   server.begin(); 
-  httplog("HTTP web server initialized");
+  httplog(F("HTTP web server initialized"));
 }
 
 void http_loop_normal() {

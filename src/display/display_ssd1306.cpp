@@ -11,7 +11,16 @@ extern int disp_switch;
 //SSD1306 display(0x3c, 5, 4);
 SSD1306 display(SSD1306_I2C_ADDR, I2C_SDA, I2C_SCL);
 
+bool ssd1306_connected = false;
+
 bool has_ssd1306() {
+  return ssd1306_connected;
+}
+
+bool has_ssd1306_i2c(bool force = false) {
+  
+  if (!force && !ssd1306_connected) return false;
+
   Wire.beginTransmission(SSD1306_I2C_ADDR);
   byte error = Wire.endTransmission();
 
@@ -169,25 +178,79 @@ void disp_ssd1306_all_initialize_complete() {
   // do nothing. ssd1306 code is everytime rewrite entire screen.
 }
 
+void write_value(int x, int y, String value, value_alert_t alert, OLEDDISPLAY_TEXT_ALIGNMENT align) {
+  const int HEIGHT = 17;
+
+  display.setTextAlignment(align);
+  int diffX = (align == TEXT_ALIGN_RIGHT ? -1 : 1);
+
+  // // 注意表示：太字
+  // 微妙なのでコメントアウト
+  // display.drawString(x, y, value);
+  // display.drawString(x + diffX, y, value);
+
+  if (alert.warning || alert.caution) {
+
+    // 警告表示：反転
+    const int MARGIN = 2;
+    int RECT_MARGIN = 1 + MARGIN;  // 枠 1px + マージン 2px
+    
+    // 右揃えの場合はマージンが逆
+    int STR_MARGIN = (align == TEXT_ALIGN_RIGHT ? -MARGIN : MARGIN);  
+
+    uint16_t width = display.getStringWidth(value) + (RECT_MARGIN * 2); // *2 = 左右
+    int startX = (align == TEXT_ALIGN_RIGHT ? x - width: x);  // 右揃えの場合、左端のXを求める
+
+    // 枠 or 塗りつぶし
+    display.setColor(WHITE);
+    if (alert.warning) {
+      display.fillRect(startX, y, width, HEIGHT);
+      display.setColor(BLACK);
+      display.drawString(x + STR_MARGIN, y, value);
+      display.drawString(x + STR_MARGIN + diffX, y, value);
+    } else if (alert.caution) {
+      display.drawRect(startX, y, width, HEIGHT);
+      display.setColor(WHITE);
+      display.drawString(x + STR_MARGIN, y, value);
+    }   
+  } else {
+    // 通常表示
+    display.drawString(x, y, value);
+  }
+
+  display.setColor(WHITE);  // 
+
+}
 
 /**
  * 通常画面
  */
-void disp_ssd1306_sensor_value(disp_values_t val) {
+void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
+
+  const int R1 = 12;
+  const int R2 = 30;
+  const int R3 = 48;
 
   if (!has_ssd1306()) return;
 
   init_display();
 
   // 測定値表示部分
-  display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_16);
-  display.drawString(0, 12, "  " + val.temperature + "    " + val.humidity ); 
-  display.drawString(0, 29, "" + val.pressure + " " + val.lux); 
-  display.drawString(0, 47, String("CO2:") + val.co2ppm); 
-  // "L:" + String(lastLuxFull, 0) + " " + "Ir:" + String(lastLuxIr, 0)
 
-  // 左下、バージョン表示
+  write_value(0, R1, values.temperature, alerts.temperature, TEXT_ALIGN_LEFT);
+
+  write_value(127, R1, values.humidity, alerts.humidity, TEXT_ALIGN_RIGHT);
+
+  write_value(0, R2, values.pressure, alerts.pressure, TEXT_ALIGN_LEFT);
+
+  write_value(127, R2, values.lux, alerts.lux, TEXT_ALIGN_RIGHT);
+
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.drawString(0, R3, "CO2:");
+  write_value(38, R3, values.co2ppm, alerts.co2, TEXT_ALIGN_LEFT); // 9999ppm
+
+  // バージョン表示
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(ArialMT_Plain_10);
   display.drawString(127, 54, ver);
@@ -195,19 +258,15 @@ void disp_ssd1306_sensor_value(disp_values_t val) {
   // 左上、EnvBoyX の表示
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_10);
-  if ((disp_switch % 2) == 0) {
-    display.drawString(0, 0, product); 
-  } else {
-    display.drawString(0, 0, product.substring(0, product.length() - 1)); 
-  }
+  display.drawString(0, 0, product); 
   
   // みぎ上、IPアドレス or mDNS名表示
   display.setTextAlignment(TEXT_ALIGN_RIGHT);
   display.setFont(ArialMT_Plain_10);
   if (disp_switch < 3) {
-    display.drawString(127, 0, val.ip); 
+    display.drawString(127, 0, values.ip); 
   } else {
-    display.drawString(127, 0, val.mDNS); 
+    display.drawString(127, 0, values.mDNS); 
   }
 
   disp_switch++;
@@ -257,15 +316,19 @@ void disp_ssd1306_set_power(bool poweron) {
 }
 
 void setup_disp_ssd1306() {
-  if (has_ssd1306()) {
+
+  if (has_ssd1306_i2c(true)) {
     bool ret = display.init();
 
     if (ret) {
-      ssdlog("Initialized.");
+      ssdlog(F("Initialized."));
+      ssd1306_connected = true;
     } else {
-      ssdlog("Initialization failed.");
+      ssdlog(F("Initialization failed."));
+      ssd1306_connected = false;
     }
   } else {
-    ssdlog("SSD1306 NOT FOUND.");
+    ssdlog(F("SSD1306 NOT FOUND."));
+    ssd1306_connected = false;
   }
 }

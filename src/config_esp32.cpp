@@ -16,15 +16,15 @@
  */
 void list_dir()
 {
-  cfglog(">>> LITTLEFS directory listing");
+  cfglog(F(">>> LITTLEFS directory listing"));
 
   File root = LITTLEFS.open("/");
   if (!root) {
-      cfglog("- failed to open directory");
+      cfglog(F("- failed to open directory"));
       return;
   }
   if (!root.isDirectory()){
-      cfglog(" - not a directory");
+      cfglog(F(" - not a directory"));
       return;
   }
 
@@ -38,7 +38,7 @@ void list_dir()
       file = root.openNextFile();
   }
 
-  cfglog("<<< End listing");
+  cfglog(F("<<< End listing"));
 }
 
 /**
@@ -49,7 +49,7 @@ void create_configure_flag_file()
   File f2 = LITTLEFS.open(configured_file, "w");
   f2.println("ok");
   f2.close();
-  cfglog("Create " + configured_file);
+  cfglog(F("configured file created."));
 }
 
 /**
@@ -67,8 +67,6 @@ void remove_configure_flag_file()
  */
 void save_config()
 {
-  LITTLEFS.begin();
-
   trim_config();
 
   // 設定ファイル
@@ -85,6 +83,8 @@ void save_config()
 void read_config()
 {
   File f = LITTLEFS.open(settings, "r");
+  cfglog(settings + " filesize = " + String(f.size()));
+
   read_config_file(f);
   f.close();
 
@@ -97,14 +97,15 @@ void read_config()
  * ＝フラグファイルはみない
  */
 bool has_valid_config_file() {
-  LITTLEFS.begin();
-  delay(50);
 
   if (!LITTLEFS.exists(settings)) {
     cfglog(settings + " not found.");
+    LITTLEFS.end();
     return false;
   } else {
     File f = LITTLEFS.open(settings, "r");
+
+    cfglog(F("Reading config to checking version."));
     read_config_file(f);
     f.close();
 
@@ -125,15 +126,17 @@ bool has_valid_config_file() {
  * configファイルの存在とバージョン一致とconfigフラグファイルの存在をチェックする
  */
 bool has_valid_config() {
-  LITTLEFS.begin();
-  delay(50);
 
-  if (!LITTLEFS.exists(configured_file)) {
+  bool exist = LITTLEFS.exists(configured_file);
+
+  if (!exist) {
     // reconfigure用ファイルがなければセットアップモード
     // => wait for reconfigure でリセットされたとき。
-    cfglog("configured_file not found.");
+    cfglog(F("configured_file not found."));
     return false;
-  } 
+  } else {
+    cfglog(F("configured_file found"));
+  }
 
   return has_valid_config_file();
 }
@@ -141,12 +144,11 @@ bool has_valid_config() {
 
 void config_setup() {
   if (!LITTLEFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
-    cfglog("LITTLEFS Mount Failed.");
-    return;
+    cfglog(F("LITTLEFS Mount Failed."));
+  } else {
+    cfglog(F("LITTLEFS Mount success."));
   }
-
-  cfglog("LITTLEFS Mount success.");
-  
+  list_dir();
 }
 
 #endif

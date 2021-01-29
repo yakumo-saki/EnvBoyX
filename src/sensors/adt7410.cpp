@@ -23,7 +23,7 @@ bool has_adt7410() {
 void adt_setup(void) {
 
   if (!has_adt7410()) {
-    adtlog("ADT7410 disabled");
+    adtlog(F("ADT7410 disabled"));
     return;
   }
 
