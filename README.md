@@ -151,7 +151,7 @@ esptool.py write_flash 0x1000 filename.bin
 
 ### v40
 
-* VERSION: 40.
+* VERSION: 40. next version is v41.
 
 ### v3.6
 
