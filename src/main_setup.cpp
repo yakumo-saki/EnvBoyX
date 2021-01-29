@@ -29,6 +29,8 @@ void setup_setupmode() {
 
   setup_display();
   disp_setup_startup_screen(WiFi.softAPIP().toString());
+
+  mainlog(F("Setup complete."));
 }
 
 void loop_setupmode() {

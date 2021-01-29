@@ -7,6 +7,8 @@
 #include <SSD1306.h>
 #include <WiFiClient.h> 
 
+#include "scan_alert.h"
+
 #include "display_formatter.h"
 #include "display_ssd1306.h"
 #include "display_st7789.h"
@@ -102,7 +104,7 @@ void disp_wait_for_reconfig() {
 		disp_ssd1306_wait_for_reconfig_init();
 	}
 
-	displog("Wait for reconfigure start");
+	displog(F("Wait for reconfigure start"));
 	for (int i = 0; i < MAX_BAR; i++)
 	{
 		if (use_st7789()) {
@@ -114,7 +116,7 @@ void disp_wait_for_reconfig() {
 	
 	    delay(WAIT_PER_BAR);
 	}
-	displog("Wait for reconfigure end");
+	displog(F("Wait for reconfigure end"));
 
 }
 
@@ -132,16 +134,17 @@ void disp_all_initialize_complete(String ip, String mdns) {
  */
 void disp_sensor_value(String ip, String mdns) {
 	
+    value_alerts_t alerts = check_for_alerts();
 	disp_values_t last_values = disp_values;
 	disp_values = create_disp_values();
 	disp_values.ip = ip;
 	disp_values.mDNS = mdns;
 	
 	if (use_ssd1306()) {
-		disp_ssd1306_sensor_value(disp_values);
+		disp_ssd1306_sensor_value(disp_values, alerts);
 	}
 	if (use_st7789()) {
-		disp_st7789_sensor_value(disp_values, last_values);
+		disp_st7789_sensor_value(disp_values, alerts);
 	}
 
 }
@@ -188,13 +191,13 @@ void setup_display() {
 	if (use_ssd1306()) {
 		setup_disp_ssd1306();
 	} else {
-		ssdlog("SSD1306 not found.");
+		ssdlog(F("SSD1306 not found."));
 	}
 	if (use_st7789()) {
 		setup_disp_st7789();
 	}
 
 	// initialize configured brightness
-	displog(disp_set_brightness(config.displayBrightness.toInt()));
+	disp_set_brightness(config.displayBrightness.toInt());
 
 }

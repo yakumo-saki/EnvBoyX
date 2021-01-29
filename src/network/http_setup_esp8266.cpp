@@ -21,6 +21,18 @@ void handle_get_root() {
   server.send(200, "text/html", html);
 }
 
+void alerts_to_config(config_alert_t& alerts, String prefix) {
+  alerts.caution1.low = server.arg(prefix + "caution1.low");
+  alerts.caution1.high = server.arg(prefix + "caution1.high");
+  alerts.caution2.low = server.arg(prefix + "caution2.low");
+  alerts.caution2.high = server.arg(prefix + "caution2.high");
+
+  alerts.warning1.low = server.arg(prefix + "warning1.low");
+  alerts.warning1.high = server.arg(prefix + "warning1.high");
+  alerts.warning2.low = server.arg(prefix + "warning2.low");
+  alerts.warning2.high = server.arg(prefix + "warning2.high");
+}
+
 /**
  * Post 設定 ( config の post。 ファイルに設定を保存）
  */
@@ -42,21 +54,27 @@ void handle_post_root() {
   config.mqttBroker = server.arg("mqttbroker");
   config.mqttName = server.arg("mqttname");
 
+  alerts_to_config(config.temperatureAlerts, "temperatureAlerts.");
+  alerts_to_config(config.humidityAlerts, "humidityAlerts.");
+  alerts_to_config(config.luxAlerts, "luxAlerts.");
+  alerts_to_config(config.pressureAlerts, "pressureAlerts.");
+  alerts_to_config(config.co2Alerts, "co2Alerts.");
+
   trim_config();
   String html = http_setup_post_root_content();
 
-  server.send(200, "text/html", html);
+  server.send(200, MIME_HTML, html);
 }
 
 /**
  * 初期化(設定用Webサーバモード)
  */
 void setup_http_setup() {
-  httplog("HTTP web server initializing");
+  httplog(F("HTTP web server initializing"));
   server.on("/", HTTP_GET, handle_get_root);
   server.on("/", HTTP_POST, handle_post_root);
   server.begin();
-  httplog("HTTP web server initialized");
+  httplog(F("HTTP web server initialized"));
 }
 
 void loop_http_setup() {

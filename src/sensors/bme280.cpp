@@ -35,17 +35,17 @@ void bme_setup() {
 
   if (!has_bme()) {
     use_bme = false;
-    bmelog("BME280 disabled.");
+    bmelog(F("BME280 disabled."));
     return;
   }
  
   // init BME
   while(!bme.init()){
-    bmelog("Initloop: Could not find BME280 sensor!");
+    bmelog(F("Initloop: Could not find BME280 sensor!"));
     delay(1000);
   }
 
-  bmelog("BME280 Enabled");
+  bmelog(F("BME280 Enabled"));
   use_bme = true;
 }
 

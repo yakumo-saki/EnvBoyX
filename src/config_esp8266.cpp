@@ -15,7 +15,7 @@ void list_dir()
 {
   char cwdName[2];
 
-  cfglog(">>> LittleFS directory listing");
+  cfglog(F(">>> LittleFS directory listing"));
 
   strcpy(cwdName, "/");
   Dir dir = LittleFS.openDir(cwdName);
@@ -29,7 +29,7 @@ void list_dir()
     cfglog("name=" + fn + " size=" + fs);
   } // end while
 
-  cfglog("<<< End listing");
+  cfglog(F("<<< End listing"));
 }
 
 /**
@@ -38,9 +38,9 @@ void list_dir()
 void create_configure_flag_file()
 {
   File f2 = LittleFS.open(configured_file, "w");
-  f2.println("ok");
+  f2.println(F("ok"));
   f2.close();
-  cfglog("Create " + configured_file);
+  cfglog(F("configured file created."));
 }
 
 /**
@@ -49,7 +49,7 @@ void create_configure_flag_file()
 void remove_configure_flag_file()
 {
   LittleFS.remove(configured_file);
-  cfglog(configured_file + " removed.");
+  cfglog(F("configured file removed."));
 }
 
 /**
@@ -97,6 +97,8 @@ bool has_valid_config_file() {
     return false;
   } else {
     File f = LittleFS.open(settings, "r");
+    cfglog(settings + " filesize = " + String(f.size()));
+
     read_config_file(f);
     f.close();
 
@@ -109,7 +111,7 @@ bool has_valid_config_file() {
     }
   }
 
-  cfglog("Unknown state. Assuming config not found");
+  cfglog(F("Unknown state. Assuming config not found"));
   return false;
 }
 
@@ -123,7 +125,7 @@ bool has_valid_config() {
   if (!LittleFS.exists(configured_file)) {
     // reconfigure用ファイルがなければセットアップモード
     // => wait for reconfigure でリセットされたとき。
-    cfglog("configured_file not found.");
+    cfglog(F("configured_file not found."));
     return false;
   } 
 

@@ -12,7 +12,7 @@ void disp_st7789_wait_for_reconfig_init() {}
 void disp_st7789_wait_for_reconfig_bar(int now, const int max) {}
 void disp_st7789_wifi_starting(int wait_print_row) {}
 void disp_st7789_all_initialize_complete(String ip, String mdns) {};
-void disp_st7789_sensor_value(disp_values_t new_values, disp_values_t last_values) {};
+void disp_st7789_sensor_value(disp_values_t values, value_alerts_t alerts) {};
 void disp_st7789_power_off() {};
 
 void disp_st7789_wifi_error() {};
