@@ -154,10 +154,10 @@ String http_setup_get_root_content() {
   html += "</fieldset>";
 
   html += "<fieldset><legend>アラート設定</legend>";
-  html += generate_http_setup_alerts_html("気温", "temperatureAlerts.", config.temperatureAlerts);
-  html += generate_http_setup_alerts_html("湿度", "humidityAlerts.", config.humidityAlerts);
+  html += generate_http_setup_alerts_html("気温", "tempAlerts.", config.temperatureAlerts);
+  html += generate_http_setup_alerts_html("湿度", "humiAlerts.", config.humidityAlerts);
   html += generate_http_setup_alerts_html("照度", "luxAlerts.", config.luxAlerts);
-  html += generate_http_setup_alerts_html("気圧", "pressureAlerts.", config.pressureAlerts);
+  html += generate_http_setup_alerts_html("気圧", "presAlerts.", config.pressureAlerts);
   html += generate_http_setup_alerts_html("CO2濃度", "co2Alerts.", config.co2Alerts);
 
   html += "</fieldset>";

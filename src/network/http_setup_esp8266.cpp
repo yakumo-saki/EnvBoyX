@@ -54,10 +54,10 @@ void handle_post_root() {
   config.mqttBroker = server.arg("mqttbroker");
   config.mqttName = server.arg("mqttname");
 
-  alerts_to_config(config.temperatureAlerts, "temperatureAlerts.");
-  alerts_to_config(config.humidityAlerts, "humidityAlerts.");
+  alerts_to_config(config.temperatureAlerts, "tempAlerts.");
+  alerts_to_config(config.humidityAlerts, "humiAlerts.");
   alerts_to_config(config.luxAlerts, "luxAlerts.");
-  alerts_to_config(config.pressureAlerts, "pressureAlerts.");
+  alerts_to_config(config.pressureAlerts, "presAlerts.");
   alerts_to_config(config.co2Alerts, "co2Alerts.");
 
   trim_config();

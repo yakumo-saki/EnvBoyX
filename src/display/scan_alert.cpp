@@ -42,11 +42,11 @@ value_alerts_t check_for_alerts() {
 		alerts.co2.warning = false;
 	}
 
-	log_alert(alerts.temperature, "Temperature");
-	log_alert(alerts.humidity,    "Humidity   ");
-	log_alert(alerts.lux,         "lux        ");
-	log_alert(alerts.pressure,    "Pressure   ");
-	log_alert(alerts.co2,         "CO2        ");
+	// log_alert(alerts.temperature, "Temperature");
+	// log_alert(alerts.humidity,    "Humidity   ");
+	// log_alert(alerts.lux,         "lux        ");
+	// log_alert(alerts.pressure,    "Pressure   ");
+	// log_alert(alerts.co2,         "CO2        ");
 
 	return alerts;
 }

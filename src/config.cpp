@@ -6,7 +6,38 @@
 #include "log.h"
 #include "global.h"
 
-#define CONF_JSON_SIZE 1400
+#define CONF_JSON_SIZE 2000
+
+const String CFG_SETTING_ID = "settingId";
+const String CFG_SSID = "ssid";
+const String CFG_PASSWORD = "password";
+const String CFG_MDNS = "mDNS";
+const String CFG_OPMODE = "opMode";
+const String CFG_DISPLAY_FLIP = "displayFlip";
+const String CFG_DISPLAY_BRIGHTNESS = "displayBrightness";
+const String CFG_ST7789 = "st7789";
+const String CFG_ST7789_MODE = "st7789Mode";
+const String CFG_MHZ19B = "mhz19b";
+const String CFG_MHZ19B_PWM = "mhz19bPwmPin";
+const String CFG_MHZ19B_RX = "mhz19bRxPin";
+const String CFG_MHZ19B_TX = "mhz19bTxPin";
+const String CFG_MQTT_BROKER = "mqttBroker";
+const String CFG_MQTT_NAME = "mqttName";
+
+const String CFG_TEMP_ALERT = "tempAlerts";
+const String CFG_HUMI_ALERT = "humiAlerts";
+const String CFG_LUX_ALERT = "luxAlerts";
+const String CFG_PRES_ALERT = "presAlerts";
+const String CFG_CO2_ALERT = "co2Alerts";
+
+const String CFG_ALERT_WARN1_LO = "warn1.L";
+const String CFG_ALERT_WARN1_HI = "warn1.H";
+const String CFG_ALERT_WARN2_LO = "warn2.L";
+const String CFG_ALERT_WARN2_HI = "warn2.H";
+const String CFG_ALERT_CAUTION1_LO = "caut1.L";
+const String CFG_ALERT_CAUTION1_HI = "caut1.H";
+const String CFG_ALERT_CAUTION2_LO = "caut2.L";
+const String CFG_ALERT_CAUTION2_HI = "caut2.H";
 
 /**
  * とりあえずのデフォルト値をグローバル変数にセットする
@@ -163,15 +194,16 @@ void trim_config() {
 }
 
 DynamicJsonDocument alerts_to_json(const config_alert_t& alerts) {
-  DynamicJsonDocument json(100);
-  json["warn1.L"] = alerts.warning1.low;
-  json["warn1.H"] = alerts.warning1.high;
-  json["warn2.L"] = alerts.warning2.low;
-  json["warn2.H"] = alerts.warning2.high;
-  json["caut1.L"] = alerts.caution1.low;
-  json["caut1.H"] = alerts.caution1.high;
-  json["caut2.L"] = alerts.caution2.low;
-  json["caut2.H"] = alerts.caution2.high;
+  DynamicJsonDocument json(200);
+  json[CFG_ALERT_WARN1_LO] = alerts.warning1.low;
+  json[CFG_ALERT_WARN1_HI] = alerts.warning1.high;
+  json[CFG_ALERT_WARN2_LO] = alerts.warning2.low;
+  json[CFG_ALERT_WARN2_HI] = alerts.warning2.high;
+  json[CFG_ALERT_CAUTION1_LO] = alerts.caution1.low;
+  json[CFG_ALERT_CAUTION1_HI] = alerts.caution1.high;
+  json[CFG_ALERT_CAUTION2_LO] = alerts.caution2.low;
+  json[CFG_ALERT_CAUTION2_HI] = alerts.caution2.high;
+  json.shrinkToFit();
   return json;
 }
 
@@ -180,27 +212,27 @@ void write_config_file(File f) {
   trim_config();
 
   DynamicJsonDocument doc(CONF_JSON_SIZE);
-  doc["settingId"] = SETTING_ID;  // これから書くConfigなので必ず想定しているconfig versionを書く
-  doc["ssid"] = config.ssid;
-  doc["password"] = config.password;
-  doc["mDNS"] = config.mDNS;
-  doc["opMode"] = config.opMode;
-  doc["displayFlip"] = config.displayFlip;
-  doc["displayBrightness"] = config.displayBrightness;
-  doc["st7789"] = config.st7789;
-  doc["st7789Mode"] = config.st7789Mode;
-  doc["mhz19b"] = config.mhz19b;
-  doc["mhz19bPwmPin"] = config.mhz19bPwmPin;
-  doc["mhz19bRxPin"] = config.mhz19bRxPin;
-  doc["mhz19bTxPin"] = config.mhz19bTxPin;
-  doc["mqttBroker"] = config.mqttBroker;
-  doc["mqttName"] = config.mqttName;
+  doc[CFG_SETTING_ID] = SETTING_ID;  // これから書くConfigなので必ず想定しているconfig versionを書く
+  doc[CFG_SSID] = config.ssid;
+  doc[CFG_PASSWORD] = config.password;
+  doc[CFG_MDNS] = config.mDNS;
+  doc[CFG_OPMODE] = config.opMode;
+  doc[CFG_DISPLAY_FLIP] = config.displayFlip;
+  doc[CFG_DISPLAY_BRIGHTNESS] = config.displayBrightness;
+  doc[CFG_ST7789] = config.st7789;
+  doc[CFG_ST7789_MODE] = config.st7789Mode;
+  doc[CFG_MHZ19B] = config.mhz19b;
+  doc[CFG_MHZ19B_PWM] = config.mhz19bPwmPin;
+  doc[CFG_MHZ19B_RX] = config.mhz19bRxPin;
+  doc[CFG_MHZ19B_TX] = config.mhz19bTxPin;
+  doc[CFG_MQTT_BROKER] = config.mqttBroker;
+  doc[CFG_MQTT_NAME] = config.mqttName;
 
-  doc["temperatureAlerts"] = alerts_to_json(config.temperatureAlerts);
-  doc["humidityAlerts"] = alerts_to_json(config.humidityAlerts);
-  doc["luxAlerts"] = alerts_to_json(config.luxAlerts);
-  doc["pressureAlerts"] = alerts_to_json(config.pressureAlerts);
-  doc["co2Alerts"] = alerts_to_json(config.co2Alerts);
+  doc[CFG_TEMP_ALERT] = alerts_to_json(config.temperatureAlerts);
+  doc[CFG_HUMI_ALERT] = alerts_to_json(config.humidityAlerts);
+  doc[CFG_LUX_ALERT] = alerts_to_json(config.luxAlerts);
+  doc[CFG_PRES_ALERT] = alerts_to_json(config.pressureAlerts);
+  doc[CFG_CO2_ALERT] = alerts_to_json(config.co2Alerts);
 
   cfglog(F("Writing config"));
   if (serializeJson(doc, f) == 0) {
@@ -231,7 +263,7 @@ void set_config_value(String& cfg, DynamicJsonDocument &json, String key1, Strin
     JsonVariant value = middleObj[key2];
 
     if (value.isNull()) {
-      cfglog("Config file not contains second key:" + key2);
+      cfglog("Config file not contains second key:" + key1 + "->" + key2);
       return;
     }
 
@@ -240,14 +272,14 @@ void set_config_value(String& cfg, DynamicJsonDocument &json, String key1, Strin
 }
 
 void read_config_alerts(config_alert_t& alerts, DynamicJsonDocument doc, String key1) {
-  set_config_value(alerts.warning1.low ,doc, key1, "warn1.L");
-  set_config_value(alerts.warning1.high ,doc, key1, "warn1.H");
-  set_config_value(alerts.caution1.low ,doc, key1, "caut1.L");
-  set_config_value(alerts.caution1.high ,doc, key1, "caut1.H");
-  set_config_value(alerts.warning2.low ,doc, key1, "warn2.L");
-  set_config_value(alerts.warning2.high ,doc, key1, "warn2.H");
-  set_config_value(alerts.caution2.low ,doc, key1, "caut2.L");
-  set_config_value(alerts.caution2.high ,doc, key1, "caut2.H");
+  set_config_value(alerts.warning1.low ,doc, key1, CFG_ALERT_WARN1_LO);
+  set_config_value(alerts.warning1.high ,doc, key1, CFG_ALERT_WARN1_HI);
+  set_config_value(alerts.caution1.low ,doc, key1, CFG_ALERT_CAUTION1_LO);
+  set_config_value(alerts.caution1.high ,doc, key1, CFG_ALERT_CAUTION1_HI);
+  set_config_value(alerts.warning2.low ,doc, key1, CFG_ALERT_WARN2_LO);
+  set_config_value(alerts.warning2.high ,doc, key1, CFG_ALERT_WARN2_HI);
+  set_config_value(alerts.caution2.low ,doc, key1, CFG_ALERT_CAUTION2_LO);
+  set_config_value(alerts.caution2.high ,doc, key1, CFG_ALERT_CAUTION2_HI);
 }
 
 void read_config_file(File f) {
@@ -258,37 +290,43 @@ void read_config_file(File f) {
 
   cfglog(F("Json deserialize start"));
 
-  DeserializationError error = deserializeJson(doc, f);
+  Serial.println("");
+  while(f.available()){
+      Serial.write(f.read());
+  }
+  Serial.println("");
+  f.seek(0);
 
-  cfglog(F("Json deserialize done :)"));
+  DeserializationError error = deserializeJson(doc, f);
 
   if (error) {
     config.settingId = "INVALID";
     cfglog(F("Failed to read file or Parse as json failed"));
+    cfglog("Reason: " + String(error.c_str()));
     return;
+  } else {
+    cfglog(F("Json deserialize done :)"));
   }
 
-  set_config_value(config.settingId ,doc ,"settingId");
-  set_config_value(config.ssid ,doc ,"ssid");
-  set_config_value(config.password ,doc ,"password");
-  set_config_value(config.mDNS ,doc ,"mDNS");
-  set_config_value(config.opMode ,doc ,"opMode");
-  set_config_value(config.displayFlip,doc  ,"displayFlip");
-  set_config_value(config.displayBrightness ,doc ,"displayBrightness");
-  set_config_value(config.st7789 ,doc ,"st7789");
-  set_config_value(config.st7789Mode ,doc ,"st7789Mode");
-  set_config_value(config.mhz19b ,doc ,"mhz19b");
-  set_config_value(config.mhz19bPwmPin ,doc ,"mhz19bPwmPin");
-  set_config_value(config.mhz19bRxPin ,doc ,"mhz19bRxPin");
-  set_config_value(config.mhz19bTxPin ,doc ,"mhz19bTxPin");
-  set_config_value(config.mqttBroker ,doc ,"mqttBroker");
-  set_config_value(config.mqttName ,doc ,"mqttName");
+  set_config_value(config.settingId ,doc, CFG_SETTING_ID);
+  set_config_value(config.ssid ,doc, CFG_SSID);
+  set_config_value(config.password ,doc , CFG_PASSWORD);
+  set_config_value(config.mDNS ,doc, CFG_MDNS);
+  set_config_value(config.opMode ,doc, CFG_OPMODE);
+  set_config_value(config.displayFlip,doc, CFG_DISPLAY_FLIP);
+  set_config_value(config.displayBrightness, doc, CFG_DISPLAY_BRIGHTNESS);
+  set_config_value(config.st7789 ,doc, CFG_ST7789);
+  set_config_value(config.st7789Mode, doc, CFG_ST7789_MODE);
+  set_config_value(config.mhz19b, doc, CFG_MHZ19B);
+  set_config_value(config.mhz19bPwmPin, doc, CFG_MHZ19B_PWM);
+  set_config_value(config.mhz19bRxPin, doc, CFG_MHZ19B_RX);
+  set_config_value(config.mhz19bTxPin, doc, CFG_MHZ19B_TX);
+  set_config_value(config.mqttBroker, doc, CFG_MQTT_BROKER);
+  set_config_value(config.mqttName, doc, CFG_MQTT_NAME);
 
-  read_config_alerts(config.temperatureAlerts, doc, "temperatureAlerts");
-  read_config_alerts(config.humidityAlerts, doc, "humidityAlerts");
-  read_config_alerts(config.pressureAlerts, doc, "pressureAlerts");
-  read_config_alerts(config.luxAlerts, doc, "luxAlerts");
-  read_config_alerts(config.co2Alerts, doc, "co2Alerts");
-
-  print_config();
+  read_config_alerts(config.temperatureAlerts, doc, CFG_TEMP_ALERT);
+  read_config_alerts(config.humidityAlerts, doc, CFG_HUMI_ALERT);
+  read_config_alerts(config.pressureAlerts, doc, CFG_PRES_ALERT);
+  read_config_alerts(config.luxAlerts, doc, CFG_LUX_ALERT);
+  read_config_alerts(config.co2Alerts, doc, CFG_CO2_ALERT);
 }

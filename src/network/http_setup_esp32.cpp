@@ -24,6 +24,18 @@ void handle_get_root(AsyncWebServerRequest *request) {
   request->send(200, "text/html", html);
 }
 
+void alerts_to_config(AsyncWebServerRequest *request, config_alert_t& alerts, String prefix) {
+  alerts.caution1.low =  request->getParam(prefix + "caution1.low", true)->value();
+  alerts.caution1.high = request->getParam(prefix + "caution1.high", true)->value();
+  alerts.caution2.low =  request->getParam(prefix + "caution2.low", true)->value();
+  alerts.caution2.high = request->getParam(prefix + "caution2.high", true)->value();
+
+  alerts.warning1.low =  request->getParam(prefix + "warning1.low", true)->value();
+  alerts.warning1.high = request->getParam(prefix + "warning1.high", true)->value();
+  alerts.warning2.low =  request->getParam(prefix + "warning2.low", true)->value();
+  alerts.warning2.high = request->getParam(prefix + "warning2.high", true)->value();
+}
+
 /**
  * Post 設定 ( config の post。 ファイルに設定を保存）
  */
@@ -43,6 +55,12 @@ void handle_post_root(AsyncWebServerRequest *request) {
   config.mhz19bTxPin = request->getParam("mhz19bTxPin", true)->value();
   config.mqttBroker = request->getParam("mqttbroker", true)->value();
   config.mqttName = request->getParam("mqttname", true)->value();
+
+  alerts_to_config(request, config.temperatureAlerts, "tempAlerts.");
+  alerts_to_config(request, config.humidityAlerts, "humiAlerts.");
+  alerts_to_config(request, config.luxAlerts, "luxAlerts.");
+  alerts_to_config(request, config.pressureAlerts, "presAlerts.");
+  alerts_to_config(request, config.co2Alerts, "co2Alerts.");
 
   trim_config();
   String html = http_setup_post_root_content();

@@ -4,23 +4,20 @@
 #include "log.h"
 
 #include <SSD1306.h>
+#include <SH1106.h>
 #include <WiFiClient.h> 
 
 extern int disp_switch;
 
 //SSD1306 display(0x3c, 5, 4);
 SSD1306 display(SSD1306_I2C_ADDR, I2C_SDA, I2C_SCL);
+// SH1106 display(SSD1306_I2C_ADDR, I2C_SDA, I2C_SCL);
 
-bool ssd1306_connected = false;
 
-bool has_ssd1306() {
-  return ssd1306_connected;
-}
+int ssd1306_connected = -1;
 
-bool has_ssd1306_i2c(bool force = false) {
+bool has_ssd1306_i2c() {
   
-  if (!force && !ssd1306_connected) return false;
-
   Wire.beginTransmission(SSD1306_I2C_ADDR);
   byte error = Wire.endTransmission();
 
@@ -30,6 +27,21 @@ bool has_ssd1306_i2c(bool force = false) {
   }
   return true;
    
+}
+
+bool has_ssd1306() {
+  if (ssd1306_connected == 1) return true;
+  if (ssd1306_connected == 0) return false;
+  if (ssd1306_connected == -1) {
+    if (has_ssd1306_i2c()) {
+      ssd1306_connected = 1;
+      return true;
+    } else {
+      ssd1306_connected = 0;
+      return false;
+    }
+  }
+  return false;
 }
 
 void init_display() {
@@ -317,7 +329,7 @@ void disp_ssd1306_set_power(bool poweron) {
 
 void setup_disp_ssd1306() {
 
-  if (has_ssd1306_i2c(true)) {
+  if (has_ssd1306) {
     bool ret = display.init();
 
     if (ret) {

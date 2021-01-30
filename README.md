@@ -149,9 +149,13 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
-### v40
+### v3.7
 
-* VERSION: 40. next version is v41.
+* VERSION: 37. next version is v38.
+* BUGFIX: Alert settings are not saved on ESP32.
+* BUGFIX: Alert settings are not propery saved.
+* CHANGE: Switch to squix78 -> thingpulse (same library)
+* CONFIG: Shorten JSON keys about alerts(reconfig required)
 
 ### v3.6
 
