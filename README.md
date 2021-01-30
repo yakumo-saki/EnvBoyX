@@ -149,7 +149,7 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
-### v3.7
+### v37
 
 * VERSION: 37. next version is v38.
 * BUGFIX: Alert settings are not saved on ESP32.
