@@ -9,7 +9,7 @@
 extern const String product_short = "ebx";
 // EnvBoyX
 extern const String product = "EnvBoyX";
-extern const String ver = "37";
+extern const String ver = "38";
 // EnvBoyX Ver.3.0
 extern const String product_long = product + " Ver." + ver;
 
@@ -19,7 +19,7 @@ extern const String product_long = product + " Ver." + ver;
 #ifdef ESP32
 // ESP32 SDA
 extern const int I2C_SDA = 21;
-// ESP32 SCL
+// ESP32 SCLu8g2Flip
 extern const int I2C_SCL = 22;
 #elif defined(ESP8266)
 // ESP8266 SDA
