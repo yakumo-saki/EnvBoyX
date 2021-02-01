@@ -33,6 +33,14 @@ bool isBigMode()
 	return config.st7789Mode == ST7789_MODE_BIG;
 }
 
+int getWidth() {
+	return (config.st7789Mode == ST7789_MODE_BIG ? 134 : 239);
+}
+
+int getHeight() {
+	return (config.st7789Mode == ST7789_MODE_BIG ? 239 : 134);
+}
+
 void clear_screen() {
 	tft.fillScreen(TFT_BLACK);
 
@@ -48,7 +56,6 @@ void clear_screen() {
  */
 void disp_st7789_normal_startup_screen(String product_long)
 {
-
 	tft.startWrite();
 	tft.fillScreen(TFT_BLACK);
 	tft.setCursor(0, 0, DEFAULT_FONT);
@@ -73,20 +80,19 @@ void disp_st7789_setup_startup_screen(String ipAddr)
  */
 void disp_st7789_wifi_starting(int wait_print_row)
 {
-
 	tft.startWrite();
 	clear_screen();
 	tft.setCursor(0, 0, DEFAULT_FONT);
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
-	tft.println("WiFi starting");
+	tft.println("WiFi");
+	tft.println("starting");  // BIGモード時のことも考慮するとこれくらい
 
 	tft.endWrite();
 }
 
 void disp_st7789_wifi_info(String ip, String mDNS)
 {
-
 	tft.startWrite();
 	clear_screen();
 	tft.setCursor(0, 0, DEFAULT_FONT);
@@ -125,15 +131,22 @@ void disp_st7789_wait_for_reconfig_init()
 	tft.setCursor(0, 0, DEFAULT_FONT);
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
-	tft.println("Wait for reconfig");
+	tft.println("Wait for");
+	tft.println(" reconfigure");
+
+	stlog("viewportY=" + String(tft.getViewportY()));
+
+	tft.drawFastHLine(0, 100, getWidth(), TFT_CYAN);
+	tft.drawFastHLine(0, 116, getWidth(), TFT_CYAN);
 
 	tft.endWrite();
 }
 
 void disp_st7789_wait_for_reconfig_bar(int now, const int max)
 {
-	tft.setCursor(0 + (now * 8), 100, DEFAULT_FONT);
-	tft.print("-");
+	int length = getWidth() / max * now;
+
+	tft.fillRect(0, 101, length, 14, TFT_BLUE);
 }
 
 

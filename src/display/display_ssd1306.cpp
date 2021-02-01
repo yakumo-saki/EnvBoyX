@@ -174,25 +174,17 @@ void disp_ssd1306_wait_for_reconfig_init() {
   u8g2.drawStr(0, 48, " to re-configure");
 
   // バーを生成する
-  // 下の幅の部分を先に書かせてしまう。
-  int MAX_UNDER_BAR = 20;  // _ の数。プロポーショナルフォントなので幅注意
-  String bar = "";
-  for (int n = 0; n < MAX_UNDER_BAR ; n++) {
-    bar = bar + "_";
-    u8g2.drawStr(0, 16, bar.c_str());
-    u8g2.drawStr(0, 0, bar.c_str());
-    u8g2.sendBuffer();
-  }
+  u8g2.setDrawColor(WHITE);
+  u8g2.drawHLine(0, 16, 1);
+  u8g2.drawHLine(0, 32, 1);
+  u8g2.sendBuffer();
 }
 
 void disp_ssd1306_wait_for_reconfig_bar(int now, const int max) {
-  String bar = "|";
-  
-  for (int n = 0; n < now ; n++) {
-    bar = bar + "|";
-  }
+  int length = 127 / max * now;
 
-  u8g2.drawStr(0, 16, bar.c_str());
+  u8g2.setDrawColor(WHITE);
+  u8g2.drawBox(0, 16, length, 16);
   u8g2.sendBuffer();
 }
 
@@ -201,8 +193,6 @@ void disp_ssd1306_all_initialize_complete() {
 }
 
 void write_value(int x, int y, String valueString, value_alert_t alert, TextAlign align) {
-  draw_value(x, y, valueString, TextDecoration::INVERT, align);
-  return;
   if (alert.warning) {
     draw_value(x, y, valueString, TextDecoration::INVERT, align);
   } else if (alert.caution) {
