@@ -6,6 +6,7 @@
 #include "global.h"
 #include "log.h"
 
+#include "u8g2_utils.h"
 
 // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2_sh1106(U8G2_R0);
@@ -15,21 +16,20 @@ U8G2 u8g2;
 
 extern int disp_switch;
 
-#define FONT_BOOT u8g2_font_crox5t_tr
-// const uint8_t FONT_BOOT = *u8g2_font_ncenB10_tr;
-#define FONT_PLAIN_10 u8g2_font_9x15_mr
-// const uint8_t FONT_PLAIN_10 = *u8g2_font_ncenB10_tr;
-
-const uint8_t TEXT_ALIGN_LEFT = 1;
-const uint8_t TEXT_ALIGN_RIGHT = 2;
+const uint8_t *FONT_SMALL_NARROW = u8g2_font_t0_11_tr;
+//const uint8_t *FONT_SMALL = u8g2_font_synchronizer_nbp_tr;
+const uint8_t *FONT_SMALL = u8g2_font_roentgen_nbp_tr;
+const uint8_t *FONT_BOOT = u8g2_font_ncenB10_tr;
+const uint8_t *FONT_PLAIN_10 = u8g2_font_9x15_mr;
 
 const uint8_t WHITE = 1;
 const uint8_t BLACK = 0;
 
 int ssd1306_connected = -1;
 
+
 bool has_ssd1306_i2c() {
-  
+
   Wire.beginTransmission(SSD1306_I2C_ADDR);
   byte error = Wire.endTransmission();
 
@@ -58,6 +58,7 @@ bool has_ssd1306() {
 
 void init_u8g2() {
   u8g2.clearBuffer();
+  u8g2.setFontPosTop(); // 文字描画の座標指定を左上にする（default=baseline)
 
   if (config.displayFlip == DISPLAY_FLIP_ON) {
     u8g2.setDisplayRotation(U8G2_R2);
@@ -76,7 +77,7 @@ void disp_ssd1306_normal_startup_screen(String product_long) {
   init_u8g2();
   
   u8g2.setFont(u8g2_font_ncenB10_tr);
-  // u8g2.setTextAlignment(TEXT_ALIGN_LEFT);
+  // u8g2.setTextAlignment(TextAlign::LEFT);
   u8g2.drawStr(0, 16,  "ziomatrix corp.");
   u8g2.drawStr(0, 32, product_long.c_str());
   u8g2.drawStr(0, 48, "initialize or flash");
@@ -95,7 +96,7 @@ void disp_ssd1306_setup_startup_screen(String ipAddr) {
   init_u8g2();
 
   u8g2.setFont(FONT_BOOT);
-  // u8g2.setTextAlignment(TEXT_ALIGN_LEFT);
+  // u8g2.setTextAlignment(TextAlign::LEFT);
   u8g2.drawStr(0, 0,  product_long.c_str());
   u8g2.drawStr(0, 16, "Setup mode.");
   u8g2.drawStr(0, 33, ("http://" + ipAddr + "/").c_str() );
@@ -116,7 +117,7 @@ void disp_ssd1306_wifi_starting(int wait_print_row) {
 
   init_u8g2();
  
-  // u8g2.setTextAlignment(TEXT_ALIGN_LEFT);
+  // u8g2.setTextAlignment(TextAlign::LEFT);
   u8g2.setFont(FONT_BOOT);
   u8g2.drawStr(0, 0, "WiFi Connecting");
   u8g2.drawStr(0, 16*row, "Please wait...");
@@ -130,7 +131,7 @@ void disp_ssd1306_wifi_info(String ip, String mDNS) {
 
   init_u8g2();
 
-  // u8g2.setTextAlignment(TEXT_ALIGN_LEFT);
+  // u8g2.setTextAlignment(TextAlign::LEFT);
   u8g2.setFont(FONT_BOOT);
   u8g2.drawStr(0, 0, config.ssid.c_str());
   u8g2.drawStr(0, 16, ip.c_str());
@@ -199,52 +200,14 @@ void disp_ssd1306_all_initialize_complete() {
   // do nothing. ssd1306 code is everytime rewrite entire screen.
 }
 
-void write_value(int x, int y, String valueString, value_alert_t alert, uint8_t align) {
-  
-  const int HEIGHT = 17;
-  
-  const char value = *valueString.c_str();
-
-  // u8g2.setTextAlignment(align);
-  // int diffX = (align == TEXT_ALIGN_RIGHT ? -1 : 1);
-  int diffX = 1;
-
-  // // 注意表示：太字
-  // 微妙なのでコメントアウト
-  // u8g2.drawStr(x, y, value);
-  // u8g2.drawStr(x + diffX, y, value);
-
-  if (alert.warning || alert.caution) {
-
-    // 警告表示：反転
-    const int MARGIN = 2;
-    int RECT_MARGIN = 1 + MARGIN;  // 枠 1px + マージン 2px
-    
-    // 右揃えの場合はマージンが逆
-    int STR_MARGIN = (align == TEXT_ALIGN_RIGHT ? -MARGIN : MARGIN);  
-
-    uint16_t width = u8g2.getStrWidth(&value) + (RECT_MARGIN * 2); // *2 = 左右
-    int startX = (align == TEXT_ALIGN_RIGHT ? x - width: x);  // 右揃えの場合、左端のXを求める
-
-    // 枠 or 塗りつぶし
-    u8g2.setDrawColor(WHITE);
-    if (alert.warning) {
-      u8g2.drawBox(startX, y, width, HEIGHT);
-      u8g2.setDrawColor(BLACK);
-      u8g2.drawStr(x + STR_MARGIN, y, &value);
-      u8g2.drawStr(x + STR_MARGIN + diffX, y, &value);
-    } else if (alert.caution) {
-      u8g2.drawFrame(startX, y, width, HEIGHT);
-      u8g2.drawStr(x + STR_MARGIN, y, &value);
-    }   
+void write_value(int x, int y, String valueString, value_alert_t alert, TextAlign align) {
+  if (alert.warning) {
+    draw_value(x, y, valueString, TextDecoration::INVERT, align);
+  } else if (alert.caution) {
+    draw_value(x, y, valueString, TextDecoration::BOX, align);
   } else {
-    // 通常表示
-    u8g2.setDrawColor(WHITE);
-    u8g2.drawStr(x, y, &value);
+    draw_value(x, y, valueString, TextDecoration::NONE, align);
   }
-
-  u8g2.setDrawColor(WHITE);  // 
-
 }
 
 /**
@@ -252,9 +215,11 @@ void write_value(int x, int y, String valueString, value_alert_t alert, uint8_t 
  */
 void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
 
-  const int R1 = 12 + 16;
-  const int R2 = 30 + 16;
-  const int R3 = 48 + 16;
+  // 値を書くy座標。
+  const int R0 = 0;
+  const int R1 = 13;
+  const int R2 = 31;
+  const int R3 = 47;
 
   if (!has_ssd1306()) return;
 
@@ -263,37 +228,31 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
   // 測定値表示部分
   u8g2.setFont(FONT_PLAIN_10);
 
-  write_value(0, R1, values.temperature, alerts.temperature, TEXT_ALIGN_LEFT);
+  write_value(0, R1, values.temperature, alerts.temperature, TextAlign::LEFT);
 
-  write_value(127, R1, values.humidity, alerts.humidity, TEXT_ALIGN_RIGHT);
+  write_value(127, R1, values.humidity, alerts.humidity, TextAlign::RIGHT);
 
-  write_value(0, R2, values.pressure, alerts.pressure, TEXT_ALIGN_LEFT);
+  write_value(0, R2, values.pressure, alerts.pressure, TextAlign::LEFT);
 
-  write_value(127, R2, values.lux, alerts.lux, TEXT_ALIGN_RIGHT);
+  write_value(127, R2, values.lux, alerts.lux, TextAlign::RIGHT);
 
-  // u8g2.setTextAlignment(TEXT_ALIGN_LEFT);
-  u8g2.drawStr(0, R3, "CO2:");
-  write_value(38, R3, values.co2ppm, alerts.co2, TEXT_ALIGN_LEFT); // 9999ppm
+  // CO2: に関しては値ではないので枠で囲まれることを想定したマージンが取られないのでここで位置をずらす
+  draw_string(2, R3, "CO2:", TextAlign::LEFT);
+  write_value(38, R3, values.co2ppm, alerts.co2, TextAlign::LEFT); // 9999ppm
 
   // バージョン表示
-  // u8g2.setTextAlignment(TEXT_ALIGN_RIGHT);
-  u8g2.setFont(FONT_PLAIN_10);
-  u8g2.drawStr(116, 64, ver.c_str());
+  draw_string(127, 54, ver, TextAlign::RIGHT, FONT_SMALL);
 
-  // 左上、EnvBoyX の表示u8g2_font_ncenB10_tr
-  // u8g2.setTextAlignment(TEXT_ALIGN_LEFT);
-  u8g2.setFont(FONT_PLAIN_10);
-  u8g2.drawStr(0, 10, product.c_str()); 
-  
   // みぎ上、IPアドレス or mDNS名表示
-  // u8g2.setTextAlignment(TEXT_ALIGN_RIGHT);
-  u8g2.setFont(FONT_PLAIN_10);
   if (disp_switch < 3) {
-    u8g2.drawStr(127, 10, values.ip.c_str()); 
+    draw_string(127, R0, values.ip, TextAlign::RIGHT, FONT_SMALL_NARROW); 
   } else {
-    u8g2.drawStr(127, 10, values.mDNS.c_str()); 
+    draw_string(127, R0, values.mDNS, TextAlign::RIGHT, FONT_SMALL_NARROW); 
   }
 
+  // 左上、EnvBoyX の表示
+  draw_string(0 , R0 + 1, product_short, TextAlign::LEFT, FONT_SMALL); 
+  
   disp_switch++;
   if (disp_switch > 5) {
     disp_switch = 0;
@@ -350,6 +309,7 @@ void setup_disp_ssd1306() {
   if (has_ssd1306()) {
     u8g2 = u8g2_ssd1306;
     bool ret = u8g2.begin();
+    init_u8g2();
 
     if (ret) {
       ssdlog(F("Initialized."));

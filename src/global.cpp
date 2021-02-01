@@ -6,7 +6,7 @@
 // プロダクト名定数
 // --------------------------------------------------------------------
 // ebx
-extern const String product_short = "ebx";
+extern const String product_short = "EBX";
 // EnvBoyX
 extern const String product = "EnvBoyX";
 extern const String ver = "38";
