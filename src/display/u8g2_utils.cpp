@@ -60,15 +60,18 @@ void draw_value(int x, int y, String valueString, TextDecoration deco, TextAlign
   if (deco == TextDecoration::BOX || deco == TextDecoration::INVERT) {
 
     // 枠 or 塗りつぶし
-    u8g2.setDrawColor(WHITE);
     if (deco == TextDecoration::INVERT) {
+      displog("INVERT");
+      u8g2.setDrawColor(WHITE);
       u8g2.drawBox(boxStartX, y - 1, boxWidth, HEIGHT); // わざと本来の位置より1dot上に書いている
 
       // 反転した際は太字にする（細いとよみづらい）
       u8g2.setDrawColor(BLACK);
+      u8g2.setFontMode(1);  // これをしないと DrawColor = BLACK の時 背景の白も書かれてしまう
       draw_string(strStartX, y, valueString, align);
       draw_string(strStartX - 1, y, valueString, align);
-      draw_string(strStartX - 1, y, valueString, align);
+      
+      u8g2.setFontMode(0);  // もとに戻す
     } else if (deco == TextDecoration::BOX) {
       draw_string(strStartX, y, valueString, align);
       u8g2.drawFrame(boxStartX, y  - 1, boxWidth, HEIGHT);
