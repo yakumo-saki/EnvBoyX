@@ -17,7 +17,7 @@ String format_pressure(float pres) {
 }
 
 String format_lux(float lux) {
-	return String(lux, 0) + "lx";
+	return String(lux, 0) + "Lx";
 }
 
 String format_co2_ppm(int ppm) {
