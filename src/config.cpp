@@ -194,7 +194,7 @@ void trim_config() {
 }
 
 DynamicJsonDocument alerts_to_json(const config_alert_t& alerts) {
-  DynamicJsonDocument json(200);
+  DynamicJsonDocument json(300);
   json[CFG_ALERT_WARN1_LO] = alerts.warning1.low;
   json[CFG_ALERT_WARN1_HI] = alerts.warning1.high;
   json[CFG_ALERT_WARN2_LO] = alerts.warning2.low;

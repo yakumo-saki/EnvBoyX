@@ -4,7 +4,6 @@
 #include "log.h"
 #include "structs.h"
 
-#include <SSD1306.h>
 #include <WiFiClient.h> 
 
 #include "scan_alert.h"

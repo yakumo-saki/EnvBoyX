@@ -40,8 +40,6 @@ void draw_value(int x, int y, String valueString, TextDecoration deco, TextAlign
   
   const int HEIGHT = u8g2.getMaxCharHeight();
   
-  const int doubleWriteX = 1;
-
   // 警告表示の時用のマージン。通常表示と警告表示で場所が変わるのはイマイチなので通常時も適用する
   const int MARGIN = 1;
   const int RECT_MARGIN = 1 + MARGIN;  // 枠 1px + マージン 2px
@@ -65,15 +63,16 @@ void draw_value(int x, int y, String valueString, TextDecoration deco, TextAlign
     u8g2.setDrawColor(WHITE);
     if (deco == TextDecoration::INVERT) {
       u8g2.drawBox(boxStartX, y - 1, boxWidth, HEIGHT); // わざと本来の位置より1dot上に書いている
-      u8g2.setDrawColor(BLACK);
 
       // 反転した際は太字にする（細いとよみづらい）
+      u8g2.setDrawColor(BLACK);
       draw_string(strStartX, y, valueString, align);
-      draw_string(strStartX - doubleWriteX, y, valueString, align);
+      draw_string(strStartX - 1, y, valueString, align);
+      draw_string(strStartX - 1, y, valueString, align);
     } else if (deco == TextDecoration::BOX) {
       draw_string(strStartX, y, valueString, align);
       u8g2.drawFrame(boxStartX, y  - 1, boxWidth, HEIGHT);
-    }   
+    }
   } else {
     // 通常表示
     u8g2.setDrawColor(WHITE);

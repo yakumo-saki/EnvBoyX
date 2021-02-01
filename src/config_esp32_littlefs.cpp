@@ -1,22 +1,24 @@
-#ifdef ESP32
+#ifdef USE_THIS_WHEN_LITTLE_FS
 
 #include <Arduino.h>
 
 #include "FS.h"
-#include <SPIFFS.h>
+#include <LITTLEFS.h>
 
 #include "log.h"
 #include "global.h"
 #include "config.h"
+
+#define FORMAT_LITTLEFS_IF_FAILED true
 
 /**
  * デバッグ用 ファイル一覧の表示
  */
 void list_dir()
 {
-  cfglog(F(">>> SPIFFS directory listing"));
- 
-  File root = SPIFFS.open("/");
+  cfglog(F(">>> LITTLEFS directory listing"));
+
+  File root = LITTLEFS.open("/");
   if (!root) {
       cfglog(F("- failed to open directory"));
       return;
@@ -44,7 +46,7 @@ void list_dir()
  */
 void create_configure_flag_file()
 {
-  File f2 = SPIFFS.open(configured_file, "w");
+  File f2 = LITTLEFS.open(configured_file, "w");
   f2.println("ok");
   f2.close();
   cfglog(F("configured file created."));
@@ -55,7 +57,7 @@ void create_configure_flag_file()
  */
 void remove_configure_flag_file()
 {
-  SPIFFS.remove(configured_file);
+  LITTLEFS.remove(configured_file);
   cfglog(configured_file + " removed.");
 }
 
@@ -68,7 +70,7 @@ void save_config()
   trim_config();
 
   // 設定ファイル
-  File f = SPIFFS.open(settings, "w");
+  File f = LITTLEFS.open(settings, "w");
   write_config_file(f);
   f.close();
 
@@ -80,7 +82,7 @@ void save_config()
  */
 void read_config()
 {
-  File f = SPIFFS.open(settings, "r");
+  File f = LITTLEFS.open(settings, "r");
   cfglog(settings + " filesize = " + String(f.size()));
 
   read_config_file(f);
@@ -96,12 +98,12 @@ void read_config()
  */
 bool has_valid_config_file() {
 
-  if (!SPIFFS.exists(settings)) {
+  if (!LITTLEFS.exists(settings)) {
     cfglog(settings + " not found.");
-    SPIFFS.end();
+    LITTLEFS.end();
     return false;
   } else {
-    File f = SPIFFS.open(settings, "r");
+    File f = LITTLEFS.open(settings, "r");
 
     cfglog(F("Reading config to checking version."));
     read_config_file(f);
@@ -125,7 +127,7 @@ bool has_valid_config_file() {
  */
 bool has_valid_config() {
 
-  bool exist = SPIFFS.exists(configured_file);
+  bool exist = LITTLEFS.exists(configured_file);
 
   if (!exist) {
     // reconfigure用ファイルがなければセットアップモード
@@ -141,10 +143,10 @@ bool has_valid_config() {
 
 
 void config_setup() {
-  if (!SPIFFS.begin(true)){
-    cfglog(F("SPIFFS Mount Failed."));
+  if (!LITTLEFS.begin(FORMAT_LITTLEFS_IF_FAILED)){
+    cfglog(F("LITTLEFS Mount Failed."));
   } else {
-    cfglog(F("SPIFFS Mount success."));
+    cfglog(F("LITTLEFS Mount success."));
   }
   list_dir();
 }

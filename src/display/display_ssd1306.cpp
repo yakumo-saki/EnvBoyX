@@ -19,7 +19,7 @@ extern int disp_switch;
 const uint8_t *FONT_SMALL_NARROW = u8g2_font_t0_11_tr;
 //const uint8_t *FONT_SMALL = u8g2_font_synchronizer_nbp_tr;
 const uint8_t *FONT_SMALL = u8g2_font_roentgen_nbp_tr;
-const uint8_t *FONT_BOOT = u8g2_font_ncenB10_tr;
+const uint8_t *FONT_BOOT = u8g2_font_ncenR10_tr;
 const uint8_t *FONT_PLAIN_10 = u8g2_font_9x15_mr;
 
 const uint8_t WHITE = 1;
@@ -201,6 +201,8 @@ void disp_ssd1306_all_initialize_complete() {
 }
 
 void write_value(int x, int y, String valueString, value_alert_t alert, TextAlign align) {
+  draw_value(x, y, valueString, TextDecoration::INVERT, align);
+  return;
   if (alert.warning) {
     draw_value(x, y, valueString, TextDecoration::INVERT, align);
   } else if (alert.caution) {
@@ -217,9 +219,9 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
 
   // 値を書くy座標。
   const int R0 = 0;
-  const int R1 = 13;
-  const int R2 = 31;
-  const int R3 = 47;
+  const int R1 = 12;
+  const int R2 = 30;
+  const int R3 = 48;
 
   if (!has_ssd1306()) return;
 
@@ -237,7 +239,7 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
   write_value(127, R2, values.lux, alerts.lux, TextAlign::RIGHT);
 
   // CO2: に関しては値ではないので枠で囲まれることを想定したマージンが取られないのでここで位置をずらす
-  draw_string(2, R3, "CO2:", TextAlign::LEFT);
+  draw_string(1, R3, "CO2:", TextAlign::LEFT);
   write_value(38, R3, values.co2ppm, alerts.co2, TextAlign::LEFT); // 9999ppm
 
   // バージョン表示
