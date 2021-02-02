@@ -149,6 +149,15 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
+### v38
+
+* CHANGE: CONFIG: ESP32 now uses SPIFFS instead of LITTLEFS but no format or setup required (remove LITTLEFS to SPIFFS wrapper because of compile error)
+* CHANGE: SSD1306: Move to U8G2 graphic library
+* CHANGE: SSD1306: Lux unit "lx" to "Lx" (1 and l is very similer griph)
+* CHANGE: SSD1306: Draw wait for reconfigure bar using graphics
+* CHANGE: ST7789: Draw wait for reconfigure bar using graphics
+* BUGFIX: CONFIG: coution 2 High value is not saved. (due to insufficient buffer)
+
 ### v37
 
 * VERSION: 37. next version is v38.
