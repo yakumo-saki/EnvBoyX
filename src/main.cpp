@@ -13,7 +13,12 @@ bool isNormal = false;
 
 void setup()
 {
+  #ifdef ESP32
+  Serial.begin(115200);
+  #else
   Serial.begin(74880);
+  #endif
+  
   while (!Serial); // Serial起動待ち
   
   Serial.println(""); // 1行目にゴミが出るので改行しないと読めない
