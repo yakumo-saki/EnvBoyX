@@ -26,21 +26,24 @@ extern const byte SSD1306_I2C_ADDR;
 extern const String settings;
 extern const String configured_file;
 
-extern String SETTING_ID;
-extern String OPMODE_MQTT;
-extern String OPMODE_DISPLAY;
+extern const String SETTING_ID;
+extern const String OPMODE_MQTT;
+extern const String OPMODE_DISPLAY;
 
-extern String ST7789_USE;
-extern String ST7789_NOUSE;
-extern String ST7789_MODE_BIG;
-extern String ST7789_MODE_NORMAL;
+extern const String ST7789_USE;
+extern const String ST7789_NOUSE;
+extern const String ST7789_MODE_BIG;
+extern const String ST7789_MODE_NORMAL;
 
-extern String DISPLAY_FLIP_ON;
-extern String DISPLAY_FLIP_OFF;
+extern const String OLED_SSD1306;
+extern const String OLED_SH1106;
 
-extern String MHZ_USE_PWM;
-extern String MHZ_USE_UART;
-extern String MHZ_NOUSE;
+extern const String DISPLAY_FLIP_ON;
+extern const String DISPLAY_FLIP_OFF;
+
+extern const String MHZ_USE_PWM;
+extern const String MHZ_USE_UART;
+extern const String MHZ_NOUSE;
 
 extern const String MIME_HTML;
 extern const String MIME_TEXT;

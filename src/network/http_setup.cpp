@@ -225,6 +225,14 @@ String http_setup_post_root_content() {
 
     html += "画面の明るさ：" + config.displayBrightness + "<br>";
 
+    if (config.oledType == OLED_SSD1306) {
+      html += "I2C OLED デバイス： SSD1306<br>";
+    } else if (config.oledType == OLED_SH1106) {
+      html += "I2C OLED デバイス： SH1106<br>";
+    } else if (config.oledType == OLED_SH1106) {
+      html += "【バグ】I2C OLED デバイスの指定が異常です。 " + config.oledType + "<br>";
+    }
+
     if (config.st7789 == ST7789_USE) {
       html += "ST7789 を使用する<br>";
 

@@ -49,6 +49,7 @@ void handle_post_root() {
   config.opMode = server.arg("opmode");
   config.displayFlip = server.arg("displayFlip");
   config.displayBrightness = server.arg("displayBrightness");
+  config.oledType = server.arg("oledType");
   config.st7789 = server.arg("st7789");
   config.st7789Mode = server.arg("st7789Mode");
   config.mhz19b = server.arg("mhz19b");
