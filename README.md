@@ -7,6 +7,13 @@ Arduino environment monitor for ESP32 / ESP8266 based boards.
 * [Japanese: 書き込み方法（日本語）](docs/how_to_write-ja.md)
 * [How to write](docs/how_to_write-en.md)
 
+## Branches
+
+| name   | usage |
+| ------ | ---------------------------------- |
+| master | latest Release                     |
+| devel  | currently developing unstable code |
+
 # images
 
 ## Default output image on TTGO T-Display
