@@ -5,6 +5,7 @@
 
 #include "log.h"
 #include "global.h"
+#include "structs.h"
 
 #define CONF_JSON_SIZE 2000
 
@@ -15,6 +16,7 @@ const String CFG_MDNS = "mDNS";
 const String CFG_OPMODE = "opMode";
 const String CFG_DISPLAY_FLIP = "displayFlip";
 const String CFG_DISPLAY_BRIGHTNESS = "displayBrightness";
+const String CFG_OLED_TYPE = "oledType";
 const String CFG_ST7789 = "st7789";
 const String CFG_ST7789_MODE = "st7789Mode";
 const String CFG_MHZ19B = "mhz19b";
@@ -61,12 +63,14 @@ void set_default_config_value()
   config.displayFlip = DISPLAY_FLIP_OFF;
   config.displayBrightness = "255";
 
+  config.oledType = OLED_SSD1306;
+
   config.st7789 = ST7789_NOUSE;
   config.st7789Mode = ST7789_MODE_NORMAL;
 
   config.mqttBroker = "";
   config.mqttName = "";
-
+  
   config.temperatureAlerts.warning1.low = "-99";
   config.temperatureAlerts.warning1.high = "10";
   config.temperatureAlerts.caution1.low = "10";
@@ -131,6 +135,7 @@ void print_config() {
   cfglog(F("DISPLAY:"));
   cfglog("   Flip: " + config.displayFlip);
   cfglog("   Brightness: " + config.displayBrightness);
+  cfglog("I2C OLED TYPE: " + config.oledType);
   cfglog("ST7789: " + config.st7789);
   cfglog("   MODE: " + config.st7789Mode);
   cfglog("use MHZ19B: " + config.mhz19b);
@@ -177,6 +182,7 @@ void trim_config() {
   config.opMode.trim();
   config.displayFlip.trim();
   config.displayBrightness.trim();
+  config.oledType.trim();
   config.st7789.trim();
   config.st7789Mode.trim();
   config.mhz19b.trim();
@@ -219,6 +225,7 @@ void write_config_file(File f) {
   doc[CFG_OPMODE] = config.opMode;
   doc[CFG_DISPLAY_FLIP] = config.displayFlip;
   doc[CFG_DISPLAY_BRIGHTNESS] = config.displayBrightness;
+  doc[CFG_OLED_TYPE] = config.oledType;
   doc[CFG_ST7789] = config.st7789;
   doc[CFG_ST7789_MODE] = config.st7789Mode;
   doc[CFG_MHZ19B] = config.mhz19b;
@@ -315,6 +322,7 @@ void read_config_file(File f) {
   set_config_value(config.opMode ,doc, CFG_OPMODE);
   set_config_value(config.displayFlip,doc, CFG_DISPLAY_FLIP);
   set_config_value(config.displayBrightness, doc, CFG_DISPLAY_BRIGHTNESS);
+  set_config_value(config.oledType, doc, CFG_OLED_TYPE);
   set_config_value(config.st7789 ,doc, CFG_ST7789);
   set_config_value(config.st7789Mode, doc, CFG_ST7789_MODE);
   set_config_value(config.mhz19b, doc, CFG_MHZ19B);

@@ -134,8 +134,6 @@ void disp_st7789_wait_for_reconfig_init()
 	tft.println("Wait for");
 	tft.println(" reconfigure");
 
-	stlog("viewportY=" + String(tft.getViewportY()));
-
 	tft.drawFastHLine(0, 100, getWidth(), TFT_CYAN);
 	tft.drawFastHLine(0, 116, getWidth(), TFT_CYAN);
 

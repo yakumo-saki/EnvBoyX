@@ -1,5 +1,3 @@
-#ifdef ESP8266
-
 #include <Arduino.h>
 
 #include "log.h"
@@ -8,8 +6,15 @@
 
 #include "http_setup.h"
 
+#ifdef ESP32
+#include <WebServer.h>
+extern WebServer server;
+#endif
+
+#ifdef ESP8266
 #include <ESP8266WebServer.h>
 extern ESP8266WebServer server;
+#endif
 
 /**
  * GET 設定画面
@@ -44,6 +49,7 @@ void handle_post_root() {
   config.opMode = server.arg("opmode");
   config.displayFlip = server.arg("displayFlip");
   config.displayBrightness = server.arg("displayBrightness");
+  config.oledType = server.arg("oledType");
   config.st7789 = server.arg("st7789");
   config.st7789Mode = server.arg("st7789Mode");
   config.mhz19b = server.arg("mhz19b");
@@ -80,5 +86,3 @@ void setup_http_setup() {
 void loop_http_setup() {
   server.handleClient();
 }
-
-#endif
