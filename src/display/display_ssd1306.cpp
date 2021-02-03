@@ -9,7 +9,7 @@
 #include "u8g2_utils.h"
 
 // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
-U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2_sh1106(U8G2_R0);
+U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2_sh1106(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2_ssd1306(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA); // artifact
 
 U8G2 u8g2;
@@ -299,7 +299,13 @@ void setup_disp_ssd1306() {
 
   ssdlog("initialize start.");
   if (has_ssd1306()) {
-    u8g2 = u8g2_ssd1306;
+    if (config.oledType == OLED_SSD1306) {
+      ssdlog("Using SSD1306");
+      u8g2 = u8g2_ssd1306;
+    } else {
+      ssdlog("Using SH1106");
+      u8g2 = u8g2_sh1106;
+    }
     bool ret = u8g2.begin();
     init_u8g2();
 

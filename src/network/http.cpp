@@ -2,11 +2,12 @@
 #ifdef ESP32
 #include <WiFi.h>
 #include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
+#include <WebServer.h>
 
-AsyncWebServer server(80);
+WebServer server(80);
+#endif
 
-#elif defined(ESP8266)
+#ifdef ESP8266
 #include <ESP8266WebServer.h>
 
 ESP8266WebServer server(80);

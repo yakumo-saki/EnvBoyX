@@ -37,9 +37,12 @@ extern const int MHZ_BAUDRATE = 9600;
 extern const String settings = "/wifi_settings.txt";
 extern const String configured_file = "/config_ok.txt";
 
-extern const String SETTING_ID = "EBXCFG.v11";
+extern const String SETTING_ID = "EBXCFG.v12";
 extern const String OPMODE_MQTT = "mqtt";
 extern const String OPMODE_DISPLAY = "always";
+
+extern const String OLED_SSD1306 = "SSD";
+extern const String OLED_SH1106 = "SH";
 
 extern const String ST7789_USE = "yes";
 extern const String ST7789_NOUSE = "no";
@@ -53,6 +56,10 @@ extern const String DISPLAY_FLIP_OFF = "no";
 extern const String MHZ_USE_PWM = "yes_pwm";
 extern const String MHZ_USE_UART = "yes_uart";
 extern const String MHZ_NOUSE = "no";
+
+// --------------------------------------------------------------------
+// ただの定数
+// --------------------------------------------------------------------
 
 extern const String MIME_HTML = "text/html";
 extern const String MIME_TEXT = "text/plain";

@@ -154,6 +154,11 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
+### v39
+
+* CHANGE: CONFIG: Add SSD1306 / SH1106 switch
+* CHANGE: HTTP: ESP32: Stop Async Web server. back to standard webserver to reduce code duplicate #42
+
 ### v38
 
 * CHANGE: CONFIG: ESP32 now uses SPIFFS instead of LITTLEFS but no format or setup required (remove LITTLEFS to SPIFFS wrapper because of compile error)

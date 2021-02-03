@@ -22,12 +22,12 @@ copy_src_to_tgt () {
 }
 
 banner "Delete source build dir and clean build"
-#rm -rf ${MYDIR}/.pio
-#cd ${MYDIR}
-#pio run
+rm -rf ${MYDIR}/.pio
+cd ${MYDIR}
+pio run
 
 banner "Delete and create build directory"
-rm -rf ${RELEASE_DIR}
+rm -rf ${RELEASE_BASE_DIR}
 
 mkdir -p ${RELEASE_DIR}
 
@@ -38,6 +38,9 @@ BOARDS=( esp32dev esp12e )
 for b in ${BOARDS[@]} ; do
   copy_src_to_tgt $b
 done
+
+banner "Add 'how to write' to build directory"
+cp ${MYDIR}/docs/how_to_write*.md ${RELEASE_DIR}
 
 banner "Creating Archive"
 
