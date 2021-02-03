@@ -95,7 +95,15 @@ String http_setup_get_root_content() {
   html += "  <input type='text' name='displayBrightness' value='" + config.displayBrightness + "'><br>";
   html += "</fieldset>";
 
+  html += "<fieldset><legend>I2C OLED デバイス設定</legend>";
 
+  String display_ssd1306_checked = (config.oledType == OLED_SSD1306 ? " checked" : "");
+  String display_sh1106_checked = (config.oledType == OLED_SH1106 ? " checked" : "");
+
+  html += "  <input type='radio' name='oledType' value='" + OLED_SSD1306 + "' id='oledType_ssd1306'" + display_ssd1306_checked + "><label for='oledType_ssd1306'>SSD1306</label><br>";
+  html += "  <input type='radio' name='oledType' value='" + OLED_SH1106 + "' id='oledType_sh1106'" + display_sh1106_checked + "><label for='oledType_sh1106'>SH1106</label><br>";
+  html += "</fieldset>";
+ 
   html += "<fieldset><legend>ST7789 デバイス設定</legend>";
 
   String st7789_use_checked = (config.st7789 == ST7789_USE ? " checked" : "");
