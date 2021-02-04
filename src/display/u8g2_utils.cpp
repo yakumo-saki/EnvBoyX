@@ -61,7 +61,6 @@ void draw_value(int x, int y, String valueString, TextDecoration deco, TextAlign
 
     // 枠 or 塗りつぶし
     if (deco == TextDecoration::INVERT) {
-      displog("INVERT");
       u8g2.setDrawColor(WHITE);
       u8g2.drawBox(boxStartX, y - 1, boxWidth, HEIGHT); // わざと本来の位置より1dot上に書いている
 
