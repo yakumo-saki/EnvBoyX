@@ -199,7 +199,7 @@ void trim_config() {
   trim_alerts(config.co2Alerts);
 }
 
-DynamicJsonDocument alerts_to_json(const config_alert_t& alerts) {
+DynamicJsonDocument alerts_to_json(const config_alert_t& alerts, String logname) {
   DynamicJsonDocument json(300);
   json[CFG_ALERT_WARN1_LO] = alerts.warning1.low;
   json[CFG_ALERT_WARN1_HI] = alerts.warning1.high;
@@ -210,6 +210,11 @@ DynamicJsonDocument alerts_to_json(const config_alert_t& alerts) {
   json[CFG_ALERT_CAUTION2_LO] = alerts.caution2.low;
   json[CFG_ALERT_CAUTION2_HI] = alerts.caution2.high;
   json.shrinkToFit();
+
+  size_t size = measureJson(json);
+
+  cfglog("Json alerts " + logname + " section is " + String(size) + " bytes");
+
   return json;
 }
 
@@ -235,15 +240,18 @@ void write_config_file(File f) {
   doc[CFG_MQTT_BROKER] = config.mqttBroker;
   doc[CFG_MQTT_NAME] = config.mqttName;
 
-  doc[CFG_TEMP_ALERT] = alerts_to_json(config.temperatureAlerts);
-  doc[CFG_HUMI_ALERT] = alerts_to_json(config.humidityAlerts);
-  doc[CFG_LUX_ALERT] = alerts_to_json(config.luxAlerts);
-  doc[CFG_PRES_ALERT] = alerts_to_json(config.pressureAlerts);
-  doc[CFG_CO2_ALERT] = alerts_to_json(config.co2Alerts);
+  doc[CFG_TEMP_ALERT] = alerts_to_json(config.temperatureAlerts, "temperature");
+  doc[CFG_HUMI_ALERT] = alerts_to_json(config.humidityAlerts, "humidity");
+  doc[CFG_LUX_ALERT] = alerts_to_json(config.luxAlerts, "lux");
+  doc[CFG_PRES_ALERT] = alerts_to_json(config.pressureAlerts , "pressure");
+  doc[CFG_CO2_ALERT] = alerts_to_json(config.co2Alerts, "co2");
 
   cfglog(F("Writing config"));
-  if (serializeJson(doc, f) == 0) {
-    cfglog(F("Failed to write to file"));
+  size_t size = serializeJson(doc, f);
+  if (size == 0) {
+    cfglog(F("Failed to write to file (size = 0)"));
+  } else {
+    cfglog("Overall JSON is " + String(size) + " bytes");
   }
 }
 
