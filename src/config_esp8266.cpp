@@ -74,14 +74,16 @@ void save_config()
 /**
  * 設定読込
  */
-void read_config()
+bool read_config()
 {
   File f = LittleFS.open(settings, "r");
-  read_config_file(f);
+  bool ret = read_config_file(f);
   f.close();
 
   trim_config();
   print_config();
+
+  return ret;
 }
 
 /**
