@@ -305,7 +305,7 @@ bool read_config_alerts(config_alert_t& alerts, DynamicJsonDocument doc, String 
   return ret;
 }
 
-bool read_config_file(File f) {
+bool read_config_file(File f, bool dump_config = false) {
 
   set_default_config_value(); // とりあえずデフォルト値をロードしておく。
 
@@ -313,12 +313,14 @@ bool read_config_file(File f) {
 
   cfglog(F("Json deserialize start"));
 
-  Serial.println("");
-  while(f.available()){
-      Serial.write(f.read());
+  if (dump_config) {
+    Serial.println("");
+    while(f.available()){
+        Serial.write(f.read());
+    }
+    Serial.println("");
+    f.seek(0);
   }
-  Serial.println("");
-  f.seek(0);
 
   DeserializationError error = deserializeJson(doc, f);
 

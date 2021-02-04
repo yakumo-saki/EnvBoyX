@@ -6,6 +6,8 @@
 #include "global.h"
 #include "structs.h"
 
+void disp_st7789_setup_startup_screen(String ipAddr) {}
+
 void disp_st7789_wifi_info(String ip, String mDNS) {}
 void disp_st7789_normal_startup_screen(String product_long) {}
 void disp_st7789_wait_for_reconfig_init() {}

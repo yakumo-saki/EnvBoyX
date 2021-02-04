@@ -52,7 +52,7 @@ void disp_setup_startup_screen(String ipAddr) {
 		disp_ssd1306_setup_startup_screen(ipAddr);	
 	}
 	if (use_st7789()) {
-		// disp_st7789_setup_startup_screen(ipAddr);
+		disp_st7789_setup_startup_screen(ipAddr);
 	}
 }
 

@@ -19,6 +19,15 @@
  */
 void setup_setupmode() {
 
+  // configured ファイルがなければconfigを読まずにここに来るので一度configを読む。
+  set_default_config_value();
+  bool success = read_config();
+  if (success) {
+    mainlog("Config load successful.");
+  } else {
+    mainlog("Config load failed or failed partially.");
+  }
+
   start_wifi_access_point();
   setup_http_setup();
 

@@ -21,6 +21,7 @@ const uint8_t *FONT_SMALL_NARROW = u8g2_font_t0_11_tr;
 const uint8_t *FONT_SMALL = u8g2_font_roentgen_nbp_tr;
 const uint8_t *FONT_BOOT = u8g2_font_ncenR10_tr;
 const uint8_t *FONT_PLAIN_10 = u8g2_font_9x15_mr;
+const uint8_t *FONT_SSID = u8g2_font_8x13_tr;
 
 const uint8_t WHITE = 1;
 const uint8_t BLACK = 0;
@@ -76,7 +77,7 @@ void disp_ssd1306_normal_startup_screen(String product_long) {
 
   init_u8g2();
   
-  u8g2.setFont(u8g2_font_ncenB10_tr);
+  u8g2.setFont(FONT_BOOT);
   // u8g2.setTextAlignment(TextAlign::LEFT);
   u8g2.drawStr(0, 16,  "ziomatrix corp.");
   u8g2.drawStr(0, 32, product_long.c_str());
@@ -100,7 +101,7 @@ void disp_ssd1306_setup_startup_screen(String ipAddr) {
   u8g2.drawStr(0, 0,  product_long.c_str());
   u8g2.drawStr(0, 16, "Setup mode.");
   u8g2.drawStr(0, 33, ("http://" + ipAddr + "/").c_str() );
-  u8g2.setFont(FONT_PLAIN_10);
+  u8g2.setFont(FONT_SSID);
   u8g2.drawStr(0, 52, config.ssid.c_str());
   u8g2.sendBuffer();
 }

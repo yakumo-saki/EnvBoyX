@@ -3,9 +3,8 @@
 // 使える使えないの判断フラグ ST7789_SUPPORTED -> define.cpp
 // このフラグで呼び出される実態が空っぽなのと実装されているものに分かれる。
 
-// ST7789V はセットアップモードをサポートしない
-// これは接続されていない場合に初期化しようとしてしまうと何が起きるかわからないため
-// void disp_st7789_setup_startup_screen(String ipAddr);
+/** ST7789V セットアップモード  */
+void disp_st7789_setup_startup_screen(String ipAddr);
 
 void disp_st7789_wifi_info(String ip, String mDNS);
 void disp_st7789_normal_startup_screen(String product_long);
