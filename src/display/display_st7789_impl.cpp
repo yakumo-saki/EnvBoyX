@@ -1,5 +1,7 @@
 #ifdef ESP32
 
+// ST7789 ＢＩＧモード・通常モード共通
+
 #include <Arduino.h>
 
 #include "global.h"
@@ -143,6 +145,10 @@ void disp_st7789_wait_for_reconfig_init()
 void disp_st7789_wait_for_reconfig_bar(int now, const int max)
 {
 	int length = getWidth() / max * now;
+
+	if (now >= max) {
+		length = getWidth();
+	}
 
 	tft.fillRect(0, 101, length, 14, TFT_BLUE);
 }

@@ -27,7 +27,9 @@ void setup()
   Serial.println(""); 
   Serial.println("");
 
-  sectionlog(F("Initializing LittleFS."));
+//  Serial.println(test);
+
+  sectionlog(F("Initializing FS."));
   mainlog(F("Starting config"));
   config_setup();
 

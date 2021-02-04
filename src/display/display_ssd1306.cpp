@@ -183,6 +183,10 @@ void disp_ssd1306_wait_for_reconfig_init() {
 void disp_ssd1306_wait_for_reconfig_bar(int now, const int max) {
   int length = 127 / max * now;
 
+  if (now >= max) {
+    length = 127;
+  }
+
   u8g2.setDrawColor(WHITE);
   u8g2.drawBox(0, 16, length, 16);
   u8g2.sendBuffer();

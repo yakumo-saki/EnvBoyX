@@ -94,7 +94,7 @@ void disp_wifi_error() {
 void disp_wait_for_reconfig() {
 
 	const int WAIT_PER_BAR = 30;
-	const int MAX_BAR = 31;
+	const int MAX_BAR = 30;
 
 	if (use_st7789()) {
 		disp_st7789_wait_for_reconfig_init();
@@ -104,7 +104,7 @@ void disp_wait_for_reconfig() {
 	}
 
 	displog(F("Wait for reconfigure start"));
-	for (int i = 0; i < MAX_BAR; i++)
+	for (int i = 1; i <= (MAX_BAR + 1); i++)
 	{
 		if (use_st7789()) {
 			disp_st7789_wait_for_reconfig_bar(i, MAX_BAR);
