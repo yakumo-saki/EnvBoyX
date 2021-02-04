@@ -19,6 +19,8 @@ void disp_st7789_power_off() {};
 
 void disp_st7789_wifi_error() {};
 
+void disp_st7789_message(bool isError, String msg1, String msg2, String msg3, String msg4) {}
+
 String disp_st7789_set_brightness(int brightness) { return "Not Supported"; }
 
 /**
