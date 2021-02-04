@@ -20,7 +20,6 @@
 void setup_setupmode() {
 
   // configured ファイルがなければconfigを読まずにここに来るので一度configを読む。
-  set_default_config_value();
   bool success = read_config();
   if (success) {
     mainlog("Config load successful.");
