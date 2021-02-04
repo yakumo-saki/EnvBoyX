@@ -18,8 +18,6 @@
  * 初期化
  */
 void setup_setupmode() {
-  // ファイルシステム初期化
-  set_default_config_value();
 
   start_wifi_access_point();
   setup_http_setup();

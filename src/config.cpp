@@ -256,48 +256,56 @@ void write_config_file(File f) {
 }
 
 // 指定されたキーが存在していれば値をセットする。存在しなければセットしない
-void set_config_value(String& cfg, DynamicJsonDocument &json, String key) {
+bool set_config_value(String& cfg, DynamicJsonDocument &json, String key) {
   // https://arduinojson.org/v6/api/jsonobject/containskey/
   JsonVariant value = json[key];
   if (value.isNull()) {
     cfglog("Config file not contains key:" + key);
-    return;
+    return false;
   }
   cfg = value.as<String>();
+  return true;
 }
 
-void set_config_value(String& cfg, DynamicJsonDocument &json, String key1, String key2) {
+bool set_config_value(String& cfg, DynamicJsonDocument &json, String key1, String key2) {
 
   JsonVariant middleObj = json[key1];
 
   if (middleObj.isNull()) {
     
     cfglog("Config file not contains first key:" + key1);
-    return;
+    return false;
   } else {
     JsonVariant value = middleObj[key2];
 
     if (value.isNull()) {
       cfglog("Config file not contains second key:" + key1 + "->" + key2);
-      return;
+      return false;
     }
 
     cfg = value.as<String>();
   }
+
+  return true;
 }
 
-void read_config_alerts(config_alert_t& alerts, DynamicJsonDocument doc, String key1) {
-  set_config_value(alerts.warning1.low ,doc, key1, CFG_ALERT_WARN1_LO);
-  set_config_value(alerts.warning1.high ,doc, key1, CFG_ALERT_WARN1_HI);
-  set_config_value(alerts.caution1.low ,doc, key1, CFG_ALERT_CAUTION1_LO);
-  set_config_value(alerts.caution1.high ,doc, key1, CFG_ALERT_CAUTION1_HI);
-  set_config_value(alerts.warning2.low ,doc, key1, CFG_ALERT_WARN2_LO);
-  set_config_value(alerts.warning2.high ,doc, key1, CFG_ALERT_WARN2_HI);
-  set_config_value(alerts.caution2.low ,doc, key1, CFG_ALERT_CAUTION2_LO);
-  set_config_value(alerts.caution2.high ,doc, key1, CFG_ALERT_CAUTION2_HI);
+bool read_config_alerts(config_alert_t& alerts, DynamicJsonDocument doc, String key1) {
+  bool ret = true;
+
+  // 失敗しているものがあってもとりあえず最後まで設定読み込みを行う（セットアップモードの時に必要なので）
+  ret = ret && set_config_value(alerts.warning1.low ,doc, key1, CFG_ALERT_WARN1_LO);
+  ret = ret && set_config_value(alerts.warning1.high ,doc, key1, CFG_ALERT_WARN1_HI);
+  ret = ret && set_config_value(alerts.caution1.low ,doc, key1, CFG_ALERT_CAUTION1_LO);
+  ret = ret && set_config_value(alerts.caution1.high ,doc, key1, CFG_ALERT_CAUTION1_HI);
+  ret = ret && set_config_value(alerts.warning2.low ,doc, key1, CFG_ALERT_WARN2_LO);
+  ret = ret && set_config_value(alerts.warning2.high ,doc, key1, CFG_ALERT_WARN2_HI);
+  ret = ret && set_config_value(alerts.caution2.low ,doc, key1, CFG_ALERT_CAUTION2_LO);
+  ret = ret && set_config_value(alerts.caution2.high ,doc, key1, CFG_ALERT_CAUTION2_HI);
+  
+  return ret;
 }
 
-void read_config_file(File f) {
+bool read_config_file(File f) {
 
   set_default_config_value(); // とりあえずデフォルト値をロードしておく。
 
@@ -318,31 +326,35 @@ void read_config_file(File f) {
     config.settingId = "INVALID";
     cfglog(F("Failed to read file or Parse as json failed"));
     cfglog("Reason: " + String(error.c_str()));
-    return;
+    return false;
   } else {
     cfglog(F("Json deserialize done :)"));
   }
 
-  set_config_value(config.settingId ,doc, CFG_SETTING_ID);
-  set_config_value(config.ssid ,doc, CFG_SSID);
-  set_config_value(config.password ,doc , CFG_PASSWORD);
-  set_config_value(config.mDNS ,doc, CFG_MDNS);
-  set_config_value(config.opMode ,doc, CFG_OPMODE);
-  set_config_value(config.displayFlip,doc, CFG_DISPLAY_FLIP);
-  set_config_value(config.displayBrightness, doc, CFG_DISPLAY_BRIGHTNESS);
-  set_config_value(config.oledType, doc, CFG_OLED_TYPE);
-  set_config_value(config.st7789 ,doc, CFG_ST7789);
-  set_config_value(config.st7789Mode, doc, CFG_ST7789_MODE);
-  set_config_value(config.mhz19b, doc, CFG_MHZ19B);
-  set_config_value(config.mhz19bPwmPin, doc, CFG_MHZ19B_PWM);
-  set_config_value(config.mhz19bRxPin, doc, CFG_MHZ19B_RX);
-  set_config_value(config.mhz19bTxPin, doc, CFG_MHZ19B_TX);
-  set_config_value(config.mqttBroker, doc, CFG_MQTT_BROKER);
-  set_config_value(config.mqttName, doc, CFG_MQTT_NAME);
+  bool ret = true;
 
-  read_config_alerts(config.temperatureAlerts, doc, CFG_TEMP_ALERT);
-  read_config_alerts(config.humidityAlerts, doc, CFG_HUMI_ALERT);
-  read_config_alerts(config.pressureAlerts, doc, CFG_PRES_ALERT);
-  read_config_alerts(config.luxAlerts, doc, CFG_LUX_ALERT);
-  read_config_alerts(config.co2Alerts, doc, CFG_CO2_ALERT);
+  ret = ret && set_config_value(config.settingId ,doc, CFG_SETTING_ID);
+  ret = ret && set_config_value(config.ssid ,doc, CFG_SSID);
+  ret = ret && set_config_value(config.password ,doc , CFG_PASSWORD);
+  ret = ret && set_config_value(config.mDNS ,doc, CFG_MDNS);
+  ret = ret && set_config_value(config.opMode ,doc, CFG_OPMODE);
+  ret = ret && set_config_value(config.displayFlip,doc, CFG_DISPLAY_FLIP);
+  ret = ret && set_config_value(config.displayBrightness, doc, CFG_DISPLAY_BRIGHTNESS);
+  ret = ret && set_config_value(config.oledType, doc, CFG_OLED_TYPE);
+  ret = ret && set_config_value(config.st7789 ,doc, CFG_ST7789);
+  ret = ret && set_config_value(config.st7789Mode, doc, CFG_ST7789_MODE);
+  ret = ret && set_config_value(config.mhz19b, doc, CFG_MHZ19B);
+  ret = ret && set_config_value(config.mhz19bPwmPin, doc, CFG_MHZ19B_PWM);
+  ret = ret && set_config_value(config.mhz19bRxPin, doc, CFG_MHZ19B_RX);
+  ret = ret && set_config_value(config.mhz19bTxPin, doc, CFG_MHZ19B_TX);
+  ret = ret && set_config_value(config.mqttBroker, doc, CFG_MQTT_BROKER);
+  ret = ret && set_config_value(config.mqttName, doc, CFG_MQTT_NAME);
+
+  ret = ret && read_config_alerts(config.temperatureAlerts, doc, CFG_TEMP_ALERT);
+  ret = ret && read_config_alerts(config.humidityAlerts, doc, CFG_HUMI_ALERT);
+  ret = ret && read_config_alerts(config.pressureAlerts, doc, CFG_PRES_ALERT);
+  ret = ret && read_config_alerts(config.luxAlerts, doc, CFG_LUX_ALERT);
+  ret = ret && read_config_alerts(config.co2Alerts, doc, CFG_CO2_ALERT);
+
+  return ret;
 }
