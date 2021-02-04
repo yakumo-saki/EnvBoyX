@@ -80,7 +80,7 @@ void disp_st7789_setup_startup_screen(String ipAddr)
  * WiFi接続中表示
  * @param wait_print_row Please wait を何行目に表示するか(0,1,2)
  */
-void disp_st7789_wifi_starting(int wait_print_row)
+void disp_st7789_wifi_starting()
 {
 	tft.startWrite();
 	clear_screen();
@@ -109,7 +109,6 @@ void disp_st7789_wifi_info(String ip, String mDNS)
 
 void disp_st7789_wifi_error()
 {
-
 	tft.startWrite();
 	clear_screen();
 	tft.fillScreen(TFT_RED);
@@ -117,6 +116,28 @@ void disp_st7789_wifi_error()
 	tft.setTextColor(TFT_YELLOW, TFT_BLACK);
 
 	tft.println("WiFi ERROR");
+
+	tft.endWrite();
+}
+
+void disp_st7789_message(bool isError, String msg1, String msg2, String msg3, String msg4) {
+	tft.startWrite();
+	clear_screen();
+
+	if (isError) {
+		tft.fillScreen(TFT_RED);
+		tft.setTextColor(TFT_YELLOW, TFT_BLACK);
+		tft.setCursor(0, 0, DEFAULT_FONT);
+	} else {
+		tft.fillScreen(TFT_BLACK);
+		tft.setTextColor(TFT_WHITE, TFT_BLACK);
+		tft.setCursor(0, 0, DEFAULT_FONT);
+	}
+
+	tft.println(msg1);
+	tft.println(msg2);
+	tft.println(msg3);
+	tft.println(msg4);
 
 	tft.endWrite();
 }
