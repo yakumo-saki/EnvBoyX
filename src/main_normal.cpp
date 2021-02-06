@@ -97,6 +97,9 @@ void init_timer() {
 	timer.add(bh_read_data, "BH1750", 2000);
 	timer.add(mhz_read_data, "MHZ19B", 3000);
 
+	timer.add(wifi_store_rssi, "WIFI", 1000);
+	
+
 	// 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する
 	timer.add(call_disp_sensor_value, "DISP", 1000);
 	timer.addStasticsFunction(updateStastics, "STAT", 60000);

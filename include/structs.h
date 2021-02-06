@@ -10,6 +10,7 @@ typedef struct {
   float luxIr;
   int co2ppm;
   String co2ppmAccuracy;
+  int rssi;
 } sensor_values_t;
 
 typedef struct {
