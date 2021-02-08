@@ -305,7 +305,7 @@ bool read_config_alerts(config_alert_t& alerts, DynamicJsonDocument doc, String 
   return ret;
 }
 
-bool read_config_file(File f, bool dump_config = false) {
+bool read_config_file(File f, bool dump_config) {
 
   set_default_config_value(); // とりあえずデフォルト値をロードしておく。
 
@@ -359,4 +359,8 @@ bool read_config_file(File f, bool dump_config = false) {
   ret = ret && read_config_alerts(config.co2Alerts, doc, CFG_CO2_ALERT);
 
   return ret;
+}
+
+bool read_config_file(File f) {
+  return read_config_file(f, false);
 }
