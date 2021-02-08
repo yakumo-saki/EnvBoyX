@@ -1,8 +1,12 @@
-#ifdef ESP32
 
 #include <Arduino.h>
 
+#ifdef ESP32
 #include <ESPmDNS.h>
+#endif
+#ifdef ESP8266
+#include <ESP8266mDNS.h>
+#endif
 
 #include "global.h"
 #include "config.h"
@@ -28,5 +32,5 @@ void mdns_setup() {
 }
 
 void mdns_loop() {
+  // do nothing
 }
-#endif
