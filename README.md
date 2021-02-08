@@ -162,6 +162,10 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
+### v40
+
+
+
 ### v39
 
 * CHANGE: CONFIG: Add SSD1306 / SH1106 switch
