@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+// セットアップモード表示
 void disp_setup_startup_screen(String ipAddr);
 
 void disp_wifi_info(String ip, String mDNS);

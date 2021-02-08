@@ -14,10 +14,11 @@
 
 disp_values_t disp_values;
 
-/** 右下のver表示を点滅させる為のフラグ
- * 0~5 奇数 偶数= EnvBoyXのXの点滅 0,1,2 = IP表示 3,4,5 = mDNS名表示
+/**
+ * 表示変更用フラグ。 描画ごとに1カウントアップ。 0 ~ 15
  */
 int disp_switch = 0;
+const int DISP_SWITCH_MAX = 15;
 
 /** SSD1306を使うか否か。 I2C接続なので自動チェック可能 */
 bool use_ssd1306() {
@@ -45,14 +46,21 @@ void disp_normal_startup_screen(String product_long) {
 
 /**
  * セットアップモード時のディスプレイ表示
- * SSD1306のみ対応。
  */
 void disp_setup_startup_screen(String ipAddr) {
+
+	static int disp_switch = 0;
+
 	if (use_ssd1306()) {
-		disp_ssd1306_setup_startup_screen(ipAddr);	
+		disp_ssd1306_setup_startup_screen(ipAddr, disp_switch);	
 	}
 	if (use_st7789()) {
-		disp_st7789_setup_startup_screen(ipAddr);
+		disp_st7789_setup_startup_screen(ipAddr, disp_switch);
+	}
+
+	disp_switch++;
+	if (disp_switch > 5) {
+		disp_switch = 0;
 	}
 }
 

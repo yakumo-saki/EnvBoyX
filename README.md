@@ -178,6 +178,7 @@ esptool.py write_flash 0x1000 filename.bin
 * FIX: CO2 ppm alert value is not good.
 * ADD: Add POST /goto_setup API. 
 * FIX: Delete unused source code.
+* ADD: Add display invert (3sec) on setup mode (ST7789 / SSD1306)
 
 ### v39
 

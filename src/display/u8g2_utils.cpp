@@ -84,3 +84,12 @@ void draw_value(int x, int y, String valueString, TextDecoration deco, TextAlign
   u8g2.setDrawColor(WHITE);  // 
 
 }
+
+
+void set_invert(bool inverse) {
+  if (inverse) {
+    u8g2.sendF("c", 0xa7);
+  } else {
+    u8g2.sendF("c", 0xa6);
+  }
+}
