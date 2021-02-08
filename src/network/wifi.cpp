@@ -12,6 +12,8 @@
 #include "watchdog.h"
 #include "display.h"
 
+std::vector<long> rssiArray;
+
 String wl_status_t_to_string(wl_status_t wl_stat) {
     if (wl_stat == WL_NO_SHIELD) {
         return F("WL_NO_SHIELD");
@@ -104,7 +106,7 @@ void start_wifi_access_point() {
   WiFi.macAddress(mac);
 
   // SSID は macaddress をSUFFIXする。前半はespressifのIDなので後半3つだけ
-  config.ssid = "_SETUP_" + product_short + "_";
+  config.ssid = "_SETUP_" + product_short;
   for (int i = 3; i < 6; i++) {
     config.ssid += String(mac[i], HEX);
   }
@@ -125,4 +127,25 @@ String get_wifi_ip_addr() {
   return WiFi.localIP().toString();
 }
 
+int8_t get_wifi_rssi() {
 
+  if (WiFi.status() == WL_CONNECTED) {
+    rssiArray.push_back(WiFi.RSSI());
+  } else {
+    rssiArray.push_back(0);
+  }
+
+  if (rssiArray.size() > 5) {
+    rssiArray.erase(rssiArray.begin());
+  }
+
+  int sum = std::accumulate(rssiArray.begin(), rssiArray.end(), 0);
+  int avg = sum / rssiArray.size();
+
+  return avg;
+}
+
+void wifi_store_rssi() {
+  sensorValues.rssi = get_wifi_rssi();
+}
+ 

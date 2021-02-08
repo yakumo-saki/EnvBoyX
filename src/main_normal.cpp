@@ -22,6 +22,7 @@
 #include "i2c.h"
 #include "main_normal_mqtt.h"
 #include "watchdog.h"
+#include "halt.h"
 
 WiFiClient net;
 
@@ -96,6 +97,9 @@ void init_timer() {
 	timer.add(bh_read_data, "BH1750", 2000);
 	timer.add(mhz_read_data, "MHZ19B", 3000);
 
+	timer.add(wifi_store_rssi, "WIFI", 1000);
+	
+
 	// 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する
 	timer.add(call_disp_sensor_value, "DISP", 1000);
 	timer.addStasticsFunction(updateStastics, "STAT", 60000);
@@ -106,11 +110,19 @@ void init_timer() {
  */
 void setup_normal()
 {
-
-	read_config();
-
 	// Init I2C Serial
 	init_i2c(I2C_SDA, I2C_SCL);
+
+	bool config_ok = read_config();
+
+	sectionlog(F("Setup display"));
+	setup_display();
+
+	if (!config_ok) {
+		mainlog("[MAYBE BUG] Config read failed dropping to setup mode");
+		remove_configure_flag_file();
+		halt("config err", "setup again", "Reset now");
+	}
 
 	if (config.opMode == OPMODE_MQTT)
 	{
@@ -121,9 +133,7 @@ void setup_normal()
 	sectionlog(F("Start watchdog"));
 	setup_watchdog();
 
-	
-	sectionlog(F("Setup display"));
-	setup_display();
+	// 起動画面	
 	disp_normal_startup_screen(product_long);
 
 	// setupモードに入りやすくするための処理
@@ -157,7 +167,6 @@ void setup_normal()
 	// 初期化終了時に画面表示をどうにかできるフック
 	disp_all_initialize_complete(get_wifi_ip_addr(), config.mDNS);
 
-	//
 }
 
 /**

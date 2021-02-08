@@ -35,6 +35,7 @@ const int HEAD_WIDTH = 32;
 const int SIDE_LINE_WIDTH = 3;
 
 const int LEFT_HEAD_X = SIDE_LINE_WIDTH + 3;
+const int LEFT_HEAD_R_ALIGN_X = LEFT_HEAD_X + HEAD_WIDTH - 5; // 右寄せ T: H: P:
 const int RIGHT_HEAD_X = 128;
 
 const int LEFT_VAL_X = LEFT_HEAD_X + HEAD_WIDTH;
@@ -98,19 +99,25 @@ void _disp_header_normal(String ip, String mDNS)
 
 	// Row 1
 	tft.setTextColor(TFT_WHITE);
-	tft.drawString("T:", LEFT_HEAD_X, ROW1_Y, DEFAULT_FONT);
+	tft.setTextDatum(TR_DATUM);
+	tft.drawString("T:", LEFT_HEAD_R_ALIGN_X, ROW1_Y, DEFAULT_FONT);
+
+	tft.setTextDatum(TL_DATUM);
 	tft.drawString("L:", RIGHT_HEAD_X, ROW1_Y, DEFAULT_FONT);
 
 	// Row 2
 	tft.setTextColor(TFT_WHITE);
-	tft.drawString("H:", LEFT_HEAD_X, ROW2_Y, DEFAULT_FONT);
+	tft.setTextDatum(TR_DATUM);
+	tft.drawString("H:", LEFT_HEAD_R_ALIGN_X, ROW2_Y, DEFAULT_FONT);
 
 	// Row 3
 	tft.setTextColor(TFT_WHITE);
-	tft.drawString("P:", LEFT_HEAD_X, ROW3_Y, DEFAULT_FONT);
+	tft.setTextDatum(TR_DATUM);
+	tft.drawString("P:", LEFT_HEAD_R_ALIGN_X, ROW3_Y, DEFAULT_FONT);
 
 	// Row 4
 	tft.setTextColor(TFT_WHITE);
+	tft.setTextDatum(TL_DATUM);
 	tft.drawString("CO2:", LEFT_HEAD_X, ROW4_Y, DEFAULT_FONT);
 
 }

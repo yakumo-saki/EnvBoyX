@@ -18,8 +18,14 @@
  * 初期化
  */
 void setup_setupmode() {
-  // ファイルシステム初期化
-  set_default_config_value();
+
+  // configured ファイルがなければconfigを読まずにここに来るので一度configを読む。
+  bool success = read_config();
+  if (success) {
+    mainlog("Config load successful.");
+  } else {
+    mainlog("Config load failed or failed partially.");
+  }
 
   start_wifi_access_point();
   setup_http_setup();

@@ -4,3 +4,8 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+_release
+_release/**
+EnvBoyX.zip
+EnvBoyX.tar.gz
+EnvBoyX-*.tar.gz

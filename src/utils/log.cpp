@@ -76,6 +76,10 @@ void statlog(String msg) {
   real_log(msg, F("STAT"));
 }
 
+void haltlog(String msg) {
+  real_log(msg, F("HALT"));
+}
+
 void debuglog(String msg) {
   real_log(msg, F("DEBUG"));
 }

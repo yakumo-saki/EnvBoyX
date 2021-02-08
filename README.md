@@ -1,6 +1,18 @@
 # EnvBoyX
 
-Arduino environment monitor.
+Arduino environment monitor for ESP32 / ESP8266 based boards.
+
+## Getting started
+
+* [Japanese: 書き込み方法（日本語）](docs/how_to_write-ja.md)
+* [How to write](docs/how_to_write-en.md)
+
+## Branches
+
+| name   | usage |
+| ------ | ---------------------------------- |
+| master | latest Release                     |
+| devel  | currently developing unstable code |
 
 # images
 
@@ -148,6 +160,11 @@ esptool.py write_flash 0x1000 filename.bin
 * NodeMCU V3
 
 ## Version History
+
+### v39
+
+* CHANGE: CONFIG: Add SSD1306 / SH1106 switch
+* CHANGE: HTTP: ESP32: Stop Async Web server. back to standard webserver to reduce code duplicate #42
 
 ### v38
 

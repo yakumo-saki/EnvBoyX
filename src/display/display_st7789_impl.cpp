@@ -1,5 +1,7 @@
 #ifdef ESP32
 
+// ST7789 ＢＩＧモード・通常モード共通
+
 #include <Arduino.h>
 
 #include "global.h"
@@ -41,10 +43,14 @@ int getHeight() {
 	return (config.st7789Mode == ST7789_MODE_BIG ? 239 : 134);
 }
 
-void clear_screen() {
+/**
+ * 画面初期化（回転方向含む）
+ * @param ignoreBigMode デカ画面設定を無視して横画面用にする
+ */
+void clear_screen(bool ignoreBigMode = false) {
 	tft.fillScreen(TFT_BLACK);
 
-	if (config.st7789Mode == ST7789_MODE_BIG) {
+	if (config.st7789Mode == ST7789_MODE_BIG && !ignoreBigMode) {
 		_clear_screen_big();
 	} else {
 		_clear_screen_normal();
@@ -57,6 +63,7 @@ void clear_screen() {
 void disp_st7789_normal_startup_screen(String product_long)
 {
 	tft.startWrite();
+	clear_screen(true);
 	tft.fillScreen(TFT_BLACK);
 	tft.setCursor(0, 0, DEFAULT_FONT);
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
@@ -71,14 +78,25 @@ void disp_st7789_normal_startup_screen(String product_long)
  */
 void disp_st7789_setup_startup_screen(String ipAddr)
 {
-	return; // cant support this.
+	tft.startWrite();
+	clear_screen(true);
+	tft.setCursor(0, 0, DEFAULT_FONT);
+	tft.setTextColor(TFT_WHITE, TFT_BLACK);
+
+
+	tft.println(product_long);
+	tft.println("Setup Mode");
+	tft.println("http://" + ipAddr + "/");
+	tft.println(config.ssid);
+
+	tft.endWrite();
 }
 
 /**
  * WiFi接続中表示
  * @param wait_print_row Please wait を何行目に表示するか(0,1,2)
  */
-void disp_st7789_wifi_starting(int wait_print_row)
+void disp_st7789_wifi_starting()
 {
 	tft.startWrite();
 	clear_screen();
@@ -107,7 +125,6 @@ void disp_st7789_wifi_info(String ip, String mDNS)
 
 void disp_st7789_wifi_error()
 {
-
 	tft.startWrite();
 	clear_screen();
 	tft.fillScreen(TFT_RED);
@@ -115,6 +132,28 @@ void disp_st7789_wifi_error()
 	tft.setTextColor(TFT_YELLOW, TFT_BLACK);
 
 	tft.println("WiFi ERROR");
+
+	tft.endWrite();
+}
+
+void disp_st7789_message(bool isError, String msg1, String msg2, String msg3, String msg4) {
+	tft.startWrite();
+	clear_screen();
+
+	if (isError) {
+		tft.fillScreen(TFT_RED);
+		tft.setTextColor(TFT_YELLOW, TFT_BLACK);
+		tft.setCursor(0, 0, DEFAULT_FONT);
+	} else {
+		tft.fillScreen(TFT_BLACK);
+		tft.setTextColor(TFT_WHITE, TFT_BLACK);
+		tft.setCursor(0, 0, DEFAULT_FONT);
+	}
+
+	tft.println(msg1);
+	tft.println(msg2);
+	tft.println(msg3);
+	tft.println(msg4);
 
 	tft.endWrite();
 }
@@ -134,8 +173,6 @@ void disp_st7789_wait_for_reconfig_init()
 	tft.println("Wait for");
 	tft.println(" reconfigure");
 
-	stlog("viewportY=" + String(tft.getViewportY()));
-
 	tft.drawFastHLine(0, 100, getWidth(), TFT_CYAN);
 	tft.drawFastHLine(0, 116, getWidth(), TFT_CYAN);
 
@@ -145,6 +182,10 @@ void disp_st7789_wait_for_reconfig_init()
 void disp_st7789_wait_for_reconfig_bar(int now, const int max)
 {
 	int length = getWidth() / max * now;
+
+	if (now >= max) {
+		length = getWidth();
+	}
 
 	tft.fillRect(0, 101, length, 14, TFT_BLUE);
 }

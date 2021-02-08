@@ -9,7 +9,7 @@
 #include "u8g2_utils.h"
 
 // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
-U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2_sh1106(U8G2_R0);
+U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2_sh1106(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2_ssd1306(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA); // artifact
 
 U8G2 u8g2;
@@ -21,6 +21,7 @@ const uint8_t *FONT_SMALL_NARROW = u8g2_font_t0_11_tr;
 const uint8_t *FONT_SMALL = u8g2_font_roentgen_nbp_tr;
 const uint8_t *FONT_BOOT = u8g2_font_ncenR10_tr;
 const uint8_t *FONT_PLAIN_10 = u8g2_font_9x15_mr;
+const uint8_t *FONT_SSID = u8g2_font_8x13_tr;
 
 const uint8_t WHITE = 1;
 const uint8_t BLACK = 0;
@@ -76,7 +77,7 @@ void disp_ssd1306_normal_startup_screen(String product_long) {
 
   init_u8g2();
   
-  u8g2.setFont(u8g2_font_ncenB10_tr);
+  u8g2.setFont(FONT_BOOT);
   // u8g2.setTextAlignment(TextAlign::LEFT);
   u8g2.drawStr(0, 16,  "ziomatrix corp.");
   u8g2.drawStr(0, 32, product_long.c_str());
@@ -100,50 +101,13 @@ void disp_ssd1306_setup_startup_screen(String ipAddr) {
   u8g2.drawStr(0, 0,  product_long.c_str());
   u8g2.drawStr(0, 16, "Setup mode.");
   u8g2.drawStr(0, 33, ("http://" + ipAddr + "/").c_str() );
-  u8g2.setFont(FONT_PLAIN_10);
+  u8g2.setFont(FONT_SSID);
   u8g2.drawStr(0, 52, config.ssid.c_str());
   u8g2.sendBuffer();
 }
 
-/**
- * WiFi接続中表示
- * @param wait_print_row Please wait を何行目に表示するか(0,1,2)
- */
-void disp_ssd1306_wifi_starting(int wait_print_row) {
-
-  if (!has_ssd1306()) return;
-
-  int row = (wait_print_row % 3) + 1;
-
-  init_u8g2();
- 
-  // u8g2.setTextAlignment(TextAlign::LEFT);
-  u8g2.setFont(FONT_BOOT);
-  u8g2.drawStr(0, 0, "WiFi Connecting");
-  u8g2.drawStr(0, 16*row, "Please wait...");
-
-  u8g2.sendBuffer();
-}
-
-void disp_ssd1306_wifi_info(String ip, String mDNS) {
-
-  if (!has_ssd1306()) return;
-
-  init_u8g2();
-
-  // u8g2.setTextAlignment(TextAlign::LEFT);
-  u8g2.setFont(FONT_BOOT);
-  u8g2.drawStr(0, 0, config.ssid.c_str());
-  u8g2.drawStr(0, 16, ip.c_str());
-  u8g2.drawStr(0, 32, mDNS.c_str());
-  u8g2.drawStr(0, 48, "Starting up...");
-  u8g2.sendBuffer();
-
-  delay(300);
-   
-}
-
-void disp_ssd1306_wifi_error() {
+/** 各種メッセージ表示 */
+void disp_ssd1306_message(bool isError, String msg1, String msg2, String msg3, String msg4) {
 
   if (!has_ssd1306()) return;
 
@@ -151,12 +115,33 @@ void disp_ssd1306_wifi_error() {
 
   u8g2.setFont(FONT_BOOT);
   u8g2.clear();
-  u8g2.drawStr(0, 0,  " *HALT* ");
-  u8g2.drawStr(0, 16, "* Please Restart *");
-  u8g2.drawStr(0, 32, "WiFi connect err");
-  u8g2.drawStr(0, 48, "Check Settings");
+  u8g2.drawStr(0, 0,  msg1.c_str());
+  u8g2.drawStr(0, 16, msg2.c_str());
+  u8g2.drawStr(0, 32, msg3.c_str());
+  u8g2.drawStr(0, 48, msg4.c_str());
   u8g2.sendBuffer();
+}
 
+/**
+ * WiFi接続中表示
+ * @param wait_print_row Please wait を何行目に表示するか(0,1,2)
+ */
+void disp_ssd1306_wifi_starting() {
+
+  disp_ssd1306_message(false, "WiFi", "Connecting", "Please", "  wait...");
+}
+
+void disp_ssd1306_wifi_info(String ip, String mDNS) {
+
+  disp_ssd1306_message(false, config.ssid, ip, mDNS, "Starting up...");
+   
+}
+
+void disp_ssd1306_wifi_error() {
+
+  if (!has_ssd1306()) return;
+
+  disp_ssd1306_message(true, " *HALT* ", "* Please Restart *", "WiFi connect err", "Check Settings");
 }
 
 /**
@@ -182,6 +167,10 @@ void disp_ssd1306_wait_for_reconfig_init() {
 
 void disp_ssd1306_wait_for_reconfig_bar(int now, const int max) {
   int length = 127 / max * now;
+
+  if (now >= max) {
+    length = 127;
+  }
 
   u8g2.setDrawColor(WHITE);
   u8g2.drawBox(0, 16, length, 16);
@@ -299,7 +288,13 @@ void setup_disp_ssd1306() {
 
   ssdlog("initialize start.");
   if (has_ssd1306()) {
-    u8g2 = u8g2_ssd1306;
+    if (config.oledType == OLED_SSD1306) {
+      ssdlog("Using SSD1306");
+      u8g2 = u8g2_ssd1306;
+    } else {
+      ssdlog("Using SH1106");
+      u8g2 = u8g2_sh1106;
+    }
     bool ret = u8g2.begin();
     init_u8g2();
 

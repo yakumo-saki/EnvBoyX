@@ -52,9 +52,19 @@ void disp_setup_startup_screen(String ipAddr) {
 		disp_ssd1306_setup_startup_screen(ipAddr);	
 	}
 	if (use_st7789()) {
-		// disp_st7789_setup_startup_screen(ipAddr);
+		disp_st7789_setup_startup_screen(ipAddr);
 	}
 }
+
+void disp_message(bool isError, String msg1, String msg2, String msg3, String msg4) {
+	if (use_ssd1306()) {
+		disp_ssd1306_message(isError, msg1, msg2, msg3, msg4);	
+	}
+	if (use_st7789()) {
+		disp_st7789_message(isError, msg1, msg2, msg3, msg4);	
+	}
+}
+
 
 /**
  * WiFi接続中表示
@@ -62,10 +72,10 @@ void disp_setup_startup_screen(String ipAddr) {
  */
 void disp_wifi_starting(int wait_print_row) {
 	if (use_ssd1306()) {
-		disp_ssd1306_wifi_starting(wait_print_row);
+		disp_ssd1306_wifi_starting();
 	}
 	if (use_st7789()) {
-		disp_st7789_wifi_starting(wait_print_row);
+		disp_st7789_wifi_starting();
 	}
 }
 
@@ -77,6 +87,7 @@ void disp_wifi_info(String ip, String mDNS) {
 		disp_st7789_wifi_info(ip, mDNS);
 	}
   
+	delay(300);
 }
 
 void disp_wifi_error() {
@@ -94,7 +105,7 @@ void disp_wifi_error() {
 void disp_wait_for_reconfig() {
 
 	const int WAIT_PER_BAR = 30;
-	const int MAX_BAR = 31;
+	const int MAX_BAR = 30;
 
 	if (use_st7789()) {
 		disp_st7789_wait_for_reconfig_init();
@@ -104,7 +115,7 @@ void disp_wait_for_reconfig() {
 	}
 
 	displog(F("Wait for reconfigure start"));
-	for (int i = 0; i < MAX_BAR; i++)
+	for (int i = 1; i <= (MAX_BAR + 1); i++)
 	{
 		if (use_st7789()) {
 			disp_st7789_wait_for_reconfig_bar(i, MAX_BAR);

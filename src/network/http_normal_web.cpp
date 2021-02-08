@@ -1,4 +1,3 @@
-#ifdef ESP8266
 
 #include <Arduino.h>
 
@@ -9,8 +8,15 @@
 #include "http_normal.h"
 #include "display.h"
 
+#ifdef ESP32
+#include <WebServer.h>
+extern WebServer server;
+#endif
+
+#ifdef ESP8266
 #include <ESP8266WebServer.h>
 extern ESP8266WebServer server;
+#endif
 
 void http_handle_not_found() {
   String message = http_normal_not_found_html();
@@ -69,4 +75,3 @@ void http_loop_normal() {
 }
 
 
-#endif

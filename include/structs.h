@@ -1,5 +1,4 @@
-#ifndef STRUCTS_H
-#define STRUCTS_H
+#pragma once
 
 #include <Arduino.h>
 
@@ -11,6 +10,7 @@ typedef struct {
   float luxIr;
   int co2ppm;
   String co2ppmAccuracy;
+  int rssi;
 } sensor_values_t;
 
 typedef struct {
@@ -66,12 +66,12 @@ typedef struct {
   String st7789Mode;
   String mqttBroker;
   String mqttName;
+  String oledType;
+
+  // 以下は個別設定なのでここでは初期値を入れない
   config_alert_t temperatureAlerts;
   config_alert_t humidityAlerts;
   config_alert_t pressureAlerts;
   config_alert_t luxAlerts;
   config_alert_t co2Alerts;
 } config_t;
-
-
-#endif
