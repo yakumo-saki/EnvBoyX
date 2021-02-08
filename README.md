@@ -179,6 +179,7 @@ esptool.py write_flash 0x1000 filename.bin
 * ADD: Add POST /goto_setup API. 
 * FIX: Delete unused source code.
 * ADD: Add display invert (3sec) on setup mode (ST7789 / SSD1306)
+* NOTE: platformio/espressif8266 @ 2.6.3
 
 ### v39
 
