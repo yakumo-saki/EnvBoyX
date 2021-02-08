@@ -118,14 +118,18 @@ Maybe I can support ST7789 on ESP8266. but not in TODO.
 
 ### http server
 
-All endpoints are using GET Method
+EnvBoyX has http API.
 
-| ENDPOINT      | description                |
-| ------------- | -------------------------- |
-| /             | returns sensor value as JSON.|
-| /ping         | returns pong. |
-| /brightness?value=<brightness> | set display brightness (0-255) 0 means OFF |
-| /display?value=<1 or 0> | set display power (1 = ON / 0 = OFF) |
+| METHOD | ENDPOINT      | RETURN | description                |
+| ------ | ------------- | -------------------------- |
+| GET | /             | JSON | sensor value as JSON.|
+| GET | /ping         | TEXT | returns pong. |
+| GET | /stastics     | JSON | stastics JSON |
+| GET | /brightness?value=<brightness> | TEXT | set display brightness (0-255) 0 means OFF |
+| GET | /display?value=<1 or 0> | TEXT | set display power (1 = ON / 0 = OFF) |
+| POST | /goto_setup | TEXT | Go to setup mode at next boot |
+
+NOTE: There is no reboot API, because of security reason.
 
 #### note
 
@@ -172,7 +176,8 @@ esptool.py write_flash 0x1000 filename.bin
 ### v40
 
 * FIX: CO2 ppm alert value is not good.
-* ADD: Add /goto_setup API. 
+* ADD: Add POST /goto_setup API. 
+* FIX: Delete unused source code.
 
 ### v39
 
