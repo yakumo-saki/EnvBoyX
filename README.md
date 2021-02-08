@@ -164,7 +164,7 @@ esptool.py write_flash 0x1000 filename.bin
 
 ### v40
 
-
+* FIX: CO2 ppm alert value is not good.
 
 ### v39
 
