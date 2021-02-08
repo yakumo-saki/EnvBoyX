@@ -76,13 +76,25 @@ void disp_st7789_normal_startup_screen(String product_long)
 /**
  * セットアップモード時のディスプレイ表示
  */
-void disp_st7789_setup_startup_screen(String ipAddr)
+void disp_st7789_setup_startup_screen(String ipAddr, int disp_switch)
 {
+	static bool inverted = false;
+	if (disp_switch % 3 == 0) {
+		inverted = !inverted;
+	} else {
+		return;  // 変更ないので抜ける。書き直すとチラつく。
+	}
+
 	tft.startWrite();
 	clear_screen(true);
+	if (inverted) {
+		tft.fillScreen(TFT_WHITE);
+		tft.setTextColor(TFT_BLACK, TFT_WHITE);
+	} else {
+		tft.fillScreen(TFT_BLACK);
+		tft.setTextColor(TFT_WHITE, TFT_BLACK);
+	}
 	tft.setCursor(0, 0, DEFAULT_FONT);
-	tft.setTextColor(TFT_WHITE, TFT_BLACK);
-
 
 	tft.println(product_long);
 	tft.println("Setup Mode");
@@ -163,7 +175,6 @@ void disp_st7789_message(bool isError, String msg1, String msg2, String msg3, St
  */
 void disp_st7789_wait_for_reconfig_init()
 {
-
 	tft.startWrite();
 
 	clear_screen();
@@ -194,6 +205,7 @@ void disp_st7789_wait_for_reconfig_bar(int now, const int max)
 void disp_st7789_power_off()
 {
 	// display.displayOff();
+	stlog("Not implemented.");
 }
 
 

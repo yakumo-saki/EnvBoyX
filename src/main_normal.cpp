@@ -26,7 +26,7 @@
 
 WiFiClient net;
 
-TimerCall timer = TimerCall();
+extern TimerCall timer;
 extern String stasticsJSON;
 
 void init_sensors()

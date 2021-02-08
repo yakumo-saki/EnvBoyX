@@ -90,11 +90,14 @@ void disp_ssd1306_normal_startup_screen(String product_long) {
 /**
  * セットアップモード時のディスプレイ表示
  */
-void disp_ssd1306_setup_startup_screen(String ipAddr) {
+void disp_ssd1306_setup_startup_screen(String ipAddr, int disp_switch) {
 
   if (!has_ssd1306()) return;
 
   init_u8g2();
+
+  // 3秒ごとに反転
+  set_invert(int(disp_switch / 3) == 0 );
 
   u8g2.setFont(FONT_BOOT);
   // u8g2.setTextAlignment(TextAlign::LEFT);

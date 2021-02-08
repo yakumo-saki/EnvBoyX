@@ -13,6 +13,13 @@
 #include "http_setup.h"
 #include "wifi.h"
 #include "i2c.h"
+#include "TimerCall.h"
+
+extern TimerCall timer;
+
+void show_setup_startup_screen() {
+  disp_setup_startup_screen(WiFi.softAPIP().toString());
+}
 
 /**
  * 初期化
@@ -34,11 +41,15 @@ void setup_setupmode() {
 	init_i2c(I2C_SDA, I2C_SCL);
 
   setup_display();
-  disp_setup_startup_screen(WiFi.softAPIP().toString());
+  show_setup_startup_screen();
+
+  timer.add(show_setup_startup_screen, "DISP", 1000);
+  timer.start();
 
   mainlog(F("Setup complete."));
 }
 
 void loop_setupmode() {
+  timer.loop();
   loop_http_setup();
 }
