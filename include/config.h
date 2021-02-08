@@ -13,7 +13,10 @@ void save_config();
 
 void list_dir();
 
+/** config ok フラグファイルを作成する */
 void create_configure_flag_file();
+
+/** config ok フラグファイルを削除する */
 void remove_configure_flag_file();
 bool has_valid_config_file();
 bool has_valid_config();
@@ -35,4 +38,5 @@ void trim_config();
 void write_config_file(File f);
 
 /** ファイルを読んでconfig値にセット。closeはしない */
-bool read_config_file(File f, bool dump_config = false);
+bool read_config_file(File f, bool dump_config);
+bool read_config_file(File f);
