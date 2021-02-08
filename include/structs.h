@@ -75,3 +75,17 @@ typedef struct {
   config_alert_t luxAlerts;
   config_alert_t co2Alerts;
 } config_t;
+
+/**
+ * センサーごとにどの項目を測定できるかのフラグ
+ */
+typedef struct {
+  bool temperature = false;
+  bool humidity = false;
+  bool pressure = false;
+  bool lux = false;
+  bool luxIr = false;
+  bool co2ppm = false;
+  bool co2ppmAccuracy = false;
+  // int rssi; センサーじゃないので入れない
+} sensor_characters_t;

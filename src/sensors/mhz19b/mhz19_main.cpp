@@ -25,10 +25,10 @@ void mhz_read_data() {
 
 }
 
-void mhz_setup() {
+bool mhz_setup() {
   if (config.mhz19b == MHZ_NOUSE) {
     mhzlog(F("disabled."));
-    return;
+    return false;
   } 
   
   USE_PWM = (config.mhz19b == MHZ_USE_PWM);
@@ -40,4 +40,5 @@ void mhz_setup() {
     mhzlog(F("Using UART mode."));
     mhz_setup_uart();
   }
+  return true;
 }
