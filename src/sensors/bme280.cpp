@@ -31,22 +31,23 @@ bool has_bme() {
   return true;
 }
 
-void bme_setup() {
+bool bme_setup() {
 
   if (!has_bme()) {
     use_bme = false;
     bmelog(F("BME280 disabled."));
-    return;
+    return false;
   }
  
   // init BME
   while(!bme.init()){
     bmelog(F("Initloop: Could not find BME280 sensor!"));
-    delay(1000);
+    return false;
   }
 
   bmelog(F("BME280 Enabled"));
   use_bme = true;
+  return true;
 }
 
 void bme_read_data() {

@@ -13,29 +13,37 @@ Sodaq_LPS22HB lps22hb;
 
 bool use_lps22hb = false;
 
-void lps_setup(void) {
-
-  // init LPS22HB if found (0x5d)
-  if (lps22hb.init()) {
-      lpslog(F("LPS22HB Enabled. Barometric sensor initialization succeeded!"));
-      lps22hb.enableSensor(Sodaq_LPS22HB::OdrOneShot);
-      use_lps22hb = true;
-  } else {
-      lpslog(F("LPS22HB disabled. Barometric sensor initialization failed."));
-      use_lps22hb = false;
-  }
+bool lps_setup(void)
+{
+	// init LPS22HB if found (0x5d)
+	if (lps22hb.init())
+	{
+		lpslog(F("LPS22HB Enabled. Barometric sensor initialization succeeded!"));
+		lps22hb.enableSensor(Sodaq_LPS22HB::OdrOneShot);
+		use_lps22hb = true;
+		return true;
+	}
+	else
+	{
+		lpslog(F("LPS22HB disabled. Barometric sensor initialization failed."));
+		use_lps22hb = false;
+		return false;
+	}
 }
 
-void lps_read_data() {
-  if (!use_lps22hb) {
-    return;
-  }
-  
-  float tempPres(NAN);
-  tempPres = lps22hb.readPressureHPA();
-  if (tempPres != 0) {
-    sensorValues.pressure = tempPres;
+void lps_read_data()
+{
+	if (!use_lps22hb)
+	{
+		return;
+	}
 
-    lpslog("Pressure=" + String(tempPres, 2) + "hPa");
-  }  
+	float tempPres(NAN);
+	tempPres = lps22hb.readPressureHPA();
+	if (tempPres != 0)
+	{
+		sensorValues.pressure = tempPres;
+
+		lpslog("Pressure=" + String(tempPres, 2) + "hPa");
+	}
 }

@@ -11,18 +11,18 @@ AM232X AM2320;
 const uint8_t AM2320_ADDR = 0x5C;
 bool use_am2320 = false;
 
-void am_setup(void) {
+bool am_setup(void) {
 
   AM2320.begin(I2C_SDA, I2C_SCL);
-
   
   if (!AM2320.isConnected()) {
     amlog(F("AM2320 disabled. "));
-    return;
+    return false;
   }
 
   amlog(F("AM2320 Enabled"));
   use_am2320 = true;
+  return true;
 }
 
 void am_read_data() {
