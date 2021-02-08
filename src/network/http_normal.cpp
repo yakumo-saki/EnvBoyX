@@ -41,6 +41,7 @@ String http_normal_data_json() {
   doc["luminousIr"] = dtostrf(sensorValues.luxIr, 0, 0, luxIr);
   doc["co2ppm"] = dtostrf(sensorValues.co2ppm, 0, 0, ppm);
   doc["co2ppmAccuracy"] =  sensorValues.co2ppmAccuracy;
+  doc["rssi"] = sensorValues.rssi;
 
   String json;
   serializeJson(doc, json);
