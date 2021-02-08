@@ -105,6 +105,7 @@ All are optional.
 ### Display
 
 * SSD1306: Auto detect
+* SH1106: Usable but need setting on setting mode, otherwise you see line on screen edge
 * ST7789: Must configure in web config
 
 (v3.0)
@@ -165,6 +166,8 @@ esptool.py write_flash 0x1000 filename.bin
 
 * CHANGE: CONFIG: Add SSD1306 / SH1106 switch
 * CHANGE: HTTP: ESP32: Stop Async Web server. back to standard webserver to reduce code duplicate #42
+* ADD: WiFi RSSI to JSON
+* FIX: ST7789: T: header align
 
 ### v38
 
