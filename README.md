@@ -182,6 +182,7 @@ esptool.py write_flash 0x1000 filename.bin
 * NOTE: platformio/espressif8266 @ 2.6.3
 * FIX: MHZ19B RX, TX Pin settings are fixed to GPIO 14,0
 * CHANGE: Stop prefixing "*" when co2ppm below 400 (use alerts for this purpose)
+* FIX: Wait for reconfigure bar length invalid
 
 ### v39
 
