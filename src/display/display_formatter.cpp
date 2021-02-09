@@ -25,8 +25,6 @@ String format_co2_ppm(int ppm) {
 	String result = String(ppm);
 	if (ppm < 0) {
 	  result = "****";  // 計測エラー
-	} else if (ppm < 399) {
-	  result = "*" + String(ppm); // あり得ない値(最低399ppmなはず）
 	} else {
 	  result = String(ppm);       // OK
 	}

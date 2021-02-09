@@ -18,6 +18,16 @@ const uint8_t BME_ADDR = 0x76;
 
 static bool use_bme = false;
 
+sensor_characters_t bme_characters() {
+	sensor_characters_t sensor;
+
+  sensor.temperature = true;
+  sensor.humidity = true;
+  sensor.pressure = true;
+
+	return sensor;
+}
+
 bool has_bme() {
   // check i2c 0x76
   Wire.beginTransmission(BME_ADDR);

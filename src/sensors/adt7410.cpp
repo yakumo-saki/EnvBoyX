@@ -8,6 +8,13 @@ const uint8_t ADT7410_ADDR = 0x48;
 
 bool use_adt7410 = false;
 
+sensor_characters_t adt_characters() {
+	sensor_characters_t sensor;
+
+	sensor.temperature = true;
+	return sensor;
+}
+
 bool has_adt7410()
 {
 
