@@ -112,7 +112,7 @@ void disp_wifi_error() {
  */
 void disp_wait_for_reconfig() {
 
-	const int WAIT_PER_BAR = 30;
+	const int WAIT_PER_BAR = 33; // ms per bar
 	const int MAX_BAR = 30;
 
 	if (use_st7789()) {
@@ -123,13 +123,13 @@ void disp_wait_for_reconfig() {
 	}
 
 	displog(F("Wait for reconfigure start"));
-	for (int i = 1; i <= (MAX_BAR + 1); i++)
+	for (int i = 0; i < MAX_BAR; i++)
 	{
 		if (use_st7789()) {
-			disp_st7789_wait_for_reconfig_bar(i, MAX_BAR);
+			disp_st7789_wait_for_reconfig_bar(i + 1, MAX_BAR);
 		}
 		if (use_ssd1306()) {
-			disp_ssd1306_wait_for_reconfig_bar(i, MAX_BAR);
+			disp_ssd1306_wait_for_reconfig_bar(i + 1, MAX_BAR);
 		}
 	
 	    delay(WAIT_PER_BAR);

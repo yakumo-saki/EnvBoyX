@@ -192,7 +192,7 @@ void disp_st7789_wait_for_reconfig_init()
 
 void disp_st7789_wait_for_reconfig_bar(int now, const int max)
 {
-	int length = getWidth() / max * now;
+	int length = (float)getWidth() / max * now;
 
 	if (now >= max) {
 		length = getWidth();

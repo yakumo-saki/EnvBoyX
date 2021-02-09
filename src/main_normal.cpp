@@ -26,10 +26,10 @@ WiFiClient net;
 
 extern TimerCall timer;
 extern String stasticsJSON;
-extern sensor_characters_t sensorCharacters;
 
 bool merge_sensor_characters(sensor_characters_t c) {
   sensorCharacters.temperature = sensorCharacters.temperature || c.temperature;
+  sensorCharacters.humidity = sensorCharacters.humidity || c.humidity;
   sensorCharacters.pressure = sensorCharacters.pressure || c.pressure;
   sensorCharacters.lux = sensorCharacters.lux || c.lux;
   sensorCharacters.luxIr = sensorCharacters.luxIr || c.luxIr;

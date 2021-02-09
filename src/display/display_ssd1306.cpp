@@ -169,7 +169,8 @@ void disp_ssd1306_wait_for_reconfig_init() {
 }
 
 void disp_ssd1306_wait_for_reconfig_bar(int now, const int max) {
-  int length = 127 / max * now;
+  float lengthF = 127.0 / max * now;
+  int length = (int)lengthF;
 
   if (now >= max) {
     length = 127;
