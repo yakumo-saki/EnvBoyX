@@ -54,9 +54,9 @@ void handle_post_root() {
   config.st7789Mode = server.arg("st7789Mode");
   config.mhz19b = server.arg("mhz19b");
   config.mhz19bPwmPin = server.arg("mhz19bPwmPin");
-  // SoftwareSerialの初期化時にこれを渡す方法がわからないので固定
-  config.mhz19bRxPin = "14";
-  config.mhz19bTxPin = "0";
+
+  config.mhz19bRxPin = server.arg("mhz19bRxPin");
+  config.mhz19bTxPin = server.arg("mhz19bTxPin");;
   config.mqttBroker = server.arg("mqttbroker");
   config.mqttName = server.arg("mqttname");
 

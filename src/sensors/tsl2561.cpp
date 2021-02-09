@@ -10,6 +10,16 @@ Tsl2561 Tsl(Wire);
 
 bool use_tsl = false;
 
+sensor_characters_t tsl_characters() {
+	sensor_characters_t sensor;
+
+	sensor.lux = true;
+	sensor.luxIr = true;
+
+	return sensor;
+}
+
+
 bool tsl_setup()
 {
 	// init TSL2561

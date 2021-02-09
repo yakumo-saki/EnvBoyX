@@ -13,6 +13,16 @@ Sodaq_LPS22HB lps22hb;
 
 bool use_lps22hb = false;
 
+sensor_characters_t lps_characters() {
+	sensor_characters_t sensor;
+
+	sensor.temperature = true;
+	sensor.humidity = true;
+	sensor.pressure = true;
+
+	return sensor;
+}
+
 bool lps_setup(void)
 {
 	// init LPS22HB if found (0x5d)

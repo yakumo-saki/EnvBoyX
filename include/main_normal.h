@@ -2,4 +2,4 @@ void init_sensors();
 void setup_normal();
 void loop_normal();
 void read_data();
-void init_timer();
+void add_timer_tasks();

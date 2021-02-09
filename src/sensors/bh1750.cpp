@@ -11,6 +11,13 @@ BH1750 bh1750(0x23);
 const byte BH1750_ADDR = 0x23;
 bool use_bh1750 = false;
 
+sensor_characters_t bh_characters() {
+	sensor_characters_t sensor;
+
+	sensor.lux = true;
+	return sensor;
+}
+
 bool bh_setup(void) {
 
   Wire.beginTransmission(BH1750_ADDR);

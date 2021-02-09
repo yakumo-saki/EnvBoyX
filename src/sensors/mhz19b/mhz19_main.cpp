@@ -11,6 +11,16 @@ bool USE_PWM = true;
 
 int CO2_PPM_INVALID = -999;
 
+sensor_characters_t mhz_characters() {
+	sensor_characters_t sensor;
+
+	sensor.co2ppm = true;
+  sensor.co2ppmAccuracy = true;
+  
+	return sensor;
+}
+
+
 void mhz_read_data() {
 
   if (config.mhz19b == MHZ_NOUSE) {
@@ -28,6 +38,7 @@ void mhz_read_data() {
 bool mhz_setup() {
   if (config.mhz19b == MHZ_NOUSE) {
     mhzlog(F("disabled."));
+    sensorValues.co2ppm = CO2_PPM_INVALID;
     return false;
   } 
   
