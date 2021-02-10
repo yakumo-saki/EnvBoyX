@@ -6,7 +6,7 @@
 #include "config.h"
 
 #include "http_normal.h"
-#include "display.h"
+#include "display/display.h"
 #include "config.h"
 
 #ifdef ESP32

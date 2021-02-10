@@ -13,7 +13,7 @@ String format_humidity(float humi) {
 }
 
 String format_pressure(float pres) {
-	return String(pres, 0) + "hpa";
+	return String(pres, 1);
 }
 
 String format_lux(float lux) {
@@ -29,7 +29,7 @@ String format_co2_ppm(int ppm) {
 	  result = String(ppm);       // OK
 	}
 
-	return result + "ppm";
+	return result;
 }
 
 

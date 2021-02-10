@@ -13,8 +13,8 @@
 #include <TFT_eSPI.h>
 #include <SPI.h>
 
-#include "display_st7789_big.h"
-#include "display_st7789_normal.h"
+#include "display/display_st7789_big.h"
+#include "display/display_st7789_normal.h"
 
 extern int disp_switch;
 const int ST7789_PWM_LED_CHANNEL = 0;

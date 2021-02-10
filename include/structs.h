@@ -6,11 +6,12 @@ typedef struct {
   float temperature;
   float humidity;
   float pressure;
+  float pressureDelta; // not sensor value. computed from pressure
   float lux;
   float luxIr;
   int co2ppm;
   String co2ppmAccuracy;
-  int rssi;
+  int rssi;            // not sensor value. get from wifi
 } sensor_values_t;
 
 typedef struct {
