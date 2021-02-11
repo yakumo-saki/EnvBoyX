@@ -7,7 +7,7 @@
 #endif
 
 #include "log.h"
-#include "display.h"
+#include "display/display.h"
 #include "global.h"
 #include "config.h"
 #include "http_setup.h"

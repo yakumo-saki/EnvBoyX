@@ -17,6 +17,7 @@ void i2clog(String msg);
 void stlog(String msg);
 void ssdlog(String msg);
 void statlog(String msg);
+void pdeltalog(String msg);
 void haltlog(String msg);
 void debuglog(String msg);
 void sectionlog(String msg);

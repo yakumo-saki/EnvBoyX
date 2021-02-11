@@ -80,6 +80,10 @@ void haltlog(String msg) {
   real_log(msg, F("HALT"));
 }
 
+void pdeltalog(String msg) {
+  real_log(msg, F("PS_DELTA"));
+}
+
 void debuglog(String msg) {
   real_log(msg, F("DEBUG"));
 }

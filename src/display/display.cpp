@@ -6,11 +6,11 @@
 
 #include <WiFiClient.h> 
 
-#include "scan_alert.h"
+#include "display/scan_alert.h"
 
-#include "display_formatter.h"
-#include "display_ssd1306.h"
-#include "display_st7789.h"
+#include "display/display_formatter.h"
+#include "display/display_ssd1306.h"
+#include "display/display_st7789.h"
 
 disp_values_t disp_values;
 

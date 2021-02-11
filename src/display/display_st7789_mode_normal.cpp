@@ -5,7 +5,7 @@
 #include "global.h"
 #include "structs.h"
 #include "log.h"
-#include "display_util.h"
+#include "display/display_util.h"
 
 #include <TFT_eSPI.h>
 #include <SPI.h>
@@ -42,7 +42,7 @@ const int LEFT_VAL_X = LEFT_HEAD_X + HEAD_WIDTH;
 const int RIGHT_VAL_X = RIGHT_HEAD_X + HEAD_WIDTH;
 
 const int VALUE_WIDTH = RIGHT_HEAD_X - LEFT_HEAD_X - HEAD_WIDTH;
-const int VALUE_WIDTH_LONG = 180; // Pressure or CO2 ppm
+const int VALUE_WIDTH_LONG = VALUE_WIDTH + 12; // Pressure or CO2 ppm
 
 const int ROW_HEIGHT = 28;
 const int ROW1_Y = 24;
@@ -128,7 +128,7 @@ void write_value(String value, int x, int y, int width, int font, value_alert_t 
 	} else if (alert.caution) {
 		tft.setTextColor(TFT_YELLOW, TFT_BLACK);
 	} else {
-		tft.setTextColor(TFT_WHITE, TFT_BLACK);		
+		tft.setTextColor(TFT_WHITE, TFT_BLACK);
 	}
 
 	tft.setTextPadding(width);
@@ -138,10 +138,58 @@ void write_value(String value, int x, int y, int width, int font, value_alert_t 
 
 }
 
+void _draw_pres_delta_up(int x, int y, int width, int height, uint16_t color) {
+	int half = width / 2;
+	int halfX = x + half;
+	int rightX = x + width;
+	int halfY = y + (height / 2);
+	int bottomY = y + height;
+
+	tft.drawLine(halfX, y, halfX, bottomY, color);
+	tft.drawLine(x, halfY, halfX, y, color);
+	tft.drawLine(halfX, y, rightX, halfY, color);
+
+}
+
+void _draw_pres_delta_down(int x, int y, int width, int height, uint16_t color) {
+	int half = width / 2;
+	int halfX = x + half;
+	int rightX = x + width;
+	int halfY = y + (height / 2);
+	int bottomY = y + height;
+
+	tft.drawLine(x, y, rightX, bottomY, color);
+	tft.drawLine(x - 1, y, rightX, bottomY, color);
+	tft.drawLine(x + 1, y, rightX, bottomY, color);
+	tft.drawTriangle(rightX, halfY, rightX, bottomY, halfX, bottomY, color);
+
+	halfX--;
+	rightX--;
+	halfY--;
+	bottomY--;
+	tft.drawTriangle(rightX, halfY, rightX, bottomY, halfX, bottomY, color);
+}
+
+enum class DELTA_ICON {
+	UP = 1, DOWN = 2, NONE = 3
+};
+
+void _draw_pres_delta_icon(int x, int y, DELTA_ICON type, uint16_t color) {
+	int HEIGHT = 22;
+	int WIDTH = 12;
+
+	tft.fillRect(x - 1, y, WIDTH + 3, HEIGHT + 1, TFT_BLACK);
+
+	if (type == DELTA_ICON::UP) {
+		_draw_pres_delta_up(x, y, WIDTH, HEIGHT, color);
+		_draw_pres_delta_up(x + 1, y, WIDTH, HEIGHT, color);
+	} else if (type == DELTA_ICON::DOWN) {
+		_draw_pres_delta_down(x, y, WIDTH, HEIGHT, color);
+	}
+}
+
 /**
  * @param val 値
- * @param erase true => 黒文字で書く（要するに消す） false => 普通に書く
- * eraseは一応機能するが
  */
 void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 {
@@ -154,17 +202,52 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 	write_value(values.lux, RIGHT_VAL_X, ROW1_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.lux);
 
 	// Row 2
-	tft.setTextPadding(VALUE_WIDTH);
 	write_value(values.humidity, LEFT_VAL_X, ROW2_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.humidity);
 
 	// Row 3
-	tft.setTextPadding(VALUE_WIDTH_LONG);
 	write_value(values.pressure, LEFT_VAL_X, ROW3_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.pressure);
 
+	// Air pressure delta
+	tft.setTextPadding(VALUE_WIDTH);
+
+	int presDeltaX = LEFT_VAL_X + VALUE_WIDTH_LONG + 20;
+	String pressureDelta = format_air_pressure_delta(sensorValues.pressureDelta);
+
+
+	// 気圧の変化
+	int presDeltaStrX = presDeltaX + 20;
+	tft.setTextPadding(60);
+	if (sensorValues.pressureDelta > 0.2) {
+		// UP
+		tft.setTextColor(TFT_GREENYELLOW, TFT_BLACK);
+		_draw_pres_delta_icon(presDeltaX, ROW3_Y, DELTA_ICON::UP, TFT_GREENYELLOW);
+		tft.drawString(pressureDelta, presDeltaStrX, ROW3_Y, DEFAULT_FONT);
+	} else if (sensorValues.pressureDelta < -0.2) {
+		// DOWN
+		tft.setTextColor(TFT_ORANGE, TFT_BLACK);
+		_draw_pres_delta_icon(presDeltaX, ROW3_Y, DELTA_ICON::DOWN, TFT_ORANGE);
+		tft.drawString(pressureDelta, presDeltaStrX, ROW3_Y, DEFAULT_FONT);
+	} else {
+		// 変わらない
+		_draw_pres_delta_icon(presDeltaX, ROW3_Y, DELTA_ICON::NONE, TFT_ORANGE);
+
+		if (sensorValues.pressureDelta >= 0.10) {
+			tft.setTextColor(TFT_GREENYELLOW, TFT_BLACK);
+		} else if (sensorValues.pressureDelta <= -0.10) {
+			tft.setTextColor(TFT_ORANGE, TFT_BLACK);
+		} else {
+			tft.setTextColor(TFT_WHITE, TFT_BLACK);
+		}
+
+		tft.drawString(pressureDelta, presDeltaStrX, ROW3_Y, DEFAULT_FONT);
+	}
+
+	tft.setTextColor(TFT_WHITE, TFT_BLACK);
+
 	// Row 4
-	tft.setTextPadding(VALUE_WIDTH_LONG);
 	write_value(values.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.co2);
 
+	// Alert color
 	if (has_caution(alerts)) {
 		tft.fillRect(0, ROW1_Y, SIDE_LINE_WIDTH, MAX_Y, TFT_YELLOW);
 		tft.fillRect(MAX_X - SIDE_LINE_WIDTH, ROW1_Y, MAX_X, MAX_Y, TFT_YELLOW);
