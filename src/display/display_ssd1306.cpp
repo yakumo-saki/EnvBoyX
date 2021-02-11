@@ -30,7 +30,7 @@ const uint8_t *FONT_SMALL_VERSION = u8g2_font_chikita_tn;
 const uint8_t *FONT_SMALL_NARROW = u8g2_font_t0_11_tr;
 const uint8_t *FONT_SMALL = u8g2_font_roentgen_nbp_tr;
 const uint8_t *FONT_BOOT = u8g2_font_ncenR10_tr;
-const uint8_t *FONT_PLAIN_10 = u8g2_font_9x15_mr;
+const uint8_t *FONT_PLAIN_10 = u8g2_font_9x15_tr;
 const uint8_t *FONT_SSID = u8g2_font_8x13_tr;
 
 const uint8_t WHITE = 1;
@@ -195,17 +195,6 @@ void disp_ssd1306_all_initialize_complete() {
   // do nothing. ssd1306 code is everytime rewrite entire screen.
 }
 
-void write_value(int x, int y, String valueString, value_alert_t alert, TextAlign align) {
-  String empty = String("");
-  if (alert.warning) {
-    draw_value(x, y, TextDecoration::INVERT, align, valueString, FONT_PLAIN_10, empty, FONT_PLAIN_10);
-  } else if (alert.caution) {
-    draw_value(x, y, TextDecoration::BOX, align, valueString, FONT_PLAIN_10, empty, FONT_PLAIN_10);
-  } else {
-    draw_value(x, y, TextDecoration::NONE, align, valueString, FONT_PLAIN_10, empty, FONT_PLAIN_10);
-  }
-}
-
 TextDecoration get_decoration_from_alert(value_alert_t alert) {
   if (alert.warning) {
     return TextDecoration::INVERT;
@@ -214,6 +203,11 @@ TextDecoration get_decoration_from_alert(value_alert_t alert) {
   } else {
     return TextDecoration::NONE;
   }
+}
+
+void write_value(int x, int y, String valueString, value_alert_t alert, TextAlign align) {
+  String empty = String("");
+  draw_value(x, y, get_decoration_from_alert(alert), align, valueString, FONT_PLAIN_10, empty, FONT_PLAIN_10);
 }
 
 void _draw_pressure_delta(int y) {
@@ -225,7 +219,7 @@ void _draw_pressure_delta(int y) {
 		pressureDelta = String(1.0 * sensorValues.pressureDelta, 1);
 	}
 
-  const int ICON_X = 78;
+  const int ICON_X = 80;
 	if (sensorValues.pressureDelta >= 0.10) {
     draw_string(ICON_X, y, FONT_ARROW_UP, TextAlign::LEFT, FONT_ARROW);
 	} else if (sensorValues.pressureDelta <= -0.10) {
@@ -267,7 +261,7 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
 
   // write_value(0, R2, values.pressure, alerts.pressure, TextAlign::LEFT);
   // draw_value(0, R2, get_decoration_from_alert(alerts.pressure), TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_PLAIN_10);
-  draw_value(0, R2, TextDecoration::INVERT, TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_PLAIN_10);
+  draw_value(0, R2, TextDecoration::INVERT, TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_SMALL_NARROW);
 
   // ２行目：みぎ：気圧の差
   _draw_pressure_delta(R2);
@@ -275,11 +269,10 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
   // ３行目：CO2センサーがないならその場所に照度を表示する
   if (sensorCharacters.co2ppm) {
     write_value(127, R3, values.lux, alerts.lux, TextAlign::RIGHT);
-    draw_value(0, R3, get_decoration_from_alert(alerts.co2), TextAlign::LEFT, values.co2ppm, FONT_PLAIN_10, "ppm", FONT_PLAIN_10); // 9999ppm
+    draw_value(0, R3, get_decoration_from_alert(alerts.co2), TextAlign::LEFT, values.co2ppm, FONT_PLAIN_10, "ppm", FONT_SMALL_NARROW); // 9999ppm
   } else {
     write_value(0, R3, values.lux, alerts.lux, TextAlign::LEFT);
   }
-
 
   // みぎ上、IPアドレス or mDNS名表示
   if (disp_switch < 3) {

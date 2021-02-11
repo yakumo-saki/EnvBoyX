@@ -39,13 +39,15 @@ void draw_string(int x, int y, String valueString, TextAlign align, const uint8_
 // 値を描画する
 uint16_t draw_value(int x, int y, TextDecoration deco, TextAlign align, String valueString, const uint8_t *valueFont, String unitString, const uint8_t *unitFont) {
 
-  const int HEIGHT = u8g2.getMaxCharHeight();
-  
-  // 警告表示の時用のマージン。通常表示と警告表示で場所が変わるのはイマイチなので通常時も適用する
-  const int MARGIN = 1;
+  const int MARGIN = 1;   // 警告表示の時用のマージン。通常表示と警告表示で場所が変わるのはイマイチなので通常時も適用する
   const int RECT_MARGIN = 1 + MARGIN;  // 枠 1px + マージン 2px
   
-  const int MARGIN_VAL_UNIT = 2;  // 単位と値の間のマージン
+  // フォントの高さを求める
+  u8g2.setFont(valueFont);
+  const int HEIGHT = u8g2.getMaxCharHeight();
+  u8g2.setFont(unitFont);
+  // 単位が値より背が低い場合、下方向にずらす
+  int UNIT_HEIGHT_MARGIN = (HEIGHT - u8g2.getMaxCharHeight()) < 0 ? 0 : HEIGHT - u8g2.getMaxCharHeight();
 
   // 幅を求める
   int valueWidth = 0, unitWidth = 0;
@@ -56,17 +58,22 @@ uint16_t draw_value(int x, int y, TextDecoration deco, TextAlign align, String v
     unitWidth = u8g2.getStrWidth(unitString.c_str());
   }
 
+  const int MARGIN_VAL_UNIT = (unitWidth == 0 ? 0 : 2);  // 単位と値の間のマージン
+
   uint16_t boxWidth = valueWidth + MARGIN_VAL_UNIT + unitWidth + (RECT_MARGIN * 2); // *2 = 左右
 
   int boxStartX = 0; // 枠を描画する位置
   int strStartX = 0; // 文字を描画する位置
+  int unitStartX = 0; // 単位を描画する位置
 
   if (align == TextAlign::LEFT) {
     boxStartX = x;
     strStartX = boxStartX + MARGIN;
+    unitStartX = strStartX + valueWidth + MARGIN_VAL_UNIT;
   } else if (align == TextAlign::RIGHT) {
-    boxStartX = x - boxWidth; // 枠の描画位置は左から指定しないといけない マージンは左右にあるので二回
-    strStartX = x - RECT_MARGIN;  // 文字は右端を指定する
+    boxStartX = x - boxWidth; // 枠の描画位置は左から指定
+    strStartX = x - RECT_MARGIN - (unitWidth + MARGIN_VAL_UNIT);
+    unitStartX = x - RECT_MARGIN;
   }
 
   // 背景塗りつぶし無し
@@ -88,10 +95,15 @@ uint16_t draw_value(int x, int y, TextDecoration deco, TextAlign align, String v
       draw_string(strStartX - 1, y, valueString, align);
 
       u8g2.setFont(unitFont);
-      draw_string(strStartX + valueWidth + MARGIN_VAL_UNIT, y, unitString, align);
-      draw_string(strStartX + valueWidth + MARGIN_VAL_UNIT - 1, y, unitString, align);
+      draw_string(unitStartX, y + UNIT_HEIGHT_MARGIN, unitString, align);
+      draw_string(unitStartX - 1, y + UNIT_HEIGHT_MARGIN, unitString, align);
     } else if (deco == TextDecoration::BOX) {
+      u8g2.setFont(valueFont);
       draw_string(strStartX, y, valueString, align);
+
+      u8g2.setFont(unitFont);
+      draw_string(unitStartX, y + UNIT_HEIGHT_MARGIN, unitString, align);
+
       u8g2.drawFrame(boxStartX, y  - 1, boxWidth, HEIGHT);
     }
   } else {
