@@ -123,8 +123,8 @@ void add_timer_tasks() {
   timer.add(wifi_store_rssi, "WIFI", 1000);
 
   if (sensorCharacters.pressure) {
-    timer.add(store_air_pressure_history, "STORE_PRESSURE", 1000);
-    timer.add(store_air_pressure_delta, "STORE_PRESSURE_DELTA", 1000);
+    timer.add(store_air_pressure_history, "STORE_PRESSURE", 60000);    // 履歴を毎分保存
+    timer.add(store_air_pressure_delta, "STORE_PRESSURE_DELTA", 1000); // 履歴と今の気圧の差を保存
   }
 
   // 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する

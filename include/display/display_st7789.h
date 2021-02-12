@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Arduino.h>
 
 // 使える使えないの判断フラグ ST7789_SUPPORTED -> define.cpp
