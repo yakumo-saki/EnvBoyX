@@ -6,6 +6,7 @@
 #include "structs.h"
 #include "log.h"
 #include "display/display_util.h"
+#include "display/st7789_utils.h"
 
 #include <TFT_eSPI.h>
 #include <SPI.h>
@@ -138,55 +139,6 @@ void write_value(String value, int x, int y, int width, int font, value_alert_t 
 
 }
 
-void _draw_pres_delta_up(int x, int y, int width, int height, uint16_t color) {
-	int half = width / 2;
-	int halfX = x + half;
-	int rightX = x + width;
-	int halfY = y + (height / 2);
-	int bottomY = y + height;
-
-	tft.drawLine(halfX, y, halfX, bottomY, color);
-	tft.drawLine(x, halfY, halfX, y, color);
-	tft.drawLine(halfX, y, rightX, halfY, color);
-
-}
-
-void _draw_pres_delta_down(int x, int y, int width, int height, uint16_t color) {
-	int half = width / 2;
-	int halfX = x + half;
-	int rightX = x + width;
-	int halfY = y + (height / 2);
-	int bottomY = y + height;
-
-	tft.drawLine(x, y, rightX, bottomY, color);
-	tft.drawLine(x - 1, y, rightX, bottomY, color);
-	tft.drawLine(x + 1, y, rightX, bottomY, color);
-	tft.drawTriangle(rightX, halfY, rightX, bottomY, halfX, bottomY, color);
-
-	halfX--;
-	rightX--;
-	halfY--;
-	bottomY--;
-	tft.drawTriangle(rightX, halfY, rightX, bottomY, halfX, bottomY, color);
-}
-
-enum class DELTA_ICON {
-	UP = 1, DOWN = 2, NONE = 3
-};
-
-void _draw_pres_delta_icon(int x, int y, DELTA_ICON type, uint16_t color) {
-	int HEIGHT = 22;
-	int WIDTH = 12;
-
-	tft.fillRect(x - 1, y, WIDTH + 3, HEIGHT + 1, TFT_BLACK);
-
-	if (type == DELTA_ICON::UP) {
-		_draw_pres_delta_up(x, y, WIDTH, HEIGHT, color);
-		_draw_pres_delta_up(x + 1, y, WIDTH, HEIGHT, color);
-	} else if (type == DELTA_ICON::DOWN) {
-		_draw_pres_delta_down(x, y, WIDTH, HEIGHT, color);
-	}
-}
 
 /**
  * @param val 値
@@ -211,40 +163,34 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 	tft.setTextPadding(VALUE_WIDTH);
 
 	int presDeltaX = LEFT_VAL_X + VALUE_WIDTH_LONG + 20;
-	String pressureDelta = format_air_pressure_delta(sensorValues.pressureDelta);
-
+	pressure_delta_t delta = get_pressure_delta_struct(sensorValues.pressureDelta);
 
 	// 気圧の変化
 	int presDeltaStrX = presDeltaX + 20;
 	tft.setTextPadding(60);
-	if (sensorValues.pressureDelta > 0.2) {
-		// UP
+
+	// 気圧deltaの文字
+	if (delta.positive) {
 		tft.setTextColor(TFT_GREENYELLOW, TFT_BLACK);
-		_draw_pres_delta_icon(presDeltaX, ROW3_Y, DELTA_ICON::UP, TFT_GREENYELLOW);
-		tft.drawString(pressureDelta, presDeltaStrX, ROW3_Y, DEFAULT_FONT);
-	} else if (sensorValues.pressureDelta < -0.2) {
-		// DOWN
+	} else if (delta.negative) {
 		tft.setTextColor(TFT_ORANGE, TFT_BLACK);
-		_draw_pres_delta_icon(presDeltaX, ROW3_Y, DELTA_ICON::DOWN, TFT_ORANGE);
-		tft.drawString(pressureDelta, presDeltaStrX, ROW3_Y, DEFAULT_FONT);
 	} else {
-		// 変わらない
-		_draw_pres_delta_icon(presDeltaX, ROW3_Y, DELTA_ICON::NONE, TFT_ORANGE);
-
-		if (sensorValues.pressureDelta >= 0.10) {
-			tft.setTextColor(TFT_GREENYELLOW, TFT_BLACK);
-		} else if (sensorValues.pressureDelta <= -0.10) {
-			tft.setTextColor(TFT_ORANGE, TFT_BLACK);
-		} else {
-			tft.setTextColor(TFT_WHITE, TFT_BLACK);
-		}
-
-		tft.drawString(pressureDelta, presDeltaStrX, ROW3_Y, DEFAULT_FONT);
+		tft.setTextColor(TFT_WHITE, TFT_BLACK);
 	}
 
-	tft.setTextColor(TFT_WHITE, TFT_BLACK);
+	tft.drawString(delta.formattedValue, presDeltaStrX, ROW3_Y, DEFAULT_FONT);
+
+	// 気圧deltaのアイコン
+	if (delta.positive && delta.drawIcon) {
+		draw_arrow(presDeltaX, ROW3_Y, ARROW_ICON::UP, TFT_GREENYELLOW);
+	} else if (delta.negative && delta.drawIcon) {
+		draw_arrow(presDeltaX, ROW3_Y, ARROW_ICON::DOWN, TFT_ORANGE);
+	} else {
+		draw_arrow(presDeltaX, ROW3_Y, ARROW_ICON::NONE, TFT_ORANGE);
+	}
 
 	// Row 4
+	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 	write_value(values.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.co2);
 
 	// Alert color
