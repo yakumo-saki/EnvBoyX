@@ -10,7 +10,7 @@
 #include "log.h"
 #include "global.h"
 #include "watchdog.h"
-#include "display.h"
+#include "display/display.h"
 
 std::vector<long> rssiArray;
 

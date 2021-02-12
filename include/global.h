@@ -58,6 +58,7 @@ extern config_t config;
 // センサー値
 // --------------------------------------------------------------------
 extern sensor_values_t sensorValues;
+extern sensor_characters_t sensorCharacters;
 
 // --------------------------------------------------------------------
 // 統計情報

@@ -6,7 +6,8 @@
 #include "config.h"
 
 #include "http_normal.h"
-#include "display.h"
+#include "display/display.h"
+#include "config.h"
 
 #ifdef ESP32
 #include <WebServer.h>
@@ -57,6 +58,14 @@ void http_handle_power() {
   server.send( 200, MIME_TEXT, message );
 }
 
+void http_handle_goto_setup() {
+
+  remove_configure_flag_file();
+  
+  String message = "OK. Entering setup mode at next boot.";
+  server.send( 200, MIME_TEXT, message );
+}
+
 void http_setup_normal() {
   httplog("HTTP web server initializing");
   server.on ( "/ping", HTTP_GET, http_handle_ping);
@@ -64,6 +73,7 @@ void http_setup_normal() {
   server.on ( "/brightness", HTTP_GET, http_handle_brightness );
   server.on ( "/display", HTTP_GET, http_handle_power );
   server.on ( "/stastics", HTTP_GET, http_handle_stastics );
+  server.on ( "/goto_setup", HTTP_POST, http_handle_goto_setup );
   
   server.onNotFound ( http_handle_not_found );
   server.begin(); 

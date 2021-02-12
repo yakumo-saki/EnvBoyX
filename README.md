@@ -118,14 +118,18 @@ Maybe I can support ST7789 on ESP8266. but not in TODO.
 
 ### http server
 
-All endpoints are using GET Method
+EnvBoyX has http API.
 
-| ENDPOINT      | description                |
-| ------------- | -------------------------- |
-| /             | returns sensor value as JSON.|
-| /ping         | returns pong. |
-| /brightness?value=<brightness> | set display brightness (0-255) 0 means OFF |
-| /display?value=<1 or 0> | set display power (1 = ON / 0 = OFF) |
+| METHOD | ENDPOINT      | RETURN | description                |
+| ------ | ------------- | -------------------------- |
+| GET | /             | JSON | sensor value as JSON.|
+| GET | /ping         | TEXT | returns pong. |
+| GET | /stastics     | JSON | stastics JSON |
+| GET | /brightness?value=<brightness> | TEXT | set display brightness (0-255) 0 means OFF |
+| GET | /display?value=<1 or 0> | TEXT | set display power (1 = ON / 0 = OFF) |
+| POST | /goto_setup | TEXT | Go to setup mode at next boot |
+
+NOTE: There is no reboot API, because of security reason.
 
 #### note
 
@@ -162,6 +166,27 @@ esptool.py write_flash 0x1000 filename.bin
 
 ## Version History
 
+* BUGFIX: Bug fix
+* FIX: Fix not bug, but not friendly behavior
+* CHANGE: Change some behavior
+* ADD: Add new function
+* DROP: Delete some functions
+* NOTE: other things
+
+### v40
+
+* FIX: CO2 ppm alert value is not good.
+* ADD: Add POST /goto_setup API. 
+* FIX: Delete unused source code.
+* ADD: Add display invert (3sec) on setup mode (ST7789 / SSD1306)
+* NOTE: platformio/espressif8266 @ 2.6.3
+* FIX: MHZ19B RX, TX Pin settings are fixed to GPIO 14,0
+* CHANGE: Stop prefixing "*" when co2ppm below 400 (use alerts for this purpose)
+* FIX: Wait for reconfigure bar length invalid
+* FIX: BME280: improve pressure precision (fix decimal values are truncated)
+* ADD: Pressure delta
+* CHANGE: ST7789: Normal: Dont show co2 when no co2 sensor.
+
 ### v39
 
 * CHANGE: CONFIG: Add SSD1306 / SH1106 switch
@@ -196,12 +221,12 @@ esptool.py write_flash 0x1000 filename.bin
 
 ### v3.5
 
-* Config: version 9 (was 8) and using JSON format
-* Config: Migration between versions
+* CHANGE: Config: version 9 (was 8) and using JSON format
+* ADD: Config: Migration between versions
 
 ### v3.4
 
-* Config: version 8 (was 6)
+* CHANGE: Config: version 8 (was 6)
 * BUGFIX: SSD1306 not shown in Setup Mode
 * ADD: Default Brightness setting
 * ADD: Screen Flip setting
@@ -216,46 +241,44 @@ esptool.py write_flash 0x1000 filename.bin
 
 ### v3.2
 
-* Avoid using delay
+* FIX: Avoid using delay
 * ADD: I2C scan on startup.
 * BUGFIX: ESP8266: I2C not working
 * DROP: ESP8266: ST7789 is not supported (because of Pin config)
 
 ### v3.1
 
-* Add vertical display mode(bigger font. ST7789 only)
-* Refactoring
+* ADD: vertical display mode(bigger font. ST7789 only)
+* FIX: Refactoring
 
 ### v3.0
 
-* Add ST7789 Support (T-Display)
-* ST7789 is initial support, some screens are simplifyed.
+* ADD: ST7789 Support (T-Display)
+* NOTE: ST7789 is initial support, some screens are simplifyed.
 
-### v2.7
+### v2.7: Display item change update
 
-Display item change.
-
-* Delete alive indicator "*" after EnvBoyX string.
-* Add alive indicator. EnvBoyX's "X" character now blinks.
-* Delete prefix "IP:" before IP address
-* Add mDNS name display. IP/mDNS display switches 3 sec interval.
-* Abort TFT display implementation.
+* CHANGE: Delete alive indicator "*" after EnvBoyX string.
+* ADD: alive indicator. EnvBoyX's "X" character now blinks.
+* CHANGE: prefix "IP:" before IP address
+* ADD: mDNS name display. IP/mDNS display switches 3 sec interval.
+* NOTE: Abort TFT display implementation.
 
 ### v2.6
 
-* Fix mDNS not working
+* BUGFIX: Fix mDNS not working
 
 ### v2.5
 
-* Add /display endpoint.
+* ADD: /display endpoint.
 
 ### v2.4
 
-* Add /brightness endpoint.
+* ADD: /brightness endpoint.
 
 ### v2.3
 
-* Unifing EnvBoyX (ESP8266) and EnvBoyX32 (ESP32) again.
+* FIX: Unifing EnvBoyX (ESP8266) and EnvBoyX32 (ESP32) again.
 
 ### v2.2
 
@@ -263,11 +286,11 @@ Display item change.
 
 ### v2.1
 
-* Split EnvBoyX (8266) and EnvBoyX32 (ESP32)
+* FIX: Split EnvBoyX (8266) and EnvBoyX32 (ESP32)
 
 ### v2.0
 
-* Move to Platform.IO from Arduino IDE 
+* FIX: Move Arduino IDE to Platform.IO
 
 ### before v2.0
 

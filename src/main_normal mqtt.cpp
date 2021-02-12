@@ -63,7 +63,7 @@ void send_and_sleep() {
   }
   mainlog(F("MQTT Connect OK"));
   
-  init_timer();
+  add_timer_tasks();
   timer.forceOnce();
 
   mqtt_publish("lux", String(sensorValues.lux, 0));

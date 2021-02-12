@@ -108,9 +108,9 @@ void set_default_config_value()
   config.luxAlerts.warning2.high = "99999";
 
   config.co2Alerts.warning1.low = "0";
-  config.co2Alerts.warning1.high = "390";
-  config.co2Alerts.caution1.low = "390";
-  config.co2Alerts.caution1.high = "398";
+  config.co2Alerts.warning1.high = "200";
+  config.co2Alerts.caution1.low = "200";
+  config.co2Alerts.caution1.high = "300";
   config.co2Alerts.caution2.low = "800";
   config.co2Alerts.caution2.high = "1000";
   config.co2Alerts.warning2.low = "1000";
@@ -305,7 +305,7 @@ bool read_config_alerts(config_alert_t& alerts, DynamicJsonDocument doc, String 
   return ret;
 }
 
-bool read_config_file(File f, bool dump_config = false) {
+bool read_config_file(File f, bool dump_config) {
 
   set_default_config_value(); // とりあえずデフォルト値をロードしておく。
 
@@ -359,4 +359,8 @@ bool read_config_file(File f, bool dump_config = false) {
   ret = ret && read_config_alerts(config.co2Alerts, doc, CFG_CO2_ALERT);
 
   return ret;
+}
+
+bool read_config_file(File f) {
+  return read_config_file(f, false);
 }

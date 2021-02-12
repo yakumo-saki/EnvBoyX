@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include "structs.h"
+#include "TimerCall.h"
 
 // --------------------------------------------------------------------
 // プロダクト名定数
@@ -9,7 +10,7 @@
 extern const String product_short = "EBX";
 // EnvBoyX
 extern const String product = "EnvBoyX";
-extern const String ver = "39";
+extern const String ver = "40";
 // EnvBoyX Ver.3.0
 extern const String product_long = product + " Ver." + ver;
 
@@ -80,8 +81,14 @@ config_t config;
 // センサー値
 // --------------------------------------------------------------------
 sensor_values_t sensorValues;
+sensor_characters_t sensorCharacters;
 
 // --------------------------------------------------------------------
 // 統計情報
 // --------------------------------------------------------------------
 String stasticsJSON;
+
+// --------------------------------------------------------------------
+// タイマー
+// --------------------------------------------------------------------
+TimerCall timer = TimerCall();

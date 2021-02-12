@@ -13,7 +13,7 @@ String format_humidity(float humi) {
 }
 
 String format_pressure(float pres) {
-	return String(pres, 0) + "hpa";
+	return String(pres, 1);
 }
 
 String format_lux(float lux) {
@@ -25,13 +25,11 @@ String format_co2_ppm(int ppm) {
 	String result = String(ppm);
 	if (ppm < 0) {
 	  result = "****";  // 計測エラー
-	} else if (ppm < 399) {
-	  result = "*" + String(ppm); // あり得ない値(最低399ppmなはず）
 	} else {
 	  result = String(ppm);       // OK
 	}
 
-	return result + "ppm";
+	return result;
 }
 
 

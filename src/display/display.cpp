@@ -6,18 +6,19 @@
 
 #include <WiFiClient.h> 
 
-#include "scan_alert.h"
+#include "display/scan_alert.h"
 
-#include "display_formatter.h"
-#include "display_ssd1306.h"
-#include "display_st7789.h"
+#include "display/display_formatter.h"
+#include "display/display_ssd1306.h"
+#include "display/display_st7789.h"
 
 disp_values_t disp_values;
 
-/** 右下のver表示を点滅させる為のフラグ
- * 0~5 奇数 偶数= EnvBoyXのXの点滅 0,1,2 = IP表示 3,4,5 = mDNS名表示
+/**
+ * 表示変更用フラグ。 描画ごとに1カウントアップ。 0 ~ 15
  */
 int disp_switch = 0;
+const int DISP_SWITCH_MAX = 15;
 
 /** SSD1306を使うか否か。 I2C接続なので自動チェック可能 */
 bool use_ssd1306() {
@@ -45,14 +46,21 @@ void disp_normal_startup_screen(String product_long) {
 
 /**
  * セットアップモード時のディスプレイ表示
- * SSD1306のみ対応。
  */
 void disp_setup_startup_screen(String ipAddr) {
+
+	static int disp_switch = 0;
+
 	if (use_ssd1306()) {
-		disp_ssd1306_setup_startup_screen(ipAddr);	
+		disp_ssd1306_setup_startup_screen(ipAddr, disp_switch);	
 	}
 	if (use_st7789()) {
-		disp_st7789_setup_startup_screen(ipAddr);
+		disp_st7789_setup_startup_screen(ipAddr, disp_switch);
+	}
+
+	disp_switch++;
+	if (disp_switch > 5) {
+		disp_switch = 0;
 	}
 }
 
@@ -104,7 +112,7 @@ void disp_wifi_error() {
  */
 void disp_wait_for_reconfig() {
 
-	const int WAIT_PER_BAR = 30;
+	const int WAIT_PER_BAR = 33; // ms per bar
 	const int MAX_BAR = 30;
 
 	if (use_st7789()) {
@@ -115,13 +123,13 @@ void disp_wait_for_reconfig() {
 	}
 
 	displog(F("Wait for reconfigure start"));
-	for (int i = 1; i <= (MAX_BAR + 1); i++)
+	for (int i = 0; i < MAX_BAR; i++)
 	{
 		if (use_st7789()) {
-			disp_st7789_wait_for_reconfig_bar(i, MAX_BAR);
+			disp_st7789_wait_for_reconfig_bar(i + 1, MAX_BAR);
 		}
 		if (use_ssd1306()) {
-			disp_ssd1306_wait_for_reconfig_bar(i, MAX_BAR);
+			disp_ssd1306_wait_for_reconfig_bar(i + 1, MAX_BAR);
 		}
 	
 	    delay(WAIT_PER_BAR);

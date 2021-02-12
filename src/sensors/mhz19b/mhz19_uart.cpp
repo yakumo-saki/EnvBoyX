@@ -50,7 +50,7 @@ void mhz_setup_check_device_uart() {
   mhzlog("ABC Status     : " + String(mhz19.getABC()) + " " + String(mhz19.getABC() ? "ON" : "OFF"));
 }
 
-void mhz_setup_uart() {
+bool mhz_setup_uart() {
 
   sensorValues.co2ppm = CO2_PPM_INVALID;
 
@@ -88,7 +88,7 @@ void mhz_setup_uart() {
   mhz_setup_check_device_uart();
 
   mhzlog(F("initialized."));
- 
+  return true;
 }
 
 void mhz_read_data_uart() {

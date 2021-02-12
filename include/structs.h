@@ -6,11 +6,12 @@ typedef struct {
   float temperature;
   float humidity;
   float pressure;
+  float pressureDelta; // not sensor value. computed from pressure
   float lux;
   float luxIr;
   int co2ppm;
   String co2ppmAccuracy;
-  int rssi;
+  int rssi;            // not sensor value. get from wifi
 } sensor_values_t;
 
 typedef struct {
@@ -75,3 +76,17 @@ typedef struct {
   config_alert_t luxAlerts;
   config_alert_t co2Alerts;
 } config_t;
+
+/**
+ * センサーごとにどの項目を測定できるかのフラグ
+ */
+typedef struct {
+  bool temperature = false;
+  bool humidity = false;
+  bool pressure = false;
+  bool lux = false;
+  bool luxIr = false;
+  bool co2ppm = false;
+  bool co2ppmAccuracy = false;
+  // int rssi; センサーじゃないので入れない
+} sensor_characters_t;

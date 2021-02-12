@@ -18,6 +18,16 @@ const uint8_t BME_ADDR = 0x76;
 
 static bool use_bme = false;
 
+sensor_characters_t bme_characters() {
+	sensor_characters_t sensor;
+
+  sensor.temperature = true;
+  sensor.humidity = true;
+  sensor.pressure = true;
+
+	return sensor;
+}
+
 bool has_bme() {
   // check i2c 0x76
   Wire.beginTransmission(BME_ADDR);
@@ -31,22 +41,23 @@ bool has_bme() {
   return true;
 }
 
-void bme_setup() {
+bool bme_setup() {
 
   if (!has_bme()) {
     use_bme = false;
     bmelog(F("BME280 disabled."));
-    return;
+    return false;
   }
  
   // init BME
   while(!bme.init()){
     bmelog(F("Initloop: Could not find BME280 sensor!"));
-    delay(1000);
+    return false;
   }
 
   bmelog(F("BME280 Enabled"));
   use_bme = true;
+  return true;
 }
 
 void bme_read_data() {
@@ -67,7 +78,7 @@ void bme_read_data() {
   // pres = pres / 100;
 
   temp = bme.getTemperature();
-  pres = bme.getPressure() / 100;
+  pres = bme.getPressure() / 100.0;
   hum = bme.getHumidity();
 
   char log[80];

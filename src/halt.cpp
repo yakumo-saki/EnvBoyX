@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "display.h"
+#include "display/display.h"
 
 #include "log.h"
 #include "watchdog.h"
