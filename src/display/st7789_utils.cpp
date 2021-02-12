@@ -1,3 +1,5 @@
+#ifdef USER_SETUP_LOADED
+
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include "display/st7789_utils.h"
@@ -77,3 +79,5 @@ void draw_arrow(int x, int y, ARROW_ICON type, uint16_t color, int height, int w
 void draw_arrow(int x, int y, ARROW_ICON type, uint16_t color) {
     draw_arrow(x, y, type, color, 22, 12);
 }
+
+#endif

@@ -184,6 +184,8 @@ esptool.py write_flash 0x1000 filename.bin
 * CHANGE: Stop prefixing "*" when co2ppm below 400 (use alerts for this purpose)
 * FIX: Wait for reconfigure bar length invalid
 * FIX: BME280: improve pressure precision (fix decimal values are truncated)
+* ADD: Pressure delta
+* CHANGE: ST7789: Normal: Dont show co2 when no co2 sensor.
 
 ### v39
 

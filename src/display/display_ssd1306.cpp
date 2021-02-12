@@ -6,6 +6,7 @@
 #include "global.h"
 #include "log.h"
 
+#include "display/display_util.h"
 #include "display/u8g2_utils.h"
 
 // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
@@ -212,22 +213,17 @@ void write_value(int x, int y, String valueString, value_alert_t alert, TextAlig
 
 void _draw_pressure_delta(int y) {
   // pressure delta
-	String pressureDelta = "";
-	if (sensorValues.pressureDelta < 0) { // マイナス値はアイコンで表示するので符号は不要
-		pressureDelta = String(-1.0 * sensorValues.pressureDelta, 1);
-	} else {
-		pressureDelta = String(1.0 * sensorValues.pressureDelta, 1);
-	}
+	pressure_delta_t delta = get_pressure_delta_struct(sensorValues.pressureDelta);
 
   const int ICON_X = 80;
-	if (sensorValues.pressureDelta >= 0.10) {
+	if (delta.drawIcon && delta.positive) {
     draw_string(ICON_X, y, FONT_ARROW_UP, TextAlign::LEFT, FONT_ARROW);
-	} else if (sensorValues.pressureDelta <= -0.10) {
+	} else if (delta.drawIcon && delta.negative) {
     draw_string(ICON_X, y, FONT_ARROW_DOWN, TextAlign::LEFT, FONT_ARROW);
 	} else {
     // ほぼ変わらないのでアイコンなし (-0.09 ~ 0.09)
 	}
-  draw_string(127, y, pressureDelta, TextAlign::RIGHT, FONT_PLAIN_10);
+  draw_string(127, y, delta.formattedValue, TextAlign::RIGHT, FONT_PLAIN_10);
 }
 
 /**

@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include "structs.h"
+
+#include "log.h"
 #include "display/display_util.h"
 
 bool has_caution(value_alerts_t alerts) {
@@ -29,13 +31,26 @@ bool has_warning(value_alerts_t alerts) {
  * マイナス値はアイコンで表示するので符号は不要
  */
 String format_air_pressure_delta(float value) {
+
     String pressureDelta;
 
-	if (value < 0) {
-		pressureDelta = String(-1.0 * value, 1);
+    // 0.05の計算は、String()で切り上げをしてほしくないため
+	if (value == 0.0) {
+        pressureDelta = "0.0";
+    } else if (0.0 < value && value < 0.1) {
+        pressureDelta = "0.0";
+    } else if (-0.1 < value && value < 0.0) {
+        pressureDelta = "0.0";
+    } else if (value < 0.0) {
+        float v = value + 0.09;
+		pressureDelta = String(-1.0 * v, 1);
+	} else if (value > 0.0) {
+        float v = value - 0.09;
+		pressureDelta = String(1.0 * v, 1);
 	} else {
-		pressureDelta = String(1.0 * value, 1);
-	}
+        pdeltalog("Unknown value " + String(value));
+    }
+     
     return pressureDelta;
 }
 

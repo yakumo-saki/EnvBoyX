@@ -1,4 +1,4 @@
-#ifdef ESP32
+#ifdef USER_SETUP_LOADED
 
 #include <Arduino.h>
 
@@ -124,7 +124,7 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 	tft.drawString("p", R3_X + 1, R3_Y + 15, SMALL_FONT);
 	tft.drawString("a", R3_X + 1, R3_Y + 31, SMALL_FONT);
 
-	if (true) {
+	if (showDelta) {
 		// 気圧差分表示
 		pressure_delta_t delta = get_pressure_delta_struct(sensorValues.pressureDelta);
 
@@ -170,7 +170,7 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 	}
 
 	tick++;
-	if (tick > 2) {
+	if (tick > 5) {
 		tick = 0;
 		showDelta = !showDelta;
 	}

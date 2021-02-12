@@ -3,6 +3,8 @@
 //
 #include <Arduino.h>
 
+#include "display/display_util.h"
+
 #include "global.h"
 #include "log.h"
 
@@ -41,12 +43,12 @@ void store_air_pressure_delta() {
 
     if (base == -1.0) {
         sensorValues.pressureDelta = 0.0;
-        pdeltalog(F("No history. Assume delta = 0.0"));
-        return;
+    } else {
+        sensorValues.pressureDelta = sensorValues.pressure - base;
     }
   
-    sensorValues.pressureDelta = sensorValues.pressure - base;
     pdeltalog("Pressure Delta=" + String(sensorValues.pressureDelta) 
               + " PRES=" + String(sensorValues.pressure, 2) 
-              + " BASE=" + String(sensorValues.pressure, 2));
+              + " BASE=" + String(base, 2)
+              + " FORMATTED=" + format_air_pressure_delta(sensorValues.pressureDelta));
 }

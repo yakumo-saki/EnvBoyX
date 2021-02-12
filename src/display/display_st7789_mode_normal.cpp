@@ -1,4 +1,4 @@
-#ifdef ESP32
+#ifdef USER_SETUP_LOADED
 
 #include <Arduino.h>
 
@@ -82,7 +82,7 @@ void _disp_header_normal(String ip, String mDNS)
 
 	// X 影→本体の順で書かないと重なった部分が上書きされるのに注意
 	tft.setTextColor(TFT_SILVER);
-	tft.drawString("X", 53, 2, SMALL_FONT);
+	tft.drawString("X", 51, 2, SMALL_FONT);
 	tft.setTextColor(TFT_WHITE);
 	tft.drawString("X", 50, 0, SMALL_FONT);
 
@@ -103,8 +103,10 @@ void _disp_header_normal(String ip, String mDNS)
 	tft.setTextDatum(TR_DATUM);
 	tft.drawString("T:", LEFT_HEAD_R_ALIGN_X, ROW1_Y, DEFAULT_FONT);
 
-	tft.setTextDatum(TL_DATUM);
-	tft.drawString("L:", RIGHT_HEAD_X, ROW1_Y, DEFAULT_FONT);
+	if (sensorCharacters.co2ppm) {
+		tft.setTextDatum(TL_DATUM);
+		tft.drawString("L:", RIGHT_HEAD_X, ROW1_Y, DEFAULT_FONT);
+	}
 
 	// Row 2
 	tft.setTextColor(TFT_WHITE);
@@ -117,13 +119,27 @@ void _disp_header_normal(String ip, String mDNS)
 	tft.drawString("P:", LEFT_HEAD_R_ALIGN_X, ROW3_Y, DEFAULT_FONT);
 
 	// Row 4
-	tft.setTextColor(TFT_WHITE);
-	tft.setTextDatum(TL_DATUM);
-	tft.drawString("CO2:", LEFT_HEAD_X, ROW4_Y, DEFAULT_FONT);
-
+	if (sensorCharacters.co2ppm) {
+		tft.setTextColor(TFT_WHITE);
+		tft.setTextDatum(TL_DATUM);
+		tft.drawString("CO2:", LEFT_HEAD_X, ROW4_Y, DEFAULT_FONT);
+	} else {
+		tft.setTextDatum(TR_DATUM);
+		tft.drawString("L:", LEFT_HEAD_R_ALIGN_X, ROW4_Y, DEFAULT_FONT);
+	}
 }
 
-void write_value(String value, int x, int y, int width, int font, value_alert_t alert) {
+// 値を書き込む（単位あり、フォント違い）
+void write_value(String value, int x, int y, int width, int valueFont, value_alert_t alert, String unit, int unitFont) {
+
+	// 値と単位のフォントの高さを調整するための値を決める
+	int unitFontDiffY = 0;
+	if (valueFont == DEFAULT_FONT) {
+		if (unitFont == SMALL_FONT) {
+			unitFontDiffY = 6;
+		}
+	}
+
 	if (alert.warning) {
 		tft.setTextColor(TFT_RED, TFT_BLACK);
 	} else if (alert.caution) {
@@ -133,12 +149,20 @@ void write_value(String value, int x, int y, int width, int font, value_alert_t 
 	}
 
 	tft.setTextPadding(width);
-	tft.drawString(value, x, y, font);
+	int written = tft.drawString(value, x, y, valueFont);
+
+	if (unit != "") {
+		tft.setTextPadding(width - written);
+		tft.drawString(unit, x + written + 1, y + unitFontDiffY, unitFont);
+	}
 
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
-
 }
 
+// 値を書き込む（単位無し or 値と同じフォント）
+void write_value(String value, int x, int y, int width, int font, value_alert_t alert) {
+	write_value(value, x, y, width, font, alert, "", DEFAULT_FONT);
+}
 
 /**
  * @param val 値
@@ -147,17 +171,20 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 {
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 	tft.setTextSize(1);
+	tft.setTextDatum(TL_DATUM);
 
 	// Row 1
 	write_value(values.temperature, LEFT_VAL_X, ROW1_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.temperature);
 
-	write_value(values.lux, RIGHT_VAL_X, ROW1_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.lux);
+	if (sensorCharacters.co2ppm) {
+		write_value(values.lux, RIGHT_VAL_X, ROW1_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.lux);
+	}
 
 	// Row 2
 	write_value(values.humidity, LEFT_VAL_X, ROW2_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.humidity);
 
 	// Row 3
-	write_value(values.pressure, LEFT_VAL_X, ROW3_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.pressure);
+	write_value(values.pressure, LEFT_VAL_X, ROW3_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.pressure, "hPa", SMALL_FONT);
 
 	// Air pressure delta
 	tft.setTextPadding(VALUE_WIDTH);
@@ -190,8 +217,12 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 	}
 
 	// Row 4
-	tft.setTextColor(TFT_WHITE, TFT_BLACK);
-	write_value(values.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.co2);
+	if (sensorCharacters.co2ppm) {
+		tft.setTextColor(TFT_WHITE, TFT_BLACK);
+		write_value(values.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.co2, "ppm", SMALL_FONT);
+	} else {
+		write_value(values.lux, LEFT_VAL_X, ROW4_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.lux);
+	}
 
 	// Alert color
 	if (has_caution(alerts)) {
