@@ -44,8 +44,10 @@ cp ${MYDIR}/docs/how_to_write*.md ${RELEASE_DIR}
 
 banner "Creating Archive"
 
+rm -f ${MYDIR}/EnvBoyX*.tar.gz
+
 # git ブランチからファイル名判定
-branch=`git branch --contains | cut -b3-`
+branch=`git symbolic-ref --short HEAD`
 
 if [ $branch = "master" ]; then
   RELEASE_FILE_PATH=${MYDIR}/EnvBoyX.tar.gz
