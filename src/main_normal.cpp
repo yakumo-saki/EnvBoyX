@@ -158,9 +158,6 @@ void setup_normal() {
   sectionlog(F("Start watchdog"));
   setup_watchdog();
 
-  // 起動画面
-  disp_normal_startup_screen(product_long);
-
   // setupモードに入りやすくするための処理
   sectionlog(F("Reset to reconfig start."));
   remove_configure_flag_file();

@@ -80,25 +80,6 @@ void init_u8g2() {
 }
 
 /**
- * 起動時の画面表示（共通）
- */
-void disp_ssd1306_normal_startup_screen(String product_long) {
-
-  if (!has_ssd1306()) return;
-
-  init_u8g2();
-  
-  u8g2.setFont(FONT_BOOT);
-  // u8g2.setTextAlignment(TextAlign::LEFT);
-  u8g2.drawStr(0, 16,  "ziomatrix corp.");
-  u8g2.drawStr(0, 32, product_long.c_str());
-  u8g2.drawStr(0, 48, "initialize or flash");
-  u8g2.drawStr(0, 64, "Please wait");
-
-  u8g2.sendBuffer();
-}
-
-/**
  * セットアップモード時のディスプレイ表示
  */
 void disp_ssd1306_setup_startup_screen(String ipAddr, int disp_switch) {
@@ -168,7 +149,7 @@ void disp_ssd1306_wait_for_reconfig_init() {
   init_u8g2();
 
   u8g2.setFont(FONT_BOOT);
-  u8g2.drawStr(0, 0, "Wait for re-config");
+  u8g2.drawStr(0, 0, product_long.c_str());
   u8g2.drawStr(0, 33, "Power off now");
   u8g2.drawStr(0, 48, " to re-configure");
 
@@ -256,8 +237,8 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
   presWidth += 4 + u8g2.getStrWidth("hPa");
 
   // write_value(0, R2, values.pressure, alerts.pressure, TextAlign::LEFT);
-  // draw_value(0, R2, get_decoration_from_alert(alerts.pressure), TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_PLAIN_10);
-  draw_value(0, R2, TextDecoration::INVERT, TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_SMALL_NARROW);
+  draw_value(0, R2, get_decoration_from_alert(alerts.pressure), TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_SMALL_NARROW);
+  // draw_value(0, R2, TextDecoration::INVERT, TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_SMALL_NARROW);
 
   // ２行目：みぎ：気圧の差
   _draw_pressure_delta(R2);
@@ -265,7 +246,7 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
   // ３行目：CO2センサーがないならその場所に照度を表示する
   if (sensorCharacters.co2ppm) {
     write_value(127, R3, values.lux, alerts.lux, TextAlign::RIGHT);
-    draw_value(0, R3, get_decoration_from_alert(alerts.co2), TextAlign::LEFT, values.co2ppm, FONT_PLAIN_10, "ppm", FONT_SMALL_NARROW); // 9999ppm
+    draw_value(0, R3, get_decoration_from_alert(alerts.co2), TextAlign::LEFT, values.co2ppm, FONT_PLAIN_10, "PPM", FONT_SMALL_NARROW); // 9999ppm
   } else {
     write_value(0, R3, values.lux, alerts.lux, TextAlign::LEFT);
   }
@@ -279,8 +260,8 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
 
   // 左上、EnvBoyX の表示
   draw_string(0 , R0 + 1, product_short, TextAlign::LEFT, FONT_SMALL); 
-    // バージョン表示
-  draw_string(40, R0, ver, TextAlign::RIGHT, FONT_SMALL_VERSION);
+  // バージョン表示
+  // draw_string(40, R0, ver, TextAlign::RIGHT, FONT_SMALL_VERSION);
 
   
   disp_switch++;

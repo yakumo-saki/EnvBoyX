@@ -173,9 +173,11 @@ esptool.py write_flash 0x1000 filename.bin
 * DROP: Delete some functions
 * NOTE: other things
 
-### v41
+### v40.1
 
-* 
+* FIX: SSD1306: Missing unit when no alerts
+* CHANGE: Add minor version
+* CHANGE: Delete startup first screen
 
 ### v40
 

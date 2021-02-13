@@ -109,12 +109,16 @@ uint16_t draw_value(int x, int y, TextDecoration deco, TextAlign align, String v
   } else {
     // 通常表示
     u8g2.setDrawColor(WHITE);
+    u8g2.setFont(valueFont);
     draw_string(strStartX, y, valueString, align);
 
+    u8g2.setFont(unitFont);
+    draw_string(unitStartX, y + UNIT_HEIGHT_MARGIN, unitString, align);
   }
 
   u8g2.setFontMode(0);
-  u8g2.setDrawColor(WHITE);  // 
+  u8g2.setDrawColor(WHITE);
+  u8g2.setFont(valueFont);
   return boxWidth;
 
 }

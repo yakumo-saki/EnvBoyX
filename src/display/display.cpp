@@ -33,18 +33,6 @@ bool use_st7789() {
 }
 
 /**
- * 起動時の画面表示（共通）
- */
-void disp_normal_startup_screen(String product_long) {
-	if (use_ssd1306()) {
-		disp_ssd1306_normal_startup_screen(product_long);
-	}
-	if (use_st7789()) {
-		disp_st7789_normal_startup_screen(product_long);
-	}
-}
-
-/**
  * セットアップモード時のディスプレイ表示
  */
 void disp_setup_startup_screen(String ipAddr) {

@@ -88,7 +88,7 @@ void _disp_header_normal(String ip, String mDNS)
 
 	// version
 	tft.setTextColor(TFT_WHITE);
-	tft.drawString(ver, 64, 0, XSMALL_FONT);
+	tft.drawString(ver, 62, 0, XSMALL_FONT);
 
 	tft.setTextSize(1);
 

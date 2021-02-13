@@ -9,7 +9,6 @@
 void disp_st7789_setup_startup_screen(String ipAddr, int disp_switch) {}
 
 void disp_st7789_wifi_info(String ip, String mDNS) {}
-void disp_st7789_normal_startup_screen(String product_long) {}
 void disp_st7789_wait_for_reconfig_init() {}
 void disp_st7789_wait_for_reconfig_bar(int now, const int max) {}
 void disp_st7789_wifi_starting() {}

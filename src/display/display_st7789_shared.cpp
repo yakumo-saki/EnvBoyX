@@ -58,22 +58,6 @@ void clear_screen(bool ignoreBigMode = false) {
 }
 
 /**
- * 起動時の画面表示（共通）
- */
-void disp_st7789_normal_startup_screen(String product_long)
-{
-	tft.startWrite();
-	clear_screen(true);
-	tft.fillScreen(TFT_BLACK);
-	tft.setCursor(0, 0, DEFAULT_FONT);
-	tft.setTextColor(TFT_WHITE, TFT_BLACK);
-
-	tft.println("startup");
-
-	tft.endWrite();
-}
-
-/**
  * セットアップモード時のディスプレイ表示
  */
 void disp_st7789_setup_startup_screen(String ipAddr, int disp_switch)
@@ -181,6 +165,7 @@ void disp_st7789_wait_for_reconfig_init()
 	tft.setCursor(0, 0, DEFAULT_FONT);
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
+	tft.println(product_long);
 	tft.println("Wait for");
 	tft.println(" reconfigure");
 
