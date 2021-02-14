@@ -120,14 +120,17 @@ Maybe I can support ST7789 on ESP8266. but not in TODO.
 
 EnvBoyX has http API.
 
-| METHOD | ENDPOINT      | RETURN | description                |
-| ------ | ------------- | -------------------------- |
-| GET | /             | JSON | sensor value as JSON.|
-| GET | /ping         | TEXT | returns pong. |
-| GET | /stastics     | JSON | stastics JSON |
-| GET | /brightness?value=<brightness> | TEXT | set display brightness (0-255) 0 means OFF |
-| GET | /display?value=<1 or 0> | TEXT | set display power (1 = ON / 0 = OFF) |
-| POST | /goto_setup | TEXT | Go to setup mode at next boot |
+| minVer | METHOD | ENDPOINT      | RETURN | description                |
+| ------| ------ | ------------- | -------------------------- | -------|
+| 2.0   | GET | /             | JSON | sensor value as JSON.|
+| 2.0   | GET | /ping         | TEXT | returns pong. |
+| 39.0  | GET | /stastics     | JSON | stastics JSON |
+| 3.4   | GET | /brightness?value=<brightness> | TEXT | set display brightness (0-255) 0 means OFF |
+| 3.4   | GET | /display?value=<1 or 0> | TEXT | set display power (1 = ON / 0 = OFF) |
+| 40.0  | POST | /goto_setup | TEXT | Go to setup mode at next boot |
+| 41.0  | POST | /mhz19b/abc | TEXT | value=1 ON value=0 OFF |
+| 41.0  | POST | /mhz19b/zeroCalibration | TEXT | __DANGER__ |
+
 
 NOTE: There is no reboot API, because of security reason.
 
@@ -172,6 +175,11 @@ esptool.py write_flash 0x1000 filename.bin
 * ADD: Add new function
 * DROP: Delete some functions
 * NOTE: other things
+
+### v41.0
+
+* ADD: API: MH-Z19B Auto Baseline Calibration ON/OFF
+* ADD: API: MH-Z19B Zero Calibration
 
 ### v40.1
 

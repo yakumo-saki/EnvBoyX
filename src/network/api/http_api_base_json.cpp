@@ -64,4 +64,3 @@ String http_normal_ping_json() {
   httplog(json);
   return json;
 }
-
