@@ -191,6 +191,7 @@ OK
 ## v42.0: Config update
 
 * CHANGE: 
+* ADD: freeHeap to JSON, value of ESP.getFreeHeap() (update 15sec)
 
 ## v41.0: MH-Z19B update
 

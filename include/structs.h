@@ -12,6 +12,7 @@ typedef struct {
   int co2ppm;
   String co2ppmAccuracy;
   int rssi;            // not sensor value. get from wifi
+  uint32_t freeHeap;   // not sensor value. get from ESP
 } sensor_values_t;
 
 typedef struct {

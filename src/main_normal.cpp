@@ -19,6 +19,7 @@
 #include "sensors/lps22hb.h"
 #include "sensors/mhz19.h"
 #include "sensors/tsl2561.h"
+#include "sensors/freeHeap.h"
 #include "sensors/pressure_delta.h"
 #include "watchdog.h"
 #include "wifi.h"
@@ -129,6 +130,7 @@ void add_timer_tasks() {
 
   // 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する
   timer.add(call_disp_sensor_value, "DISP", 1000);
+  timer.add(store_free_heap, "FREE_HEAP", 15000);
   timer.addStasticsFunction(updateStastics, "STAT", 60000);
 }
 
