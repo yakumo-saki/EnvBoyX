@@ -19,8 +19,6 @@ bool AUTO_BASELINE_CORRECTION = false;
 SoftwareSerial mhzSerial(14, 0);
 #endif
 
-unsigned long mhzGetDataTimer = 0;                     
-
 MHZ19 mhz19;
 
 void printErrorCode() {
@@ -68,7 +66,7 @@ bool mhz_setup_uart() {
 
   mhz19.begin(mhzSerial);
 
-  mhz19.setRange(5000);
+  mhz19.setRange(2000);
   printErrorCode();
 
   // mhzlog("setSpan()");
@@ -79,23 +77,50 @@ bool mhz_setup_uart() {
   mhz19.autoCalibration(AUTO_BASELINE_CORRECTION);
   printErrorCode();
 
-  if (AUTO_BASELINE_CORRECTION) {
-    mhzlog(F("WARNING -------------------------- WARNING"));
-    mhzlog(F("     Auto Baseline Correction is ON!"));
-    mhzlog(F("WARNING -------------------------- WARNING"));
-  }
-
   mhz_setup_check_device_uart();
 
-  mhzlog(F("initialized."));
+    mhzlog(F("initialized."));
+  return true;
+}
+
+// For API
+bool mhz_do_zero_calibration() {
+  if (config.mhz19b != MHZ_USE_UART) return false;
+  mhz19.calibrate();
+  if (mhz19.errorCode != 1) {
+    mhzlog("API: ZeroCalibration: Error " + mhz19_code_to_msg(mhz19.errorCode));
+    return false;
+  }
+
+  mhzlog(F("API: ZeroCalibration: done"));
+  return true;
+}
+
+// For API
+bool mhz_get_abc() {
+  if (config.mhz19b != MHZ_USE_UART) return false;
+  return mhz19.getABC();
+}
+
+// For API
+bool mhz_set_abc(bool onoff) {
+  if (config.mhz19b != MHZ_USE_UART) return false;
+  mhz19.autoCalibration(onoff);
+  if (mhz19.errorCode != 1) {
+    mhzlog("API: " + mhz19_code_to_msg(mhz19.errorCode));
+    return false;
+  }
+
+  if (onoff) {
+    mhzlog(F("API: ABC is now ON"));
+  } else {
+    mhzlog(F("API: ABC is now OFF"));
+  }
+
   return true;
 }
 
 void mhz_read_data_uart() {
-
-  if ( (millis() - mhzGetDataTimer) < 3000) {
-    return;
-  }
 
   mhz19.verify();
   if (mhz19.errorCode != MHZ_RESULT_OK) {
@@ -105,9 +130,7 @@ void mhz_read_data_uart() {
   }
 
   int co2ppm = mhz19.getCO2();
-  if (mhz19.errorCode == 1) {
-    mhzGetDataTimer = millis();
-  } else {
+  if (mhz19.errorCode != 1) {
     printErrorCode();
   }
 

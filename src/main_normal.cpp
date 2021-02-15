@@ -209,6 +209,6 @@ void loop_normal() {
   http_loop_normal();
 
   // mainlog("Wait for Next tick.");
-
+  yield();
   watchdog_feed();
 }
