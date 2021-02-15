@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#include "log.h"
+
 bool parseBooleanString(const String val) {
 
     // String is null or invalid
@@ -19,4 +21,29 @@ bool parseBooleanString(const String val) {
     if (v == "NO") return false;
 
     return false;
+}
+
+std::vector<String> stringSplit(String value, String delimiter) {
+    std::vector<String> ret;
+
+    String temp = "";
+    for (unsigned int i = 0; i < value.length(); i++) {
+        String v;
+        if (i + 1 > value.length()) {
+            v = value.substring(i);
+        } else {
+            v = value.substring(i, i + 1);
+        }
+        if (v == delimiter) {
+            ret.push_back(temp);
+            temp = "";
+            continue;
+        } else {
+            temp += v;
+        }
+    }
+    
+    ret.push_back(temp);
+
+    return ret;
 }

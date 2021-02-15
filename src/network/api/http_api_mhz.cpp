@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "log.h"
 #include "global.h"
 #include "network/http_api.h"
 #include "network/http_api_util.h"
@@ -69,4 +70,6 @@ void http_api_mhz_setup() {
   server.on ( "/mhz19b/abc", HTTP_GET, _get_mhz_abc );
   server.on ( "/mhz19b/abc", HTTP_POST, _set_mhz_abc );
   server.on ( "/mhz19b/zeroCalibration", HTTP_POST, _mhz_zero_calibration );
+
+  apilog("API MHZ-19B initialized.");
 }

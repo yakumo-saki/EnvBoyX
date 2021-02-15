@@ -2,6 +2,7 @@
 
 #include "config.h"
 
+#include "log.h"
 #include "global.h"
 #include "display/display.h"
 #include "network/http_api.h"
@@ -43,4 +44,5 @@ void http_api_base_setup() {
   server.on ( "/goto_setup", HTTP_POST, http_handle_goto_setup );
 
   server.onNotFound ( http_handle_not_found );
+  apilog("API Base initialized.");
 }

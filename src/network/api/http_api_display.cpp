@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+#include "log.h"
 #include "global.h"
 #include "display/display.h"
 #include "network/http_api.h"
@@ -29,4 +29,6 @@ void http_handle_brightness() {
 void http_api_display_setup() {
   server.on ( "/brightness", HTTP_GET, http_handle_brightness );
   server.on ( "/display", HTTP_GET, http_handle_power );
+
+  apilog("API Display initialized.");
 }
