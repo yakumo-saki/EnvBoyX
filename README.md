@@ -11,7 +11,7 @@ Arduino environment monitor for ESP32 / ESP8266 based boards.
 
 | name   | usage |
 | ------ | ---------------------------------- |
-| master | latest Release                     |
+| main   | latest Release                     |
 | devel  | currently developing unstable code |
 
 # images
@@ -187,6 +187,10 @@ OK
 * ADD: Add new function
 * DROP: Delete some functions
 * NOTE: other things
+
+## v42.0: Config update
+
+* CHANGE: 
 
 ## v41.0: MH-Z19B update
 

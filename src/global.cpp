@@ -10,7 +10,7 @@
 extern const String product_short = "EBX";
 // EnvBoyX
 extern const String product = "EnvBoyX";
-extern const String ver = "41";
+extern const String ver = "42";
 extern const String minorVer = "0";
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
