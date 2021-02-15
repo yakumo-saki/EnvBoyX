@@ -129,24 +129,36 @@ EnvBoyX has http API.
 | 3.4   | GET | /display?value=<1 or 0> | TEXT | set display power (1 = ON / 0 = OFF) |
 | 40.0  | POST | /goto_setup | TEXT | Go to setup mode at next boot |
 | 41.0  | POST | /mhz19b/abc | TEXT | value=1 ON value=0 OFF |
-| 41.0  | POST | /mhz19b/zeroCalibration | TEXT | __DANGER__ |
-
+| 41.0  | POST | /mhz19b/zeroCalibration | TEXT | __DANGER__ Use if you know what you are doing |
 
 NOTE: There is no reboot API, because of security reason.
 
-#### note
+#### cURL examples
 
-* brightness and display power function is NOT WORKING in ST7789 (v3.0)
+These are example of calling API
 
-## how to write 
-
-use esptools.py or PlatformIO IDE.
+##### Simple get API
 
 ```
-esptool.py write_flash 0x1000 filename.bin
+curl http://[envboy IP or mDNShostname.local]/
+{"product":"EnvBoyX","uptime":"01:18:02","uptimeMills":4682994,"temparature":"28.60","humidity":"35.00","pressure":"976.81","luminous":"16","luminousIr":"2","co2ppm":"-999","co2ppmAccuracy":"","rssi":-12}
 ```
 
-* Get binary from releases page.
+##### GET with parameter API
+
+```
+curl http://[envboy IP or mDNShostname.local]/brightness?value=100`
+OK
+```
+
+##### POST without parameter API
+
+```
+$ curl -X POST http://[envboy IP or mDNShostname.local]/goto_setup
+OK
+```
+
+# appendix
 
 ## Setups I am using
 
@@ -167,7 +179,7 @@ esptool.py write_flash 0x1000 filename.bin
 * WeMos D1mini
 * NodeMCU V3
 
-## Version History
+# Version History
 
 * BUGFIX: Bug fix
 * FIX: Fix not bug, but not friendly behavior
@@ -176,18 +188,18 @@ esptool.py write_flash 0x1000 filename.bin
 * DROP: Delete some functions
 * NOTE: other things
 
-### v41.0
+## v41.0: MH-Z19B update
 
 * ADD: API: MH-Z19B Auto Baseline Calibration ON/OFF
 * ADD: API: MH-Z19B Zero Calibration
 
-### v40.1
+## v40.1: Bugfix release for v40
 
 * FIX: SSD1306: Missing unit when no alerts
 * CHANGE: Add minor version
 * CHANGE: Delete startup first screen
 
-### v40
+## v40: Pressure Delta update
 
 * FIX: CO2 ppm alert value is not good.
 * ADD: Add POST /goto_setup API. 
@@ -201,14 +213,14 @@ esptool.py write_flash 0x1000 filename.bin
 * ADD: Pressure delta
 * CHANGE: ST7789: Normal: Dont show co2 when no co2 sensor.
 
-### v39
+## v39: SH1106 Support release
 
 * CHANGE: CONFIG: Add SSD1306 / SH1106 switch
 * CHANGE: HTTP: ESP32: Stop Async Web server. back to standard webserver to reduce code duplicate #42
 * ADD: WiFi RSSI to JSON
 * FIX: ST7789: T: header align
 
-### v38
+## v38: Small update release
 
 * CHANGE: CONFIG: ESP32 now uses SPIFFS instead of LITTLEFS but no format or setup required (remove LITTLEFS to SPIFFS wrapper because of compile error)
 * CHANGE: SSD1306: Move to U8G2 graphic library
@@ -217,7 +229,7 @@ esptool.py write_flash 0x1000 filename.bin
 * CHANGE: ST7789: Draw wait for reconfigure bar using graphics
 * BUGFIX: CONFIG: coution 2 High value is not saved. (due to insufficient buffer)
 
-### v37
+## v37: Alert update.
 
 * VERSION: 37. next version is v38.
 * BUGFIX: Alert settings are not saved on ESP32.
@@ -225,27 +237,27 @@ esptool.py write_flash 0x1000 filename.bin
 * CHANGE: Switch to squix78 -> thingpulse (same library)
 * CONFIG: Shorten JSON keys about alerts(reconfig required)
 
-### v3.6
+## v3.6: Bugfix release.
 
-* LICENSE: EnvBoyX is now under APL 2.0 , Affected to all versions. (license terms are not shown before)
+* NOTE: LICENSE: EnvBoyX is now under APL 2.0 , Affected to all versions. (license terms are not shown before)
 * BUGFIX: TSL2561 can't enabled
 * CHANGE: Serial speed changed to 74880. (was 115200)
 * BUGFIX: ping API returns invalid JSON
 * BUGFIX: Display glitch when bigmode and show lux
 
-### v3.5
+## v3.5
 
 * CHANGE: Config: version 9 (was 8) and using JSON format
 * ADD: Config: Migration between versions
 
-### v3.4
+## v3.4
 
 * CHANGE: Config: version 8 (was 6)
 * BUGFIX: SSD1306 not shown in Setup Mode
 * ADD: Default Brightness setting
 * ADD: Screen Flip setting
 
-### v3.3
+## v3.3
 
 * BUGFIX: MH-Z19B wrong message
 * BUGFIX: Wrong uptime on JSON
@@ -253,24 +265,24 @@ esptool.py write_flash 0x1000 filename.bin
 * ADD: Watchdog timer (ESP32 only)
 * CHANGE: Use TimerCall
 
-### v3.2
+## v3.2
 
 * FIX: Avoid using delay
 * ADD: I2C scan on startup.
 * BUGFIX: ESP8266: I2C not working
 * DROP: ESP8266: ST7789 is not supported (because of Pin config)
 
-### v3.1
+## v3.1
 
 * ADD: vertical display mode(bigger font. ST7789 only)
 * FIX: Refactoring
 
-### v3.0
+## v3.0
 
 * ADD: ST7789 Support (T-Display)
 * NOTE: ST7789 is initial support, some screens are simplifyed.
 
-### v2.7: Display item change update
+## v2.7: Display item change update
 
 * CHANGE: Delete alive indicator "*" after EnvBoyX string.
 * ADD: alive indicator. EnvBoyX's "X" character now blinks.
@@ -278,35 +290,35 @@ esptool.py write_flash 0x1000 filename.bin
 * ADD: mDNS name display. IP/mDNS display switches 3 sec interval.
 * NOTE: Abort TFT display implementation.
 
-### v2.6
+## v2.6
 
 * BUGFIX: Fix mDNS not working
 
-### v2.5
+## v2.5
 
 * ADD: /display endpoint.
 
-### v2.4
+## v2.4
 
 * ADD: /brightness endpoint.
 
-### v2.3
+## v2.3
 
 * FIX: Unifing EnvBoyX (ESP8266) and EnvBoyX32 (ESP32) again.
 
-### v2.2
+## v2.2
 
 * missing version due to bug.
 
-### v2.1
+## v2.1
 
 * FIX: Split EnvBoyX (8266) and EnvBoyX32 (ESP32)
 
-### v2.0
+## v2.0
 
 * FIX: Move Arduino IDE to Platform.IO
 
-### before v2.0
+## before v2.0
 
 * https://github.com/yakumo-saki/envboy
 * https://github.com/yakumo-saki/EnvBoyMQTT
