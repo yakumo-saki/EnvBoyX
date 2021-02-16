@@ -22,7 +22,8 @@ void _get_config() {
   }
 
   DynamicJsonDocument json = create_config_json(keyArray);
-  json["command"] = "GET";
+  json["command"] = "CONFIG_GET";
+  json["success"] = true;
 
   String jsonStr;
   serializeJson(json, jsonStr);
@@ -34,8 +35,9 @@ void _set_config() {
   DynamicJsonDocument msgs = updateConfig();
   DynamicJsonDocument json(1000);
   json["msgs"] = msgs;
-  json["command"] = "SET";
-  
+  json["command"] = "CONFIG_SET";
+  json["success"] = true;
+
   String jsonStr;
   serializeJson(json, jsonStr);
 
@@ -44,8 +46,8 @@ void _set_config() {
 
 void _revert_config() {
   DynamicJsonDocument json(100);
-  json["command"] = "REVERT";
-  json["result"] = "OK";
+  json["command"] = "CONFIG_REVERT";
+  json["success"] = true;
   read_config();
 
   String jsonStr;
@@ -56,8 +58,8 @@ void _revert_config() {
 void _commit_config() {
   DynamicJsonDocument json(100);
   
-  json["command"] = "COMMIT";
-  json["result"] = "OK";
+  json["command"] = "CONFIG_COMMIT";
+  json["success"] = true;
   save_config();
 
   String jsonStr;

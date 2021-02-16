@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
+
 #include "log.h"
 #include "global.h"
 #include "display/display.h"
@@ -15,15 +17,29 @@ void http_handle_power() {
     disp_set_power(false);
   }
 
-  String message = "OK";
-  server.send( 200, MIME_TEXT, message );
+
+  DynamicJsonDocument json(100);
+  json["command"] = "DISPLAY_POWER";
+  json["success"] = true;
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void http_handle_brightness() {
   String value = server.arg("value");
   int brightness = value.toInt();
   String msg = disp_set_brightness(brightness);
-  server.send(200, MIME_TEXT, "OK\n" + msg);
+
+  DynamicJsonDocument json(100);
+  json["command"] = "DISPLAY_BRIGHTNESS";
+  json["success"] = true;
+  json["msg"] = msg;
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void http_api_display_setup() {
