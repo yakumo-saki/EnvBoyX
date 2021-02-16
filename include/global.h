@@ -20,6 +20,8 @@ extern const int I2C_SCL;
 extern const int MHZ_BAUDRATE;
 extern const byte SSD1306_I2C_ADDR;
 
+extern const int MHZ_RANGE;
+
 // --------------------------------------------------------------------
 // 設定ファイル用定数
 // --------------------------------------------------------------------

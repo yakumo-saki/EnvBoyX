@@ -10,7 +10,10 @@ const int MHZ_RESULT_OK = 1;
 
 // 400ppmの校正(ABC)を行う。これをするには、20分以上外気に晒し続ける必要がある。
 // 終了後は false に戻す。
-bool AUTO_BASELINE_CORRECTION = false;
+bool autoBaselineCorrection = false;
+
+// キャリブレーション中か否か。
+bool calibrationInProgress = false;
 
 #ifdef ESP32
   HardwareSerial mhzSerial(2); // use UART2
@@ -66,15 +69,15 @@ bool mhz_setup_uart() {
 
   mhz19.begin(mhzSerial);
 
-  mhz19.setRange(2000);
+  mhz19.setRange(MHZ_RANGE);
   printErrorCode();
 
   // mhzlog("setSpan()");
   // mhz19.setSpan(2000);                  
   // printErrorCode();
 
-  mhzlog("setAutoCalibration() " + String(AUTO_BASELINE_CORRECTION));
-  mhz19.autoCalibration(AUTO_BASELINE_CORRECTION);
+  mhzlog("setAutoCalibration() " + String(autoBaselineCorrection));
+  mhz19.autoCalibration(autoBaselineCorrection);
   printErrorCode();
 
   mhz_setup_check_device_uart();
@@ -84,7 +87,7 @@ bool mhz_setup_uart() {
 }
 
 // For API
-bool mhz_do_zero_calibration() {
+bool mhz_calibration_start() {
   if (config.mhz19b != MHZ_USE_UART) return false;
   mhz19.calibrate();
   if (mhz19.errorCode != 1) {
@@ -121,6 +124,11 @@ bool mhz_set_abc(bool onoff) {
 }
 
 void mhz_read_data_uart() {
+
+  if (calibrationInProgress) {
+    mhzlog(F("MH-Z19B is calibrating. dont read."));
+    return;
+  }
 
   mhz19.verify();
   if (mhz19.errorCode != MHZ_RESULT_OK) {

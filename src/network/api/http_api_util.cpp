@@ -35,14 +35,15 @@ std::vector<String> stringSplit(String value, String delimiter) {
             v = value.substring(i, i + 1);
         }
         if (v == delimiter) {
+            temp.trim();
             ret.push_back(temp);
             temp = "";
-            continue;
         } else {
             temp += v;
         }
     }
     
+    temp.trim();
     ret.push_back(temp);
 
     return ret;

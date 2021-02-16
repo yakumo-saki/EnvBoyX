@@ -1,42 +1,40 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 #include "log.h"
 #include "global.h"
+#include "config.h"
 #include "network/http_api.h"
 #include "network/http_api_util.h"
+#include "network/http_api_config_json.h"
 #include "sensors/mhz19_uart.h"
 
 extern HTTPWEBSERVER server;
-
 
 void _get_config() {
 
   String keys = server.arg("key");
 
-  std::vector<String> keyArray;
-  keyArray = stringSplit(keys, ",");
+  std::vector<String> keyArray = stringSplit(keys, ",");
 
-  String ret = keys + " => ";
-  for (const auto& key : keyArray) {
-    ret += "|" + key + "| ";
+  for (const auto& k : keyArray) {
+    debuglog(k);
   }
 
-  if (true) {
-    server.send(200, MIME_TEXT, ret + "\n");
-  } else {
-    server.send(200, MIME_TEXT, "OFF\n");
-  }
+  DynamicJsonDocument json = create_config_json(keyArray);
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void _set_config() {
 
-  bool success = true;
+  DynamicJsonDocument json = updateConfig();
+  String jsonStr;
+  serializeJson(json, "{" + jsonStr + "}");
 
-  if (success) {
-    server.send(200, MIME_TEXT, "OK\n");
-  } else {
-    server.send(200, MIME_TEXT, "FAILED\n");
-  }
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void http_api_config_setup() {
