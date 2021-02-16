@@ -45,7 +45,7 @@ void set_default_config_value()
   config.temperatureAlerts.warning1.high = "10";
   config.temperatureAlerts.caution1.low = "10";
   config.temperatureAlerts.caution1.high = "15";
-  config.temperatureAlerts.caution2.low = "250";
+  config.temperatureAlerts.caution2.low = "28";
   config.temperatureAlerts.caution2.high = "30";
   config.temperatureAlerts.warning2.low = "30";
   config.temperatureAlerts.warning2.high = "99";
@@ -195,7 +195,6 @@ DynamicJsonDocument _create_config_json(bool save, std::vector<String> keyArray)
   if (save) json[CFG_PASSWORD] = config.password; // all
 
   for (const auto& k : keyArray) {
-    debuglog(k);
     if (save || k == CFG_SSID)         json[CFG_SSID] = config.ssid;
     if (save || k == CFG_MDNS)         json[CFG_MDNS] = config.mDNS;
     if (save || k == CFG_OPMODE)       json[CFG_OPMODE] = config.opMode;
@@ -214,11 +213,12 @@ DynamicJsonDocument _create_config_json(bool save, std::vector<String> keyArray)
     if (save || k == CFG_TEMP_ALERT) json[CFG_TEMP_ALERT] = alerts_to_json(config.temperatureAlerts, "temperature");
     if (save || k == CFG_HUMI_ALERT) json[CFG_HUMI_ALERT] = alerts_to_json(config.humidityAlerts, "humidity");
     if (save || k == CFG_LUX_ALERT)  json[CFG_LUX_ALERT] = alerts_to_json(config.luxAlerts, "lux");
-    if (save || k == CFG_PRES_ALERT) json[CFG_LUX_ALERT] = alerts_to_json(config.pressureAlerts, "pressure");
+    if (save || k == CFG_PRES_ALERT) json[CFG_PRES_ALERT] = alerts_to_json(config.pressureAlerts, "pressure");
     if (save || k == CFG_CO2_ALERT)  json[CFG_CO2_ALERT] = alerts_to_json(config.co2Alerts, "co2");
   }
 
-  json.shrinkToFit();
+  // これをやると以降の変更が反映されなくなるのでやらない
+  // json.shrinkToFit();
   return json;
 }
 
@@ -241,6 +241,8 @@ void write_config_file(File f) {
   
   // これから書くConfigなので必ず想定しているconfig versionを書く
   doc[CFG_SETTING_ID] = SETTING_ID;
+  cfglog(CFG_SETTING_ID + " =>" + SETTING_ID);
+  doc["TESTTEST"] = "MYTEST VALUE DESUYO !??!??!????";
 
   cfglog(F("Writing config"));
   size_t size = serializeJson(doc, f);

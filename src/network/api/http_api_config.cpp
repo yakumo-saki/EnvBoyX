@@ -22,6 +22,7 @@ void _get_config() {
   }
 
   DynamicJsonDocument json = create_config_json(keyArray);
+  json["command"] = "GET";
 
   String jsonStr;
   serializeJson(json, jsonStr);
@@ -30,16 +31,45 @@ void _get_config() {
 
 void _set_config() {
 
-  DynamicJsonDocument json = updateConfig();
+  DynamicJsonDocument msgs = updateConfig();
+  DynamicJsonDocument json(1000);
+  json["msgs"] = msgs;
+  json["command"] = "SET";
+  
   String jsonStr;
-  serializeJson(json, "{" + jsonStr + "}");
+  serializeJson(json, jsonStr);
 
+  server.send(200, MIME_JSON, jsonStr);
+}
+
+void _revert_config() {
+  DynamicJsonDocument json(100);
+  json["command"] = "REVERT";
+  json["result"] = "OK";
+  read_config();
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
+}
+
+void _commit_config() {
+  DynamicJsonDocument json(100);
+  
+  json["command"] = "COMMIT";
+  json["result"] = "OK";
+  save_config();
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
   server.send(200, MIME_JSON, jsonStr);
 }
 
 void http_api_config_setup() {
   server.on ( "/config", HTTP_GET, _get_config );
   server.on ( "/config", HTTP_POST, _set_config );
+  server.on ( "/config/revert", HTTP_POST, _revert_config );
+  server.on ( "/config/commit", HTTP_POST, _commit_config );
   
   apilog("API Config initialized.");
 }

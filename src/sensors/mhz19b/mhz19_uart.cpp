@@ -12,9 +12,6 @@ const int MHZ_RESULT_OK = 1;
 // 終了後は false に戻す。
 bool autoBaselineCorrection = false;
 
-// キャリブレーション中か否か。
-bool calibrationInProgress = false;
-
 #ifdef ESP32
   HardwareSerial mhzSerial(2); // use UART2
 #elif defined(ESP8266)
@@ -82,12 +79,12 @@ bool mhz_setup_uart() {
 
   mhz_setup_check_device_uart();
 
-    mhzlog(F("initialized."));
+  mhzlog(F("initialized."));
   return true;
 }
 
 // For API
-bool mhz_calibration_start() {
+bool mhz_do_zero_calibration() {
   if (config.mhz19b != MHZ_USE_UART) return false;
   mhz19.calibrate();
   if (mhz19.errorCode != 1) {
@@ -124,11 +121,6 @@ bool mhz_set_abc(bool onoff) {
 }
 
 void mhz_read_data_uart() {
-
-  if (calibrationInProgress) {
-    mhzlog(F("MH-Z19B is calibrating. dont read."));
-    return;
-  }
 
   mhz19.verify();
   if (mhz19.errorCode != MHZ_RESULT_OK) {
