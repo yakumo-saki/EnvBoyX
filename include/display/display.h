@@ -15,6 +15,9 @@ void disp_all_initialize_complete(String ip, String mdns);
 void disp_sensor_value(String ip, String mdns);
 void disp_power_off();
 
+// APIで設定が変更された際、画面をすべて再描画する
+void disp_redraw_sensor_value_screen();
+
 /**
  * 液晶の明るさを変更する 
  * @return 応答メッセージ

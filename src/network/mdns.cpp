@@ -13,17 +13,23 @@
 #include "log.h"
 
 bool start_mdns(String name) {
-  char n[name.length() + 1];
-  name.toCharArray(n, sizeof n);
 
   mdnslog(F("mDNS responder starting"));
 
-  if (!MDNS.begin(n)) {
+  MDNS.setInstanceName("EnvBoyX");
+  MDNS.addService("_http", "_tcp", 80);
+
+  if (!MDNS.begin(name.c_str())) {
     mdnslog(F("Error setting up MDNS responder!"));
     return false;
   }
   mdnslog("mDNS responder started name=" + name);
   return true;
+}
+
+void mdns_hostname_change(String hostname) {
+  MDNS.end();
+  MDNS.begin(hostname.c_str());
 }
 
 void mdns_setup() {
