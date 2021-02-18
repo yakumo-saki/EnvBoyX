@@ -69,7 +69,9 @@ void adt_read_data(void)
 	}
 	tmp0 = (float)ival0 / 128.0;
 
+#ifdef SENSOR_VALUE_LOG
 	adtlog("Temp is " + String(tmp0));
+#endif
 
 	sensorValues.temperature = tmp0;
 }

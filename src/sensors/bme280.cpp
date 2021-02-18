@@ -81,9 +81,11 @@ void bme_read_data() {
   pres = bme.getPressure() / 100.0;
   hum = bme.getHumidity();
 
+#ifdef SENSOR_VALUE_LOG
   char log[80];
   snprintf(log, sizeof log, "Temp: %.2fc   Humidity: %.2f%%   Pressure: %.2fhPa", temp, hum, pres);
   bmelog(String(log));
+#endif
 
   sensorValues.temperature = temp;
   sensorValues.humidity = hum;

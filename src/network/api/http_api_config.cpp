@@ -32,11 +32,8 @@ void _get_config() {
 
 void _set_config() {
 
-  DynamicJsonDocument msgs = updateConfig();
-  DynamicJsonDocument json(1000);
-  json["msgs"] = msgs;
+  DynamicJsonDocument json = updateConfig();
   json["command"] = "CONFIG_SET";
-  json["success"] = true;
 
   String jsonStr;
   serializeJson(json, jsonStr);
@@ -45,6 +42,10 @@ void _set_config() {
 }
 
 void _revert_config() {
+
+  // revertすると何が変更されるかわからないので、全ての反映を実行
+  reflectConfigAll();
+
   DynamicJsonDocument json(100);
   json["command"] = "CONFIG_REVERT";
   json["success"] = true;

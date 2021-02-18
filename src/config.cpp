@@ -241,8 +241,6 @@ void write_config_file(File f) {
   
   // これから書くConfigなので必ず想定しているconfig versionを書く
   doc[CFG_SETTING_ID] = SETTING_ID;
-  cfglog(CFG_SETTING_ID + " =>" + SETTING_ID);
-  doc["TESTTEST"] = "MYTEST VALUE DESUYO !??!??!????";
 
   cfglog(F("Writing config"));
   size_t size = serializeJson(doc, f);

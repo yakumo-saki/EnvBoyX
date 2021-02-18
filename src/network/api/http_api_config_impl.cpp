@@ -88,30 +88,31 @@ UpdateConfigParamResult_t updateConfigParam(String key, String& config) {
   return ret;
 }
 
-void updateConfigParamForApi(DynamicJsonDocument& jsonArray, _config_hook_flags flags, String key, String& config) {
+void updateConfigParamForApi(DynamicJsonDocument& jsonArray, _config_hook_flags& flags, String key, String& config) {
   UpdateConfigParamResult_t ret = updateConfigParam(key, config);
   if (ret.result == UpdateConfigParamResult::BLOCKED) {
     flags.configFailed = true;
     jsonArray.add("[ERROR] " + key + " is blocked from running change. use setup mode.");
-  } else if (ret.result == UpdateConfigParamResult::REBOOT_REQ) {
-    flags.needReboot = true;
-    jsonArray.add("[REBOOT REQ] " + key + " = " + ret.value);
   } else if (ret.result == UpdateConfigParamResult::OK) {
     jsonArray.add("[OK] " + key + " = " + ret.value);
+  } else if (ret.result == UpdateConfigParamResult::REBOOT_REQ) {
+    flags.needReboot = true;
+    jsonArray.add("[OK][REBOOT REQ] " + key + " = " + ret.value);
   } else if (ret.result == UpdateConfigParamResult::DISPLAY_REDRAW_REQ) {
     flags.needDisplayRedraw = true;
-    jsonArray.add("[OK] " + key + " = " + ret.value);
+    jsonArray.add("[OK][REDRAW] " + key + " = " + ret.value);
   } else if (ret.result == UpdateConfigParamResult::MDNS_RESTART_REQ) {
     flags.needMDnsRestart = true;
-    jsonArray.add("[OK] " + key + " = " + ret.value);
+    jsonArray.add("[OK][mDNS RESTART] " + key + " = " + ret.value);
   } else if (ret.result == UpdateConfigParamResult::NOT_SPECIFIED) {
     // do nothing
+    // debuglog(key + " NOT SPECIFIED");
   } else {
     apilog("MAYBE BUG");
   } 
 }
 
-void updateConfigAlerts(DynamicJsonDocument& msgs, _config_hook_flags flags, String keyPrefix, config_alert_t& alerts) {
+void updateConfigAlerts(DynamicJsonDocument& msgs, _config_hook_flags& flags, String keyPrefix, config_alert_t& alerts) {
   updateConfigParamForApi(msgs, flags, keyPrefix + ".warning1.low", alerts.warning1.low);
   updateConfigParamForApi(msgs, flags, keyPrefix + ".warning1.high", alerts.warning1.low);
   updateConfigParamForApi(msgs, flags, keyPrefix + ".warning2.low", alerts.warning2.low);
@@ -121,6 +122,25 @@ void updateConfigAlerts(DynamicJsonDocument& msgs, _config_hook_flags flags, Str
   updateConfigParamForApi(msgs, flags, keyPrefix + ".caution1.high", alerts.caution1.high);
   updateConfigParamForApi(msgs, flags, keyPrefix + ".caution2.low", alerts.caution1.low);
   updateConfigParamForApi(msgs, flags, keyPrefix + ".caution2.high", alerts.caution1.high);
+}
+
+void _reflectConfig(_config_hook_flags& flags, bool all = false) {
+  // debuglog(String(flags.needDisplayRedraw) + String(flags.needMDnsRestart));
+
+  if (all || flags.needDisplayRedraw) {
+    apilog("Exec display redraw.");
+    disp_redraw_sensor_value_screen();
+  }
+
+  if (all || flags.needMDnsRestart) {
+    apilog("Exec mDNS restart.");
+    mdns_hostname_change(config.mDNS);
+  }
+}
+
+void reflectConfigAll() {
+  _config_hook_flags flags;
+  _reflectConfig(flags, true);
 }
 
 DynamicJsonDocument updateConfig() {
@@ -153,13 +173,11 @@ DynamicJsonDocument updateConfig() {
   updateConfigAlerts(msgs, flags, CFG_PRES_ALERT, config.pressureAlerts);
   updateConfigAlerts(msgs, flags, CFG_CO2_ALERT, config.co2Alerts);
 
-  if (flags.needDisplayRedraw) {
-    disp_redraw_sensor_value_screen();
-  }
+  _reflectConfig(flags);
 
-  if (flags.needMDnsRestart) {
-    mdns_hostname_change(config.mDNS);
-  }
+  DynamicJsonDocument json(1000);
+  json["msgs"] = msgs;
+  json["success"] = !flags.configFailed;
 
   return msgs;
 }

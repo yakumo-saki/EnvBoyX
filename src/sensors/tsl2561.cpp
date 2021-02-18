@@ -59,9 +59,11 @@ void read_data_tsl2561()
 	Tsl.fullLuminosity(full);
 	Tsl.irLuminosity(ir);
 
+#ifdef SENSOR_VALUE_LOG
 	char log[80];
 	snprintf(log, sizeof log, "Luminosity: %5u lx IR: %5u lx", full, ir);
 	tsllog(String(log));
+#endif
 
 	sensorValues.lux = full;
 	sensorValues.luxIr = ir;

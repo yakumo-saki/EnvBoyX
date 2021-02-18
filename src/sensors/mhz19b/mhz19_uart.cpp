@@ -134,13 +134,14 @@ void mhz_read_data_uart() {
     printErrorCode();
   }
 
-  int temp = mhz19.getTemperature();
-  printErrorCode();
-
   String acc = String(mhz19.getAccuracy());
   printErrorCode();
 
+#ifdef SENSOR_VALUE_LOG
+  int temp = mhz19.getTemperature();
+  printErrorCode();
   mhzlog("CO2 (ppm): " + String(co2ppm) + " Accuracy: " + acc + " Temp: " + String(temp));
+#endif
   sensorValues.co2ppm = co2ppm;
   sensorValues.co2ppmAccuracy = acc;
 }
