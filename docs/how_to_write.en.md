@@ -3,14 +3,14 @@
 ### Install PlatformIO CLI
 
 Install PlatformIO CLI 
-https://docs.platformio.org/en/latest/core/installation.html に
+https://docs.platformio.org/en/latest/core/installation.html
 
 PlatformIO CLI is available for macOS / Linux / Windows platforms.
 
 ### Get EnvBoyX binary
 
-Get release archive from [GitHub releasesページ]([https://github.com/yakumo-saki/EnvBoyX/releases])
-Recommend newest version. Older than v38 not have archive file.
+Get release archive from [GitHub releases]([https://github.com/yakumo-saki/EnvBoyX/releases])
+Recommend newest version.
 
 ### Extract 
 

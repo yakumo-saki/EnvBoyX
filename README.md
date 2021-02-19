@@ -2,29 +2,22 @@
 
 Arduino environment monitor for ESP32 / ESP8266 based boards.
 
-## Getting started
+## All of documents
 
-* [Japanese: 書き込み方法（日本語）](docs/how_to_write-ja.md)
-* [How to write](docs/how_to_write-en.md)
-
-## Branches
-
-| name   | usage |
-| ------ | ---------------------------------- |
-| main   | latest Release                     |
-| devel  | currently developing unstable code |
+* [書き込み方法（日本語）](docs/how_to_write.ja.md)
+* [How to write](docs/how_to_write.en.md)
 
 # images
 
 ## Default output image on TTGO T-Display
 
-![Default Output Image](docs/EnvBoyX_Horizontal.jpg)
+![Default Output Image](docs/imgs/EnvBoyX_Horizontal.jpg)
 
 ## Vertical Output Image on TTGO T-Display
 
-![Vertical Output Image](docs/EnvBoyX_Vertical.jpg)
+![Vertical Output Image](docs/imgs/EnvBoyX_Vertical.jpg)
 
-# spec
+# overview
 
 ## target boards
 
@@ -33,19 +26,24 @@ Arduino environment monitor for ESP32 / ESP8266 based boards.
 
 ## functions
 
-* HTTP Server
-* MQTT publisher
-* Display
-* mDNS
+* Show sensor output on display
+* HTTP Json endpoint for getting sensor output 
+* Highly configurable and flexible
+* Supports many sensors
 
-### note
+## sensors and devices
 
-* ESP8266 mDNS is unstable.
-* ESP8266 MH-Z19B is unstable
-	// Init I2C Serial
-	init_i2c(I2C_SDA, I2C_SCL);
-	// Init I2C Serial
-	init_i2c(I2C_SDA, I2C_SCL);
+All are optional.
+
+* BME280 (Temperature, Humidity, Pressure sensor)
+* TSL2561 (luminous sensor)
+* LPS22HB (Pressure sensor)
+* AM2302 (Temperature sensor, got wrong value at first time)
+* MH-Z19B (CO2 sensor UART mode)
+* SSD1306 (I2C OLED 128x64px)
+* ST7789 (SPI TFT 240x135px)
+
+# specs
 
 ## pin assign
 
@@ -67,38 +65,21 @@ Defined at `mhz19_uart.cpp`
 |ESP32  |  32 | 33   | HardwareSerial 2, configurable via web config |
 |ESP8266|  14 |  0   | SoftwareSerial , fixed                        |
 
-## sensors and devices
-
-All are optional.
-
-* BME280 (Temperature, Humidity, Pressure sensor)
-* TSL2561 (luminous sensor)
-* LPS22HB (Pressure sensor)
-* AM2302 (Temperature sensor, got wrong value at first time)
-* MH-Z19B (CO2 sensor UART mode)
-* SSD1306 (I2C OLED 128x64px)
-* ST7789 (SPI TFT 240x135px)
-
 ## how to use
 
 ### first time
 
-* upload (use `pio run` or esptool.py etc)
-* boot (as setup mode)
-* connect to ESP wifi (SSID ebx_******* (MAC adderess of your ESP), no password)
-* Open web browser and open http://192.168.4.1/ and setup.
-* reset(use hardware button or disconnect power plug)
-* boot (as normal mode)
-* enjoy!
+* Read getting started of this document.
 
 ### change setting
 
 * Poweroff or reset on waiting for resetting screen.
+* (v42) Use Config API
  
 ### version up
 
-* upload
-* boot (if config version changed, automatically start on setup mode.)
+* Same as first time
+* After version up, EnvBoy may be automatically boots up in SETUP MODE if config parameter is added.
 
 ## functions
 
