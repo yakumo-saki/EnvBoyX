@@ -6,7 +6,7 @@
 #include "config.h"
 #include "network/http_api.h"
 #include "network/http_api_util.h"
-#include "network/http_api_config_json.h"
+#include "network/http_api_config_impl.h"
 #include "sensors/mhz19_uart.h"
 
 extern HTTPWEBSERVER server;
