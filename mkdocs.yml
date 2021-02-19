@@ -1,0 +1,4 @@
+site_name: EnvBoyX documentations
+theme:
+  name: readthedocs
+  language: 'ja'
