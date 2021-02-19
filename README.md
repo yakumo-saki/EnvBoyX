@@ -189,6 +189,7 @@ OK
 * CHANGE: all API results are now JSON
 * ADD: freeHeap to JSON, value of ESP.getFreeHeap() (update 15sec)
 * ADD: Config GET / SET API
+* ADD: Config COMMIT(SAVE) / REVERT API
 
 ## v41.0: MH-Z19B update
 
