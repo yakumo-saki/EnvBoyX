@@ -2,3 +2,13 @@ site_name: EnvBoyX documentations
 theme:
   name: readthedocs
   language: 'ja'
+
+# ここに書かなくても並ぶが、並び順がアルファベット順になるのでいちいち書いている
+nav:
+  - 'howtos':
+    - '[ja] How to write': 'how_to_write-jp.md'
+    - '[en] How to write': 'how_to_write-en.md'
+  - 'documentations':
+    - 'EnvBoyX documentations': 'index.md'
+    - 'API Documentation': 'api.md'
+    - 'Version history': 'history.md'
