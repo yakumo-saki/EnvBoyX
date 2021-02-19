@@ -1,5 +1,7 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
+#include "log.h"
 #include "global.h"
 #include "network/http_api.h"
 #include "network/http_api_util.h"
@@ -24,15 +26,14 @@ void _set_mhz_abc() {
 
   bool success = mhz_set_abc(onoff);
 
-  if (success) {
-    if (onoff) {
-      server.send( 200, MIME_TEXT, "OK. ABC is enabled. value=" + abc);
-    } else {
-      server.send( 200, MIME_TEXT, "OK. ABC is disabled. value=" + abc);
-    }
-  } else {
-    server.send( 500, MIME_TEXT, "Setting failed." );
-  }
+  DynamicJsonDocument json(200);
+  json["command"] = "MHZ19B_SET_ABC";
+  json["success"] = success;
+  json["msg"] = (onoff ? "ABC is enabled" : "ABC is disabled");
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void _get_mhz_abc() {
@@ -43,11 +44,14 @@ void _get_mhz_abc() {
 
   bool abc = mhz_get_abc();
 
-  if (abc) {
-    server.send(200, MIME_TEXT, "ON\n");
-  } else {
-    server.send(200, MIME_TEXT, "OFF\n");
-  }
+  DynamicJsonDocument json(200);
+  json["command"] = "MHZ19B_GET_ABC";
+  json["success"] = true;
+  json["ABC"] = abc ? "ON" : "OFF";
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void _mhz_zero_calibration() {
@@ -58,15 +62,19 @@ void _mhz_zero_calibration() {
 
   bool success = mhz_do_zero_calibration();
 
-  if (success) {
-    server.send(200, MIME_TEXT, "OK\n");
-  } else {
-    server.send(200, MIME_TEXT, "FAILED\n");
-  }
+  DynamicJsonDocument json(200);
+  json["command"] = "MHZ19B_ZERO_CALIBRATION";
+  json["success"] = success;
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void http_api_mhz_setup() {
   server.on ( "/mhz19b/abc", HTTP_GET, _get_mhz_abc );
   server.on ( "/mhz19b/abc", HTTP_POST, _set_mhz_abc );
   server.on ( "/mhz19b/zeroCalibration", HTTP_POST, _mhz_zero_calibration );
+
+  apilog("API MHZ-19B initialized.");
 }

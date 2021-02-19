@@ -84,6 +84,10 @@ void pdeltalog(String msg) {
   real_log(msg, F("PS_DELTA"));
 }
 
+void apilog(String msg) {
+  real_log(msg, F("API"));
+}
+
 void debuglog(String msg) {
   real_log(msg, F("DEBUG"));
 }

@@ -47,7 +47,10 @@ void bh_read_data() {
   if (bh1750.measurementReady()) {
     float lux = bh1750.readLightLevel();
 
+#ifdef SENSOR_VALUE_LOG
     bhlog("Light: " + String(lux,0) + " lx");
+#endif
+
     sensorValues.lux = lux;
   }
 }

@@ -1,7 +1,9 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 #include "config.h"
 
+#include "log.h"
 #include "global.h"
 #include "display/display.h"
 #include "network/http_api.h"
@@ -27,8 +29,14 @@ void http_handle_goto_setup() {
 
   remove_configure_flag_file();
   
-  String message = "OK. Entering setup mode at next boot.";
-  server.send( 200, MIME_TEXT, message );
+  DynamicJsonDocument json(200);
+  json["command"] = "GOTO_SETUP";
+  json["success"] = true;
+  json["msg"] = "OK. Entering setup mode at next boot.";
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void http_handle_not_found() {
@@ -43,4 +51,5 @@ void http_api_base_setup() {
   server.on ( "/goto_setup", HTTP_POST, http_handle_goto_setup );
 
   server.onNotFound ( http_handle_not_found );
+  apilog("API Base initialized.");
 }

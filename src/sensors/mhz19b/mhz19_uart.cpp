@@ -10,7 +10,7 @@ const int MHZ_RESULT_OK = 1;
 
 // 400ppmの校正(ABC)を行う。これをするには、20分以上外気に晒し続ける必要がある。
 // 終了後は false に戻す。
-bool AUTO_BASELINE_CORRECTION = false;
+bool autoBaselineCorrection = false;
 
 #ifdef ESP32
   HardwareSerial mhzSerial(2); // use UART2
@@ -66,20 +66,20 @@ bool mhz_setup_uart() {
 
   mhz19.begin(mhzSerial);
 
-  mhz19.setRange(2000);
+  mhz19.setRange(MHZ_RANGE);
   printErrorCode();
 
   // mhzlog("setSpan()");
   // mhz19.setSpan(2000);                  
   // printErrorCode();
 
-  mhzlog("setAutoCalibration() " + String(AUTO_BASELINE_CORRECTION));
-  mhz19.autoCalibration(AUTO_BASELINE_CORRECTION);
+  mhzlog("setAutoCalibration() " + String(autoBaselineCorrection));
+  mhz19.autoCalibration(autoBaselineCorrection);
   printErrorCode();
 
   mhz_setup_check_device_uart();
 
-    mhzlog(F("initialized."));
+  mhzlog(F("initialized."));
   return true;
 }
 
@@ -134,13 +134,14 @@ void mhz_read_data_uart() {
     printErrorCode();
   }
 
-  int temp = mhz19.getTemperature();
-  printErrorCode();
-
   String acc = String(mhz19.getAccuracy());
   printErrorCode();
 
+#ifdef SENSOR_VALUE_LOG
+  int temp = mhz19.getTemperature();
+  printErrorCode();
   mhzlog("CO2 (ppm): " + String(co2ppm) + " Accuracy: " + acc + " Temp: " + String(temp));
+#endif
   sensorValues.co2ppm = co2ppm;
   sensorValues.co2ppmAccuracy = acc;
 }

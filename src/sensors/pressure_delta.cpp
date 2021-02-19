@@ -47,8 +47,10 @@ void store_air_pressure_delta() {
         sensorValues.pressureDelta = sensorValues.pressure - base;
     }
   
+#ifdef SENSOR_VALUE_LOG
     pdeltalog("Pressure Delta=" + String(sensorValues.pressureDelta) 
               + " PRES=" + String(sensorValues.pressure, 2) 
               + " BASE=" + String(base, 2)
               + " FORMATTED=" + format_air_pressure_delta(sensorValues.pressureDelta));
+#endif
 }

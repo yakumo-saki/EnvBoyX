@@ -108,32 +108,28 @@ All are optional.
 * SH1106: Usable but need setting on setting mode, otherwise you see line on screen edge
 * ST7789: Must configure in web config
 
-(v3.0)
-ST7789 is supported. Activate on config screen.
-In setup mode, no output on ST7789, it's normal.
+### HTTP Web API
 
-(v3.2)
-ST7789 support is now ESP32 only.
-Maybe I can support ST7789 on ESP8266. but not in TODO.
+EnvBoyX has http web API.
 
-### http server
-
-EnvBoyX has http API.
-
-| minVer | METHOD | ENDPOINT      | RETURN | description                |
+| since | METHOD | ENDPOINT      | RETURN | description                |
 | ------| ------ | ------------- | -------------------------- | -------|
 | 2.0   | GET | /             | JSON | sensor value as JSON.|
 | 2.0   | GET | /ping         | TEXT | returns pong. |
 | 39.0  | GET | /stastics     | JSON | stastics JSON |
-| 3.4   | GET | /brightness?value=<brightness> | TEXT | set display brightness (0-255) 0 means OFF |
-| 3.4   | GET | /display?value=<1 or 0> | TEXT | set display power (1 = ON / 0 = OFF) |
-| 40.0  | POST | /goto_setup | TEXT | Go to setup mode at next boot |
-| 41.0  | POST | /mhz19b/abc | TEXT | value=1 ON value=0 OFF |
+| 3.4   | GET | /brightness   | JSON | value=0-255 set display brightness (0-255) 0 means OFF |
+| 3.4   | GET | /display      | JSON | set display power (1 = ON / 0 = OFF) |
+| 40.0  | POST | /goto_setup  | JSON | Go to setup mode at next boot |
+| 41.0  | POST | /mhz19b/abc  | JSON | value=1 ON value=0 OFF |
 | 41.0  | POST | /mhz19b/zeroCalibration | TEXT | __DANGER__ Use if you know what you are doing |
+| 42.0  | GET  | /config                 | JSON | Get config |
+| 42.0  | POST | /config                 | JSON | Change config |
+| 42.0  | POST | /config/commit          | JSON | Save config |
+| 42.0  | POST | /config/revert          | JSON | Revert to last saved config |
 
 NOTE: There is no reboot API, because of security reason.
 
-#### cURL examples
+### HTTP Web API cURL examples
 
 These are example of calling API
 
@@ -190,7 +186,10 @@ OK
 
 ## v42.0: Config update
 
-* CHANGE: 
+* CHANGE: all API results are now JSON
+* ADD: freeHeap to JSON, value of ESP.getFreeHeap() (update 15sec)
+* ADD: Config GET / SET API
+* ADD: Config COMMIT(SAVE) / REVERT API
 
 ## v41.0: MH-Z19B update
 

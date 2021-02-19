@@ -4,3 +4,5 @@
 
 void mdns_setup();
 void mdns_loop();
+
+void mdns_hostname_change(String hostname);

@@ -1,40 +1,78 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
+#include "log.h"
 #include "global.h"
+#include "config.h"
 #include "network/http_api.h"
 #include "network/http_api_util.h"
+#include "network/http_api_config_impl.h"
 #include "sensors/mhz19_uart.h"
 
 extern HTTPWEBSERVER server;
 
-
 void _get_config() {
-  if (config.mhz19b != MHZ_USE_UART) {
-    server.send(500, MIME_TEXT, F("MHZ19B IS DISABLED\n"));
-    return;
+
+  String keys = server.arg("key");
+
+  std::vector<String> keyArray = stringSplit(keys, ",");
+
+  for (const auto& k : keyArray) {
+    debuglog(k);
   }
 
-  bool abc = mhz_get_abc();
+  DynamicJsonDocument json = create_config_json(keyArray);
+  json["command"] = "CONFIG_GET";
+  json["success"] = true;
 
-  if (abc) {
-    server.send(200, MIME_TEXT, "ON\n");
-  } else {
-    server.send(200, MIME_TEXT, "OFF\n");
-  }
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void _set_config() {
 
-  bool success = true;
+  DynamicJsonDocument json = updateConfig();
+  json["command"] = "CONFIG_SET";
 
-  if (success) {
-    server.send(200, MIME_TEXT, "OK\n");
-  } else {
-    server.send(200, MIME_TEXT, "FAILED\n");
-  }
+  String jsonStr;
+  serializeJson(json, jsonStr);
+
+  server.send(200, MIME_JSON, jsonStr);
+}
+
+void _revert_config() {
+
+  // revertすると何が変更されるかわからないので、全ての反映を実行
+  reflectConfigAll();
+
+  DynamicJsonDocument json(100);
+  json["command"] = "CONFIG_REVERT";
+  json["success"] = true;
+  read_config();
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
+}
+
+void _commit_config() {
+  DynamicJsonDocument json(100);
+  
+  json["command"] = "CONFIG_COMMIT";
+  json["success"] = true;
+  save_config();
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+  server.send(200, MIME_JSON, jsonStr);
 }
 
 void http_api_config_setup() {
   server.on ( "/config", HTTP_GET, _get_config );
   server.on ( "/config", HTTP_POST, _set_config );
+  server.on ( "/config/revert", HTTP_POST, _revert_config );
+  server.on ( "/config/commit", HTTP_POST, _commit_config );
+  
+  apilog("API Config initialized.");
 }

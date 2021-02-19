@@ -4,10 +4,9 @@
 #include "log.h"
 #include "structs.h"
 
-#include <WiFiClient.h> 
+#include "wifi.h"
 
 #include "display/scan_alert.h"
-
 #include "display/display_formatter.h"
 #include "display/display_ssd1306.h"
 #include "display/display_st7789.h"
@@ -126,6 +125,7 @@ void disp_wait_for_reconfig() {
 
 }
 
+// 初期化完了、センサー値表示画面のヘッダ等変更されない部分を描画する
 void disp_all_initialize_complete(String ip, String mdns) {
 	if (use_ssd1306()) {
 		disp_ssd1306_all_initialize_complete();
@@ -205,5 +205,18 @@ void setup_display() {
 
 	// initialize configured brightness
 	disp_set_brightness(config.displayBrightness.toInt());
+}
 
+/**
+ * APIでconfigが変更された際に、値表示画面を書き直す処理
+ */
+void disp_redraw_sensor_value_screen() {
+	displog("Redraw start");
+
+	disp_set_brightness(config.displayBrightness.toInt());
+	String ip = get_wifi_ip_addr();
+	disp_all_initialize_complete(ip, config.mDNS);
+	disp_sensor_value(ip, config.mDNS);
+
+	displog("Redraw complete");
 }

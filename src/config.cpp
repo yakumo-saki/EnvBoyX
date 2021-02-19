@@ -7,39 +7,9 @@
 #include "global.h"
 #include "structs.h"
 
-#define CONF_JSON_SIZE 2000
+#include "config.h"
 
-const String CFG_SETTING_ID = "settingId";
-const String CFG_SSID = "ssid";
-const String CFG_PASSWORD = "password";
-const String CFG_MDNS = "mDNS";
-const String CFG_OPMODE = "opMode";
-const String CFG_DISPLAY_FLIP = "displayFlip";
-const String CFG_DISPLAY_BRIGHTNESS = "displayBrightness";
-const String CFG_OLED_TYPE = "oledType";
-const String CFG_ST7789 = "st7789";
-const String CFG_ST7789_MODE = "st7789Mode";
-const String CFG_MHZ19B = "mhz19b";
-const String CFG_MHZ19B_PWM = "mhz19bPwmPin";
-const String CFG_MHZ19B_RX = "mhz19bRxPin";
-const String CFG_MHZ19B_TX = "mhz19bTxPin";
-const String CFG_MQTT_BROKER = "mqttBroker";
-const String CFG_MQTT_NAME = "mqttName";
-
-const String CFG_TEMP_ALERT = "tempAlerts";
-const String CFG_HUMI_ALERT = "humiAlerts";
-const String CFG_LUX_ALERT = "luxAlerts";
-const String CFG_PRES_ALERT = "presAlerts";
-const String CFG_CO2_ALERT = "co2Alerts";
-
-const String CFG_ALERT_WARN1_LO = "warn1.L";
-const String CFG_ALERT_WARN1_HI = "warn1.H";
-const String CFG_ALERT_WARN2_LO = "warn2.L";
-const String CFG_ALERT_WARN2_HI = "warn2.H";
-const String CFG_ALERT_CAUTION1_LO = "caut1.L";
-const String CFG_ALERT_CAUTION1_HI = "caut1.H";
-const String CFG_ALERT_CAUTION2_LO = "caut2.L";
-const String CFG_ALERT_CAUTION2_HI = "caut2.H";
+extern const unsigned int CONF_JSON_SIZE;
 
 /**
  * とりあえずのデフォルト値をグローバル変数にセットする
@@ -75,7 +45,7 @@ void set_default_config_value()
   config.temperatureAlerts.warning1.high = "10";
   config.temperatureAlerts.caution1.low = "10";
   config.temperatureAlerts.caution1.high = "15";
-  config.temperatureAlerts.caution2.low = "250";
+  config.temperatureAlerts.caution2.low = "28";
   config.temperatureAlerts.caution2.high = "30";
   config.temperatureAlerts.warning2.low = "30";
   config.temperatureAlerts.warning2.high = "99";
@@ -218,33 +188,59 @@ DynamicJsonDocument alerts_to_json(const config_alert_t& alerts, String logname)
   return json;
 }
 
+DynamicJsonDocument _create_config_json(bool save, std::vector<String> keyArray) {
+
+  DynamicJsonDocument json(CONF_JSON_SIZE);
+
+  if (save) json[CFG_PASSWORD] = config.password; // all
+
+  for (const auto& k : keyArray) {
+    if (save || k == CFG_SSID)         json[CFG_SSID] = config.ssid;
+    if (save || k == CFG_MDNS)         json[CFG_MDNS] = config.mDNS;
+    if (save || k == CFG_OPMODE)       json[CFG_OPMODE] = config.opMode;
+    if (save || k == CFG_DISPLAY_FLIP) json[CFG_DISPLAY_FLIP] = config.displayFlip;
+    if (save || k == CFG_DISPLAY_BRIGHTNESS) json[CFG_DISPLAY_BRIGHTNESS] = config.displayBrightness;
+    if (save || k == CFG_OLED_TYPE)    json[CFG_OLED_TYPE] = config.oledType;
+    if (save || k == CFG_ST7789)       json[CFG_ST7789] = config.st7789;
+    if (save || k == CFG_ST7789_MODE)  json[CFG_ST7789_MODE] = config.st7789Mode;
+    if (save || k == CFG_MHZ19B)       json[CFG_MHZ19B] = config.mhz19b;
+    if (save || k == CFG_MHZ19B_PWM)   json[CFG_MHZ19B_PWM] = config.mhz19bPwmPin;
+    if (save || k == CFG_MHZ19B_RX)    json[CFG_MHZ19B_RX] = config.mhz19bRxPin;
+    if (save || k == CFG_MHZ19B_TX)    json[CFG_MHZ19B_TX] = config.mhz19bTxPin;
+    if (save || k == CFG_MQTT_BROKER)  json[CFG_MQTT_BROKER] = config.mqttBroker;
+    if (save || k == CFG_MQTT_NAME)    json[CFG_MQTT_NAME] = config.mqttName;
+
+    if (save || k == CFG_TEMP_ALERT) json[CFG_TEMP_ALERT] = alerts_to_json(config.temperatureAlerts, "temperature");
+    if (save || k == CFG_HUMI_ALERT) json[CFG_HUMI_ALERT] = alerts_to_json(config.humidityAlerts, "humidity");
+    if (save || k == CFG_LUX_ALERT)  json[CFG_LUX_ALERT] = alerts_to_json(config.luxAlerts, "lux");
+    if (save || k == CFG_PRES_ALERT) json[CFG_PRES_ALERT] = alerts_to_json(config.pressureAlerts, "pressure");
+    if (save || k == CFG_CO2_ALERT)  json[CFG_CO2_ALERT] = alerts_to_json(config.co2Alerts, "co2");
+  }
+
+  // これをやると以降の変更が反映されなくなるのでやらない
+  // json.shrinkToFit();
+  return json;
+}
+
+DynamicJsonDocument create_config_json(std::vector<String> keys) {
+  return _create_config_json(false, keys);
+}
+
+DynamicJsonDocument create_config_json_all() {
+  std::vector<String> dummyKey;
+  dummyKey.push_back("dummy");
+  return _create_config_json(true, dummyKey);
+}
+
+
 void write_config_file(File f) {
   
   trim_config();
 
-  DynamicJsonDocument doc(CONF_JSON_SIZE);
-  doc[CFG_SETTING_ID] = SETTING_ID;  // これから書くConfigなので必ず想定しているconfig versionを書く
-  doc[CFG_SSID] = config.ssid;
-  doc[CFG_PASSWORD] = config.password;
-  doc[CFG_MDNS] = config.mDNS;
-  doc[CFG_OPMODE] = config.opMode;
-  doc[CFG_DISPLAY_FLIP] = config.displayFlip;
-  doc[CFG_DISPLAY_BRIGHTNESS] = config.displayBrightness;
-  doc[CFG_OLED_TYPE] = config.oledType;
-  doc[CFG_ST7789] = config.st7789;
-  doc[CFG_ST7789_MODE] = config.st7789Mode;
-  doc[CFG_MHZ19B] = config.mhz19b;
-  doc[CFG_MHZ19B_PWM] = config.mhz19bPwmPin;
-  doc[CFG_MHZ19B_RX] = config.mhz19bRxPin;
-  doc[CFG_MHZ19B_TX] = config.mhz19bTxPin;
-  doc[CFG_MQTT_BROKER] = config.mqttBroker;
-  doc[CFG_MQTT_NAME] = config.mqttName;
-
-  doc[CFG_TEMP_ALERT] = alerts_to_json(config.temperatureAlerts, "temperature");
-  doc[CFG_HUMI_ALERT] = alerts_to_json(config.humidityAlerts, "humidity");
-  doc[CFG_LUX_ALERT] = alerts_to_json(config.luxAlerts, "lux");
-  doc[CFG_PRES_ALERT] = alerts_to_json(config.pressureAlerts , "pressure");
-  doc[CFG_CO2_ALERT] = alerts_to_json(config.co2Alerts, "co2");
+  DynamicJsonDocument doc = create_config_json_all();
+  
+  // これから書くConfigなので必ず想定しているconfig versionを書く
+  doc[CFG_SETTING_ID] = SETTING_ID;
 
   cfglog(F("Writing config"));
   size_t size = serializeJson(doc, f);

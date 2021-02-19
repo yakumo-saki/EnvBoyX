@@ -19,6 +19,7 @@
 #include "sensors/lps22hb.h"
 #include "sensors/mhz19.h"
 #include "sensors/tsl2561.h"
+#include "sensors/freeHeap.h"
 #include "sensors/pressure_delta.h"
 #include "watchdog.h"
 #include "wifi.h"
@@ -94,11 +95,11 @@ void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
 
   int idx = 0;
   for (auto it = tasks.begin(), e = tasks.end(); it != e; ++it) {
-    statlog(+"name=" + String(it->info.name) +
-            " last=" + String(it->info.lastExecMills) +
-            " last exec=" + String(it->info.lastElapsedMills) +
-            " total=" + String(it->info.totalElapsedMills) +
-            " count=" + String(it->info.callCount));
+    // statlog(+"name=" + String(it->info.name) +
+    //         " last=" + String(it->info.lastExecMills) +
+    //         " last exec=" + String(it->info.lastElapsedMills) +
+    //         " total=" + String(it->info.totalElapsedMills) +
+    //         " count=" + String(it->info.callCount));
 
     // 統計
     doc[STAT][idx]["name"] = String(it->info.name);
@@ -109,9 +110,18 @@ void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
     idx++;
   }
 
+  String logmsg = "Statstics updated.";
 #ifdef ESP32
   doc["cputemp"] = temperatureRead();  // CPU温度
+  logmsg += " cpuTemp=" + String(temperatureRead());
+  logmsg += " freeHeap=" + String(ESP.getFreeHeap());
 #endif
+
+#ifdef ESP8266
+  logmsg += " freeHeap=" + String(ESP.getFreeHeap());
+#endif
+
+  statlog(logmsg); // これくらいは出しておかないと動いてるのかわからなくなるので出す
 
   String json = "";
   serializeJson(doc, json);
@@ -129,6 +139,7 @@ void add_timer_tasks() {
 
   // 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する
   timer.add(call_disp_sensor_value, "DISP", 1000);
+  timer.add(store_free_heap, "FREE_HEAP", 15000);
   timer.addStasticsFunction(updateStastics, "STAT", 60000);
 }
 

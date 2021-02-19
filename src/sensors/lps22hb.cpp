@@ -54,6 +54,8 @@ void lps_read_data()
 	{
 		sensorValues.pressure = tempPres;
 
+#ifdef SENSOR_VALUE_LOG
 		lpslog("Pressure=" + String(tempPres, 2) + "hPa");
+#endif
 	}
 }

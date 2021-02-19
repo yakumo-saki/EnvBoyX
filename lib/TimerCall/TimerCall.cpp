@@ -69,7 +69,7 @@ void TimerCall::forceRunStasticsOnce() {
     }
 };
 
-void TimerCall::loop() {
+IRAM_ATTR void TimerCall::loop() {
     // startされていないなら何もしない
     if (!this->started) return;
 
