@@ -10,8 +10,8 @@
 extern const String product_short = "EBX";
 // EnvBoyX
 extern const String product = "EnvBoyX";
-extern const String ver = "42";
-extern const String minorVer = "0";
+extern const String ver = "43";      // Major
+extern const String minorVer = "0";  // Bugfix
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
 // EnvBoyX Ver.53.0
@@ -90,6 +90,7 @@ config_t config;
 // センサー値
 // --------------------------------------------------------------------
 sensor_values_t sensorValues;
+sensor_delta_values_t deltaValues;
 sensor_characters_t sensorCharacters;
 
 // --------------------------------------------------------------------

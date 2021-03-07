@@ -7,6 +7,10 @@
 * DROP: Delete some functions
 * NOTE: other things
 
+## v43.0: 
+
+* CHANGE: Espressif 32 framework 3.0 -> 3.1
+* 
 ## v42.0: Config update
 
 * CHANGE: all API results are now JSON

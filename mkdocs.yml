@@ -5,11 +5,12 @@ theme:
 
 # ここに書かなくても並ぶが、並び順がアルファベット順になるのでいちいち書いている
 nav:
-  - 'Welcome':
-    - 'EnvBoyX documentations': 'index.md'
-  - 'howtos':
-    - '[ja] How to write': 'how_to_write-jp.md'
-    - '[en] How to write': 'how_to_write-en.md'
-  - 'documentations':
+  - 'User manual':
+    - '[English]':
+      - 'How to write': 'how_to_write-en.md'
+    - '[Japanese]':
+      - 'ボードへの書き込み': 'how_to_write-jp.md'
+  - 'Documentations [English]':
+    - 'Welcome': 'index.md'
     - 'API Documentation': 'api.md'
     - 'Version history': 'history.md'

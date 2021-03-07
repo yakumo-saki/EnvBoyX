@@ -126,7 +126,7 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 
 	if (showDelta) {
 		// 気圧差分表示
-		pressure_delta_t delta = get_pressure_delta_struct(sensorValues.pressureDelta);
+		delta_value_t delta = get_delta_struct(deltaValues.pressure);
 
 		tft.setTextDatum(TR_DATUM);
 		if (delta.positive) {

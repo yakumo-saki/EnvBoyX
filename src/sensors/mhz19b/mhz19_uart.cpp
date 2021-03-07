@@ -134,7 +134,7 @@ void mhz_read_data_uart() {
     printErrorCode();
   }
 
-  String acc = String(mhz19.getAccuracy());
+  int acc = mhz19.getAccuracy();
   printErrorCode();
 
 #ifdef SENSOR_VALUE_LOG

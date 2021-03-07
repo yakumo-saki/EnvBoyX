@@ -194,7 +194,7 @@ void write_value(int x, int y, String valueString, value_alert_t alert, TextAlig
 
 void _draw_pressure_delta(int y) {
   // pressure delta
-	pressure_delta_t delta = get_pressure_delta_struct(sensorValues.pressureDelta);
+	delta_value_t delta = get_delta_struct(deltaValues.pressure);
 
   const int ICON_X = 80;
 	if (delta.drawIcon && delta.positive) {

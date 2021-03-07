@@ -57,9 +57,16 @@ extern const String MIME_JSON;
 extern config_t config;
 
 // --------------------------------------------------------------------
-// センサー値
+// センサー値関連
 // --------------------------------------------------------------------
+
+// センサー値
 extern sensor_values_t sensorValues;
+
+// センサー値のdelta（差分）
+extern sensor_delta_values_t deltaValues;
+
+// センサーが存在しているか否かのフラグ
 extern sensor_characters_t sensorCharacters;
 
 // --------------------------------------------------------------------

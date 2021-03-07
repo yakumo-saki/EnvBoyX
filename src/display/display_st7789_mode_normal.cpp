@@ -190,7 +190,7 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 	tft.setTextPadding(VALUE_WIDTH);
 
 	int presDeltaX = LEFT_VAL_X + VALUE_WIDTH_LONG + 20;
-	pressure_delta_t delta = get_pressure_delta_struct(sensorValues.pressureDelta);
+	delta_value_t delta = get_delta_struct(deltaValues.pressure);
 
 	// 気圧の変化
 	int presDeltaStrX = presDeltaX + 20;

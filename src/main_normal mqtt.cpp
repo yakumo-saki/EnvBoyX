@@ -69,7 +69,7 @@ void send_and_sleep() {
   mqtt_publish("lux", String(sensorValues.lux, 0));
   mqtt_publish("luxIr", String(sensorValues.luxIr, 0));
   mqtt_publish("co2ppm", String(sensorValues.co2ppm,0));
-  mqtt_publish("co2ppmAccuracy", sensorValues.co2ppmAccuracy);
+  mqtt_publish("co2ppmAccuracy", String(sensorValues.co2ppmAccuracy));
   mqtt_publish("temperature",String(sensorValues.temperature, 2));
   mqtt_publish("humidity", String(sensorValues.humidity, 2));
   mqtt_publish("pressure", String(sensorValues.pressure, 1));

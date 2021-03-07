@@ -3,17 +3,24 @@
 #include <Arduino.h>
 
 typedef struct {
-  float temperature;
-  float humidity;
-  float pressure;
-  float pressureDelta; // not sensor value. computed from pressure
-  float lux;
-  float luxIr;
-  int co2ppm;
-  String co2ppmAccuracy;
-  int rssi;            // not sensor value. get from wifi
+  float temperature = 0.0;
+  float humidity = 0.0;
+  float pressure = 0.0;
+  float lux = 0.0;
+  float luxIr = 0.0;
+  int co2ppm = 0;
+  int co2ppmAccuracy = 0;
+  int rssi = 0;        // not sensor value. get from wifi
   uint32_t freeHeap;   // not sensor value. get from ESP
 } sensor_values_t;
+
+typedef struct {
+  float temperature = 0.0;
+  float humidity = 0.0;
+  float pressure = 0.0;
+  float lux = 0.0;
+  int co2ppm = 0;
+} sensor_delta_values_t;
 
 typedef struct {
     String ip;
