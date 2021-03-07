@@ -9,6 +9,7 @@
 extern const String product_short;
 extern const String product;
 extern const String ver;
+extern const String minorVer;
 extern const String product_long;
 
 // --------------------------------------------------------------------

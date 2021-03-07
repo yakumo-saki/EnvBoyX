@@ -29,32 +29,44 @@ bool has_warning(value_alerts_t alerts) {
 /** 
  * 気圧の差を表示形式にして返す
  * マイナス値はアイコンで表示するので符号は不要
+ * limitTo2Keta BIGmode用。10以上の数の場合、小数点以下を捨てる
  */
-String format_delta_value(float value) {
+String format_delta_value(float value, bool limitTo2Keta) {
 
-    String pressureDelta;
+    String delta;
 
     // 0.05の計算は、String()で切り上げをしてほしくないため
 	if (value == 0.0) {
-        pressureDelta = "0.0";
+        delta = "0.0";
     } else if (0.0 < value && value < 0.1) {
-        pressureDelta = "0.0";
+        delta = "0.0";
     } else if (-0.1 < value && value < 0.0) {
-        pressureDelta = "0.0";
+        delta = "0.0";
     } else if (value < 0.0) {
+        // マイナス
         float v = value + 0.09;
-		pressureDelta = String(-1.0 * v, 1);
+        if (limitTo2Keta && v <= -10.0) {
+            delta = String(-1.0 * v, 0);
+        } else {
+		    delta = String(-1.0 * v, 1);
+        }
 	} else if (value > 0.0) {
+        // プラス
         float v = value - 0.09;
-		pressureDelta = String(1.0 * v, 1);
+        if (limitTo2Keta && v >= 10.0) {
+            delta = String(1.0 * v, 0);
+        } else {
+    		delta = String(1.0 * v, 1);
+        }
+
 	} else {
         deltalog("Unknown value " + String(value));
     }
      
-    return pressureDelta;
+    return delta;
 }
 
-delta_value_t get_delta_struct(float deltaValue) {
+delta_value_t get_delta_struct(float deltaValue, bool limitTo2Keta) {
 
     delta_value_t ret;
 
@@ -77,7 +89,7 @@ delta_value_t get_delta_struct(float deltaValue) {
         ret.drawIcon = false;
     }
 
-    ret.formattedValue = format_delta_value(deltaValue);
+    ret.formattedValue = format_delta_value(deltaValue, limitTo2Keta);
 
     return ret;
 }

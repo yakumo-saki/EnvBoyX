@@ -91,6 +91,29 @@ void write_values(int x, int y, String value, value_alert_t alert, int align) {
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 }
 
+void _disp_draw_delta(int x, int y, delta_value_t delta) {
+
+	tft.setTextDatum(TR_DATUM);
+	if (delta.positive) {
+		tft.setTextColor(TFT_GREENYELLOW, TFT_BLACK);
+		tft.drawString(delta.formattedValue, x, y, DIGIT_FONT);
+	} else if (delta.negative) {
+		tft.setTextColor(TFT_ORANGE, TFT_BLACK);
+		tft.drawString(delta.formattedValue, x, y, DIGIT_FONT);
+	} else {
+		tft.setTextColor(TFT_WHITE, TFT_BLACK); // ゼロ
+		tft.drawString(delta.formattedValue, x, y, DIGIT_FONT);
+	}
+
+	if (delta.drawIcon && delta.positive) {
+		draw_arrow(0 + 3, y + 8, ARROW_ICON::PLUS, TFT_GREENYELLOW, 34, 22);
+	} else if (delta.drawIcon && delta.negative) {
+		draw_arrow(0 + 3, y + 8, ARROW_ICON::MINUS, TFT_ORANGE, 34, 22);
+	} else {
+		draw_arrow(0 + 3, y + 8, ARROW_ICON::NONE, TFT_BLACK, 34, 22);
+	}
+}
+
 /**
  * BIGモード（縦）
  * @param val 値
@@ -109,14 +132,25 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString(ver, R1_X + 3, R1_Y, XSMALL_FONT);
 
-	write_values(R1_X, R1_Y, String(v.temperature, 1), alerts.temperature, TR_DATUM);
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString("c", R1_X + 3, R1_Y + 30, DEFAULT_FONT);
+	if (showDelta) {
+		delta_value_t delta = get_delta_struct(deltaValues.temperature, true);
+		_disp_draw_delta(R1_X, R1_Y, delta);
+	} else {
+		write_values(R1_X, R1_Y, String(v.temperature, 1), alerts.temperature, TR_DATUM);
+	}
 
 	// LINE 2
-	write_values(R2_X, R2_Y, String(v.humidity, 0), alerts.humidity, TR_DATUM);
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString("%", 114, R2_Y + 24, DEFAULT_FONT);
+	// 気圧表示
+	if (showDelta) {
+		delta_value_t delta = get_delta_struct(deltaValues.humidity, true);
+		_disp_draw_delta(R2_X, R2_Y, delta);
+	} else {
+		write_values(R2_X, R2_Y, String(v.humidity, 0), alerts.humidity, TR_DATUM);
+	}
 
 	// LINE 3
 	tft.setTextDatum(TL_DATUM);
@@ -124,31 +158,11 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 	tft.drawString("p", R3_X + 1, R3_Y + 15, SMALL_FONT);
 	tft.drawString("a", R3_X + 1, R3_Y + 31, SMALL_FONT);
 
+	// 気圧表示
 	if (showDelta) {
-		// 気圧差分表示
-		delta_value_t delta = get_delta_struct(deltaValues.pressure);
-
-		tft.setTextDatum(TR_DATUM);
-		if (delta.positive) {
-			tft.setTextColor(TFT_GREENYELLOW, TFT_BLACK);
-			tft.drawString(delta.formattedValue, R3_X, R3_Y, DIGIT_FONT);
-		} else if (delta.negative) {
-			tft.setTextColor(TFT_ORANGE, TFT_BLACK);
-			tft.drawString(delta.formattedValue, R3_X, R3_Y, DIGIT_FONT);
-		} else {
-			tft.setTextColor(TFT_WHITE, TFT_BLACK); // ゼロ
-			tft.drawString(delta.formattedValue, R3_X, R3_Y, DIGIT_FONT);
-		}
-
-		if (delta.drawIcon && delta.positive) {
-			draw_arrow(0 + 3, R3_Y + 8, ARROW_ICON::PLUS, TFT_GREENYELLOW, 34, 22);
-		} else if (delta.drawIcon && delta.negative) {
-			draw_arrow(0 + 3, R3_Y + 8, ARROW_ICON::MINUS, TFT_ORANGE, 34, 22);
-		} else {
-			draw_arrow(0 + 3, R3_Y + 8, ARROW_ICON::NONE, TFT_BLACK, 34, 22);
-		}
+		delta_value_t delta = get_delta_struct(deltaValues.pressure, true);
+		_disp_draw_delta(R3_X, R3_Y, delta);
 	} else {
-		// 気圧表示
 		write_values(R3_X, R3_Y, String(v.pressure, 0), alerts.pressure, TR_DATUM);
 	}
 
@@ -166,7 +180,13 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 		tft.drawString("p", R4_X + 1, R4_Y + 2, SMALL_FONT);
 		tft.drawString("p", R4_X + 1, R4_Y + 20, SMALL_FONT);
 		tft.drawString("m", R4_X + 1, R4_Y + 36, SMALL_FONT);
-		write_values(R4_X, R4_Y, String(v.co2ppm), alerts.co2, TR_DATUM);
+
+		if (showDelta) {
+			delta_value_t delta = get_delta_struct(deltaValues.co2ppm, true);
+			_disp_draw_delta(R4_X, R4_Y, delta);
+		} else {
+			write_values(R4_X, R4_Y, String(v.co2ppm), alerts.co2, TR_DATUM);
+		}
 	}
 
 	tick++;

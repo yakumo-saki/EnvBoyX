@@ -165,7 +165,8 @@ void disp_st7789_wait_for_reconfig_init()
 	tft.setCursor(0, 0, DEFAULT_FONT);
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
-	tft.println(product_long);
+	tft.println(product);
+	tft.println("Ver." + ver + "." + minorVer);
 	tft.println("Wait for");
 	tft.println(" reconfigure");
 

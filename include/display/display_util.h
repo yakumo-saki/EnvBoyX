@@ -12,5 +12,5 @@ typedef struct {
 bool has_caution(value_alerts_t alerts);
 bool has_warning(value_alerts_t alerts);
 
-String format_delta_value(float value);
-delta_value_t get_delta_struct(float deltaValue);
+String format_delta_value(float value, bool limitTo2Keta = false);
+delta_value_t get_delta_struct(float deltaValue, bool limitTo2Keta = false);
