@@ -45,7 +45,7 @@ void setup()
     setup_normal();
   }
 
-  sectionlog(F("setup done."));
+  sectionlog(F("setup done. Starting main loop"));
 }
  
 void loop() {

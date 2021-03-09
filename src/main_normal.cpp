@@ -199,6 +199,7 @@ void setup_normal() {
 
   // 初期化終了時に画面表示をどうにかできるフック
   disp_all_initialize_complete(get_wifi_ip_addr(), config.mDNS);
+
 }
 
 /**

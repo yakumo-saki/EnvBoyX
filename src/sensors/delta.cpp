@@ -19,7 +19,7 @@ void store_history() {
     }
     history.push_back(sensorValues);
 
-    deltalog("Pressure history pushed. historySize = " + String(history.size()));
+    // deltalog("Pressure history pushed. historySize = " + String(history.size()));
 }
 
 void store_zero_delta() {
@@ -56,6 +56,7 @@ void store_delta() {
         deltaValues.lux = sensorValues.lux - base->lux;
         deltaValues.co2ppm = sensorValues.co2ppm - base->co2ppm;
 
+#ifdef SENSOR_VALUE_LOG
         deltalog("Pressure Delta=" + String(sensorValues.pressure) 
                 + " PRES=" + String(sensorValues.pressure, 2) 
                 + " BASE=" + String(base->pressure, 2)
@@ -64,13 +65,11 @@ void store_delta() {
                 + " PRES=" + String(sensorValues.temperature, 2) 
                 + " BASE=" + String(base->temperature, 2)
                 + " FORMATTED=" + format_delta_value(deltaValues.temperature));
-
+#endif
     } else {
         // 計算
         store_zero_delta();
     }
   
 
-#ifdef SENSOR_VALUE_LOG
-#endif
 }

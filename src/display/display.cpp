@@ -13,12 +13,6 @@
 
 disp_values_t disp_values;
 
-/**
- * 表示変更用フラグ。 描画ごとに1カウントアップ。 0 ~ 15
- */
-int disp_switch = 0;
-const int DISP_SWITCH_MAX = 15;
-
 /** SSD1306を使うか否か。 I2C接続なので自動チェック可能 */
 bool use_ssd1306() {
 	if (!has_ssd1306()) {

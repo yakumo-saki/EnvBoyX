@@ -39,6 +39,9 @@ const uint8_t BLACK = 0;
 
 int ssd1306_connected = -1;
 
+/** 表示変更用フラグ */
+int disp_switch = 0;
+const int DISP_SWITCH_MAX = 15;
 
 bool has_ssd1306_i2c() {
 
@@ -192,19 +195,49 @@ void write_value(int x, int y, String valueString, value_alert_t alert, TextAlig
   draw_value(x, y, get_decoration_from_alert(alert), align, valueString, FONT_PLAIN_10, empty, FONT_PLAIN_10);
 }
 
-void _draw_pressure_delta(int y) {
-  // pressure delta
-	delta_value_t delta = get_delta_struct(deltaValues.pressure);
-
-  const int ICON_X = 80;
+// 差分表示
+void _draw_delta(int x, int y, delta_value_t delta, String unit, bool smallUnitFont = false) {
 	if (delta.drawIcon && delta.positive) {
-    draw_string(ICON_X, y, FONT_ARROW_UP, TextAlign::LEFT, FONT_ARROW);
+    draw_string(x, y, FONT_ARROW_UP, TextAlign::LEFT, FONT_ARROW);
 	} else if (delta.drawIcon && delta.negative) {
-    draw_string(ICON_X, y, FONT_ARROW_DOWN, TextAlign::LEFT, FONT_ARROW);
+    draw_string(x, y, FONT_ARROW_DOWN, TextAlign::LEFT, FONT_ARROW);
 	} else {
     // ほぼ変わらないのでアイコンなし (-0.09 ~ 0.09)
 	}
-  draw_string(127, y, delta.formattedValue, TextAlign::RIGHT, FONT_PLAIN_10);
+
+  if (smallUnitFont) {
+    draw_value(127, y, TextDecoration::NONE, TextAlign::RIGHT, delta.formattedValue, FONT_PLAIN_10, unit, FONT_SMALL_NARROW);
+  } else {
+    draw_string(127, y, delta.formattedValue + unit, TextAlign::RIGHT, FONT_PLAIN_10);
+  }
+}
+
+enum class DeltaType {
+  None = 0, Temp = 1, Humi = 2, Pressure = 3, co2 = 4
+};
+
+DeltaType get_delta_type(int disp_switch) {
+
+  static unsigned int type = 0;
+  static unsigned int second = 0;
+
+  // 差分を表示可能なセンサーがいくつあるかチェック
+  std::vector<DeltaType> types;
+  if (sensorCharacters.temperature) types.push_back(DeltaType::Temp);
+  if (sensorCharacters.humidity) types.push_back(DeltaType::Humi);
+  if (sensorCharacters.pressure) types.push_back(DeltaType::Pressure);
+  if (sensorCharacters.co2ppm) types.push_back(DeltaType::co2);
+
+  if (types.empty()) return DeltaType::None;
+
+  second++;
+  if (second == 3) {
+    type++;
+    second = 0;
+  }
+  if (type >= types.size()) type = 0;  // size は indexより1大きい
+
+  return types[type];
 }
 
 /**
@@ -212,21 +245,26 @@ void _draw_pressure_delta(int y) {
  */
 void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
 
+
   // 値を書くy座標。
   const int R0 = 0;
   const int R1 = 12;
   const int R2 = 30;
   const int R3 = 48;
 
+  const int DELTA_X = 64;
+
   if (!has_ssd1306()) return;
+
+  bool alternative = (disp_switch % 6) < 3;
 
   init_u8g2();
 
   // 測定値表示部分
   u8g2.setFont(FONT_PLAIN_10);
 
+  // １行目
   write_value(0, R1, values.temperature, alerts.temperature, TextAlign::LEFT);
-
   write_value(127, R1, values.humidity, alerts.humidity, TextAlign::RIGHT);
 
   // ２行目：ひだり：気圧
@@ -236,23 +274,32 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
   u8g2.setFont(FONT_SMALL_NARROW);
   presWidth += 4 + u8g2.getStrWidth("hPa");
 
-  // write_value(0, R2, values.pressure, alerts.pressure, TextAlign::LEFT);
   draw_value(0, R2, get_decoration_from_alert(alerts.pressure), TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_SMALL_NARROW);
-  // draw_value(0, R2, TextDecoration::INVERT, TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_SMALL_NARROW);
 
-  // ２行目：みぎ：気圧の差
-  _draw_pressure_delta(R2);
+  // ２行目：
+  write_value(127, R2, values.lux, alerts.lux, TextAlign::RIGHT);
 
   // ３行目：CO2センサーがないならその場所に照度を表示する
+  sensorCharacters.co2ppm = true;
   if (sensorCharacters.co2ppm) {
-    write_value(127, R3, values.lux, alerts.lux, TextAlign::RIGHT);
     draw_value(0, R3, get_decoration_from_alert(alerts.co2), TextAlign::LEFT, values.co2ppm, FONT_PLAIN_10, "PPM", FONT_SMALL_NARROW); // 9999ppm
+
+    DeltaType type = get_delta_type(disp_switch);
+    if (type == DeltaType::Temp) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.temperature), "c", false);
+    if (type == DeltaType::Humi) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.humidity), "%", false);
+    if (type == DeltaType::Pressure) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "hPa", true);
+    if (type == DeltaType::co2) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "PPM", true);
   } else {
-    write_value(0, R3, values.lux, alerts.lux, TextAlign::LEFT);
+    // co2 ppmがないなら、差分は２個同時表示可能なはず。
+    DeltaType type = get_delta_type(disp_switch);
+    if (type == DeltaType::Temp) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.temperature), "c", false);
+    if (type == DeltaType::Humi) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.humidity), "%", false);
+    if (type == DeltaType::Pressure) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "hPa", true);
+    if (type == DeltaType::co2) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "PPM", true);
   }
 
   // みぎ上、IPアドレス or mDNS名表示
-  if (disp_switch < 3) {
+  if (!alternative) {
     draw_string(127, R0, values.ip, TextAlign::RIGHT, FONT_SMALL_NARROW); 
   } else {
     draw_string(127, R0, values.mDNS, TextAlign::RIGHT, FONT_SMALL_NARROW); 
@@ -265,7 +312,7 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
 
   
   disp_switch++;
-  if (disp_switch > 5) {
+  if (disp_switch > DISP_SWITCH_MAX) {
     disp_switch = 0;
   }
   

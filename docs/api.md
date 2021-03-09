@@ -21,25 +21,69 @@ EnvBoyX has http web API.
 
 NOTE: There is no reboot API, because of security reason.
 
+## /config API
+
+This API changes config (same thing in setup mode)
+But some paramters are not changeable.
+
+### parameters 
+
+| name | possible values | need restart | note                       |
+|------|-----------------| -- | ------------------------ |
+| mqttName   | string | y | *1 mqttClientName. only affects in MQTT Mode |
+| mqttBroker | IP address | y | *1 MQTT Broker IP addr. only affects in MQTT Mode |
+| mhz19b | "yes_uart", "no" | y | MHZ19B mode |
+| mhz19bRxPin | integer | y | MHZ19B UART RX Pin no, only available on ESP32 | 
+| mhz19bTxPin | integer | y | MHZ19B UART TX Pin no, only available on ESP32 | 
+| mhz19bPwmPin | integer | y | not supported |
+| st7789 | "yes", "no" | y | Use ST7789 or not. only on ESP32 |
+| st7789Mode | "st7789_BIG", "st7789_normal" | n | ST7789 display mode |
+| displayFlip | "yes", "no" | n | Flip display or not |
+| opMode | "always", "mqtt" | y | Operation mode |
+| mDNS | string | n | mDNS hostname |
+| co2Alerts  | {alerts} | n | See alerts section |
+| humiAlerts | {alerts} | n | See alerts section |
+| luxAlerts  | {alerts} | n | See alerts section |
+| presAlerts | {alerts} | n | See alerts section |
+
+*1 config api is not available in MQTT mode.
+
+#### Alert parameters
+
+Alert config keys structure:
+
+<kind>.<level_and_no>.<low_or_high>
+
+kind = [co2alerts | humiAlerts | luxAlerts | presAlerts]
+level_and_no = [warning1 | warning2 | caution1 | caution2]
+low_or_high = [low | high]
+
+example: co2alerts.warning1.low 
+#### cURL example
+
+```
+curl -s -X POST -d "displayFlip=yes&displayBrightness=50" "http://ebx32.local/config"
+```
+
 ## HTTP Web API cURL examples
 
 These are example of calling API
 
-##### Simple get API
+### Simple get API
 
 ```
 curl http://[envboy IP or mDNShostname.local]/
 {"product":"EnvBoyX","uptime":"01:18:02","uptimeMills":4682994,"temparature":"28.60","humidity":"35.00","pressure":"976.81","luminous":"16","luminousIr":"2","co2ppm":"-999","co2ppmAccuracy":"","rssi":-12}
 ```
 
-##### GET with parameter API
+### GET with parameter API
 
 ```
 curl http://[envboy IP or mDNShostname.local]/brightness?value=100`
 OK
 ```
 
-##### POST without parameter API
+### POST without parameter API
 
 ```
 $ curl -X POST http://[envboy IP or mDNShostname.local]/goto_setup
