@@ -232,7 +232,7 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 		// delta
 		value_alert_t alert;
 		write_value("", RIGHT_VAL_X, ROW1_Y, RIGHT_VALUE_WIDTH, DEFAULT_FONT, alert);
-		delta_value_t delta = get_delta_struct(deltaValues.temperature, "c");
+		delta_value_t delta = get_delta_struct(deltaValues.temperature, true);
 		_write_value_delta(RIGHT_VAL_X, ROW1_Y, delta, "c");
 	}
 
@@ -242,7 +242,7 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 	write_value(values.humidity, LEFT_VAL_X, ROW2_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.humidity);
 
 	{
-		delta_value_t delta = get_delta_struct(deltaValues.humidity);
+		delta_value_t delta = get_delta_struct(deltaValues.humidity, true);
 		_write_value_delta(RIGHT_VAL_X, ROW2_Y, delta, "%");
 	}
 
@@ -256,7 +256,7 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 
 	// 気圧の変化
 	{
-		delta_value_t delta = get_delta_struct(deltaValues.pressure);
+		delta_value_t delta = get_delta_struct(deltaValues.pressure, true);
 		_write_value_delta(RIGHT_VAL_X, ROW3_Y, delta, "hPa");
 	}
 
@@ -271,12 +271,13 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 	}
 
 	{
-		delta_value_t delta = get_delta_struct(deltaValues.co2ppm);
+		delta_value_t delta = get_delta_struct(deltaValues.co2ppm, true);
 		_write_value_delta(RIGHT_VAL_X, ROW4_Y, delta, "ppm");
 	}
 
-
-	// Alert color
+	// ========================
+	// Alert Sidebar
+	// ========================
 	if (has_caution(alerts)) {
 		tft.fillRect(0, ROW1_Y, SIDE_LINE_WIDTH, MAX_Y, TFT_YELLOW);
 		tft.fillRect(MAX_X - SIDE_LINE_WIDTH, ROW1_Y, MAX_X, MAX_Y, TFT_YELLOW);
