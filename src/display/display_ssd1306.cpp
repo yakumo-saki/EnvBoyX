@@ -8,6 +8,7 @@
 
 #include "display/display_util.h"
 #include "display/u8g2_utils.h"
+#include "display/display_ssd1306_delta.h"
 
 // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2_sh1106(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
@@ -205,40 +206,21 @@ void _draw_delta(int x, int y, delta_value_t delta, String unit, bool smallUnitF
     // ほぼ変わらないのでアイコンなし (-0.09 ~ 0.09)
 	}
 
-  if (smallUnitFont) {
-    draw_value(127, y, TextDecoration::NONE, TextAlign::RIGHT, delta.formattedValue, FONT_PLAIN_10, unit, FONT_SMALL_NARROW);
+  int unitX = 0;
+  if (x > 63) {
+    unitX = 127;
   } else {
-    draw_string(127, y, delta.formattedValue + unit, TextAlign::RIGHT, FONT_PLAIN_10);
+    unitX = 63;
+  }
+
+  if (smallUnitFont) {
+    draw_value(unitX, y, TextDecoration::NONE, TextAlign::RIGHT, delta.formattedValue, FONT_PLAIN_10, unit, FONT_SMALL_NARROW);
+  } else {
+    draw_string(unitX, y, delta.formattedValue + unit, TextAlign::RIGHT, FONT_PLAIN_10);
   }
 }
 
-enum class DeltaType {
-  None = 0, Temp = 1, Humi = 2, Pressure = 3, co2 = 4
-};
 
-DeltaType get_delta_type(int disp_switch) {
-
-  static unsigned int type = 0;
-  static unsigned int second = 0;
-
-  // 差分を表示可能なセンサーがいくつあるかチェック
-  std::vector<DeltaType> types;
-  if (sensorCharacters.temperature) types.push_back(DeltaType::Temp);
-  if (sensorCharacters.humidity) types.push_back(DeltaType::Humi);
-  if (sensorCharacters.pressure) types.push_back(DeltaType::Pressure);
-  if (sensorCharacters.co2ppm) types.push_back(DeltaType::co2);
-
-  if (types.empty()) return DeltaType::None;
-
-  second++;
-  if (second == 3) {
-    type++;
-    second = 0;
-  }
-  if (type >= types.size()) type = 0;  // size は indexより1大きい
-
-  return types[type];
-}
 
 /**
  * 通常画面
@@ -263,11 +245,15 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
   // 測定値表示部分
   u8g2.setFont(FONT_PLAIN_10);
 
+  // ===================
   // １行目
+  // ===================
   write_value(0, R1, values.temperature, alerts.temperature, TextAlign::LEFT);
   write_value(127, R1, values.humidity, alerts.humidity, TextAlign::RIGHT);
 
+  // ===================
   // ２行目：ひだり：気圧
+  // ===================
   int presWidth = 0;
   u8g2.setFont(FONT_PLAIN_10);
   presWidth += u8g2.getStrWidth(values.pressure.c_str());
@@ -276,25 +262,34 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
 
   draw_value(0, R2, get_decoration_from_alert(alerts.pressure), TextAlign::LEFT, values.pressure, FONT_PLAIN_10, "hPa", FONT_SMALL_NARROW);
 
-  // ２行目：
+  // RIGHT
   write_value(127, R2, values.lux, alerts.lux, TextAlign::RIGHT);
 
-  // ３行目：CO2センサーがないならその場所に照度を表示する
+  // ===================
+  // ３行目
+  // ===================
   if (sensorCharacters.co2ppm) {
+    // LEFT: co2ppm RIGHT: delta
     draw_value(0, R3, get_decoration_from_alert(alerts.co2), TextAlign::LEFT, values.co2ppm, FONT_PLAIN_10, "PPM", FONT_SMALL_NARROW); // 9999ppm
 
-    DeltaType type = get_delta_type(disp_switch);
+    DeltaType type = get_delta_type();
     if (type == DeltaType::Temp) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.temperature), "c", false);
     if (type == DeltaType::Humi) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.humidity), "%", false);
     if (type == DeltaType::Pressure) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "hPa", true);
     if (type == DeltaType::co2) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "PPM", true);
   } else {
-    // co2 ppmがないなら、差分は２個同時表示可能なはず。
-    DeltaType type = get_delta_type(disp_switch);
-    if (type == DeltaType::Temp) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.temperature), "c", false);
-    if (type == DeltaType::Humi) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.humidity), "%", false);
-    if (type == DeltaType::Pressure) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "hPa", true);
-    if (type == DeltaType::co2) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "PPM", true);
+    // LEFT: delta1 RIGHT: delta2
+    delta_types_t types = get_delta_type2();
+    if (types.deltaType1 == DeltaType::Temp) _draw_delta(0, R3, get_delta_struct(deltaValues.temperature), "c", false);
+    if (types.deltaType1 == DeltaType::Humi) _draw_delta(0, R3, get_delta_struct(deltaValues.humidity), "%", false);
+    if (types.deltaType1 == DeltaType::Pressure) _draw_delta(0, R3, get_delta_struct(deltaValues.pressure), "hPa", true);
+    if (types.deltaType1 == DeltaType::co2) _draw_delta(0, R3, get_delta_struct(deltaValues.pressure), "PPM", true);
+
+    if (types.deltaType2 == DeltaType::Temp) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.temperature), "c", false);
+    if (types.deltaType2 == DeltaType::Humi) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.humidity), "%", false);
+    if (types.deltaType2 == DeltaType::Pressure) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "hPa", true);
+    if (types.deltaType2 == DeltaType::co2) _draw_delta(DELTA_X, R3, get_delta_struct(deltaValues.pressure), "PPM", true);
+
   }
 
   // みぎ上、IPアドレス or mDNS名表示
