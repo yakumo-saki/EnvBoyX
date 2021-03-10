@@ -280,7 +280,6 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
   write_value(127, R2, values.lux, alerts.lux, TextAlign::RIGHT);
 
   // ３行目：CO2センサーがないならその場所に照度を表示する
-  sensorCharacters.co2ppm = true;
   if (sensorCharacters.co2ppm) {
     draw_value(0, R3, get_decoration_from_alert(alerts.co2), TextAlign::LEFT, values.co2ppm, FONT_PLAIN_10, "PPM", FONT_SMALL_NARROW); // 9999ppm
 

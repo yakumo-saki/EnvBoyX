@@ -33,17 +33,20 @@ const int MAX_Y = 134;
 const int HEAD_WIDTH = 32;
 
 // 
-const int SIDE_LINE_WIDTH = 3;
+const int SIDE_LINE_WIDTH = 2;
 
 const int LEFT_HEAD_X = SIDE_LINE_WIDTH + 3;
 const int LEFT_HEAD_R_ALIGN_X = LEFT_HEAD_X + HEAD_WIDTH - 5; // 右寄せ T: H: P:
 const int RIGHT_HEAD_X = 128;
 
 const int LEFT_VAL_X = LEFT_HEAD_X + HEAD_WIDTH;
-const int RIGHT_VAL_X = RIGHT_HEAD_X + HEAD_WIDTH;
+const int LEFT_VAL_CO2_X = LEFT_HEAD_X + HEAD_WIDTH + 24;
 
 const int VALUE_WIDTH = RIGHT_HEAD_X - LEFT_HEAD_X - HEAD_WIDTH;
 const int VALUE_WIDTH_LONG = VALUE_WIDTH + 12; // Pressure or CO2 ppm
+
+const int RIGHT_VAL_X = LEFT_VAL_X + VALUE_WIDTH_LONG + 12;
+const int RIGHT_VALUE_WIDTH = MAX_X - RIGHT_VAL_X - SIDE_LINE_WIDTH;
 
 const int ROW_HEIGHT = 28;
 const int ROW1_Y = 24;
@@ -122,7 +125,9 @@ void _disp_header_normal(String ip, String mDNS)
 	if (sensorCharacters.co2ppm) {
 		tft.setTextColor(TFT_WHITE);
 		tft.setTextDatum(TL_DATUM);
-		tft.drawString("CO2:", LEFT_HEAD_X, ROW4_Y, DEFAULT_FONT);
+		tft.drawString("CO", LEFT_HEAD_X, ROW4_Y + 1, DEFAULT_FONT);
+		tft.drawString("2", LEFT_HEAD_X + 38, ROW4_Y - 1, SMALL_FONT);
+		tft.drawString(":", LEFT_HEAD_X + 44, ROW4_Y, DEFAULT_FONT);
 	} else {
 		tft.setTextDatum(TR_DATUM);
 		tft.drawString("L:", LEFT_HEAD_R_ALIGN_X, ROW4_Y, DEFAULT_FONT);
@@ -164,36 +169,10 @@ void write_value(String value, int x, int y, int width, int font, value_alert_t 
 	write_value(value, x, y, width, font, alert, "", DEFAULT_FONT);
 }
 
-/**
- * @param val 値
- */
-void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
-{
-	tft.setTextColor(TFT_WHITE, TFT_BLACK);
-	tft.setTextSize(1);
-	tft.setTextDatum(TL_DATUM);
-
-	// Row 1
-	write_value(values.temperature, LEFT_VAL_X, ROW1_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.temperature);
-
-	if (sensorCharacters.co2ppm) {
-		write_value(values.lux, RIGHT_VAL_X, ROW1_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.lux);
-	}
-
-	// Row 2
-	write_value(values.humidity, LEFT_VAL_X, ROW2_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.humidity);
-
-	// Row 3
-	write_value(values.pressure, LEFT_VAL_X, ROW3_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.pressure, "hPa", SMALL_FONT);
-
-	// Air pressure delta
-	tft.setTextPadding(VALUE_WIDTH);
-
-	int presDeltaX = LEFT_VAL_X + VALUE_WIDTH_LONG + 20;
-	delta_value_t delta = get_delta_struct(deltaValues.pressure);
-
+// Delta値表示
+void _write_value_delta(int x, int y, delta_value_t delta, String unit) {
 	// 気圧の変化
-	int presDeltaStrX = presDeltaX + 20;
+	int deltaStrX = x + 20;
 	tft.setTextPadding(60);
 
 	// 気圧deltaの文字
@@ -205,24 +184,97 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 		tft.setTextColor(TFT_WHITE, TFT_BLACK);
 	}
 
-	tft.drawString(delta.formattedValue, presDeltaStrX, ROW3_Y, DEFAULT_FONT);
+	// tft.drawString(delta.formattedValue, deltaStrX, y, DEFAULT_FONT);
+	value_alert_t alert;
+	alert.caution = false;
+	alert.warning = false;
+	if (unit.length() > 1) {
+		write_value(delta.formattedValue, deltaStrX, y, 60, DEFAULT_FONT, alert, unit, SMALL_FONT);
+	} else {
+		write_value(delta.formattedValue, deltaStrX, y, 60, DEFAULT_FONT, alert, unit, DEFAULT_FONT);
+	}
+
 
 	// 気圧deltaのアイコン
 	if (delta.positive && delta.drawIcon) {
-		draw_arrow(presDeltaX, ROW3_Y, ARROW_ICON::UP, TFT_GREENYELLOW);
+		draw_arrow(x, y, ARROW_ICON::UP, TFT_GREENYELLOW);
 	} else if (delta.negative && delta.drawIcon) {
-		draw_arrow(presDeltaX, ROW3_Y, ARROW_ICON::DOWN, TFT_ORANGE);
+		draw_arrow(x, y, ARROW_ICON::DOWN, TFT_ORANGE);
 	} else {
-		draw_arrow(presDeltaX, ROW3_Y, ARROW_ICON::NONE, TFT_ORANGE);
+		draw_arrow(x, y, ARROW_ICON::NONE, TFT_ORANGE);
 	}
 
+}
+
+/**
+ * @param val 値
+ */
+void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
+{
+
+	static int disp_switch = 0;
+
+	tft.setTextColor(TFT_WHITE, TFT_BLACK);
+	tft.setTextSize(1);
+	tft.setTextDatum(TL_DATUM);
+
+	// ========================
+	// Row 1
+	// ========================
+	write_value(values.temperature, LEFT_VAL_X, ROW1_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.temperature);
+
+	if (sensorCharacters.co2ppm || disp_switch < 3) {
+		// 通常表示
+		if (sensorCharacters.co2ppm) {
+			write_value(values.lux, RIGHT_VAL_X, ROW1_Y, RIGHT_VALUE_WIDTH, DEFAULT_FONT, alerts.lux);
+		}
+	} else {
+		// delta
+		value_alert_t alert;
+		write_value("", RIGHT_VAL_X, ROW1_Y, RIGHT_VALUE_WIDTH, DEFAULT_FONT, alert);
+		delta_value_t delta = get_delta_struct(deltaValues.temperature, "c");
+		_write_value_delta(RIGHT_VAL_X, ROW1_Y, delta, "c");
+	}
+
+	// ========================
+	// Row 2
+	// ========================
+	write_value(values.humidity, LEFT_VAL_X, ROW2_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.humidity);
+
+	{
+		delta_value_t delta = get_delta_struct(deltaValues.humidity);
+		_write_value_delta(RIGHT_VAL_X, ROW2_Y, delta, "%");
+	}
+
+	// ========================
+	// Row 3
+	// ========================
+	write_value(values.pressure, LEFT_VAL_X, ROW3_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.pressure, "hPa", SMALL_FONT);
+
+	// Air pressure delta
+	tft.setTextPadding(VALUE_WIDTH);
+
+	// 気圧の変化
+	{
+		delta_value_t delta = get_delta_struct(deltaValues.pressure);
+		_write_value_delta(RIGHT_VAL_X, ROW3_Y, delta, "hPa");
+	}
+
+	// ========================
 	// Row 4
+	// ========================
 	if (sensorCharacters.co2ppm) {
 		tft.setTextColor(TFT_WHITE, TFT_BLACK);
-		write_value(values.co2ppm, LEFT_VAL_X + HEAD_WIDTH, ROW4_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.co2, "ppm", SMALL_FONT);
+		write_value(values.co2ppm, LEFT_VAL_CO2_X, ROW4_Y, VALUE_WIDTH_LONG, DEFAULT_FONT, alerts.co2, "ppm", SMALL_FONT);
 	} else {
 		write_value(values.lux, LEFT_VAL_X, ROW4_Y, VALUE_WIDTH, DEFAULT_FONT, alerts.lux);
 	}
+
+	{
+		delta_value_t delta = get_delta_struct(deltaValues.co2ppm);
+		_write_value_delta(RIGHT_VAL_X, ROW4_Y, delta, "ppm");
+	}
+
 
 	// Alert color
 	if (has_caution(alerts)) {
@@ -235,6 +287,10 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 		tft.fillRect(0, ROW1_Y, SIDE_LINE_WIDTH, MAX_Y, TFT_BLACK);
 		tft.fillRect(MAX_X - SIDE_LINE_WIDTH, ROW1_Y, MAX_X, MAX_Y, TFT_BLACK);
 	}
+
+	// disp_switch ++
+	disp_switch++;
+	if (disp_switch > 5) disp_switch = 0;
 }
 
 #endif

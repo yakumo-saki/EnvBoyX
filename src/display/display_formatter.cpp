@@ -24,7 +24,7 @@ String format_co2_ppm(int ppm) {
 	// CO2の値がエラーであれば表示を変える
 	String result = String(ppm);
 	if (ppm < 0) {
-	  result = "****";  // 計測エラー
+	  result = "0000";  // 計測エラー
 	} else {
 	  result = String(ppm);       // OK
 	}
