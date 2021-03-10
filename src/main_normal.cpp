@@ -111,7 +111,7 @@ void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
   }
 
   String logmsg = "";
-  if (DEBUG_BUILD) logmsg += "**DEBUG BUILD**";
+  if (DEBUG_BUILD) logmsg += "**DEBUG BUILD** ";
 
   logmsg += "Statstics updated.";
 #ifdef ESP32
