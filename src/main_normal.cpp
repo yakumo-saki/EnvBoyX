@@ -110,7 +110,10 @@ void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
     idx++;
   }
 
-  String logmsg = "Statstics updated.";
+  String logmsg = "";
+  if (DEBUG_BUILD) logmsg += "**DEBUG BUILD**";
+
+  logmsg += "Statstics updated.";
 #ifdef ESP32
   doc["cputemp"] = temperatureRead();  // CPU温度
   logmsg += " cpuTemp=" + String(temperatureRead());
@@ -133,8 +136,12 @@ void add_timer_tasks() {
   timer.add(wifi_store_rssi, "WIFI", 1000);
 
   // delta
-  timer.add(store_history, "STORE_PRESSURE", 3000);    // 履歴を毎分保存
-  timer.add(store_delta, "STORE_PRESSURE_DELTA", 1000); // 履歴と今の気圧の差を保存
+  if (DEBUG_BUILD) {
+    timer.add(store_history, "STORE_HISTORY", 3000);    // 履歴を毎分保存
+  } else {
+    timer.add(store_history, "STORE_HISTORY", 60000);    // 履歴を毎分保存
+  }
+  timer.add(store_delta, "STORE_DELTA", 1000); // 履歴と今の気圧の差を保存
 
   // 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する
   timer.add(call_disp_sensor_value, "DISP", 1000);

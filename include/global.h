@@ -12,6 +12,8 @@ extern const String ver;
 extern const String minorVer;
 extern const String product_long;
 
+extern const bool DEBUG_BUILD;
+
 // --------------------------------------------------------------------
 // デバイス周りの定数
 // --------------------------------------------------------------------

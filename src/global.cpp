@@ -14,6 +14,8 @@ extern const String ver = "43";      // Major
 extern const String minorVer = "0";  // Bugfix
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
+extern const bool DEBUG_BUILD = true;
+
 // EnvBoyX Ver.53.0
 extern const String product_long = product + " " + ver_long;
 
