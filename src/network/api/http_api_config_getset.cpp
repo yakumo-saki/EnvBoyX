@@ -94,7 +94,7 @@ void updateConfigParamForApi(DynamicJsonDocument& jsonArray, _config_hook_flags&
     flags.configFailed = true;
     jsonArray.add("[ERROR] " + key + " is blocked from running change. use setup mode.");
   } else if (ret.result == UpdateConfigParamResult::OK) {
-    jsonArray.add("[OK] " + key + " = " + ret.value);
+    jsonArray.add("[OK] " + key + " = " + (ret.value == "" ? "(empty)" : ret.value));
   } else if (ret.result == UpdateConfigParamResult::REBOOT_REQ) {
     flags.needReboot = true;
     jsonArray.add("[OK][REBOOT REQ] " + key + " = " + ret.value);
@@ -114,14 +114,14 @@ void updateConfigParamForApi(DynamicJsonDocument& jsonArray, _config_hook_flags&
 
 void updateConfigAlerts(DynamicJsonDocument& msgs, _config_hook_flags& flags, String keyPrefix, config_alert_t& alerts) {
   updateConfigParamForApi(msgs, flags, keyPrefix + ".warning1.low", alerts.warning1.low);
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".warning1.high", alerts.warning1.low);
+  updateConfigParamForApi(msgs, flags, keyPrefix + ".warning1.high", alerts.warning1.high);
   updateConfigParamForApi(msgs, flags, keyPrefix + ".warning2.low", alerts.warning2.low);
   updateConfigParamForApi(msgs, flags, keyPrefix + ".warning2.high", alerts.warning2.high);
 
   updateConfigParamForApi(msgs, flags, keyPrefix + ".caution1.low", alerts.caution1.low);
   updateConfigParamForApi(msgs, flags, keyPrefix + ".caution1.high", alerts.caution1.high);
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".caution2.low", alerts.caution1.low);
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".caution2.high", alerts.caution1.high);
+  updateConfigParamForApi(msgs, flags, keyPrefix + ".caution2.low", alerts.caution2.low);
+  updateConfigParamForApi(msgs, flags, keyPrefix + ".caution2.high", alerts.caution2.high);
 }
 
 void _reflectConfig(_config_hook_flags& flags, bool all = false) {
@@ -147,7 +147,7 @@ DynamicJsonDocument updateConfig() {
 
   _config_hook_flags flags;
 
-  DynamicJsonDocument msgs(1024);
+  DynamicJsonDocument msgs(4096);
 
   updateConfigParamForApi(msgs, flags, CFG_SSID, config.ssid);
   updateConfigParamForApi(msgs, flags, CFG_PASSWORD, config.password);
@@ -175,9 +175,10 @@ DynamicJsonDocument updateConfig() {
 
   _reflectConfig(flags);
 
-  DynamicJsonDocument json(1000);
-  json["msgs"] = msgs;
+  DynamicJsonDocument json(10240);
   json["success"] = !flags.configFailed;
+  json["needReboot"] = flags.needReboot;
+  json["msgs"] = msgs;
 
-  return msgs;
+  return json;
 }

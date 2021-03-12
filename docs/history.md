@@ -10,7 +10,10 @@
 ## v43.0: 
 
 * CHANGE: Espressif 32 framework 3.0 -> 3.1
-* 
+* ADD: Delta display
+* FIX: Alert config can't save (warning1.high, caution2.low&high)
+* ADD: Config backup API /config/backup
+
 ## v42.0: Config update
 
 * CHANGE: all API results are now JSON

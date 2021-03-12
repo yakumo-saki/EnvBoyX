@@ -6,7 +6,8 @@
 #include "config.h"
 #include "network/http_api.h"
 #include "network/http_api_util.h"
-#include "network/http_api_config_impl.h"
+#include "network/http_api_config_getset.h"
+#include "network/http_api_config_backup.h"
 #include "sensors/mhz19_uart.h"
 
 extern HTTPWEBSERVER server;
@@ -68,11 +69,17 @@ void _commit_config() {
   server.send(200, MIME_JSON, jsonStr);
 }
 
+void _backup_config() {
+  String ret = http_api_backup_config();
+  server.send(200, MIME_TEXT, ret);
+}
+
 void http_api_config_setup() {
   server.on ( "/config", HTTP_GET, _get_config );
   server.on ( "/config", HTTP_POST, _set_config );
   server.on ( "/config/revert", HTTP_POST, _revert_config );
   server.on ( "/config/commit", HTTP_POST, _commit_config );
+  server.on ( "/config/backup", HTTP_GET, _backup_config );
   
   apilog("API Config initialized.");
 }
