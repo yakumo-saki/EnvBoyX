@@ -18,6 +18,7 @@ EnvBoyX has http web API.
 | 42.0  | POST | /config                 | JSON | Change config |
 | 42.0  | POST | /config/commit          | JSON | Save config |
 | 42.0  | POST | /config/revert          | JSON | Revert to last saved config |
+| 43.0  | GET | /config/backup          | TEXT | Get current running config on curl command line |
 
 NOTE: There is no reboot API, because of security reason.
 
