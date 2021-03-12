@@ -30,7 +30,7 @@ String http_normal_data_json() {
   char temp[10], hum[10], pres[10];
   char lux[10], luxIr[10],ppm[10];
 
-  StaticJsonDocument<2000> doc;
+  DynamicJsonDocument doc(3000);
   doc["product"] = product;
   doc["uptime"] = timeString;
   doc["uptimeMills"] = ms;
@@ -54,7 +54,7 @@ String http_normal_ping_json() {
   unsigned long ms = millis();
   String timeString = get_time_string(ms);
 
-  StaticJsonDocument<2000> doc;
+  DynamicJsonDocument doc(2000);
   doc["product"] = product;
   doc["uptime"] = timeString;
   doc["uptimeMills"] = ms;
