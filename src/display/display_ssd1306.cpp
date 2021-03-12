@@ -210,7 +210,7 @@ void _draw_delta(int x, int y, delta_value_t delta, String unit, bool smallUnitF
   if (x > 63) {
     unitX = 127;
   } else {
-    unitX = 63;
+    unitX = 60 + (smallUnitFont ? 5 : 0);
   }
 
   if (smallUnitFont) {
