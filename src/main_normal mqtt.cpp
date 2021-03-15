@@ -29,7 +29,7 @@ void begin_mqtt_connection() {
 
 void mqtt_publish(String topic, String value) {
 
-  if (config.opMode != OPMODE_MQTT) {
+  if (config.opMode != ConfigValues::OPMODE_MQTT) {
     return;
   }
   

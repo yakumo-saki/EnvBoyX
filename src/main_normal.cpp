@@ -167,7 +167,7 @@ void setup_normal() {
     halt("config err", "setup again", "Reset now");
   }
 
-  if (config.opMode == OPMODE_MQTT) {
+  if (config.opMode == ConfigValues::OPMODE_MQTT) {
     setup_normal_mqtt();
     return;  // MQTTモードの場合はもう戻ってこない（ディープスリープする）
   }

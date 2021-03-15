@@ -44,7 +44,7 @@ void list_dir()
  */
 void create_configure_flag_file()
 {
-  File f2 = SPIFFS.open(configured_file, "w");
+  File f2 = SPIFFS.open(ConfigValues::configured_file, "w");
   f2.println("ok");
   f2.close();
   cfglog(F("configured file created."));
@@ -55,8 +55,8 @@ void create_configure_flag_file()
  */
 void remove_configure_flag_file()
 {
-  SPIFFS.remove(configured_file);
-  cfglog(configured_file + " removed.");
+  SPIFFS.remove(ConfigValues::configured_file);
+  cfglog(ConfigValues::configured_file + " removed.");
 }
 
 /**
@@ -68,7 +68,7 @@ void save_config()
   trim_config();
 
   // 設定ファイル
-  File f = SPIFFS.open(settings, "w");
+  File f = SPIFFS.open(ConfigValues::settings, "w");
   write_config_file(f);
   f.close();
 
@@ -80,8 +80,8 @@ void save_config()
  */
 bool read_config()
 {
-  File f = SPIFFS.open(settings, "r");
-  cfglog(settings + " filesize = " + String(f.size()));
+  File f = SPIFFS.open(ConfigValues::settings, "r");
+  cfglog(ConfigValues::settings + " filesize = " + String(f.size()));
 
   bool ret = read_config_file(f, false);
   f.close();
@@ -97,22 +97,22 @@ bool read_config()
  */
 bool has_valid_config_file() {
 
-  if (!SPIFFS.exists(settings)) {
-    cfglog(settings + " not found.");
+  if (!SPIFFS.exists(ConfigValues::settings)) {
+    cfglog(ConfigValues::settings + " not found.");
     SPIFFS.end();
     return false;
   } else {
-    File f = SPIFFS.open(settings, "r");
+    File f = SPIFFS.open(ConfigValues::settings, "r");
 
     cfglog(F("Reading config to checking version."));
     read_config_file(f);
     f.close();
 
-    if (String(SETTING_ID).equals(config.settingId)) {
+    if (String(ConfigValues::SETTING_ID).equals(config.settingId)) {
       cfglog("SETTING_ID verified. " + config.settingId);
       return true;
     } else {
-      cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + config.settingId);
+      cfglog("SETTING_ID NOT match! required:" + String(ConfigValues::SETTING_ID) + " actual:" + config.settingId);
       return false;
     }
   }
@@ -126,7 +126,7 @@ bool has_valid_config_file() {
  */
 bool has_valid_config() {
 
-  bool exist = SPIFFS.exists(configured_file);
+  bool exist = SPIFFS.exists(ConfigValues::configured_file);
 
   if (!exist) {
     // reconfigure用ファイルがなければセットアップモード

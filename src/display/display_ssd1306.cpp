@@ -76,7 +76,7 @@ void init_u8g2() {
   u8g2.clearBuffer();
   u8g2.setFontPosTop(); // 文字描画の座標指定を左上にする（default=baseline)
 
-  if (config.displayFlip == DISPLAY_FLIP_ON) {
+  if (config.displayFlip == ConfigValues::DISPLAY_FLIP_ON) {
     u8g2.setDisplayRotation(U8G2_R2);
   } else {
     u8g2.setDisplayRotation(U8G2_R0);
@@ -359,7 +359,7 @@ void setup_disp_ssd1306() {
 
   ssdlog("initialize start.");
   if (has_ssd1306()) {
-    if (config.oledType == OLED_SSD1306) {
+    if (config.oledType == ConfigValues::OLED_SSD1306) {
       ssdlog("Using SSD1306");
       u8g2 = u8g2_ssd1306;
     } else {

@@ -23,7 +23,7 @@ sensor_characters_t mhz_characters() {
 
 void mhz_read_data() {
 
-  if (config.mhz19b == MHZ_NOUSE) {
+  if (config.mhz19b == ConfigValues::MHZ_NOUSE) {
     return;
   }
 
@@ -36,13 +36,13 @@ void mhz_read_data() {
 }
 
 bool mhz_setup() {
-  if (config.mhz19b == MHZ_NOUSE) {
+  if (config.mhz19b == ConfigValues::MHZ_NOUSE) {
     mhzlog(F("disabled."));
     sensorValues.co2ppm = CO2_PPM_INVALID;
     return false;
   } 
   
-  USE_PWM = (config.mhz19b == MHZ_USE_PWM);
+  USE_PWM = (config.mhz19b == ConfigValues::MHZ_USE_PWM);
 
   if (USE_PWM) {
     mhzlog(F("Using PWM mode. Some features are disabled."));

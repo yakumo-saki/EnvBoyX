@@ -19,8 +19,8 @@ void set_default_config_value()
   config.ssid = "";
   config.password = "";
   config.mDNS = "ebx";
-  config.opMode = OPMODE_DISPLAY;
-  config.mhz19b = MHZ_NOUSE;
+  config.opMode = ConfigValues::OPMODE_DISPLAY;
+  config.mhz19b = ConfigValues::MHZ_NOUSE;
   config.mhz19bPwmPin = "14";
   #ifdef ESP32
   config.mhz19bRxPin = "32";
@@ -30,13 +30,13 @@ void set_default_config_value()
   config.mhz19bTxPin = "0";
   #endif
 
-  config.displayFlip = DISPLAY_FLIP_OFF;
+  config.displayFlip = ConfigValues::DISPLAY_FLIP_OFF;
   config.displayBrightness = "255";
 
-  config.oledType = OLED_SSD1306;
+  config.oledType = ConfigValues::OLED_SSD1306;
 
-  config.st7789 = ST7789_NOUSE;
-  config.st7789Mode = ST7789_MODE_NORMAL;
+  config.st7789 = ConfigValues::ST7789_NOUSE;
+  config.st7789Mode = ConfigValues::ST7789_MODE_NORMAL;
 
   config.mqttBroker = "";
   config.mqttName = "";
@@ -240,7 +240,7 @@ void write_config_file(File f) {
   DynamicJsonDocument doc = create_config_json_all();
   
   // これから書くConfigなので必ず想定しているconfig versionを書く
-  doc[CFG_SETTING_ID] = SETTING_ID;
+  doc[CFG_SETTING_ID] = ConfigValues::SETTING_ID;
 
   cfglog(F("Writing config"));
   size_t size = serializeJson(doc, f);

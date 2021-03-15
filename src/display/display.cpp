@@ -22,7 +22,7 @@ bool use_ssd1306() {
 }
 
 bool use_st7789() {
-	return (config.st7789 == ST7789_USE);
+	return (config.st7789 == ConfigValues::ST7789_USE);
 }
 
 /**

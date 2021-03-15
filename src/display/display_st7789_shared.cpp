@@ -32,15 +32,15 @@ const int DEFAULT_FONT = 4;
  */
 bool isBigMode()
 {
-	return config.st7789Mode == ST7789_MODE_BIG;
+	return config.st7789Mode == ConfigValues::ST7789_MODE_BIG;
 }
 
 int getWidth() {
-	return (config.st7789Mode == ST7789_MODE_BIG ? 134 : 239);
+	return (config.st7789Mode == ConfigValues::ST7789_MODE_BIG ? 134 : 239);
 }
 
 int getHeight() {
-	return (config.st7789Mode == ST7789_MODE_BIG ? 239 : 134);
+	return (config.st7789Mode == ConfigValues::ST7789_MODE_BIG ? 239 : 134);
 }
 
 /**
@@ -50,7 +50,7 @@ int getHeight() {
 void clear_screen(bool ignoreBigMode = false) {
 	tft.fillScreen(TFT_BLACK);
 
-	if (config.st7789Mode == ST7789_MODE_BIG && !ignoreBigMode) {
+	if (config.st7789Mode == ConfigValues::ST7789_MODE_BIG && !ignoreBigMode) {
 		_clear_screen_big();
 	} else {
 		_clear_screen_normal();

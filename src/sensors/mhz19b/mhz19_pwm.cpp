@@ -129,7 +129,7 @@ int mhz_read_data_pwm() {
 
 void mhz_setup_pwm() {
   
-  if (config.mhz19b == MHZ_NOUSE) {
+  if (config.mhz19b == ConfigValues::MHZ_NOUSE) {
     mhzlog(F("disabled."));
     return;
   }

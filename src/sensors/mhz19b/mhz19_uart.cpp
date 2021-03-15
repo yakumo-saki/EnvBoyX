@@ -85,7 +85,7 @@ bool mhz_setup_uart() {
 
 // For API
 bool mhz_do_zero_calibration() {
-  if (config.mhz19b != MHZ_USE_UART) return false;
+  if (config.mhz19b != ConfigValues::MHZ_USE_UART) return false;
   mhz19.calibrate();
   if (mhz19.errorCode != 1) {
     mhzlog("API: ZeroCalibration: Error " + mhz19_code_to_msg(mhz19.errorCode));
@@ -98,13 +98,13 @@ bool mhz_do_zero_calibration() {
 
 // For API
 bool mhz_get_abc() {
-  if (config.mhz19b != MHZ_USE_UART) return false;
+  if (config.mhz19b != ConfigValues::MHZ_USE_UART) return false;
   return mhz19.getABC();
 }
 
 // For API
 bool mhz_set_abc(bool onoff) {
-  if (config.mhz19b != MHZ_USE_UART) return false;
+  if (config.mhz19b != ConfigValues::MHZ_USE_UART) return false;
   mhz19.autoCalibration(onoff);
   if (mhz19.errorCode != 1) {
     mhzlog("API: " + mhz19_code_to_msg(mhz19.errorCode));
