@@ -65,8 +65,8 @@ typedef struct {
  * 項目追加時の実装項目：
  * 1. Struct（ここ）
  * 2. config default値    set_default_config_value
- * 3. Setup HTML          http_setup_get_root_content
- * 4. Setup POST後の表示   http_setup_post_root_content
+ * 3. Setup HTML          http_setup_web_get.cpp http_setup_get_root_content
+ * 4. Setup POST後の表示   http_setup_web_post.cpp http_setup_post_root_content
  * 5. Web API             
  * 6. 実際の実装
  */ 
