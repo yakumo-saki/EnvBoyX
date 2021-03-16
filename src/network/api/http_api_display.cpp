@@ -24,7 +24,7 @@ void http_handle_power() {
 
   String jsonStr;
   serializeJson(json, jsonStr);
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void http_handle_brightness() {
@@ -39,7 +39,7 @@ void http_handle_brightness() {
 
   String jsonStr;
   serializeJson(json, jsonStr);
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void http_api_display_setup() {

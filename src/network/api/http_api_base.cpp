@@ -13,16 +13,16 @@ extern HTTPWEBSERVER server;
 
 void http_handle_data() {
   String message = http_normal_data_json();
-  server.send(200, MIME_JSON, message);
+  server.send(200, MimeType::JSON, message);
 }
 
 void http_handle_ping() {
   String message = http_normal_ping_json();
-  server.send(200, MIME_JSON, message);
+  server.send(200, MimeType::JSON, message);
 }
 
 void http_handle_stastics() {
-  server.send(200, MIME_JSON, stasticsJSON);
+  server.send(200, MimeType::JSON, stasticsJSON);
 }
 
 void http_handle_goto_setup() {
@@ -36,12 +36,12 @@ void http_handle_goto_setup() {
 
   String jsonStr;
   serializeJson(json, jsonStr);
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void http_handle_not_found() {
   String message = http_normal_not_found_html();
-  server.send(404, MIME_HTML, message);
+  server.send(404, MimeType::HTML, message);
 }
 
 void http_api_base_setup() {

@@ -28,7 +28,7 @@ void _get_config() {
 
   String jsonStr;
   serializeJson(json, jsonStr);
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void _set_config() {
@@ -39,7 +39,7 @@ void _set_config() {
   String jsonStr;
   serializeJson(json, jsonStr);
 
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void _revert_config() {
@@ -54,7 +54,7 @@ void _revert_config() {
 
   String jsonStr;
   serializeJson(json, jsonStr);
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void _commit_config() {
@@ -66,12 +66,12 @@ void _commit_config() {
 
   String jsonStr;
   serializeJson(json, jsonStr);
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void _backup_config() {
   String ret = http_api_backup_config();
-  server.send(200, MIME_TEXT, ret);
+  server.send(200, MimeType::TEXT, ret);
 }
 
 void http_api_config_setup() {

@@ -9,7 +9,7 @@
 
 #include "config.h"
 
-extern const unsigned int CONF_JSON_SIZE;
+const unsigned int CONF_JSON_SIZE = 2000;
 
 /**
  * とりあえずのデフォルト値をグローバル変数にセットする

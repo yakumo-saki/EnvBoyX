@@ -2,6 +2,8 @@
 #include <WiFiClient.h>
 
 #include "global_ConfigValues.h"
+#include "global_MimeType.h"
+
 #include "structs.h"
 
 // --------------------------------------------------------------------
@@ -29,9 +31,7 @@ extern const int MHZ_RANGE;
 // --------------------------------------------------------------------
 // 設定ファイル用定数
 // --------------------------------------------------------------------
-extern const String MIME_HTML;
-extern const String MIME_TEXT;
-extern const String MIME_JSON;
+extern const char DATA_STYLE_CSS[];
 
 // --------------------------------------------------------------------
 // 設定値保存

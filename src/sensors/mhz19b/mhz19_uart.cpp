@@ -12,6 +12,11 @@ const int MHZ_RESULT_OK = 1;
 // 終了後は false に戻す。
 bool autoBaselineCorrection = false;
 
+const int MHZ_BAUDRATE = 9600;
+
+// MH-Z19B の測定レンジ。 2000 or 5000. これ以上の値のco2ppmはエラー扱い
+const int MHZ_RANGE = 2000;
+
 #ifdef ESP32
   HardwareSerial mhzSerial(2); // use UART2
 #elif defined(ESP8266)

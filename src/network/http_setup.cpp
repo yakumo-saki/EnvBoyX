@@ -50,10 +50,8 @@ String http_setup_get_root_content() {
   html += "<meta name='format-detection' content='telephone=no' />";
   html += "<title>" + product + " setting</title>";
   html += "<style>";
-  html += "  input[type='text'] { width:200px }";
-  html += "  input.num { width:50px }";
-  html += "  input[type='submit'] { width:200px; height: 48px;}";
   html += "</style>";
+  html += "<link rel='stylesheet' href='/style.css'>";
   html += "</head>";
   html += "<h1>" + product + " Settings  (" + ConfigValues::SETTING_ID + ")</h1>";
   html += "<form method='post'>";
@@ -178,7 +176,7 @@ String http_setup_get_root_content() {
   html += "</form>";
   html += "<br>";
   html += "<hr>";
-  html += product_long + ", Copyright 2018-2020 Yakumo Saki / ziomatrix.org.";
+  html += product_long + ", Copyright 2018-2021 Yakumo Saki / ziomatrix.org.";
   html += "</html>";
 
   return html;

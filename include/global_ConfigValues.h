@@ -25,8 +25,4 @@ class ConfigValues {
     static const String MHZ_USE_PWM;
     static const String MHZ_USE_UART;
     static const String MHZ_NOUSE;
-
-    static const String MIME_HTML;
-    static const String MIME_TEXT;
-    static const String MIME_JSON;
 };

@@ -16,6 +16,8 @@ extern WebServer server;
 extern ESP8266WebServer server;
 #endif
 
+extern const uint8_t STYLE_CSS[] asm("_binary_embed_style_css_start");
+
 /**
  * GET 設定画面
  */
@@ -23,7 +25,7 @@ void handle_get_root() {
 
   String html = http_setup_get_root_content();
 
-  server.send(200, "text/html", html);
+  server.send(200, MimeType::HTML, html);
 }
 
 void alerts_to_config(config_alert_t& alerts, String prefix) {
@@ -69,8 +71,14 @@ void handle_post_root() {
   trim_config();
   String html = http_setup_post_root_content();
 
-  server.send(200, MIME_HTML, html);
+  server.send(200, MimeType::HTML, html);
 }
+
+void handle_get_style_css() {
+  httplog(F("style.css accessed"));
+  server.send(200, MimeType::CSS, (const char *)STYLE_CSS);
+}
+
 
 /**
  * 初期化(設定用Webサーバモード)
@@ -79,6 +87,7 @@ void setup_http_setup() {
   httplog(F("HTTP web server initializing"));
   server.on("/", HTTP_GET, handle_get_root);
   server.on("/", HTTP_POST, handle_post_root);
+  server.on("/style.css", HTTP_GET, handle_get_style_css);
   server.begin();
   httplog(F("HTTP web server initialized"));
 }

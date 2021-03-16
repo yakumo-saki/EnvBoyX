@@ -1,0 +1,16 @@
+body { 
+    background-color: aliceblue;
+}
+
+input[type='text'] {
+    width: 200px;
+}
+
+input.num {
+    width: 50px;
+}
+
+input[type='submit'] {
+    width: 200px;
+    height: 48px;
+}
