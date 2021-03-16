@@ -59,19 +59,34 @@ typedef struct {
   config_alert_range_t warning2;
 } config_alert_t;
 
+
+/**
+ * Config 構造体
+ * 項目追加時の実装項目：
+ * 1. Struct（ここ）
+ * 2. config default値    set_default_config_value
+ * 3. Setup HTML          http_setup_get_root_content
+ * 4. Setup POST後の表示   http_setup_post_root_content
+ * 5. Web API             
+ * 6. 実際の実装
+ */ 
 typedef struct {
   String settingId;
   String ssid;
   String password;
   String mDNS;
   String opMode;
+  
   String mhz19b;
   String mhz19bPwmPin;
   String mhz19bRxPin;
   String mhz19bTxPin;
+  String mhz19bABC;
+  
   String displayFlip;
   String displayBrightness;
   String displaySkipReconfigure;
+
   String st7789;
   String st7789Mode;
   String mqttBroker;

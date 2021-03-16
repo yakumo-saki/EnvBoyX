@@ -32,6 +32,33 @@ String generate_http_setup_alerts_html(String name, String prefix, const config_
   return html;
 }
 
+typedef struct  {
+  String label;
+  String value;
+} LabelValue;
+
+/**
+ * @param name input tag name attribute
+ * @param value current value
+ */
+String _create_radiobuttons(String name, String value, std::vector<LabelValue> choises) {
+  String html = "";
+
+  for (int i = 0; i < choises.size(); i++)
+  {
+    auto c = choises[i];
+    String id = name + "__" + c.value;
+    String checked = (value == c.value ? " checked" : "");
+
+    html += "  <input type='radio' name='" + name + "'";
+    html += " value='" + c.value + "'";
+    html += " id='" + id + "'" + checked + ">";
+    html += "<label for='" + id + "'>" + c.label + "</label><br>";
+  }
+  
+  return html;
+}
+
 /**
  * GET 設定画面
  */
@@ -73,66 +100,79 @@ String http_setup_get_root_content() {
   html += "<fieldset><legend>動作モード設定</legend>";
   html += "  <strong>動作モード</strong><br>";
   html += "  ※ ESP8266でMQTTモードを使用するにはIO16ピンとRSTピンを接続する必要があります。<br>";
-  String opmode_always_checked = (config.opMode == ConfigValues::OPMODE_DISPLAY ? " checked" : "");
-  String opmode_mqtt_checked = (config.opMode == ConfigValues::OPMODE_MQTT ? " checked" : "");
-  html += "  <input type='radio' name='opmode' value='" + ConfigValues::OPMODE_DISPLAY + "' id='opmode_always'" + opmode_always_checked + "><label for='opmode_always'>常時起動モード（測定値常時表示, HTTPサーバーあり）</label><br>";
-  html += "  <input type='radio' name='opmode' value='" + ConfigValues::OPMODE_MQTT + "' id='opmode_mqtt'" + opmode_mqtt_checked + "><label for='opmode_mqtt'>MQTTモード（間欠動作・MQTT送信後ディープスリープ）</label><br>";
+  {
+    std::vector<LabelValue> choises;
+    choises.push_back(LabelValue{"常時起動モード（測定値常時表示, HTTPサーバーあり）", ConfigValues::OPMODE_DISPLAY});
+    choises.push_back(LabelValue{"MQTTモード（間欠動作・MQTT送信後ディープスリープ）", ConfigValues::OPMODE_MQTT});
+    html += _create_radiobuttons(ConfigValues::OPMODE_NAME, config.opMode, choises);
+  }
   html += "</fieldset>";
 
   html += "<fieldset><legend>表示デバイス共通設定</legend>";
-
-  String display_flip_no_checked = (config.displayFlip == ConfigValues::DISPLAY_FLIP_OFF ? " checked" : "");
-  String display_flip_yes_checked = (config.displayFlip == ConfigValues::DISPLAY_FLIP_ON ? " checked" : "");
-
-  String display_skip_reconfig_no_checked = (config.displaySkipReconfigure == ConfigValues::DISPLAY_FLIP_OFF ? " checked" : "");
-  String display_skip_reconfig_yes_checked = (config.displayFlip == ConfigValues::DISPLAY_FLIP_ON ? " checked" : "");
-
   html += "  <strong>画面反転</strong><br>";
-  html += "  <input type='radio' name='displayFlip' value='" + ConfigValues::DISPLAY_FLIP_OFF + "' id='display_flip_no'" + display_flip_no_checked + "><label for='display_flip_no'>反転しない</label><br>";
-  html += "  <input type='radio' name='displayFlip' value='" + ConfigValues::DISPLAY_FLIP_ON + "' id='display_flip_yes'" + display_flip_yes_checked + "><label for='display_flip_yes'>反転する</label><br>";
+  {
+    std::vector<LabelValue> choises;
+    choises.push_back(LabelValue{"反転しない", ConfigValues::DISPLAY_FLIP_OFF});
+    choises.push_back(LabelValue{"反転する", ConfigValues::DISPLAY_FLIP_ON});
+    html += _create_radiobuttons(ConfigValues::DISPLAY_FLIP_NAME, config.displayFlip, choises);
+  }
 
   html += "  <strong>明るさ(0-255)</strong><br>";
   html += "  <input type='text' name='displayBrightness' value='" + config.displayBrightness + "'><br>";
+
+  html += "  <strong>Wait for reconfigure画面</strong><br>";
+  html += "  ※ 表示しない場合、セットアップモードに入るためにはWeb APIを使用する必要があります。<br>";
+  {
+    std::vector<LabelValue> choises;
+    choises.push_back(LabelValue{"表示する（推奨）", ConfigValues::DISPLAY_RECONFIG_ON});
+    choises.push_back(LabelValue{"表示しない", ConfigValues::DISPLAY_RECONFIG_SKIP});
+    html += _create_radiobuttons(ConfigValues::DISPLAY_RECONFIG_NAME, config.displaySkipReconfigure, choises);
+  }
+
   html += "</fieldset>";
 
   html += "<fieldset><legend>I2C OLED デバイス設定</legend>";
+  html += "  ※ 接続されていない場合無視されます。画面端にゴミが表示されている、または数ドット欠けている場合は変更してください。<br>";
+  {
+    std::vector<LabelValue> choises;
+    choises.push_back(LabelValue{"SSD1306", ConfigValues::OLED_SSD1306});
+    choises.push_back(LabelValue{"SH1106", ConfigValues::OLED_SH1106});
+    html += _create_radiobuttons(ConfigValues::OLED_NAME, config.oledType, choises);
+  }
 
-  String display_ssd1306_checked = (config.oledType == ConfigValues::OLED_SSD1306 ? " checked" : "");
-  String display_sh1106_checked = (config.oledType == ConfigValues::OLED_SH1106 ? " checked" : "");
-
-  html += "  <input type='radio' name='oledType' value='" + ConfigValues::OLED_SSD1306 + "' id='oledType_ssd1306'" + display_ssd1306_checked + "><label for='oledType_ssd1306'>SSD1306</label><br>";
-  html += "  <input type='radio' name='oledType' value='" + ConfigValues::OLED_SH1106 + "' id='oledType_sh1106'" + display_sh1106_checked + "><label for='oledType_sh1106'>SH1106</label><br>";
   html += "</fieldset>";
  
   html += "<fieldset><legend>ST7789 デバイス設定</legend>";
 
-  String st7789_use_checked = (config.st7789 == ConfigValues::ST7789_USE ? " checked" : "");
-  String st7789_nouse_checked = (config.st7789 == ConfigValues::ST7789_NOUSE ? " checked" : "");
-  
-  String st7789_big_checked = (config.st7789Mode == ConfigValues::ST7789_MODE_BIG ? " checked" : "");
-  String st7789_normal_checked = (config.st7789Mode == ConfigValues::ST7789_MODE_NORMAL ? " checked" : "");
-
   html += "  <strong>ST7789 SPI液晶の有無</strong><br>";
   html += "  ※ MQTTモードでは無効。<br>";
   html += "  ※ SPIピンはビルドオプションで指定<br>";
-  html += "  <input type='radio' name='st7789' value='" + ConfigValues::ST7789_NOUSE + "' id='st7789_no'" + st7789_nouse_checked + "><label for='st7789_no'>使用しない</label><br>";
-  html += "  <input type='radio' name='st7789' value='" + ConfigValues::ST7789_USE + "' id='st7789_yes'" + st7789_use_checked + "><label for='st7789_yes'>使用する</label><br>";
+  {
+    std::vector<LabelValue> choises;
+    choises.push_back(LabelValue{"使用しない", ConfigValues::ST7789_NOUSE});
+    choises.push_back(LabelValue{"使用する", ConfigValues::ST7789_USE});
+    html += _create_radiobuttons(ConfigValues::ST7789_NAME, config.st7789, choises);
+  }
 
   html += "  <strong>ST7789 表示モード</strong><br>";
-  html += "  <input type='radio' name='st7789Mode' value='" + ConfigValues::ST7789_MODE_NORMAL + "' id='st7789_normal'" + st7789_normal_checked + "><label for='st7789_normal'>横表示モード</label><br>";
-  html += "  <input type='radio' name='st7789Mode' value='" + ConfigValues::ST7789_MODE_BIG + "' id='st7789_big'" + st7789_big_checked + "><label for='st7789_big'>縦表示モード（デカ文字）</label><br>";
+  {
+    std::vector<LabelValue> choises;
+    choises.push_back(LabelValue{"横表示モード", ConfigValues::ST7789_MODE_NORMAL});
+    choises.push_back(LabelValue{"縦表示モード（デカ文字）", ConfigValues::ST7789_MODE_BIG});
+    html += _create_radiobuttons(ConfigValues::ST7789_MODE_NAME, config.st7789Mode, choises);
+  }
+  html += "</fieldset>";
 
-  html += "  <br>";
-
-
+  html += "<fieldset><legend>MH-Z19B デバイス設定</legend>";
   html += "  <strong>MH-Z19B CO2センサー有無（金色のセンサー）</strong><br>";
+  {
+    std::vector<LabelValue> choises;
+    choises.push_back(LabelValue{"使用しない", ConfigValues::MHZ_NOUSE});
+    choises.push_back(LabelValue{"使用する（UARTモード）", ConfigValues::MHZ_USE_UART});
+    // choises.push_back(LabelValue{"使用する（PWMモード）", ConfigValues::MHZ_USE_PWM});
 
-  String mhz19b_nouse_checked = (config.mhz19b == ConfigValues::MHZ_NOUSE ? " checked" : "");
-  String mhz19b_uart_checked = (config.mhz19b == ConfigValues::MHZ_USE_UART ? " checked" : "");
-  String mhz19b_pwm_checked = (config.mhz19b == ConfigValues::MHZ_USE_PWM ? " checked" : "");
-
-  html += "  <input type='radio' name='mhz19b' value='" + String(ConfigValues::MHZ_NOUSE)  + "' id='mhz19b_no'" + mhz19b_nouse_checked + "><label for='mhz19b_no'>使用しない（通常はこちら）</label><br>";
-  html += "  <input type='radio' name='mhz19b' value='" + String(ConfigValues::MHZ_USE_UART) + "' id='mhz19b_uart'" + mhz19b_uart_checked + "><label for='mhz19b_uart'>使用する（UARTモード）</label><br>";
+    html += _create_radiobuttons(ConfigValues::MHZ_NAME, config.mhz19b, choises);
+  }
   
   //html += "  <br>";
   // html += "  <strong>MH-Z19BのPWMピンが接続されているGPIOピン番号</strong><br>";
@@ -146,6 +186,17 @@ String http_setup_get_root_content() {
   html += "  ※ ボードによって使用可能なピンが異なるので動作しない場合は他のピンを試してください。<br>";
   html += "  RXピン <input type='text' name='mhz19bRxPin' placeholder='MHZ-19B RXピン番号' value='" + config.mhz19bRxPin + "' placeholder='16'><br>";
   html += "  TXピン <input type='text' name='mhz19bTxPin' placeholder='MHZ-19B TXピン番号' value='" + config.mhz19bTxPin + "' placeholder='17'><br>";
+  html += "  <br>";
+
+  html += "  <strong>起動時のAuto Baseline Correction</strong><br>";
+  html += "  ※ MH-Z19Bを使用しない場合・MH-Z19BがUARTモード以外の場合は無視されます。<br>";
+  {
+    std::vector<LabelValue> choises;
+    choises.push_back(LabelValue{"無効（標準）", ConfigValues::MHZ_ABC_OFF});
+    choises.push_back(LabelValue{"有効", ConfigValues::MHZ_ABC_ON});
+    html += _create_radiobuttons(ConfigValues::MHZ_ABC_NAME, config.mhz19bABC, choises);
+  }
+
   html += "</fieldset>";
  
 
@@ -203,10 +254,12 @@ String http_setup_post_root_content() {
   html += "<head>";
   html += "<title>" + product + " setting done. please restart.</title>";
   html += "<meta charset='UTF-8'>";
+  html += "<link rel='stylesheet' href='/style.css'>";
   html += "<style>";
   html += "  input { width:200px; }";
   html += "</style>";
   html += "</head>";
+  html += "<body class='setup_done'>";
 
   html += "<h1>" + product + " setting done</h1>";
   if (config.opMode == "always") {
@@ -233,6 +286,15 @@ String http_setup_post_root_content() {
       html += "【バグ】I2C OLED デバイスの指定が異常です。 " + config.oledType + "<br>";
     }
 
+    if (config.displaySkipReconfigure == ConfigValues::DISPLAY_RECONFIG_ON) {
+      html += "Wait for Reconfigure: 表示する<br>";
+    } else if (config.displaySkipReconfigure == ConfigValues::DISPLAY_RECONFIG_SKIP) {
+      html += "Wait for Reconfigure: スキップする<br>";
+    } else {
+      html += "【バグ】Wait for Reconfigure画面の設定が異常です => " + config.displaySkipReconfigure + "<br>";
+    }
+
+
     if (config.st7789 == ConfigValues::ST7789_USE) {
       html += "ST7789 を使用する<br>";
 
@@ -253,6 +315,13 @@ String http_setup_post_root_content() {
       html += "MHZ19B を使用する（UART）<br>";
       html += "  RXピン番号=" + String(config.mhz19bRxPin) + "<br>";
       html += "  TXピン番号=" + String(config.mhz19bTxPin) + "<br>";
+      if (config.mhz19bABC == ConfigValues::MHZ_ABC_ON) {
+        html += "  Auto Baseline Correction=有効<br>";
+      } else if (config.mhz19bABC == ConfigValues::MHZ_ABC_OFF) {
+        html += "  Auto Baseline Correction=オフ<br>";
+      } else {
+        html += "【バグ】MHZ19B Auto Baseline Correction設定が異常です。 =>" + config.mhz19bABC + "<br>";           
+      }
     } else if (config.mhz19b == ConfigValues::MHZ_USE_PWM) {
       html += "MHZ19B を使用する（PWM） ※ 廃止されたモードです";
       html += " GPIOピン番号=" + String(config.mhz19bPwmPin) + "<br>";
@@ -261,6 +330,7 @@ String http_setup_post_root_content() {
     } else {
       html += "【バグ】MHZ19B設定が異常です。 =>" + config.mhz19b + "<br>";           
     }
+
 
   } else if (config.opMode == "mqtt") {
     html += "動作モード：MQTT間欠動作モード<br>";
@@ -293,7 +363,8 @@ String http_setup_post_root_content() {
   html += "Restart (power off then power on) to use above setting.<br>";
   html += "設定が完了しました。リセットボタンを押して再起動して下さい。<br>";
   html += "<br>";
-  html += "<a href='/'>setting again</a>";
+  html += "<a class='setup_again' href='/'>setting again</a>";
+  html += "</body>";
   html += "</html>";
   
   return html;

@@ -9,7 +9,9 @@
 
 ## v44.0: Untitled update
 
-* 
+* ADD: MHZ-19B Auto Baseline Correction ON/OFF at boot time
+* ADD: Skip wait for reconfigure
+* FIX: Internal code clean up
 
 ## v43.0: Delta all update
 

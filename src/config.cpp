@@ -19,9 +19,12 @@ void set_default_config_value()
   config.ssid = "";
   config.password = "";
   config.mDNS = "ebx";
+
   config.opMode = ConfigValues::OPMODE_DISPLAY;
+
   config.mhz19b = ConfigValues::MHZ_NOUSE;
   config.mhz19bPwmPin = "14";
+  config.mhz19bABC = ConfigValues::MHZ_ABC_OFF; // v44
   #ifdef ESP32
   config.mhz19bRxPin = "32";
   config.mhz19bTxPin = "33";
@@ -32,6 +35,7 @@ void set_default_config_value()
 
   config.displayFlip = ConfigValues::DISPLAY_FLIP_OFF;
   config.displayBrightness = "255";
+  config.displaySkipReconfigure = ConfigValues::DISPLAY_RECONFIG_ON;
 
   config.oledType = ConfigValues::OLED_SSD1306;
 

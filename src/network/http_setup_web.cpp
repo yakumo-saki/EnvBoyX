@@ -49,16 +49,22 @@ void handle_post_root() {
   config.password = server.arg("pass");
   config.mDNS = server.arg("mdnsname");
   config.opMode = server.arg("opmode");
-  config.displayFlip = server.arg("displayFlip");
-  config.displayBrightness = server.arg("displayBrightness");
-  config.oledType = server.arg("oledType");
-  config.st7789 = server.arg("st7789");
-  config.st7789Mode = server.arg("st7789Mode");
-  config.mhz19b = server.arg("mhz19b");
-  config.mhz19bPwmPin = server.arg("mhz19bPwmPin");
 
+  config.displayFlip = server.arg(ConfigValues::DISPLAY_FLIP_NAME);
+  config.displayBrightness = server.arg("displayBrightness");
+  config.displaySkipReconfigure = server.arg(ConfigValues::DISPLAY_RECONFIG_NAME);
+
+  config.oledType = server.arg(ConfigValues::OLED_NAME);
+
+  config.st7789 = server.arg(ConfigValues::ST7789_NAME);
+  config.st7789Mode = server.arg(ConfigValues::ST7789_MODE_NAME);
+
+  config.mhz19b = server.arg(ConfigValues::MHZ_NAME);
+  config.mhz19bPwmPin = server.arg("mhz19bPwmPin");
   config.mhz19bRxPin = server.arg("mhz19bRxPin");
   config.mhz19bTxPin = server.arg("mhz19bTxPin");;
+  config.mhz19bABC = server.arg(ConfigValues::MHZ_ABC_NAME);
+
   config.mqttBroker = server.arg("mqttbroker");
   config.mqttName = server.arg("mqttname");
 
