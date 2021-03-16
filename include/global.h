@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include <WiFiClient.h>
 
+#include "global_ConfigValues.h"
+#include "global_MimeType.h"
+
 #include "structs.h"
 
 // --------------------------------------------------------------------
@@ -28,31 +31,7 @@ extern const int MHZ_RANGE;
 // --------------------------------------------------------------------
 // 設定ファイル用定数
 // --------------------------------------------------------------------
-extern const String settings;
-extern const String configured_file;
-
-extern const String SETTING_ID;
-extern const String OPMODE_MQTT;
-extern const String OPMODE_DISPLAY;
-
-extern const String ST7789_USE;
-extern const String ST7789_NOUSE;
-extern const String ST7789_MODE_BIG;
-extern const String ST7789_MODE_NORMAL;
-
-extern const String OLED_SSD1306;
-extern const String OLED_SH1106;
-
-extern const String DISPLAY_FLIP_ON;
-extern const String DISPLAY_FLIP_OFF;
-
-extern const String MHZ_USE_PWM;
-extern const String MHZ_USE_UART;
-extern const String MHZ_NOUSE;
-
-extern const String MIME_HTML;
-extern const String MIME_TEXT;
-extern const String MIME_JSON;
+extern const char DATA_STYLE_CSS[];
 
 // --------------------------------------------------------------------
 // 設定値保存

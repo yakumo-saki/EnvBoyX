@@ -10,6 +10,8 @@
 #include "display/u8g2_utils.h"
 #include "display/display_ssd1306_delta.h"
 
+const byte SSD1306_I2C_ADDR = 0x3c;
+
 // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
 U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2_sh1106(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA);
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2_ssd1306(U8G2_R0, U8X8_PIN_NONE, I2C_SCL, I2C_SDA); // artifact
@@ -76,7 +78,7 @@ void init_u8g2() {
   u8g2.clearBuffer();
   u8g2.setFontPosTop(); // 文字描画の座標指定を左上にする（default=baseline)
 
-  if (config.displayFlip == DISPLAY_FLIP_ON) {
+  if (config.displayFlip == ConfigValues::DISPLAY_FLIP_ON) {
     u8g2.setDisplayRotation(U8G2_R2);
   } else {
     u8g2.setDisplayRotation(U8G2_R0);
@@ -359,7 +361,7 @@ void setup_disp_ssd1306() {
 
   ssdlog("initialize start.");
   if (has_ssd1306()) {
-    if (config.oledType == OLED_SSD1306) {
+    if (config.oledType == ConfigValues::OLED_SSD1306) {
       ssdlog("Using SSD1306");
       u8g2 = u8g2_ssd1306;
     } else {

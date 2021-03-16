@@ -35,54 +35,6 @@ extern const int I2C_SDA = 5;
 extern const int I2C_SCL = 4;
 #endif
 
-extern const byte SSD1306_I2C_ADDR = 0x3c;
-extern const int MHZ_BAUDRATE = 9600;
-
-// MH-Z19B の測定レンジ。 2000 or 5000. これ以上の値のco2ppmはエラー扱い
-extern const int MHZ_RANGE = 2000;
-
-// --------------------------------------------------------------------
-// データ埋め込み .rodata から取得するもの
-// --------------------------------------------------------------------
-extern const char DATA_STYLE_CSS[] asm("_binary_src_asmdata_style_css_start");
-
-
-// --------------------------------------------------------------------
-// 設定ファイル用定数
-// --------------------------------------------------------------------
-extern const String settings = "/wifi_settings.txt";
-extern const String configured_file = "/config_ok.txt";
-
-extern const unsigned int CONF_JSON_SIZE = 2000;
-
-extern const String SETTING_ID = "EBXCFG.v12";
-extern const String OPMODE_MQTT = "mqtt";
-extern const String OPMODE_DISPLAY = "always";
-
-extern const String OLED_SSD1306 = "SSD";
-extern const String OLED_SH1106 = "SH";
-
-extern const String ST7789_USE = "yes";
-extern const String ST7789_NOUSE = "no";
-extern const String ST7789_MODE_BIG = "st7789_BIG";
-extern const String ST7789_MODE_NORMAL = "st7789_normal";
-
-// SSD1306 , ST7789 Flip
-extern const String DISPLAY_FLIP_ON = "yes";
-extern const String DISPLAY_FLIP_OFF = "no";
-
-extern const String MHZ_USE_PWM = "yes_pwm";
-extern const String MHZ_USE_UART = "yes_uart";
-extern const String MHZ_NOUSE = "no";
-
-// --------------------------------------------------------------------
-// ただの定数
-// --------------------------------------------------------------------
-
-extern const String MIME_HTML = "text/html";
-extern const String MIME_TEXT = "text/plain";
-extern const String MIME_JSON = "application/json";
-
 // --------------------------------------------------------------------
 // 設定値保存
 // --------------------------------------------------------------------

@@ -58,7 +58,7 @@ void _clear_screen_normal() {
 	tft.fillScreen(TFT_BLACK);
 
 	// 横画面
-	if (config.displayFlip == DISPLAY_FLIP_OFF) {
+	if (config.displayFlip == ConfigValues::DISPLAY_FLIP_OFF) {
 		tft.setRotation(1);
 	} else {
 		tft.setRotation(3);

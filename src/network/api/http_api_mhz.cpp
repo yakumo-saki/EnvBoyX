@@ -11,14 +11,14 @@ extern HTTPWEBSERVER server;
 
 
 void _set_mhz_abc() {
-  if (config.mhz19b != MHZ_USE_UART) {
-    server.send(500, MIME_TEXT, F("MHZ19B IS DISABLED\n"));
+  if (config.mhz19b != ConfigValues::MHZ_USE_UART) {
+    server.send(500, MimeType::TEXT, F("MHZ19B IS DISABLED\n"));
     return;
   }
 
   String abc = server.arg("value");
   if (!abc || abc == "") {
-    server.send(400, MIME_TEXT, F("'value' parameter is missing.\n"));
+    server.send(400, MimeType::TEXT, F("'value' parameter is missing.\n"));
     return;
   }
 
@@ -33,12 +33,12 @@ void _set_mhz_abc() {
 
   String jsonStr;
   serializeJson(json, jsonStr);
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void _get_mhz_abc() {
-  if (config.mhz19b != MHZ_USE_UART) {
-    server.send(500, MIME_TEXT, F("MHZ19B IS DISABLED\n"));
+  if (config.mhz19b != ConfigValues::MHZ_USE_UART) {
+    server.send(500, MimeType::TEXT, F("MHZ19B IS DISABLED\n"));
     return;
   }
 
@@ -51,12 +51,12 @@ void _get_mhz_abc() {
 
   String jsonStr;
   serializeJson(json, jsonStr);
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void _mhz_zero_calibration() {
-  if (config.mhz19b != MHZ_USE_UART) {
-    server.send(500, MIME_TEXT, F("MHZ19B IS DISABLED\n"));
+  if (config.mhz19b != ConfigValues::MHZ_USE_UART) {
+    server.send(500, MimeType::TEXT, F("MHZ19B IS DISABLED\n"));
     return;
   }
 
@@ -68,7 +68,7 @@ void _mhz_zero_calibration() {
 
   String jsonStr;
   serializeJson(json, jsonStr);
-  server.send(200, MIME_JSON, jsonStr);
+  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void http_api_mhz_setup() {
