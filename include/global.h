@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include <WiFiClient.h>
 
-#include "global_ConfigValues.h"
 #include "global_MimeType.h"
+
+#include "config_values.h"
+#include "config_names.h"
 
 #include "structs.h"
 

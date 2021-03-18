@@ -37,7 +37,7 @@ void list_dir()
  */
 void create_configure_flag_file()
 {
-  File f2 = LittleFS.open(configured_file, "w");
+  File f2 = LittleFS.open(ConfigValues::configured_file, "w");
   f2.println(F("ok"));
   f2.close();
   cfglog(F("configured file created."));
@@ -48,7 +48,7 @@ void create_configure_flag_file()
  */
 void remove_configure_flag_file()
 {
-  LittleFS.remove(configured_file);
+  LittleFS.remove(ConfigValues::configured_file);
   cfglog(F("configured file removed."));
 }
 
@@ -64,7 +64,7 @@ void save_config()
   trim_config();
 
   // 設定ファイル
-  File f = LittleFS.open(settings, "w");
+  File f = LittleFS.open(ConfigValues::settings, "w");
   write_config_file(f);
   f.close();
 
@@ -76,7 +76,7 @@ void save_config()
  */
 bool read_config()
 {
-  File f = LittleFS.open(settings, "r");
+  File f = LittleFS.open(ConfigValues::settings, "r");
   bool ret = read_config_file(f);
   f.close();
 
@@ -94,21 +94,21 @@ bool has_valid_config_file() {
   LittleFS.begin();
   delay(50);
 
-  if (!LittleFS.exists(settings)) {
-    cfglog(settings + " not found.");
+  if (!LittleFS.exists(ConfigValues::settings)) {
+    cfglog(ConfigValues::settings + " not found.");
     return false;
   } else {
-    File f = LittleFS.open(settings, "r");
-    cfglog(settings + " filesize = " + String(f.size()));
+    File f = LittleFS.open(ConfigValues::settings, "r");
+    cfglog(ConfigValues::settings + " filesize = " + String(f.size()));
 
     read_config_file(f);
     f.close();
 
-    if (String(SETTING_ID).equals(config.settingId)) {
+    if (String(ConfigValues::SETTING_ID).equals(config.settingId)) {
       cfglog("SETTING_ID verified. " + config.settingId);
       return true;
     } else {
-      cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + config.settingId);
+      cfglog("SETTING_ID NOT match! required:" + String(ConfigValues::SETTING_ID) + " actual:" + config.settingId);
       return false;
     }
   }
@@ -124,7 +124,7 @@ bool has_valid_config() {
   LittleFS.begin();
   delay(50);
 
-  if (!LittleFS.exists(configured_file)) {
+  if (!LittleFS.exists(ConfigValues::configured_file)) {
     // reconfigure用ファイルがなければセットアップモード
     // => wait for reconfigure でリセットされたとき。
     cfglog(F("configured_file not found."));

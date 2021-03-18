@@ -6,6 +6,8 @@
 
 #include "http_setup.h"
 
+#include "embed/style_css.h"
+
 #ifdef ESP32
 #include <WebServer.h>
 extern WebServer server;
@@ -15,8 +17,6 @@ extern WebServer server;
 #include <ESP8266WebServer.h>
 extern ESP8266WebServer server;
 #endif
-
-extern const uint8_t STYLE_CSS[] asm("_binary_embed_style_css_start");
 
 /**
  * GET 設定画面
@@ -50,20 +50,20 @@ void handle_post_root() {
   config.mDNS = server.arg("mdnsname");
   config.opMode = server.arg("opmode");
 
-  config.displayFlip = server.arg(ConfigValues::DISPLAY_FLIP_NAME);
+  config.displayFlip = server.arg(ConfigNames::DISPLAY_FLIP);
   config.displayBrightness = server.arg("displayBrightness");
-  config.displaySkipReconfigure = server.arg(ConfigValues::DISPLAY_RECONFIG_NAME);
+  config.displaySkipReconfigure = server.arg(ConfigNames::DISPLAY_RECONFIG);
 
-  config.oledType = server.arg(ConfigValues::OLED_NAME);
+  config.oledType = server.arg(ConfigNames::OLED_TYPE);
 
-  config.st7789 = server.arg(ConfigValues::ST7789_NAME);
-  config.st7789Mode = server.arg(ConfigValues::ST7789_MODE_NAME);
+  config.st7789 = server.arg(ConfigNames::ST7789);
+  config.st7789Mode = server.arg(ConfigNames::ST7789_MODE);
 
-  config.mhz19b = server.arg(ConfigValues::MHZ_NAME);
+  config.mhz19b = server.arg(ConfigNames::MHZ19B);
   config.mhz19bPwmPin = server.arg("mhz19bPwmPin");
   config.mhz19bRxPin = server.arg("mhz19bRxPin");
   config.mhz19bTxPin = server.arg("mhz19bTxPin");;
-  config.mhz19bABC = server.arg(ConfigValues::MHZ_ABC_NAME);
+  config.mhz19bABC = server.arg(ConfigNames::MHZ19B_ABC);
 
   config.mqttBroker = server.arg("mqttbroker");
   config.mqttName = server.arg("mqttname");
@@ -82,7 +82,7 @@ void handle_post_root() {
 
 void handle_get_style_css() {
   httplog(F("style.css accessed"));
-  server.send(200, MimeType::CSS, (const char *)STYLE_CSS);
+  server.send(200, MimeType::CSS, STYLE_CSS);
 }
 
 

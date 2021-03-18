@@ -67,8 +67,10 @@ typedef struct {
  * 2. config default値    set_default_config_value
  * 3. Setup HTML          http_setup_web_get.cpp http_setup_get_root_content
  * 4. Setup POST後の表示   http_setup_web_post.cpp http_setup_post_root_content
- * 5. Web API             
- * 6. 実際の実装
+ * 5. Web API             http_api_backup_config
+ * 6. Web API             updateConfig
+ * 6. Print config        print_config
+ * 7. 実際の実装
  */ 
 typedef struct {
   String settingId;

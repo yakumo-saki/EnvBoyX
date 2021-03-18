@@ -104,7 +104,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"常時起動モード（測定値常時表示, HTTPサーバーあり）", ConfigValues::OPMODE_DISPLAY});
     choises.push_back(LabelValue{"MQTTモード（間欠動作・MQTT送信後ディープスリープ）", ConfigValues::OPMODE_MQTT});
-    html += _create_radiobuttons(ConfigValues::OPMODE_NAME, config.opMode, choises);
+    html += _create_radiobuttons(ConfigNames::OPMODE, config.opMode, choises);
   }
   html += "</fieldset>";
 
@@ -114,7 +114,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"反転しない", ConfigValues::DISPLAY_FLIP_OFF});
     choises.push_back(LabelValue{"反転する", ConfigValues::DISPLAY_FLIP_ON});
-    html += _create_radiobuttons(ConfigValues::DISPLAY_FLIP_NAME, config.displayFlip, choises);
+    html += _create_radiobuttons(ConfigNames::DISPLAY_FLIP, config.displayFlip, choises);
   }
 
   html += "  <strong>明るさ(0-255)</strong><br>";
@@ -126,7 +126,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"表示する（推奨）", ConfigValues::DISPLAY_RECONFIG_ON});
     choises.push_back(LabelValue{"表示しない", ConfigValues::DISPLAY_RECONFIG_SKIP});
-    html += _create_radiobuttons(ConfigValues::DISPLAY_RECONFIG_NAME, config.displaySkipReconfigure, choises);
+    html += _create_radiobuttons(ConfigNames::DISPLAY_RECONFIG, config.displaySkipReconfigure, choises);
   }
 
   html += "</fieldset>";
@@ -137,7 +137,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"SSD1306", ConfigValues::OLED_SSD1306});
     choises.push_back(LabelValue{"SH1106", ConfigValues::OLED_SH1106});
-    html += _create_radiobuttons(ConfigValues::OLED_NAME, config.oledType, choises);
+    html += _create_radiobuttons(ConfigNames::OLED_TYPE, config.oledType, choises);
   }
 
   html += "</fieldset>";
@@ -151,7 +151,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"使用しない", ConfigValues::ST7789_NOUSE});
     choises.push_back(LabelValue{"使用する", ConfigValues::ST7789_USE});
-    html += _create_radiobuttons(ConfigValues::ST7789_NAME, config.st7789, choises);
+    html += _create_radiobuttons(ConfigNames::ST7789, config.st7789, choises);
   }
 
   html += "  <strong>ST7789 表示モード</strong><br>";
@@ -159,7 +159,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"横表示モード", ConfigValues::ST7789_MODE_NORMAL});
     choises.push_back(LabelValue{"縦表示モード（デカ文字）", ConfigValues::ST7789_MODE_BIG});
-    html += _create_radiobuttons(ConfigValues::ST7789_MODE_NAME, config.st7789Mode, choises);
+    html += _create_radiobuttons(ConfigNames::ST7789_MODE, config.st7789Mode, choises);
   }
   html += "</fieldset>";
 
@@ -171,7 +171,7 @@ String http_setup_get_root_content() {
     choises.push_back(LabelValue{"使用する（UARTモード）", ConfigValues::MHZ_USE_UART});
     // choises.push_back(LabelValue{"使用する（PWMモード）", ConfigValues::MHZ_USE_PWM});
 
-    html += _create_radiobuttons(ConfigValues::MHZ_NAME, config.mhz19b, choises);
+    html += _create_radiobuttons(ConfigNames::MHZ19B, config.mhz19b, choises);
   }
   
   //html += "  <br>";
@@ -194,7 +194,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"無効（標準）", ConfigValues::MHZ_ABC_OFF});
     choises.push_back(LabelValue{"有効", ConfigValues::MHZ_ABC_ON});
-    html += _create_radiobuttons(ConfigValues::MHZ_ABC_NAME, config.mhz19bABC, choises);
+    html += _create_radiobuttons(ConfigNames::MHZ19B_ABC, config.mhz19bABC, choises);
   }
 
   html += "</fieldset>";

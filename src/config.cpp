@@ -35,7 +35,7 @@ void set_default_config_value()
 
   config.displayFlip = ConfigValues::DISPLAY_FLIP_OFF;
   config.displayBrightness = "255";
-  config.displaySkipReconfigure = ConfigValues::DISPLAY_RECONFIG_ON;
+  config.displaySkipReconfigure = ConfigValues::DISPLAY_RECONFIG_ON; // v44
 
   config.oledType = ConfigValues::OLED_SSD1306;
 
@@ -109,6 +109,7 @@ void print_config() {
   cfglog(F("DISPLAY:"));
   cfglog("   Flip: " + config.displayFlip);
   cfglog("   Brightness: " + config.displayBrightness);
+  cfglog("   Wait for reconfigure: " + config.displaySkipReconfigure);
   cfglog("I2C OLED TYPE: " + config.oledType);
   cfglog("ST7789: " + config.st7789);
   cfglog("   MODE: " + config.st7789Mode);
@@ -116,6 +117,7 @@ void print_config() {
   cfglog("   PWM PIN: " + config.mhz19bPwmPin);
   cfglog("   RX  PIN: " + config.mhz19bRxPin);
   cfglog("   TX  PIN: " + config.mhz19bTxPin);
+  cfglog("   ABC    : " + config.mhz19bABC);
   cfglog("MQTT Broker: " + config.mqttBroker);
   cfglog("MQTT Name  : " + config.mqttName);
   cfglog(F("Alerts:"));
@@ -175,14 +177,14 @@ void trim_config() {
 
 DynamicJsonDocument alerts_to_json(const config_alert_t& alerts, String logname) {
   DynamicJsonDocument json(300);
-  json[CFG_ALERT_WARN1_LO] = alerts.warning1.low;
-  json[CFG_ALERT_WARN1_HI] = alerts.warning1.high;
-  json[CFG_ALERT_WARN2_LO] = alerts.warning2.low;
-  json[CFG_ALERT_WARN2_HI] = alerts.warning2.high;
-  json[CFG_ALERT_CAUTION1_LO] = alerts.caution1.low;
-  json[CFG_ALERT_CAUTION1_HI] = alerts.caution1.high;
-  json[CFG_ALERT_CAUTION2_LO] = alerts.caution2.low;
-  json[CFG_ALERT_CAUTION2_HI] = alerts.caution2.high;
+  json[ConfigNames::ALERT_WARN1_LO] = alerts.warning1.low;
+  json[ConfigNames::ALERT_WARN1_HI] = alerts.warning1.high;
+  json[ConfigNames::ALERT_WARN2_LO] = alerts.warning2.low;
+  json[ConfigNames::ALERT_WARN2_HI] = alerts.warning2.high;
+  json[ConfigNames::ALERT_CAUTION1_LO] = alerts.caution1.low;
+  json[ConfigNames::ALERT_CAUTION1_HI] = alerts.caution1.high;
+  json[ConfigNames::ALERT_CAUTION2_LO] = alerts.caution2.low;
+  json[ConfigNames::ALERT_CAUTION2_HI] = alerts.caution2.high;
   json.shrinkToFit();
 
   size_t size = measureJson(json);
@@ -196,29 +198,29 @@ DynamicJsonDocument _create_config_json(bool save, std::vector<String> keyArray)
 
   DynamicJsonDocument json(CONF_JSON_SIZE);
 
-  if (save) json[CFG_PASSWORD] = config.password; // all
+  if (save) json[ConfigNames::PASSWORD] = config.password; // all
 
   for (const auto& k : keyArray) {
-    if (save || k == CFG_SSID)         json[CFG_SSID] = config.ssid;
-    if (save || k == CFG_MDNS)         json[CFG_MDNS] = config.mDNS;
-    if (save || k == CFG_OPMODE)       json[CFG_OPMODE] = config.opMode;
-    if (save || k == CFG_DISPLAY_FLIP) json[CFG_DISPLAY_FLIP] = config.displayFlip;
-    if (save || k == CFG_DISPLAY_BRIGHTNESS) json[CFG_DISPLAY_BRIGHTNESS] = config.displayBrightness;
-    if (save || k == CFG_OLED_TYPE)    json[CFG_OLED_TYPE] = config.oledType;
-    if (save || k == CFG_ST7789)       json[CFG_ST7789] = config.st7789;
-    if (save || k == CFG_ST7789_MODE)  json[CFG_ST7789_MODE] = config.st7789Mode;
-    if (save || k == CFG_MHZ19B)       json[CFG_MHZ19B] = config.mhz19b;
-    if (save || k == CFG_MHZ19B_PWM)   json[CFG_MHZ19B_PWM] = config.mhz19bPwmPin;
-    if (save || k == CFG_MHZ19B_RX)    json[CFG_MHZ19B_RX] = config.mhz19bRxPin;
-    if (save || k == CFG_MHZ19B_TX)    json[CFG_MHZ19B_TX] = config.mhz19bTxPin;
-    if (save || k == CFG_MQTT_BROKER)  json[CFG_MQTT_BROKER] = config.mqttBroker;
-    if (save || k == CFG_MQTT_NAME)    json[CFG_MQTT_NAME] = config.mqttName;
+    if (save || k == ConfigNames::SSID)         json[ConfigNames::SSID] = config.ssid;
+    if (save || k == ConfigNames::MDNS)         json[ConfigNames::MDNS] = config.mDNS;
+    if (save || k == ConfigNames::OPMODE)       json[ConfigNames::OPMODE] = config.opMode;
+    if (save || k == ConfigNames::DISPLAY_FLIP) json[ConfigNames::DISPLAY_FLIP] = config.displayFlip;
+    if (save || k == ConfigNames::DISPLAY_BRIGHTNESS) json[ConfigNames::DISPLAY_BRIGHTNESS] = config.displayBrightness;
+    if (save || k == ConfigNames::OLED_TYPE)    json[ConfigNames::OLED_TYPE] = config.oledType;
+    if (save || k == ConfigNames::ST7789)       json[ConfigNames::ST7789] = config.st7789;
+    if (save || k == ConfigNames::ST7789_MODE)  json[ConfigNames::ST7789_MODE] = config.st7789Mode;
+    if (save || k == ConfigNames::MHZ19B)       json[ConfigNames::MHZ19B] = config.mhz19b;
+    if (save || k == ConfigNames::MHZ19B_PWM)   json[ConfigNames::MHZ19B_PWM] = config.mhz19bPwmPin;
+    if (save || k == ConfigNames::MHZ19B_RX)    json[ConfigNames::MHZ19B_RX] = config.mhz19bRxPin;
+    if (save || k == ConfigNames::MHZ19B_TX)    json[ConfigNames::MHZ19B_TX] = config.mhz19bTxPin;
+    if (save || k == ConfigNames::MQTT_BROKER)  json[ConfigNames::MQTT_BROKER] = config.mqttBroker;
+    if (save || k == ConfigNames::MQTT_NAME)    json[ConfigNames::MQTT_NAME] = config.mqttName;
 
-    if (save || k == CFG_TEMP_ALERT) json[CFG_TEMP_ALERT] = alerts_to_json(config.temperatureAlerts, "temperature");
-    if (save || k == CFG_HUMI_ALERT) json[CFG_HUMI_ALERT] = alerts_to_json(config.humidityAlerts, "humidity");
-    if (save || k == CFG_LUX_ALERT)  json[CFG_LUX_ALERT] = alerts_to_json(config.luxAlerts, "lux");
-    if (save || k == CFG_PRES_ALERT) json[CFG_PRES_ALERT] = alerts_to_json(config.pressureAlerts, "pressure");
-    if (save || k == CFG_CO2_ALERT)  json[CFG_CO2_ALERT] = alerts_to_json(config.co2Alerts, "co2");
+    if (save || k == ConfigNames::TEMP_ALERT) json[ConfigNames::TEMP_ALERT] = alerts_to_json(config.temperatureAlerts, "temperature");
+    if (save || k == ConfigNames::HUMI_ALERT) json[ConfigNames::HUMI_ALERT] = alerts_to_json(config.humidityAlerts, "humidity");
+    if (save || k == ConfigNames::LUX_ALERT)  json[ConfigNames::LUX_ALERT] = alerts_to_json(config.luxAlerts, "lux");
+    if (save || k == ConfigNames::PRES_ALERT) json[ConfigNames::PRES_ALERT] = alerts_to_json(config.pressureAlerts, "pressure");
+    if (save || k == ConfigNames::CO2_ALERT)  json[ConfigNames::CO2_ALERT] = alerts_to_json(config.co2Alerts, "co2");
   }
 
   // これをやると以降の変更が反映されなくなるのでやらない
@@ -244,7 +246,7 @@ void write_config_file(File f) {
   DynamicJsonDocument doc = create_config_json_all();
   
   // これから書くConfigなので必ず想定しているconfig versionを書く
-  doc[CFG_SETTING_ID] = ConfigValues::SETTING_ID;
+  doc[ConfigNames::SETTING_ID] = ConfigValues::SETTING_ID;
 
   cfglog(F("Writing config"));
   size_t size = serializeJson(doc, f);
@@ -293,14 +295,14 @@ bool read_config_alerts(config_alert_t& alerts, DynamicJsonDocument doc, String 
   bool ret = true;
 
   // 失敗しているものがあってもとりあえず最後まで設定読み込みを行う（セットアップモードの時に必要なので）
-  ret = ret && set_config_value(alerts.warning1.low ,doc, key1, CFG_ALERT_WARN1_LO);
-  ret = ret && set_config_value(alerts.warning1.high ,doc, key1, CFG_ALERT_WARN1_HI);
-  ret = ret && set_config_value(alerts.caution1.low ,doc, key1, CFG_ALERT_CAUTION1_LO);
-  ret = ret && set_config_value(alerts.caution1.high ,doc, key1, CFG_ALERT_CAUTION1_HI);
-  ret = ret && set_config_value(alerts.warning2.low ,doc, key1, CFG_ALERT_WARN2_LO);
-  ret = ret && set_config_value(alerts.warning2.high ,doc, key1, CFG_ALERT_WARN2_HI);
-  ret = ret && set_config_value(alerts.caution2.low ,doc, key1, CFG_ALERT_CAUTION2_LO);
-  ret = ret && set_config_value(alerts.caution2.high ,doc, key1, CFG_ALERT_CAUTION2_HI);
+  ret = ret && set_config_value(alerts.warning1.low ,doc, key1, ConfigNames::ALERT_WARN1_LO);
+  ret = ret && set_config_value(alerts.warning1.high ,doc, key1, ConfigNames::ALERT_WARN1_HI);
+  ret = ret && set_config_value(alerts.caution1.low ,doc, key1, ConfigNames::ALERT_CAUTION1_LO);
+  ret = ret && set_config_value(alerts.caution1.high ,doc, key1, ConfigNames::ALERT_CAUTION1_HI);
+  ret = ret && set_config_value(alerts.warning2.low ,doc, key1, ConfigNames::ALERT_WARN2_LO);
+  ret = ret && set_config_value(alerts.warning2.high ,doc, key1, ConfigNames::ALERT_WARN2_HI);
+  ret = ret && set_config_value(alerts.caution2.low ,doc, key1, ConfigNames::ALERT_CAUTION2_LO);
+  ret = ret && set_config_value(alerts.caution2.high ,doc, key1, ConfigNames::ALERT_CAUTION2_HI);
   
   return ret;
 }
@@ -335,28 +337,28 @@ bool read_config_file(File f, bool dump_config) {
 
   bool ret = true;
 
-  ret = ret && set_config_value(config.settingId ,doc, CFG_SETTING_ID);
-  ret = ret && set_config_value(config.ssid ,doc, CFG_SSID);
-  ret = ret && set_config_value(config.password ,doc , CFG_PASSWORD);
-  ret = ret && set_config_value(config.mDNS ,doc, CFG_MDNS);
-  ret = ret && set_config_value(config.opMode ,doc, CFG_OPMODE);
-  ret = ret && set_config_value(config.displayFlip,doc, CFG_DISPLAY_FLIP);
-  ret = ret && set_config_value(config.displayBrightness, doc, CFG_DISPLAY_BRIGHTNESS);
-  ret = ret && set_config_value(config.oledType, doc, CFG_OLED_TYPE);
-  ret = ret && set_config_value(config.st7789 ,doc, CFG_ST7789);
-  ret = ret && set_config_value(config.st7789Mode, doc, CFG_ST7789_MODE);
-  ret = ret && set_config_value(config.mhz19b, doc, CFG_MHZ19B);
-  ret = ret && set_config_value(config.mhz19bPwmPin, doc, CFG_MHZ19B_PWM);
-  ret = ret && set_config_value(config.mhz19bRxPin, doc, CFG_MHZ19B_RX);
-  ret = ret && set_config_value(config.mhz19bTxPin, doc, CFG_MHZ19B_TX);
-  ret = ret && set_config_value(config.mqttBroker, doc, CFG_MQTT_BROKER);
-  ret = ret && set_config_value(config.mqttName, doc, CFG_MQTT_NAME);
+  ret = ret && set_config_value(config.settingId ,doc, ConfigNames::SETTING_ID);
+  ret = ret && set_config_value(config.ssid ,doc, ConfigNames::SSID);
+  ret = ret && set_config_value(config.password ,doc , ConfigNames::PASSWORD);
+  ret = ret && set_config_value(config.mDNS ,doc, ConfigNames::MDNS);
+  ret = ret && set_config_value(config.opMode ,doc, ConfigNames::OPMODE);
+  ret = ret && set_config_value(config.displayFlip,doc, ConfigNames::DISPLAY_FLIP);
+  ret = ret && set_config_value(config.displayBrightness, doc, ConfigNames::DISPLAY_BRIGHTNESS);
+  ret = ret && set_config_value(config.oledType, doc, ConfigNames::OLED_TYPE);
+  ret = ret && set_config_value(config.st7789 ,doc, ConfigNames::ST7789);
+  ret = ret && set_config_value(config.st7789Mode, doc, ConfigNames::ST7789_MODE);
+  ret = ret && set_config_value(config.mhz19b, doc, ConfigNames::MHZ19B);
+  ret = ret && set_config_value(config.mhz19bPwmPin, doc, ConfigNames::MHZ19B_PWM);
+  ret = ret && set_config_value(config.mhz19bRxPin, doc, ConfigNames::MHZ19B_RX);
+  ret = ret && set_config_value(config.mhz19bTxPin, doc, ConfigNames::MHZ19B_TX);
+  ret = ret && set_config_value(config.mqttBroker, doc, ConfigNames::MQTT_BROKER);
+  ret = ret && set_config_value(config.mqttName, doc, ConfigNames::MQTT_NAME);
 
-  ret = ret && read_config_alerts(config.temperatureAlerts, doc, CFG_TEMP_ALERT);
-  ret = ret && read_config_alerts(config.humidityAlerts, doc, CFG_HUMI_ALERT);
-  ret = ret && read_config_alerts(config.pressureAlerts, doc, CFG_PRES_ALERT);
-  ret = ret && read_config_alerts(config.luxAlerts, doc, CFG_LUX_ALERT);
-  ret = ret && read_config_alerts(config.co2Alerts, doc, CFG_CO2_ALERT);
+  ret = ret && read_config_alerts(config.temperatureAlerts, doc, ConfigNames::TEMP_ALERT);
+  ret = ret && read_config_alerts(config.humidityAlerts, doc, ConfigNames::HUMI_ALERT);
+  ret = ret && read_config_alerts(config.pressureAlerts, doc, ConfigNames::PRES_ALERT);
+  ret = ret && read_config_alerts(config.luxAlerts, doc, ConfigNames::LUX_ALERT);
+  ret = ret && read_config_alerts(config.co2Alerts, doc, ConfigNames::CO2_ALERT);
 
   return ret;
 }

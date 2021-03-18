@@ -176,15 +176,19 @@ void setup_normal() {
   setup_watchdog();
 
   // setupモードに入りやすくするための処理
-  sectionlog(F("Reset to reconfig start."));
-  remove_configure_flag_file();
+  if (config.displaySkipReconfigure == ConfigValues::DISPLAY_RECONFIG_ON) {
+    sectionlog(F("Reset to reconfig start."));
+    remove_configure_flag_file();
 
-  disp_wait_for_reconfig();
+    disp_wait_for_reconfig();
 
-  // 設定済みフラグファイル
-  create_configure_flag_file();
+    // 設定済みフラグファイルを再作成
+    create_configure_flag_file();
 
-  sectionlog(F("Reconfigure timeout. continue."));
+    sectionlog(F("Reconfigure timeout. continue."));
+  } else {
+    sectionlog(F("Wait for reconfigure skipped by config."));
+  }
 
   // start WiFi
   sectionlog(F("Connecting WiFi."));

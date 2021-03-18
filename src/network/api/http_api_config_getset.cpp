@@ -16,14 +16,14 @@ extern unsigned int CONF_JSON_SIZE;
 
 extern HTTPWEBSERVER server;
 
-const String CFG_NONE = "#**#_##NONE##_#*#";
+const String CONFIG_NONE = "#**#_##NONE##_#*#";
 
-const std::vector<String> BLOCKED_CONFIG{CFG_SSID, CFG_PASSWORD, CFG_OPMODE};
-const std::vector<String> NEED_REBOOT_CONFIG{CFG_OLED_TYPE, CFG_ST7789, CFG_MHZ19B,
-                                             CFG_MHZ19B_PWM, CFG_MHZ19B_RX, CFG_MHZ19B_TX};
+const std::vector<String> BLOCKED_CONFIG{ConfigNames::SSID, ConfigNames::PASSWORD, ConfigNames::OPMODE};
+const std::vector<String> NEED_REBOOT_CONFIG{ConfigNames::OLED_TYPE, ConfigNames::ST7789, ConfigNames::MHZ19B,
+                                             ConfigNames::MHZ19B_PWM, ConfigNames::MHZ19B_RX, ConfigNames::MHZ19B_TX};
 
 // 再描画が必要になる設定(Brightnessは再描画しなくても良いのだが面倒なのでこうする)
-const std::vector<String> NEED_REDRAW_CONFIG{CFG_ST7789_MODE, CFG_DISPLAY_FLIP, CFG_DISPLAY_BRIGHTNESS};
+const std::vector<String> NEED_REDRAW_CONFIG{ConfigNames::ST7789_MODE, ConfigNames::DISPLAY_FLIP, ConfigNames::DISPLAY_BRIGHTNESS};
 
 bool vectorStringContains(std::vector<String> keyArray, String key) {
 
@@ -75,7 +75,7 @@ UpdateConfigParamResult_t updateConfigParam(String key, String& config) {
       }
     }
 
-    if (key == CFG_MDNS) {
+    if (key == ConfigNames::MDNS) {
       ret.result = UpdateConfigParamResult::MDNS_RESTART_REQ;
     }
 
@@ -149,29 +149,29 @@ DynamicJsonDocument updateConfig() {
 
   DynamicJsonDocument msgs(4096);
 
-  updateConfigParamForApi(msgs, flags, CFG_SSID, config.ssid);
-  updateConfigParamForApi(msgs, flags, CFG_PASSWORD, config.password);
-  updateConfigParamForApi(msgs, flags, CFG_MDNS, config.mDNS);
-  updateConfigParamForApi(msgs, flags, CFG_OPMODE, config.opMode);
-  updateConfigParamForApi(msgs, flags, CFG_OLED_TYPE, config.oledType);
-  updateConfigParamForApi(msgs, flags, CFG_DISPLAY_FLIP, config.displayFlip);
-  updateConfigParamForApi(msgs, flags, CFG_DISPLAY_BRIGHTNESS, config.displayBrightness);
-  updateConfigParamForApi(msgs, flags, CFG_ST7789, config.st7789);
-  updateConfigParamForApi(msgs, flags, CFG_ST7789_MODE, config.st7789Mode);
+  updateConfigParamForApi(msgs, flags, ConfigNames::SSID, config.ssid);
+  updateConfigParamForApi(msgs, flags, ConfigNames::PASSWORD, config.password);
+  updateConfigParamForApi(msgs, flags, ConfigNames::MDNS, config.mDNS);
+  updateConfigParamForApi(msgs, flags, ConfigNames::OPMODE, config.opMode);
+  updateConfigParamForApi(msgs, flags, ConfigNames::OLED_TYPE, config.oledType);
+  updateConfigParamForApi(msgs, flags, ConfigNames::DISPLAY_FLIP, config.displayFlip);
+  updateConfigParamForApi(msgs, flags, ConfigNames::DISPLAY_BRIGHTNESS, config.displayBrightness);
+  updateConfigParamForApi(msgs, flags, ConfigNames::ST7789, config.st7789);
+  updateConfigParamForApi(msgs, flags, ConfigNames::ST7789_MODE, config.st7789Mode);
   
-  updateConfigParamForApi(msgs, flags, CFG_MHZ19B, config.mhz19b);
-  updateConfigParamForApi(msgs, flags, CFG_MHZ19B_PWM, config.mhz19bPwmPin);
-  updateConfigParamForApi(msgs, flags, CFG_MHZ19B_RX, config.mhz19bRxPin);
-  updateConfigParamForApi(msgs, flags, CFG_MHZ19B_TX, config.mhz19bTxPin);
+  updateConfigParamForApi(msgs, flags, ConfigNames::MHZ19B, config.mhz19b);
+  updateConfigParamForApi(msgs, flags, ConfigNames::MHZ19B_PWM, config.mhz19bPwmPin);
+  updateConfigParamForApi(msgs, flags, ConfigNames::MHZ19B_RX, config.mhz19bRxPin);
+  updateConfigParamForApi(msgs, flags, ConfigNames::MHZ19B_TX, config.mhz19bTxPin);
 
-  updateConfigParamForApi(msgs, flags, CFG_MQTT_BROKER, config.mqttBroker);
-  updateConfigParamForApi(msgs, flags, CFG_MQTT_NAME, config.mqttName);
+  updateConfigParamForApi(msgs, flags, ConfigNames::MQTT_BROKER, config.mqttBroker);
+  updateConfigParamForApi(msgs, flags, ConfigNames::MQTT_NAME, config.mqttName);
 
-  updateConfigAlerts(msgs, flags, CFG_TEMP_ALERT, config.temperatureAlerts);
-  updateConfigAlerts(msgs, flags, CFG_HUMI_ALERT, config.humidityAlerts);
-  updateConfigAlerts(msgs, flags, CFG_LUX_ALERT, config.luxAlerts);
-  updateConfigAlerts(msgs, flags, CFG_PRES_ALERT, config.pressureAlerts);
-  updateConfigAlerts(msgs, flags, CFG_CO2_ALERT, config.co2Alerts);
+  updateConfigAlerts(msgs, flags, ConfigNames::TEMP_ALERT, config.temperatureAlerts);
+  updateConfigAlerts(msgs, flags, ConfigNames::HUMI_ALERT, config.humidityAlerts);
+  updateConfigAlerts(msgs, flags, ConfigNames::LUX_ALERT, config.luxAlerts);
+  updateConfigAlerts(msgs, flags, ConfigNames::PRES_ALERT, config.pressureAlerts);
+  updateConfigAlerts(msgs, flags, ConfigNames::CO2_ALERT, config.co2Alerts);
 
   _reflectConfig(flags);
 
