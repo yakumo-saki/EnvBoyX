@@ -130,7 +130,7 @@ String http_setup_post_root_content() {
       html += "【バグ】MHZ19B設定が異常です。 =>" + config.mhz19b + "<br>";           
     }
   } else {
-    html += "動作モード：不明" + config.opMode + "<br>";    
+    html += "【バグ】動作モード：不明" + config.opMode + "<br>";    
   }
 
   html += generate_alerts_html("気温", config.temperatureAlerts);
