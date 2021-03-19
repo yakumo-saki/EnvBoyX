@@ -56,9 +56,13 @@ Alert config keys structure:
 <kind>.<level_and_no>.<low_or_high>
 
 kind = [co2alerts | humiAlerts | luxAlerts | presAlerts]
-level_and_no = [warning1 | warning2 | caution1 | caution2]
 low_or_high = [low | high]
 
+example: co2alerts.warn1.L
+
+##### before v44
+
+level_and_no = [warning1 | warning2 | caution1 | caution2]
 example: co2alerts.warning1.low 
 #### cURL example
 
