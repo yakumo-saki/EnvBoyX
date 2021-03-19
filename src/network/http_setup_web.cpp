@@ -29,15 +29,15 @@ void handle_get_root() {
 }
 
 void alerts_to_config(config_alert_t& alerts, String prefix) {
-  alerts.caution1.low = server.arg(prefix + "caution1.low");
-  alerts.caution1.high = server.arg(prefix + "caution1.high");
-  alerts.caution2.low = server.arg(prefix + "caution2.low");
-  alerts.caution2.high = server.arg(prefix + "caution2.high");
+  alerts.caution1.low = server.arg(prefix  + "." + ConfigNames::ALERT_CAUTION1_LO);
+  alerts.caution1.high = server.arg(prefix + "." + ConfigNames::ALERT_CAUTION1_HI);
+  alerts.caution2.low = server.arg(prefix  + "." + ConfigNames::ALERT_CAUTION2_LO);
+  alerts.caution2.high = server.arg(prefix + "." + ConfigNames::ALERT_CAUTION2_HI);
 
-  alerts.warning1.low = server.arg(prefix + "warning1.low");
-  alerts.warning1.high = server.arg(prefix + "warning1.high");
-  alerts.warning2.low = server.arg(prefix + "warning2.low");
-  alerts.warning2.high = server.arg(prefix + "warning2.high");
+  alerts.warning1.low = server.arg(prefix  + "." + ConfigNames::ALERT_WARN1_LO);
+  alerts.warning1.high = server.arg(prefix + "." + ConfigNames::ALERT_WARN1_HI);
+  alerts.warning2.low = server.arg(prefix  + "." + ConfigNames::ALERT_WARN2_LO);
+  alerts.warning2.high = server.arg(prefix + "." + ConfigNames::ALERT_WARN2_HI);
 }
 
 /**
@@ -45,13 +45,13 @@ void alerts_to_config(config_alert_t& alerts, String prefix) {
  */
 void handle_post_root() {
   
-  config.ssid = server.arg("ssid");
-  config.password = server.arg("pass");
-  config.mDNS = server.arg("mdnsname");
-  config.opMode = server.arg("opmode");
+  config.ssid = server.arg(ConfigNames::SSID);
+  config.password = server.arg(ConfigNames::PASSWORD);
+  config.mDNS = server.arg(ConfigNames::MDNS);
+  config.opMode = server.arg(ConfigNames::OPMODE);
 
   config.displayFlip = server.arg(ConfigNames::DISPLAY_FLIP);
-  config.displayBrightness = server.arg("displayBrightness");
+  config.displayBrightness = server.arg(ConfigNames::DISPLAY_BRIGHTNESS);
   config.displaySkipReconfigure = server.arg(ConfigNames::DISPLAY_RECONFIG);
 
   config.oledType = server.arg(ConfigNames::OLED_TYPE);
@@ -60,19 +60,19 @@ void handle_post_root() {
   config.st7789Mode = server.arg(ConfigNames::ST7789_MODE);
 
   config.mhz19b = server.arg(ConfigNames::MHZ19B);
-  config.mhz19bPwmPin = server.arg("mhz19bPwmPin");
-  config.mhz19bRxPin = server.arg("mhz19bRxPin");
-  config.mhz19bTxPin = server.arg("mhz19bTxPin");;
+  config.mhz19bPwmPin = server.arg(ConfigNames::MHZ19B_PWM);
+  config.mhz19bRxPin = server.arg(ConfigNames::MHZ19B_RX);
+  config.mhz19bTxPin = server.arg(ConfigNames::MHZ19B_TX);;
   config.mhz19bABC = server.arg(ConfigNames::MHZ19B_ABC);
 
-  config.mqttBroker = server.arg("mqttbroker");
-  config.mqttName = server.arg("mqttname");
+  config.mqttBroker = server.arg(ConfigNames::MQTT_BROKER);
+  config.mqttName = server.arg(ConfigNames::MQTT_NAME);
 
-  alerts_to_config(config.temperatureAlerts, "tempAlerts.");
-  alerts_to_config(config.humidityAlerts, "humiAlerts.");
-  alerts_to_config(config.luxAlerts, "luxAlerts.");
-  alerts_to_config(config.pressureAlerts, "presAlerts.");
-  alerts_to_config(config.co2Alerts, "co2Alerts.");
+  alerts_to_config(config.temperatureAlerts, ConfigNames::TEMP_ALERT);
+  alerts_to_config(config.humidityAlerts, ConfigNames::HUMI_ALERT);
+  alerts_to_config(config.luxAlerts, ConfigNames::LUX_ALERT);
+  alerts_to_config(config.pressureAlerts, ConfigNames::PRES_ALERT);
+  alerts_to_config(config.co2Alerts, ConfigNames::CO2_ALERT);
 
   trim_config();
   String html = http_setup_post_root_content();

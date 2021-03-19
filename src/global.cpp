@@ -6,18 +6,22 @@
 // --------------------------------------------------------------------
 // プロダクト名定数
 // --------------------------------------------------------------------
+
 // ebx
 extern const String product_short = "EBX";
+
+// Enable debug function
+extern const bool DEBUG_BUILD = true;
+
 // EnvBoyX
 extern const String product = "EnvBoyX";
 extern const String ver = "44";      // Major
 extern const String minorVer = "0";  // Bugfix
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
-extern const bool DEBUG_BUILD = true;
 
 // EnvBoyX Ver.53.0
-extern const String product_long = product + " " + ver_long;
+extern const String product_long = product + " " + ver_long + (DEBUG_BUILD ? "(DEBUG BUILD)" : "");
 
 
 // --------------------------------------------------------------------

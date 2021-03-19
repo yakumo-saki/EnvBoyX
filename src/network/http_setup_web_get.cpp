@@ -13,29 +13,75 @@
 
 #include "http_setup.h"
 
-String generate_http_setup_alerts_html(String name, String prefix, const config_alert_t& alerts) {
-  String html;
-  html += "<fieldset><legend>" + name + "</legend>";
-  html += "<span class='m_caution1'>注意１</span>:&nbsp;<input type='number' class='num' name='" + prefix + "caution1.low' value='" + alerts.caution1.low + "'> 以上";
-  html += "<input type='number' class='num' name='" + prefix + "caution1.high' value='" + alerts.caution1.high + "'>未満<br>";
-
-  html += "<span class='m_caution2'>注意２</span>:&nbsp;<input type='number' class='num' name='" + prefix + "caution2.low' value='" + alerts.caution2.low + "'> 以上";
-  html += "<input type='number' class='num' name='" + prefix + "caution2.high' value='" + alerts.caution2.high + "'>未満<br>";
-
-  html += "<span class='m_alert1'>警報１</span>:&nbsp;<input type='number' class='num'name='" + prefix + "warning1.low' value='" + alerts.warning1.low + "'> 以上";
-  html += "<input type='number' class='num' name='" + prefix + "warning1.high' value='" + alerts.warning1.high + "'>未満<br>";
-
-  html += "<span class='m_alert2'>警報２</span>:&nbsp;<input type='number' class='num' name='" + prefix + "warning2.low' value='" + alerts.warning2.low + "'> 以上";
-  html += "<input type='number' class='num' name='" + prefix + "warning2.high' value='" + alerts.warning2.high + "'>未満<br>";
-
-  html += "</fieldset>";
-  return html;
-}
-
 typedef struct  {
   String label;
   String value;
 } LabelValue;
+
+String _create_input_nobr(String name, String value, String placeholder = "", String type = "text", String cssClass = "") {
+  String html = "<input ";
+  html += "type='" + type + "'";
+  html += " name='" + name + "'";
+  if (placeholder != "") html += " placeholder='" + placeholder + "'";
+  if (cssClass != "") html += " class='" + cssClass + "'";
+  html += " value='" + value + "'>\n";
+  return html;
+}
+
+String _create_input(String name, String value, String placeholder = "", String type = "text", String cssClass = "") {
+  String html = _create_input_nobr(name, value, placeholder, type, cssClass);
+  html += "<br>\n";
+
+  return html;
+}
+
+String _generate_alert(String nameLow, String nameHigh, String valueLow, String valueHigh) {
+  String html = "";
+  html += _create_input_nobr(nameLow, valueLow, "", "number", "num");
+  html += " 以上";
+  html += _create_input_nobr(nameHigh, valueHigh, "", "number", "num");
+  html += "未満<br>";
+  return html;
+}
+
+String _create_alert_name(String prefix, String name) {
+  return prefix + "." + name;
+}
+
+String generate_http_setup_alerts_html(String name, String prefix, const config_alert_t& alerts) {
+  String html;
+  html += "<fieldset><legend>" + name + "</legend>";
+  {
+  html += "<span class='m_caution1'>注意１</span>:&nbsp;";
+  String lo = _create_alert_name(prefix, ConfigNames::ALERT_CAUTION1_LO);
+  String hi = _create_alert_name(prefix, ConfigNames::ALERT_CAUTION1_HI);
+  html += _generate_alert(lo, hi, alerts.caution1.low, alerts.caution1.high);
+  }
+
+  {
+  html += "<span class='m_caution1'>注意２</span>:&nbsp;";
+  String lo = _create_alert_name(prefix, ConfigNames::ALERT_CAUTION2_LO);
+  String hi = _create_alert_name(prefix, ConfigNames::ALERT_CAUTION2_HI);
+  html += _generate_alert(lo, hi, alerts.caution2.low, alerts.caution2.high);
+  }
+
+  {
+  html += "<span class='m_caution1'>警報１</span>:&nbsp;";
+  String lo = _create_alert_name(prefix, ConfigNames::ALERT_WARN1_LO);
+  String hi = _create_alert_name(prefix, ConfigNames::ALERT_WARN1_HI);
+  html += _generate_alert(lo, hi, alerts.warning1.low, alerts.warning1.high);
+  }
+
+  {
+  html += "<span class='m_caution1'>警報２</span>:&nbsp;";
+  String lo = _create_alert_name(prefix, ConfigNames::ALERT_WARN2_LO);
+  String hi = _create_alert_name(prefix, ConfigNames::ALERT_WARN2_HI);
+  html += _generate_alert(lo, hi, alerts.warning2.low, alerts.warning2.high);
+  }
+
+  html += "</fieldset>";
+  return html;
+}
 
 /**
  * @param name input tag name attribute
@@ -88,12 +134,12 @@ String http_setup_get_root_content() {
   html += "<fieldset><legend class='m_legend_network'>ネットワーク設定</legend>";
   html += "  <strong class='m_wifi_info'>WiFi接続情報</strong><br>";
   html += "  <span class='m_wifi_msg2'>※ 2.4GHz帯のみ対応しています。</span><br>";
-  html += "  <input type='text' name='ssid' placeholder='ssid' autofocus value='" + config.ssid + "'><br>";
-  html += "  <input type='text' name='pass' placeholder='pass' value='" + config.password + "'><br>";
+  html += _create_input(ConfigNames::SSID, config.ssid, "WiFi SSID");
+  html += _create_input(ConfigNames::PASSWORD, config.password, "WiFi Password");
   html += "  <br>";
   html += "  <strong>mDNS名(a.k.a Rendezvous, avahi-daemon)</strong><br>";
   html += "  ※ mDNS名.local で他端末から本機にアクセスすることができます。<br>";
-  html += "  <input type='text' name='mdnsname' placeholder='mdnsname' value='" + config.mDNS + "'><br>";
+  html += _create_input(ConfigNames::MDNS, config.mDNS);
   html += "</fieldset>";
  
 
@@ -118,7 +164,7 @@ String http_setup_get_root_content() {
   }
 
   html += "  <strong>明るさ(0-255)</strong><br>";
-  html += "  <input type='text' name='displayBrightness' value='" + config.displayBrightness + "'><br>";
+  html += _create_input(ConfigNames::DISPLAY_BRIGHTNESS, config.displayBrightness, "", "number");
 
   html += "  <strong>Wait for reconfigure画面</strong><br>";
   html += "  ※ 表示しない場合、セットアップモードに入るためにはWeb APIを使用する必要があります。<br>";
@@ -146,7 +192,7 @@ String http_setup_get_root_content() {
 
   html += "  <strong>ST7789 SPI液晶の有無</strong><br>";
   html += "  ※ MQTTモードでは無効。<br>";
-  html += "  ※ SPIピンはビルドオプションで指定<br>";
+  html += "  ※ SPIピンはここでは指定できません。<br>";
   {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"使用しない", ConfigValues::ST7789_NOUSE});
@@ -177,15 +223,16 @@ String http_setup_get_root_content() {
   //html += "  <br>";
   // html += "  <strong>MH-Z19BのPWMピンが接続されているGPIOピン番号</strong><br>";
   // html += "  <input type='text' name='mhz19bPwmPin' placeholder='GPIOピン番号' value='" + config.mhz19bPwmPin + "' placeholder='14'><br>";
-  html += "  <input type='hidden' name='mhz19bPwmPin' value='14'>";
-  html += "  <br>";
+  html += _create_input(ConfigNames::MHZ19B_PWM, "14", "", "hidden");
 
   html += "  <strong>MH-Z19BのUARTが接続されているGPIOピン番号</strong><br>";
   html += "  ※ MH-Z19Bを使用しない場合は設定不要<br>";
   html += "  ※ ESP8266では RX 14 TX 0 で固定<br>";
   html += "  ※ ボードによって使用可能なピンが異なるので動作しない場合は他のピンを試してください。<br>";
-  html += "  RXピン <input type='text' name='mhz19bRxPin' placeholder='MHZ-19B RXピン番号' value='" + config.mhz19bRxPin + "' placeholder='16'><br>";
-  html += "  TXピン <input type='text' name='mhz19bTxPin' placeholder='MHZ-19B TXピン番号' value='" + config.mhz19bTxPin + "' placeholder='17'><br>";
+  html += "  RXピン ";
+  html += _create_input(ConfigNames::MHZ19B_RX, config.mhz19bRxPin, "16", "number");
+  html += "  TXピン ";
+  html += _create_input(ConfigNames::MHZ19B_TX, config.mhz19bTxPin, "17", "number"); 
   html += "  <br>";
 
   html += "  <strong>起動時のAuto Baseline Correction</strong><br>";
@@ -198,26 +245,23 @@ String http_setup_get_root_content() {
   }
 
   html += "</fieldset>";
- 
 
   html += "<fieldset><legend>MQTTモード専用設定</legend>";
-  html += "  <strong>＜MQTTモード以外の場合は入力不要＞</strong><br>";
-  html += "  <br>";
   html += "  <strong>MQTTブローカーのIPアドレス</strong><br>";
   html += "  ※ ホスト名も可能ですが、mDNS(bonjour, avahi)は使用出来ません。<br>";
-  html += "  <input type='text' name='mqttbroker' placeholder='mqttbroker' value='" + config.mqttBroker + "'><br>";
+  html += _create_input(ConfigNames::MQTT_BROKER, config.mqttBroker, "MQTT Broker"); 
   html += "  <br>";
   html += "  <strong>MQTT名</strong><br>";
   html += "  ※ クライアント名とトピック名として使用<br>";
-  html += "  <input type='text' name='mqttname' placeholder='mqttname' value='" + config.mqttName + "'><br>";
+  html += _create_input(ConfigNames::MQTT_NAME, config.mqttName, "MQTT Client Name"); 
   html += "</fieldset>";
 
   html += "<fieldset><legend>アラート設定</legend>";
-  html += generate_http_setup_alerts_html("気温", "tempAlerts.", config.temperatureAlerts);
-  html += generate_http_setup_alerts_html("湿度", "humiAlerts.", config.humidityAlerts);
-  html += generate_http_setup_alerts_html("照度", "luxAlerts.", config.luxAlerts);
-  html += generate_http_setup_alerts_html("気圧", "presAlerts.", config.pressureAlerts);
-  html += generate_http_setup_alerts_html("CO2濃度", "co2Alerts.", config.co2Alerts);
+  html += generate_http_setup_alerts_html("気温", ConfigNames::TEMP_ALERT, config.temperatureAlerts);
+  html += generate_http_setup_alerts_html("湿度", ConfigNames::HUMI_ALERT, config.humidityAlerts);
+  html += generate_http_setup_alerts_html("照度", ConfigNames::LUX_ALERT, config.luxAlerts);
+  html += generate_http_setup_alerts_html("気圧", ConfigNames::PRES_ALERT, config.pressureAlerts);
+  html += generate_http_setup_alerts_html("CO2濃度", ConfigNames::CO2_ALERT, config.co2Alerts);
 
   html += "</fieldset>";
 
@@ -232,4 +276,3 @@ String http_setup_get_root_content() {
 
   return html;
 }
-
