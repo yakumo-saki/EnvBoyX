@@ -100,7 +100,6 @@ void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags& fla
   }
 
   // 有効な設定名だったので記録しておく
-  debuglog("add " + key);
   validKeys.push_back(key);
 
   if (ret.result == UpdateConfigParamResult::BLOCKED) {
@@ -172,6 +171,7 @@ DynamicJsonDocument updateConfig() {
   
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_FLIP, config.displayFlip);
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_BRIGHTNESS, config.displayBrightness);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_RECONFIG, config.displaySkipReconfigure);
 
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::ST7789, config.st7789);
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::ST7789_MODE, config.st7789Mode);
@@ -180,6 +180,7 @@ DynamicJsonDocument updateConfig() {
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_PWM, config.mhz19bPwmPin);
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_RX, config.mhz19bRxPin);
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_TX, config.mhz19bTxPin);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_ABC, config.mhz19bABC);
   
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MQTT_BROKER, config.mqttBroker);
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MQTT_NAME, config.mqttName);
@@ -189,11 +190,6 @@ DynamicJsonDocument updateConfig() {
   updateConfigAlerts(msgs, flags, validKeys, ConfigNames::LUX_ALERT, config.luxAlerts);
   updateConfigAlerts(msgs, flags, validKeys, ConfigNames::PRES_ALERT, config.pressureAlerts);
   updateConfigAlerts(msgs, flags, validKeys, ConfigNames::CO2_ALERT, config.co2Alerts);
-
-  apilog(String(validKeys.size()));
-  for (int i = 0; i < validKeys.size(); i++) {
-    apilog(validKeys[i]);
-  }
 
   for (int i = 0; i < server.args(); i++)
   {
