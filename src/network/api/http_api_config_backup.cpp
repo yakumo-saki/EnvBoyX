@@ -27,6 +27,8 @@ String http_api_backup_config() {
   // ret += "&" + ConfigNames::OPMODE + "=" + config.opMode; // blocked running change
   ret += "&" + ConfigNames::DISPLAY_FLIP + "=" + config.displayFlip;
   ret += "&" + ConfigNames::DISPLAY_BRIGHTNESS + "=" + config.displayBrightness;
+  ret += "&" + ConfigNames::DISPLAY_RECONFIG + "=" + config.displaySkipReconfigure;
+
   ret += "&" + ConfigNames::OLED_TYPE + "=" + config.oledType;
 
   ret += "&" + ConfigNames::ST7789 + "=" + config.st7789;
@@ -36,6 +38,7 @@ String http_api_backup_config() {
   ret += "&" + ConfigNames::MHZ19B_PWM + "=" + config.mhz19bPwmPin;
   ret += "&" + ConfigNames::MHZ19B_RX + "=" + config.mhz19bRxPin;
   ret += "&" + ConfigNames::MHZ19B_TX + "=" + config.mhz19bTxPin;
+  ret += "&" + ConfigNames::MHZ19B_ABC + "=" + config.mhz19bABC;
 
   ret += "&" + ConfigNames::MQTT_BROKER + "=" + config.mqttBroker;
   ret += "&" + ConfigNames::MQTT_NAME + "=" + config.mqttName;
