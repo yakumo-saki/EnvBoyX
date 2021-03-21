@@ -30,9 +30,6 @@ void config_setup();
 // ボード依存なし
 // --------------------------------------------------------------------
 
-/** デフォルト値をセット */
-void set_default_config_value();
-
 void print_config();
 
 void trim_config();

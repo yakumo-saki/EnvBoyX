@@ -309,7 +309,8 @@ bool read_config_alerts(config_alert_t& alerts, DynamicJsonDocument doc, String 
 
 bool read_config_file(File f, bool dump_config) {
 
-  set_default_config_value(); // とりあえずデフォルト値をロードしておく。
+  // とりあえずデフォルト値をロードしておく。
+  config = config_t();
 
   DynamicJsonDocument doc(CONF_JSON_SIZE);
 
