@@ -52,7 +52,7 @@ void handle_post_root() {
 
   config.displayFlip = server.arg(ConfigNames::DISPLAY_FLIP);
   config.displayBrightness = server.arg(ConfigNames::DISPLAY_BRIGHTNESS);
-  config.displaySkipReconfigure = server.arg(ConfigNames::DISPLAY_RECONFIG);
+  config.displayWaitForReconfigure = server.arg(ConfigNames::DISPLAY_RECONFIG);
 
   config.oledType = server.arg(ConfigNames::OLED_TYPE);
 

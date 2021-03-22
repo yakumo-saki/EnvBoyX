@@ -11,86 +11,6 @@
 
 const unsigned int CONF_JSON_SIZE = 2000;
 
-/**
- * とりあえずのデフォルト値をグローバル変数にセットする
- */
-void set_default_config_value()
-{
-  config.ssid = "";
-  config.password = "";
-  config.mDNS = "ebx";
-
-  config.opMode = ConfigValues::OPMODE_DISPLAY;
-
-  config.mhz19b = ConfigValues::MHZ_NOUSE;
-  config.mhz19bPwmPin = "14";
-  config.mhz19bABC = ConfigValues::MHZ_ABC_OFF; // v44
-  #ifdef ESP32
-  config.mhz19bRxPin = "32";
-  config.mhz19bTxPin = "33";
-  #elif defined(ESP8266)
-  config.mhz19bRxPin = "14";
-  config.mhz19bTxPin = "0";
-  #endif
-
-  config.displayFlip = ConfigValues::DISPLAY_FLIP_OFF;
-  config.displayBrightness = "255";
-  config.displaySkipReconfigure = ConfigValues::DISPLAY_RECONFIG_ON; // v44
-
-  config.oledType = ConfigValues::OLED_SSD1306;
-
-  config.st7789 = ConfigValues::ST7789_NOUSE;
-  config.st7789Mode = ConfigValues::ST7789_MODE_NORMAL;
-
-  config.mqttBroker = "";
-  config.mqttName = "";
-  
-  config.temperatureAlerts.warning1.low = "-99";
-  config.temperatureAlerts.warning1.high = "10";
-  config.temperatureAlerts.caution1.low = "10";
-  config.temperatureAlerts.caution1.high = "15";
-  config.temperatureAlerts.caution2.low = "28";
-  config.temperatureAlerts.caution2.high = "30";
-  config.temperatureAlerts.warning2.low = "30";
-  config.temperatureAlerts.warning2.high = "99";
-
-  config.humidityAlerts.warning1.low = "0";
-  config.humidityAlerts.warning1.high = "20";
-  config.humidityAlerts.caution1.low = "20";
-  config.humidityAlerts.caution1.high = "35";
-  config.humidityAlerts.caution2.low = "65";
-  config.humidityAlerts.caution2.high = "75";
-  config.humidityAlerts.warning2.low = "75";
-  config.humidityAlerts.warning2.high = "100";
-
-  config.pressureAlerts.warning1.low = "0";
-  config.pressureAlerts.warning1.high = "995";
-  config.pressureAlerts.caution1.low = "995";
-  config.pressureAlerts.caution1.high = "1000";
-  config.pressureAlerts.caution2.low = "3000";
-  config.pressureAlerts.caution2.high = "3000";
-  config.pressureAlerts.warning2.low = "1025";
-  config.pressureAlerts.warning2.high = "3000";
-
-  config.luxAlerts.warning1.low = "0";
-  config.luxAlerts.warning1.high = "1";
-  config.luxAlerts.caution1.low = "-1";
-  config.luxAlerts.caution1.high = "-1";
-  config.luxAlerts.caution2.low = "-1";
-  config.luxAlerts.caution2.high = "-1";
-  config.luxAlerts.warning2.low = "2000";
-  config.luxAlerts.warning2.high = "99999";
-
-  config.co2Alerts.warning1.low = "0";
-  config.co2Alerts.warning1.high = "200";
-  config.co2Alerts.caution1.low = "200";
-  config.co2Alerts.caution1.high = "300";
-  config.co2Alerts.caution2.low = "800";
-  config.co2Alerts.caution2.high = "1000";
-  config.co2Alerts.warning2.low = "1000";
-  config.co2Alerts.warning2.high = "9999";
-}
-
 String alerts_to_log_string(const config_alert_t& alerts) {
   String log = "";
   cfglog("    WARNING1 '" + alerts.warning1.low + "' ~ '" + alerts.warning1.high + "'");
@@ -109,7 +29,7 @@ void print_config() {
   cfglog(F("DISPLAY:"));
   cfglog("   Flip: " + config.displayFlip);
   cfglog("   Brightness: " + config.displayBrightness);
-  cfglog("   Wait for reconfigure: " + config.displaySkipReconfigure);
+  cfglog("   Wait for reconfigure: " + config.displayWaitForReconfigure);
   cfglog("I2C OLED TYPE: " + config.oledType);
   cfglog("ST7789: " + config.st7789);
   cfglog("   MODE: " + config.st7789Mode);
@@ -206,13 +126,19 @@ DynamicJsonDocument _create_config_json(bool save, std::vector<String> keyArray)
     if (save || k == ConfigNames::OPMODE)       json[ConfigNames::OPMODE] = config.opMode;
     if (save || k == ConfigNames::DISPLAY_FLIP) json[ConfigNames::DISPLAY_FLIP] = config.displayFlip;
     if (save || k == ConfigNames::DISPLAY_BRIGHTNESS) json[ConfigNames::DISPLAY_BRIGHTNESS] = config.displayBrightness;
+    if (save || k == ConfigNames::DISPLAY_RECONFIG) json[ConfigNames::DISPLAY_RECONFIG] = config.displayWaitForReconfigure;
+    
     if (save || k == ConfigNames::OLED_TYPE)    json[ConfigNames::OLED_TYPE] = config.oledType;
+    
     if (save || k == ConfigNames::ST7789)       json[ConfigNames::ST7789] = config.st7789;
     if (save || k == ConfigNames::ST7789_MODE)  json[ConfigNames::ST7789_MODE] = config.st7789Mode;
+
     if (save || k == ConfigNames::MHZ19B)       json[ConfigNames::MHZ19B] = config.mhz19b;
     if (save || k == ConfigNames::MHZ19B_PWM)   json[ConfigNames::MHZ19B_PWM] = config.mhz19bPwmPin;
     if (save || k == ConfigNames::MHZ19B_RX)    json[ConfigNames::MHZ19B_RX] = config.mhz19bRxPin;
     if (save || k == ConfigNames::MHZ19B_TX)    json[ConfigNames::MHZ19B_TX] = config.mhz19bTxPin;
+    if (save || k == ConfigNames::MHZ19B_ABC)   json[ConfigNames::MHZ19B_ABC] = config.mhz19bABC;
+
     if (save || k == ConfigNames::MQTT_BROKER)  json[ConfigNames::MQTT_BROKER] = config.mqttBroker;
     if (save || k == ConfigNames::MQTT_NAME)    json[ConfigNames::MQTT_NAME] = config.mqttName;
 
@@ -345,6 +271,7 @@ bool read_config_file(File f, bool dump_config) {
   ret = ret && set_config_value(config.opMode ,doc, ConfigNames::OPMODE);
   ret = ret && set_config_value(config.displayFlip,doc, ConfigNames::DISPLAY_FLIP);
   ret = ret && set_config_value(config.displayBrightness, doc, ConfigNames::DISPLAY_BRIGHTNESS);
+  ret = ret && set_config_value(config.displayWaitForReconfigure, doc, ConfigNames::DISPLAY_RECONFIG);
   ret = ret && set_config_value(config.oledType, doc, ConfigNames::OLED_TYPE);
   ret = ret && set_config_value(config.st7789 ,doc, ConfigNames::ST7789);
   ret = ret && set_config_value(config.st7789Mode, doc, ConfigNames::ST7789_MODE);
@@ -352,6 +279,7 @@ bool read_config_file(File f, bool dump_config) {
   ret = ret && set_config_value(config.mhz19bPwmPin, doc, ConfigNames::MHZ19B_PWM);
   ret = ret && set_config_value(config.mhz19bRxPin, doc, ConfigNames::MHZ19B_RX);
   ret = ret && set_config_value(config.mhz19bTxPin, doc, ConfigNames::MHZ19B_TX);
+  ret = ret && set_config_value(config.mhz19bABC, doc, ConfigNames::MHZ19B_ABC);
   ret = ret && set_config_value(config.mqttBroker, doc, ConfigNames::MQTT_BROKER);
   ret = ret && set_config_value(config.mqttName, doc, ConfigNames::MQTT_NAME);
 

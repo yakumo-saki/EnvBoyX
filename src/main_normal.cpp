@@ -176,7 +176,7 @@ void setup_normal() {
   setup_watchdog();
 
   // setupモードに入りやすくするための処理
-  if (config.displaySkipReconfigure == ConfigValues::DISPLAY_RECONFIG_ON) {
+  if (config.displayWaitForReconfigure == ConfigValues::DISPLAY_RECONFIG_ON) {
     sectionlog(F("Reset to reconfig start."));
     remove_configure_flag_file();
 

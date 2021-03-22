@@ -171,7 +171,7 @@ DynamicJsonDocument updateConfig() {
   
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_FLIP, config.displayFlip);
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_BRIGHTNESS, config.displayBrightness);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_RECONFIG, config.displaySkipReconfigure);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_RECONFIG, config.displayWaitForReconfigure);
 
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::ST7789, config.st7789);
   updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::ST7789_MODE, config.st7789Mode);

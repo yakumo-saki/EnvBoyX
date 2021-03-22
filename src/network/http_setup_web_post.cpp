@@ -66,12 +66,12 @@ String http_setup_post_root_content() {
       html += "【バグ】I2C OLED デバイスの指定が異常です。 " + config.oledType + "<br>";
     }
 
-    if (config.displaySkipReconfigure == ConfigValues::DISPLAY_RECONFIG_ON) {
+    if (config.displayWaitForReconfigure == ConfigValues::DISPLAY_RECONFIG_ON) {
       html += "Wait for Reconfigure: 表示する<br>";
-    } else if (config.displaySkipReconfigure == ConfigValues::DISPLAY_RECONFIG_SKIP) {
+    } else if (config.displayWaitForReconfigure == ConfigValues::DISPLAY_RECONFIG_SKIP) {
       html += "Wait for Reconfigure: スキップする<br>";
     } else {
-      html += "【バグ】Wait for Reconfigure画面の設定が異常です => " + config.displaySkipReconfigure + "<br>";
+      html += "【バグ】Wait for Reconfigure画面の設定が異常です => " + config.displayWaitForReconfigure + "<br>";
     }
 
 

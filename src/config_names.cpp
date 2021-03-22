@@ -9,7 +9,7 @@ const String ConfigNames::OPMODE = "opMode";
 
 const String ConfigNames::DISPLAY_FLIP = "displayFlip";
 const String ConfigNames::DISPLAY_BRIGHTNESS = "displayBrightness";
-const String ConfigNames::DISPLAY_RECONFIG = "displaySkipReconfigure";
+const String ConfigNames::DISPLAY_RECONFIG = "displayWaitForReconfigure";
 
 const String ConfigNames::OLED_TYPE = "oledType";
 const String ConfigNames::ST7789 = "st7789";

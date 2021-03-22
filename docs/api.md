@@ -44,7 +44,7 @@ values: `config_values.cpp`
 | st7789 | "yes", "no" | y | Use ST7789 or not. only on ESP32 |
 | st7789Mode | "st7789_BIG", "st7789_normal" | n | ST7789 display mode |
 | displayFlip | "yes", "no" | n | Flip display or not |
-| displaySkipReconfigure | "skip", "on" | n | Skip on boot wait for reconfigure screen |
+| displayWaitForReconfigure | "skip", "on" | n | Skip on boot wait for reconfigure screen |
 | opMode | "always", "mqtt" | y | Operation mode |
 | mDNS | string | n | mDNS hostname |
 | co2Alerts  | {alerts} | n | See alerts section |

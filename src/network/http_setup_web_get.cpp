@@ -172,7 +172,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"表示する（推奨）", ConfigValues::DISPLAY_RECONFIG_ON});
     choises.push_back(LabelValue{"表示しない", ConfigValues::DISPLAY_RECONFIG_SKIP});
-    html += _create_radiobuttons(ConfigNames::DISPLAY_RECONFIG, config.displaySkipReconfigure, choises);
+    html += _create_radiobuttons(ConfigNames::DISPLAY_RECONFIG, config.displayWaitForReconfigure, choises);
   }
 
   html += "</fieldset>";

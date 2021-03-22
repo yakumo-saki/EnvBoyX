@@ -27,7 +27,7 @@ String http_api_backup_config() {
   // ret += "&" + ConfigNames::OPMODE + "=" + config.opMode; // blocked running change
   ret += "&" + ConfigNames::DISPLAY_FLIP + "=" + config.displayFlip;
   ret += "&" + ConfigNames::DISPLAY_BRIGHTNESS + "=" + config.displayBrightness;
-  ret += "&" + ConfigNames::DISPLAY_RECONFIG + "=" + config.displaySkipReconfigure;
+  ret += "&" + ConfigNames::DISPLAY_RECONFIG + "=" + config.displayWaitForReconfigure;
 
   ret += "&" + ConfigNames::OLED_TYPE + "=" + config.oledType;
 

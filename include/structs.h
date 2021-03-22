@@ -69,8 +69,10 @@ typedef struct {
  * 3. Setup POST後の表示   http_setup_web_post.cpp http_setup_post_root_content
  * 4. Web API             http_api_backup_config
  * 5. Web API             updateConfig
- * 6. Print config        print_config
- * 7. 実際の実装
+ * 6. Write Config        _create_config_json
+ * 6. Read Config         read_config_file
+ * 7. Print config        print_config
+ * 8. 実際の実装
  */ 
 typedef struct _config_t {
   String settingId;
@@ -93,7 +95,7 @@ typedef struct _config_t {
   
   String displayFlip = ConfigValues::DISPLAY_FLIP_OFF;
   String displayBrightness = "255";
-  String displaySkipReconfigure = ConfigValues::DISPLAY_RECONFIG_ON; // v44;
+  String displayWaitForReconfigure = ConfigValues::DISPLAY_RECONFIG_ON; // v44;
 
   String oledType = ConfigValues::OLED_SSD1306;
 
