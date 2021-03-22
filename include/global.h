@@ -17,6 +17,8 @@ extern const String ver;
 extern const String minorVer;
 extern const String product_long;
 
+extern const String SETTING_ID;
+
 extern const bool DEBUG_BUILD;
 
 // --------------------------------------------------------------------

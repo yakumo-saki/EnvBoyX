@@ -3,6 +3,8 @@
 
 #include "log.h"
 #include "global.h"
+#include "utils.h"
+
 #include "sensors/mhz19_main.h"
 #include "sensors/mhz19_util.h"
 
@@ -74,12 +76,8 @@ bool mhz_setup_uart() {
   mhz19.setRange(MHZ_RANGE);
   printErrorCode();
 
-  // mhzlog("setSpan()");
-  // mhz19.setSpan(2000);                  
-  // printErrorCode();
-
-  mhzlog("setAutoCalibration() " + String(autoBaselineCorrection));
-  mhz19.autoCalibration(autoBaselineCorrection);
+  mhzlog("setAutoCalibration = " + String(parseBooleanString(config.mhz19bABC)));
+  mhz19.autoCalibration(parseBooleanString(config.mhz19bABC));
   printErrorCode();
 
   mhz_setup_check_device_uart();

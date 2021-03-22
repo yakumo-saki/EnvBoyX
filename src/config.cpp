@@ -172,7 +172,7 @@ void write_config_file(File f) {
   DynamicJsonDocument doc = create_config_json_all();
   
   // これから書くConfigなので必ず想定しているconfig versionを書く
-  doc[ConfigNames::SETTING_ID] = ConfigValues::SETTING_ID;
+  doc[ConfigNames::SETTING_ID] = SETTING_ID;
 
   cfglog(F("Writing config"));
   size_t size = serializeJson(doc, f);

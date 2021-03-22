@@ -4,8 +4,6 @@
 const String ConfigValues::settings = "/wifi_settings.txt";
 const String ConfigValues::configured_file = "/config_ok.txt";
 
-const String ConfigValues::SETTING_ID = "EBXCFG.v12";
-
 const String ConfigValues::OPMODE_NAME = "opmode";
 const String ConfigValues::OPMODE_MQTT = "mqtt";
 const String ConfigValues::OPMODE_DISPLAY = "always";

@@ -126,7 +126,7 @@ String http_setup_get_root_content() {
   html += "</style>";
   html += "<link rel='stylesheet' href='/style.css'>";
   html += "</head>";
-  html += "<h1>" + product + " Settings  (" + ConfigValues::SETTING_ID + ")</h1>";
+  html += "<h1>" + product + " Settings  (" + SETTING_ID + ")</h1>";
   html += "<form method='post'>";
   html += "  <br>";
 

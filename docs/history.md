@@ -9,6 +9,8 @@
 
 ## v44.0: Untitled update
 
+NOTE: Alerts settings are back to default on version up.
+
 * ADD: MHZ-19B Auto Baseline Correction ON/OFF at boot time
 * ADD: Skip wait for reconfigure
 * ADD: Factory reset API
