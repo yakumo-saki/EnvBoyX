@@ -74,12 +74,29 @@ void _backup_config() {
   server.send(200, MimeType::TEXT, ret);
 }
 
+void _factory_reset() {
+  DynamicJsonDocument json(8000);
+
+  apilog("FACTORY RESET INITIATED");
+  json["command"] = "CONFIG_FACTORY_RESET";
+  json["success"] = true;
+  json["backup"] = http_api_backup_config();
+  json["msg"] = "Config deleted. Reset or power off now.";
+
+  config_factory_reset();
+
+  apilog("FACTORY RESET DONE");
+
+  server.send(200, MimeType::JSON, jsonToString(json));
+}
+
 void http_api_config_setup() {
   server.on ( "/config", HTTP_GET, _get_config );
   server.on ( "/config", HTTP_POST, _set_config );
   server.on ( "/config/revert", HTTP_POST, _revert_config );
   server.on ( "/config/commit", HTTP_POST, _commit_config );
   server.on ( "/config/backup", HTTP_GET, _backup_config );
+  server.on ( "/config/factory-reset", HTTP_POST, _factory_reset );
   
   apilog("API Config initialized.");
 }

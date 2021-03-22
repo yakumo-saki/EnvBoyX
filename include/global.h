@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include <WiFiClient.h>
 
-#include "global_ConfigValues.h"
 #include "global_MimeType.h"
+
+#include "config_values.h"
+#include "config_names.h"
 
 #include "structs.h"
 
@@ -14,6 +16,8 @@ extern const String product;
 extern const String ver;
 extern const String minorVer;
 extern const String product_long;
+
+extern const String SETTING_ID;
 
 extern const bool DEBUG_BUILD;
 

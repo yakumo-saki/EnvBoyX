@@ -108,11 +108,11 @@ bool has_valid_config_file() {
     read_config_file(f);
     f.close();
 
-    if (String(ConfigValues::SETTING_ID).equals(config.settingId)) {
+    if (String(SETTING_ID).equals(config.settingId)) {
       cfglog("SETTING_ID verified. " + config.settingId);
       return true;
     } else {
-      cfglog("SETTING_ID NOT match! required:" + String(ConfigValues::SETTING_ID) + " actual:" + config.settingId);
+      cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + config.settingId);
       return false;
     }
   }
@@ -148,6 +148,13 @@ void config_setup() {
     cfglog(F("SPIFFS Mount success."));
   }
   list_dir();
+}
+
+void config_factory_reset() {
+  remove_configure_flag_file();
+
+  SPIFFS.remove(ConfigValues::settings);
+  cfglog("Factory reset executed.");
 }
 
 #endif

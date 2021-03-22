@@ -1,3 +1,6 @@
+#include <Arduino.h>
+
+static const char STYLE_CSS[] PROGMEM = R"=====(
 body { 
     background-color: aliceblue;
 }
@@ -22,3 +25,4 @@ input[type='submit'] {
 a.setup_again {
     font-size: 150%;
 }
+)=====";

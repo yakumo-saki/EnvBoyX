@@ -49,8 +49,10 @@ rm -f ${MYDIR}/EnvBoyX*.tar.gz
 # git ブランチからファイル名判定
 branch=`git symbolic-ref --short HEAD`
 
-if [ $branch = "master" ]; then
-  RELEASE_FILE_PATH=${MYDIR}/EnvBoyX.tar.gz
+grep -i "DEBUG_BUILD.*TRUE" ${MYDIR}/src/global.cpp
+if [ $? -eq 0 ] ; then
+  echo "** DEBUG_BUILD IS SET TO TRUE"
+  RELEASE_FILE_PATH=${MYDIR}/EnvBoyX-DEBUG.tar.gz
 elif [ $branch = "main" ]; then
   RELEASE_FILE_PATH=${MYDIR}/EnvBoyX.tar.gz
 else
@@ -59,10 +61,12 @@ else
   RELEASE_FILE_PATH=${MYDIR}/EnvBoyX-$branch.tar.gz
 fi
 
-rm -f ${RELEASE_FILE_PATH}
+rm -f ${MYDIR}/EnvBoyX*.tar.gz
 tar -C ${RELEASE_BASE_DIR} -zcvf ${RELEASE_FILE_PATH} .
 
 banner "Release archive created ${RELEASE_FILE_PATH}"
+
+# Warning
 
 echo "To upload, run:"
 echo "tar xvf `basename ${RELEASE_FILE_PATH}`"

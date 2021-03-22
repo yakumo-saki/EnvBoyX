@@ -9,7 +9,15 @@
 
 ## v44.0: Untitled update
 
-* 
+NOTE: Alerts settings are back to default on version up.
+
+* ADD: MHZ-19B Auto Baseline Correction ON/OFF at boot time
+* ADD: Skip wait for reconfigure
+* ADD: Factory reset API
+* CHANGE: Config set API key about alerts are chenged
+* FIX: Internal code clean up
+* FIX: Config backup API result contains gabage
+* FIX: mDNS: Call setInstanceName/addService before begin() (this prevent mdns listing) 
 
 ## v43.0: Delta all update
 

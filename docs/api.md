@@ -19,6 +19,7 @@ EnvBoyX has http web API.
 | 42.0  | POST | /config/commit          | JSON | Save config |
 | 42.0  | POST | /config/revert          | JSON | Revert to last saved config |
 | 43.0  | GET | /config/backup          | TEXT | Get current running config on curl command line |
+| 44.0  | POST | /config/factory-reset   | JSON | Delete ALL configs | 
 
 NOTE: There is no reboot API, because of security reason.
 
@@ -28,6 +29,9 @@ This API changes config (same thing in setup mode)
 But some paramters are not changeable.
 
 ### parameters 
+
+names: `config_names.cpp`
+values: `config_values.cpp`
 
 | name | possible values | need restart | note                       |
 |------|-----------------| -- | ------------------------ |
@@ -40,6 +44,7 @@ But some paramters are not changeable.
 | st7789 | "yes", "no" | y | Use ST7789 or not. only on ESP32 |
 | st7789Mode | "st7789_BIG", "st7789_normal" | n | ST7789 display mode |
 | displayFlip | "yes", "no" | n | Flip display or not |
+| displayWaitForReconfigure | "skip", "on" | n | Skip on boot wait for reconfigure screen |
 | opMode | "always", "mqtt" | y | Operation mode |
 | mDNS | string | n | mDNS hostname |
 | co2Alerts  | {alerts} | n | See alerts section |
@@ -53,12 +58,21 @@ But some paramters are not changeable.
 
 Alert config keys structure:
 
-<kind>.<level_and_no>.<low_or_high>
+`<kind>.<level>.<low_or_high>`
+
+##### v44 and above
+
+kind = [co2alerts | humiAlerts | luxAlerts | presAlerts]
+level_and_no = [warn1 | warn2 | caut1 | caut2]
+low_or_high = [L | H]
+
+example: co2alerts.warn1.L
+
+##### before v44
 
 kind = [co2alerts | humiAlerts | luxAlerts | presAlerts]
 level_and_no = [warning1 | warning2 | caution1 | caution2]
 low_or_high = [low | high]
-
 example: co2alerts.warning1.low 
 #### cURL example
 

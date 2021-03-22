@@ -16,14 +16,14 @@ extern unsigned int CONF_JSON_SIZE;
 
 extern HTTPWEBSERVER server;
 
-const String CFG_NONE = "#**#_##NONE##_#*#";
+const String CONFIG_NONE = "#**#_##NONE##_#*#";
 
-const std::vector<String> BLOCKED_CONFIG{CFG_SSID, CFG_PASSWORD, CFG_OPMODE};
-const std::vector<String> NEED_REBOOT_CONFIG{CFG_OLED_TYPE, CFG_ST7789, CFG_MHZ19B,
-                                             CFG_MHZ19B_PWM, CFG_MHZ19B_RX, CFG_MHZ19B_TX};
+const std::vector<String> BLOCKED_CONFIG{ConfigNames::SSID, ConfigNames::PASSWORD, ConfigNames::OPMODE};
+const std::vector<String> NEED_REBOOT_CONFIG{ConfigNames::OLED_TYPE, ConfigNames::ST7789, ConfigNames::MHZ19B,
+                                             ConfigNames::MHZ19B_PWM, ConfigNames::MHZ19B_RX, ConfigNames::MHZ19B_TX};
 
 // 再描画が必要になる設定(Brightnessは再描画しなくても良いのだが面倒なのでこうする)
-const std::vector<String> NEED_REDRAW_CONFIG{CFG_ST7789_MODE, CFG_DISPLAY_FLIP, CFG_DISPLAY_BRIGHTNESS};
+const std::vector<String> NEED_REDRAW_CONFIG{ConfigNames::ST7789_MODE, ConfigNames::DISPLAY_FLIP, ConfigNames::DISPLAY_BRIGHTNESS};
 
 bool vectorStringContains(std::vector<String> keyArray, String key) {
 
@@ -33,7 +33,7 @@ bool vectorStringContains(std::vector<String> keyArray, String key) {
   return false;
 }
 
-struct _config_hook_flags {
+struct ConfigHookFlags {
   bool needDisplayRedraw = false;
   bool needMDnsRestart = false;
   bool needReboot = false;
@@ -49,82 +49,91 @@ struct UpdateConfigParamResult_t {
   String value;
 };
 
-UpdateConfigParamResult_t updateConfigParam(String key, String& config) {
+// 指定された項目の値を server から取り出し、追加で必要な反映処理を判定して返す
+UpdateConfigParamResult_t _updateConfigParam(String key, String& config) {
 
   UpdateConfigParamResult_t ret;
 
-  if (server.hasArg(key)) {
-    if (vectorStringContains(BLOCKED_CONFIG, key)) {
-      ret.result = UpdateConfigParamResult::BLOCKED;
-      ret.value = "";
-      return ret;
-    }
-
-    String value = server.arg(key);
-    config = value; 
-    ret.value = value;
-
-    if (vectorStringContains(NEED_REBOOT_CONFIG, key)) {
-      ret.result = UpdateConfigParamResult::REBOOT_REQ;
-    } else {
-
-      if (vectorStringContains(NEED_REDRAW_CONFIG, key)) {
-        ret.result = UpdateConfigParamResult::DISPLAY_REDRAW_REQ;
-      } else {
-        ret.result = UpdateConfigParamResult::OK;
-      }
-    }
-
-    if (key == CFG_MDNS) {
-      ret.result = UpdateConfigParamResult::MDNS_RESTART_REQ;
-    }
-
+  if (!server.hasArg(key)) {
+    // 指定されたキーは指定されていない（アリエナイはず）
+    ret.result = UpdateConfigParamResult::NOT_SPECIFIED; 
+    ret.value = "";
     return ret;
   }
 
-  // 指定されたキーはAPIに指定されていない（想定された動作）
-  ret.result = UpdateConfigParamResult::NOT_SPECIFIED; 
-  ret.value = "";
+  if (vectorStringContains(BLOCKED_CONFIG, key)) {
+    ret.result = UpdateConfigParamResult::BLOCKED;
+    ret.value = "";
+    return ret;
+  }
+
+  String value = server.arg(key);
+  config = value; 
+  ret.value = value;
+
+  if (vectorStringContains(NEED_REBOOT_CONFIG, key)) {
+    ret.result = UpdateConfigParamResult::REBOOT_REQ;
+  } else {
+
+    if (vectorStringContains(NEED_REDRAW_CONFIG, key)) {
+      ret.result = UpdateConfigParamResult::DISPLAY_REDRAW_REQ;
+    } else {
+      ret.result = UpdateConfigParamResult::OK;
+    }
+  }
+
+  if (key == ConfigNames::MDNS) {
+    ret.result = UpdateConfigParamResult::MDNS_RESTART_REQ;
+  }
+
   return ret;
 }
 
-void updateConfigParamForApi(DynamicJsonDocument& jsonArray, _config_hook_flags& flags, String key, String& config) {
-  UpdateConfigParamResult_t ret = updateConfigParam(key, config);
+// Config set API の処理
+// updateConfigParam　の　API用ラッパー
+void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags& flags, std::vector<String>& validKeys, String key, String& config) {
+  
+  UpdateConfigParamResult_t ret = _updateConfigParam(key, config);
+
+  if (ret.result == UpdateConfigParamResult::NOT_SPECIFIED) {
+    return;
+  }
+
+  // 有効な設定名だったので記録しておく
+  validKeys.push_back(key);
+
   if (ret.result == UpdateConfigParamResult::BLOCKED) {
     flags.configFailed = true;
-    jsonArray.add("[ERROR] " + key + " is blocked from running change. use setup mode.");
-  } else if (ret.result == UpdateConfigParamResult::OK) {
-    jsonArray.add("[OK] " + key + " = " + (ret.value == "" ? "(empty)" : ret.value));
+    msgArray.add("[ERROR] " + key + " is blocked from running change. use setup mode.");
   } else if (ret.result == UpdateConfigParamResult::REBOOT_REQ) {
     flags.needReboot = true;
-    jsonArray.add("[OK][REBOOT REQ] " + key + " = " + ret.value);
+    msgArray.add("[OK][REBOOT REQ] " + key + " = " + ret.value);
   } else if (ret.result == UpdateConfigParamResult::DISPLAY_REDRAW_REQ) {
     flags.needDisplayRedraw = true;
-    jsonArray.add("[OK][REDRAW] " + key + " = " + ret.value);
+    msgArray.add("[OK][REDRAW] " + key + " = " + ret.value);
   } else if (ret.result == UpdateConfigParamResult::MDNS_RESTART_REQ) {
     flags.needMDnsRestart = true;
-    jsonArray.add("[OK][mDNS RESTART] " + key + " = " + ret.value);
-  } else if (ret.result == UpdateConfigParamResult::NOT_SPECIFIED) {
-    // do nothing
-    // debuglog(key + " NOT SPECIFIED");
+    msgArray.add("[OK][mDNS RESTART] " + key + " = " + ret.value);
+  } else if (ret.result == UpdateConfigParamResult::OK) {
+    msgArray.add("[OK] " + key + " = " + (ret.value == "" ? "(empty)" : ret.value));
   } else {
     apilog("MAYBE BUG");
   } 
 }
 
-void updateConfigAlerts(DynamicJsonDocument& msgs, _config_hook_flags& flags, String keyPrefix, config_alert_t& alerts) {
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".warning1.low", alerts.warning1.low);
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".warning1.high", alerts.warning1.high);
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".warning2.low", alerts.warning2.low);
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".warning2.high", alerts.warning2.high);
+void updateConfigAlerts(DynamicJsonDocument& msgs, ConfigHookFlags& flags, std::vector<String>& validKeys, String prefix, config_alert_t& alerts) {
+  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_WARN1_LO, alerts.warning1.low);
+  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_WARN1_HI, alerts.warning1.high);
+  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_WARN2_LO, alerts.warning2.low);
+  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_WARN2_HI, alerts.warning2.high);
 
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".caution1.low", alerts.caution1.low);
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".caution1.high", alerts.caution1.high);
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".caution2.low", alerts.caution2.low);
-  updateConfigParamForApi(msgs, flags, keyPrefix + ".caution2.high", alerts.caution2.high);
+  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_CAUTION1_LO, alerts.caution1.low);
+  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_CAUTION1_HI, alerts.caution1.high);
+  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_CAUTION2_LO, alerts.caution2.low);
+  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_CAUTION2_HI, alerts.caution2.high);
 }
 
-void _reflectConfig(_config_hook_flags& flags, bool all = false) {
+void _reflectConfig(ConfigHookFlags& flags, bool all = false) {
   // debuglog(String(flags.needDisplayRedraw) + String(flags.needMDnsRestart));
 
   if (all || flags.needDisplayRedraw) {
@@ -138,41 +147,59 @@ void _reflectConfig(_config_hook_flags& flags, bool all = false) {
   }
 }
 
+// revertしたときに画面書き換え等を全部実行する
 void reflectConfigAll() {
-  _config_hook_flags flags;
+  ConfigHookFlags flags;
   _reflectConfig(flags, true);
 }
 
+// Config SET API のエントリポイント
 DynamicJsonDocument updateConfig() {
-
-  _config_hook_flags flags;
 
   DynamicJsonDocument msgs(4096);
 
-  updateConfigParamForApi(msgs, flags, CFG_SSID, config.ssid);
-  updateConfigParamForApi(msgs, flags, CFG_PASSWORD, config.password);
-  updateConfigParamForApi(msgs, flags, CFG_MDNS, config.mDNS);
-  updateConfigParamForApi(msgs, flags, CFG_OPMODE, config.opMode);
-  updateConfigParamForApi(msgs, flags, CFG_OLED_TYPE, config.oledType);
-  updateConfigParamForApi(msgs, flags, CFG_DISPLAY_FLIP, config.displayFlip);
-  updateConfigParamForApi(msgs, flags, CFG_DISPLAY_BRIGHTNESS, config.displayBrightness);
-  updateConfigParamForApi(msgs, flags, CFG_ST7789, config.st7789);
-  updateConfigParamForApi(msgs, flags, CFG_ST7789_MODE, config.st7789Mode);
+  ConfigHookFlags flags;
+
+  std::vector<String> validKeys;
+
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::SSID, config.ssid);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::PASSWORD, config.password);
   
-  updateConfigParamForApi(msgs, flags, CFG_MHZ19B, config.mhz19b);
-  updateConfigParamForApi(msgs, flags, CFG_MHZ19B_PWM, config.mhz19bPwmPin);
-  updateConfigParamForApi(msgs, flags, CFG_MHZ19B_RX, config.mhz19bRxPin);
-  updateConfigParamForApi(msgs, flags, CFG_MHZ19B_TX, config.mhz19bTxPin);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MDNS, config.mDNS);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::OPMODE, config.opMode);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::OLED_TYPE, config.oledType);
+  
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_FLIP, config.displayFlip);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_BRIGHTNESS, config.displayBrightness);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_RECONFIG, config.displayWaitForReconfigure);
 
-  updateConfigParamForApi(msgs, flags, CFG_MQTT_BROKER, config.mqttBroker);
-  updateConfigParamForApi(msgs, flags, CFG_MQTT_NAME, config.mqttName);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::ST7789, config.st7789);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::ST7789_MODE, config.st7789Mode);
+  
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B, config.mhz19b);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_PWM, config.mhz19bPwmPin);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_RX, config.mhz19bRxPin);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_TX, config.mhz19bTxPin);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_ABC, config.mhz19bABC);
+  
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MQTT_BROKER, config.mqttBroker);
+  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MQTT_NAME, config.mqttName);
 
-  updateConfigAlerts(msgs, flags, CFG_TEMP_ALERT, config.temperatureAlerts);
-  updateConfigAlerts(msgs, flags, CFG_HUMI_ALERT, config.humidityAlerts);
-  updateConfigAlerts(msgs, flags, CFG_LUX_ALERT, config.luxAlerts);
-  updateConfigAlerts(msgs, flags, CFG_PRES_ALERT, config.pressureAlerts);
-  updateConfigAlerts(msgs, flags, CFG_CO2_ALERT, config.co2Alerts);
+  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::TEMP_ALERT, config.temperatureAlerts);
+  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::HUMI_ALERT, config.humidityAlerts);
+  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::LUX_ALERT, config.luxAlerts);
+  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::PRES_ALERT, config.pressureAlerts);
+  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::CO2_ALERT, config.co2Alerts);
 
+  for (int i = 0; i < server.args(); i++)
+  {
+    String key = server.argName(i);
+
+    if (vectorStringContains(validKeys, key) == false) {
+      msgs.add("[INVALID KEY] " + key);
+    }
+  }
+  
   _reflectConfig(flags);
 
   DynamicJsonDocument json(10240);

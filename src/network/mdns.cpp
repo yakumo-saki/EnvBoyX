@@ -16,13 +16,14 @@ bool start_mdns(String name) {
 
   mdnslog(F("mDNS responder starting"));
 
-  MDNS.setInstanceName("EnvBoyX");
-  MDNS.addService("_http", "_tcp", 80);
-
   if (!MDNS.begin(name.c_str())) {
     mdnslog(F("Error setting up MDNS responder!"));
     return false;
   }
+
+  MDNS.setInstanceName(product + (DEBUG_BUILD ? "_DEBUG_" : "_") + ver + "_" + minorVer + "-" + name);
+  MDNS.addService("_http", "_tcp", 80);
+
   mdnslog("mDNS responder started name=" + name);
   return true;
 }
