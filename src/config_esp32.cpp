@@ -150,4 +150,11 @@ void config_setup() {
   list_dir();
 }
 
+void config_factory_reset() {
+  remove_configure_flag_file();
+
+  SPIFFS.remove(ConfigValues::settings);
+  cfglog("Factory reset executed.");
+}
+
 #endif

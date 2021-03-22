@@ -1,6 +1,13 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 
 #include "log.h"
+
+String jsonToString(DynamicJsonDocument& json) {
+    String jsonStr;
+    serializeJson(json, jsonStr);
+    return jsonStr;
+}
 
 bool parseBooleanString(const String val) {
 

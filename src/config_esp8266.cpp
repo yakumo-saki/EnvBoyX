@@ -134,6 +134,12 @@ bool has_valid_config() {
   return has_valid_config_file();
 }
 
+void config_factory_reset() {
+  remove_configure_flag_file();
+
+  LittleFS.remove(ConfigValues::settings);
+  cfglog("Factory reset executed.");
+}
 
 void config_setup() { 
 }
