@@ -21,7 +21,7 @@ bool start_mdns(String name) {
     return false;
   }
 
-  MDNS.setInstanceName("EnvBoyX");
+  MDNS.setInstanceName(product + (DEBUG_BUILD ? "_DEBUG_" : "_") + ver + "_" + minorVer + "-" + name);
   MDNS.addService("_http", "_tcp", 80);
 
   mdnslog("mDNS responder started name=" + name);
