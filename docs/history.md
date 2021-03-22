@@ -11,6 +11,7 @@
 
 * ADD: MHZ-19B Auto Baseline Correction ON/OFF at boot time
 * ADD: Skip wait for reconfigure
+* ADD: Factory reset API
 * CHANGE: Config set API key about alerts are chenged
 * FIX: Internal code clean up
 * FIX: Config backup API result contains gabage
