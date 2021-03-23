@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#include "log.h"
+
 bool parseBooleanString(const String val) {
 
     // String is null or invalid
@@ -19,4 +21,18 @@ bool parseBooleanString(const String val) {
     if (v == "NO") return false;
 
     return false;
+}
+
+// 
+bool vectorStringContains(const std::vector<String> &keyArray, const String& key) {
+
+  for (const String k : keyArray) {
+    debuglog(k);
+    if (k == key) { 
+      debuglog("return true " + key);
+      return true;
+    }
+  }
+  debuglog("return false " + key);
+  return false;
 }

@@ -1,15 +1,16 @@
 # Version History
 
-* BUGFIX: Bug fix
-* FIX: Fix not bug, but not friendly behavior
+* FIX: Fix bug, or not friendly behavior
 * CHANGE: Change some behavior
 * ADD: Add new function
 * DROP: Delete some functions
 * NOTE: other things
 
-## v44.0: Untitled update
+## v44.0: Internal refactoring Update
 
-NOTE: Alerts settings are back to default on version up.
+IMPORTANT NOTE: 
+Alerts settings are back to default on version up.
+Please write down current config or use backup API.
 
 * ADD: MHZ-19B Auto Baseline Correction ON/OFF at boot time
 * ADD: Skip wait for reconfigure
@@ -72,23 +73,23 @@ NOTE: Alerts settings are back to default on version up.
 * CHANGE: SSD1306: Lux unit "lx" to "Lx" (1 and l is very similer griph)
 * CHANGE: SSD1306: Draw wait for reconfigure bar using graphics
 * CHANGE: ST7789: Draw wait for reconfigure bar using graphics
-* BUGFIX: CONFIG: coution 2 High value is not saved. (due to insufficient buffer)
+* FIX: CONFIG: coution 2 High value is not saved. (due to insufficient buffer)
 
 ## v37: Alert update.
 
 * VERSION: 37. next version is v38.
-* BUGFIX: Alert settings are not saved on ESP32.
-* BUGFIX: Alert settings are not propery saved.
+* FIX: Alert settings are not saved on ESP32.
+* FIX: Alert settings are not propery saved.
 * CHANGE: Switch to squix78 -> thingpulse (same library)
 * CONFIG: Shorten JSON keys about alerts(reconfig required)
 
 ## v3.6: Bugfix release.
 
 * NOTE: LICENSE: EnvBoyX is now under APL 2.0 , Affected to all versions. (license terms are not shown before)
-* BUGFIX: TSL2561 can't enabled
+* FIX: TSL2561 can't enabled
 * CHANGE: Serial speed changed to 74880. (was 115200)
-* BUGFIX: ping API returns invalid JSON
-* BUGFIX: Display glitch when bigmode and show lux
+* FIX: ping API returns invalid JSON
+* FIX: Display glitch when bigmode and show lux
 
 ## v3.5
 
@@ -98,14 +99,14 @@ NOTE: Alerts settings are back to default on version up.
 ## v3.4
 
 * CHANGE: Config: version 8 (was 6)
-* BUGFIX: SSD1306 not shown in Setup Mode
+* FIX: SSD1306 not shown in Setup Mode
 * ADD: Default Brightness setting
 * ADD: Screen Flip setting
 
 ## v3.3
 
-* BUGFIX: MH-Z19B wrong message
-* BUGFIX: Wrong uptime on JSON
+* FIX: MH-Z19B wrong message
+* FIX: Wrong uptime on JSON
 * ADD: ST7789 Brightness change (via Web API)
 * ADD: Watchdog timer (ESP32 only)
 * CHANGE: Use TimerCall
@@ -114,7 +115,7 @@ NOTE: Alerts settings are back to default on version up.
 
 * FIX: Avoid using delay
 * ADD: I2C scan on startup.
-* BUGFIX: ESP8266: I2C not working
+* FIX: ESP8266: I2C not working
 * DROP: ESP8266: ST7789 is not supported (because of Pin config)
 
 ## v3.1
@@ -137,7 +138,7 @@ NOTE: Alerts settings are back to default on version up.
 
 ## v2.6
 
-* BUGFIX: Fix mDNS not working
+* FIX: Fix mDNS not working
 
 ## v2.5
 

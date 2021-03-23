@@ -3,6 +3,9 @@
 #include <ArduinoJson.h>
 #include "FS.h"
 
+#include "config_names.h"
+#include "config_values.h"
+
 // --------------------------------------------------------------------
 // ボード依存あり
 // --------------------------------------------------------------------
@@ -45,7 +48,7 @@ bool read_config_file(File f, bool dump_config);
 bool read_config_file(File f);
 
 // APIコール用 Config->JSON 
-DynamicJsonDocument create_config_json(std::vector<String> keys);
+DynamicJsonDocument create_config_json(std::vector<String>& keys);
 
 // 設定保存用 Config->JSON 
 DynamicJsonDocument create_config_json_all();

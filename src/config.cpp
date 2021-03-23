@@ -114,7 +114,7 @@ DynamicJsonDocument alerts_to_json(const config_alert_t& alerts, String logname)
   return json;
 }
 
-DynamicJsonDocument _create_config_json(bool save, std::vector<String> keyArray) {
+DynamicJsonDocument _create_config_json(bool save, const std::vector<String> &keyArray) {
 
   DynamicJsonDocument json(CONF_JSON_SIZE);
 
@@ -154,7 +154,7 @@ DynamicJsonDocument _create_config_json(bool save, std::vector<String> keyArray)
   return json;
 }
 
-DynamicJsonDocument create_config_json(std::vector<String> keys) {
+DynamicJsonDocument create_config_json(std::vector<String> &keys) {
   return _create_config_json(false, keys);
 }
 

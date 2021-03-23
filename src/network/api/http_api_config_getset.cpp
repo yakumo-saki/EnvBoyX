@@ -5,6 +5,7 @@
 #include "log.h"
 #include "global.h"
 #include "config.h"
+#include "utils.h"
 
 #include "mdns_client.h"
 
@@ -18,21 +19,6 @@ extern HTTPWEBSERVER server;
 
 const String CONFIG_NONE = "#**#_##NONE##_#*#";
 
-const std::vector<String> BLOCKED_CONFIG{ConfigNames::SSID, ConfigNames::PASSWORD, ConfigNames::OPMODE};
-const std::vector<String> NEED_REBOOT_CONFIG{ConfigNames::OLED_TYPE, ConfigNames::ST7789, ConfigNames::MHZ19B,
-                                             ConfigNames::MHZ19B_PWM, ConfigNames::MHZ19B_RX, ConfigNames::MHZ19B_TX};
-
-// 再描画が必要になる設定(Brightnessは再描画しなくても良いのだが面倒なのでこうする)
-const std::vector<String> NEED_REDRAW_CONFIG{ConfigNames::ST7789_MODE, ConfigNames::DISPLAY_FLIP, ConfigNames::DISPLAY_BRIGHTNESS};
-
-bool vectorStringContains(std::vector<String> keyArray, String key) {
-
-  for (const auto& k : keyArray) {
-    if (k == key) return true;
-  }
-  return false;
-}
-
 struct ConfigHookFlags {
   bool needDisplayRedraw = false;
   bool needMDnsRestart = false;
@@ -45,17 +31,31 @@ enum class UpdateConfigParamResult {
 };
 
 struct UpdateConfigParamResult_t {
-  UpdateConfigParamResult result;
-  String value;
+  UpdateConfigParamResult result = UpdateConfigParamResult::ERROR;
+  String value = "";
 };
 
-// 指定された項目の値を server から取り出し、追加で必要な反映処理を判定して返す
+/**
+ * 指定された項目の値を server から取り出し、追加で必要な反映処理を判定して返す
+ */
 UpdateConfigParamResult_t _updateConfigParam(String key, String& config) {
+
+  // これを一番上に持っていくと、ConfigNamesの値がセットされる前に処理されてしまい、空文字列になってしまう。
+
+  std::vector<String> BLOCKED_CONFIG = {ConfigNames::SSID, ConfigNames::PASSWORD, ConfigNames::OPMODE};
+  std::vector<String> NEED_REBOOT_CONFIG = {ConfigNames::OLED_TYPE, ConfigNames::ST7789, 
+                                            ConfigNames::MHZ19B, ConfigNames::MHZ19B_PWM,
+                                            ConfigNames::MHZ19B_RX, ConfigNames::MHZ19B_TX};
+
+  // 再描画が必要になる設定(Brightnessは再描画しなくても良いのだが面倒なのでこうする)
+  std::vector<String> NEED_REDRAW_CONFIG = {ConfigNames::ST7789_MODE, ConfigNames::DISPLAY_FLIP,
+                                            ConfigNames::DISPLAY_BRIGHTNESS};
+
+  //
 
   UpdateConfigParamResult_t ret;
 
   if (!server.hasArg(key)) {
-    // 指定されたキーは指定されていない（アリエナイはず）
     ret.result = UpdateConfigParamResult::NOT_SPECIFIED; 
     ret.value = "";
     return ret;
@@ -71,19 +71,15 @@ UpdateConfigParamResult_t _updateConfigParam(String key, String& config) {
   config = value; 
   ret.value = value;
 
+  // ここから先はOK
   if (vectorStringContains(NEED_REBOOT_CONFIG, key)) {
     ret.result = UpdateConfigParamResult::REBOOT_REQ;
-  } else {
-
-    if (vectorStringContains(NEED_REDRAW_CONFIG, key)) {
-      ret.result = UpdateConfigParamResult::DISPLAY_REDRAW_REQ;
-    } else {
-      ret.result = UpdateConfigParamResult::OK;
-    }
-  }
-
-  if (key == ConfigNames::MDNS) {
+  } else if (vectorStringContains(NEED_REDRAW_CONFIG, key)) {
+    ret.result = UpdateConfigParamResult::DISPLAY_REDRAW_REQ;
+  } else if (key == ConfigNames::MDNS) {
     ret.result = UpdateConfigParamResult::MDNS_RESTART_REQ;
+  } else {
+    ret.result = UpdateConfigParamResult::OK;
   }
 
   return ret;
@@ -91,12 +87,17 @@ UpdateConfigParamResult_t _updateConfigParam(String key, String& config) {
 
 // Config set API の処理
 // updateConfigParam　の　API用ラッパー
-void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags& flags, std::vector<String>& validKeys, String key, String& config) {
+void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &flags, std::vector<String>& validKeys, String key, String& config) {
   
   UpdateConfigParamResult_t ret = _updateConfigParam(key, config);
 
+  // int retnum = static_cast<int>(ret.result);
+  // debuglog("RET RESULT = " + String(retnum));
+
   if (ret.result == UpdateConfigParamResult::NOT_SPECIFIED) {
     return;
+  } else if (ret.result == UpdateConfigParamResult::ERROR) {
+    debuglog("ERROR " + key);
   }
 
   // 有効な設定名だったので記録しておく
@@ -134,7 +135,6 @@ void updateConfigAlerts(DynamicJsonDocument& msgs, ConfigHookFlags& flags, std::
 }
 
 void _reflectConfig(ConfigHookFlags& flags, bool all = false) {
-  // debuglog(String(flags.needDisplayRedraw) + String(flags.needMDnsRestart));
 
   if (all || flags.needDisplayRedraw) {
     apilog("Exec display redraw.");
