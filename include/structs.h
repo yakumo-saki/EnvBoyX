@@ -64,15 +64,15 @@ typedef struct {
 /**
  * Config 構造体
  * 項目追加時の実装項目：
- * 1. Struct（ここ）
- * 2. Setup HTML          http_setup_web_get.cpp http_setup_get_root_content
- * 3. Setup POST後の表示   http_setup_web_post.cpp http_setup_post_root_content
- * 4. Web API             http_api_backup_config
- * 5. Web API             updateConfig
- * 6. Write Config        _create_config_json
- * 6. Read Config         read_config_file
- * 7. Print config        print_config
- * 8. 実際の実装
+- [ ] 1. structs.h           config struct
+- [ ] 2. Setup HTML          http_setup_web_get.cpp http_setup_get_root_content
+- [ ] 3. Setup POST後の表示   http_setup_web_post.cpp http_setup_post_root_content
+- [ ] 4. Web API             http_api_backup_config
+- [ ] 5. Web API             updateConfig
+- [ ] 6. Write Config        _create_config_json
+- [ ] 7. Read Config         read_config_file
+- [ ] 8. Print config        print_config
+- [ ] 9. Config version      global.cpp
  */ 
 typedef struct _config_t {
   String settingId;
@@ -96,6 +96,8 @@ typedef struct _config_t {
   String displayFlip = ConfigValues::DISPLAY_FLIP_OFF;
   String displayBrightness = "255";
   String displayWaitForReconfigure = ConfigValues::DISPLAY_RECONFIG_ON; // v44;
+  String displayAutoOffLux = "5";       // v45: この明るさ以下がDuration秒続けば消灯
+  String displayAutoOffDuration = "30"; // v45: 消灯までの時間 second
 
   String oledType = ConfigValues::OLED_SSD1306;
 
