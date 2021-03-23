@@ -1,0 +1,1 @@
+void autodimmer_loop();
