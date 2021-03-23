@@ -8,10 +8,14 @@
 
 ## v44.0: Internal refactoring Update
 
-IMPORTANT NOTE: 
-Alerts settings are back to default on version up.
-Please write down current config or use backup API.
+### UPGRADE NOTE: 
 
+* Some config are back to default value. (all alerts)
+* If using before v42, update to v43 first. and get config backup using `http://[envboy]/config/backup` API
+
+### Changes
+
+* CHANGE: Config version 12 -> 44 (New config version scheme. same as EBX version)
 * ADD: MHZ-19B Auto Baseline Correction ON/OFF at boot time
 * ADD: Skip wait for reconfigure
 * ADD: Factory reset API
@@ -19,6 +23,7 @@ Please write down current config or use backup API.
 * FIX: Internal code clean up
 * FIX: Config backup API result contains gabage
 * FIX: mDNS: Call setInstanceName/addService before begin() (this prevent mdns listing) 
+* FIX: Config set API aftercare is not executed
 
 ## v43.0: Delta all update
 
