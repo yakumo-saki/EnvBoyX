@@ -49,8 +49,12 @@ rm -f ${MYDIR}/EnvBoyX*.tar.gz
 # git ブランチからファイル名判定
 branch=`git symbolic-ref --short HEAD`
 
+set +e
 grep -i "DEBUG_BUILD.*TRUE" ${MYDIR}/src/global.cpp
-if [ $? -eq 0 ] ; then
+IS_DEBUG=$?
+set -e
+
+if [ $IS_DEBUG -eq 0 ] ; then
   echo "** DEBUG_BUILD IS SET TO TRUE"
   RELEASE_FILE_PATH=${MYDIR}/EnvBoyX-DEBUG.tar.gz
 elif [ $branch = "main" ]; then
@@ -74,3 +78,7 @@ echo "cd `basename ${RELEASE_FILE_PATH}`"
 echo "pio run -t nobuild -t upload --disable-auto-clean"
 echo "If you want to specify board, use below."
 echo "pio run -e [esp32dev | esp12e] -t nobuild -t upload --disable-auto-clean"
+
+if [ $IS_DEBUG -eq 1 ] ; then
+  banner "RELEASE VERSION ! Nice work !"
+fi
