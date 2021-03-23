@@ -206,6 +206,7 @@ DynamicJsonDocument updateConfig() {
   json["success"] = !flags.configFailed;
   json["needReboot"] = flags.needReboot;
   json["msgs"] = msgs;
+  json["message"] = "Don't forget calling /config/commit before restart.";
 
   return json;
 }
