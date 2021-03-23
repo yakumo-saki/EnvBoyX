@@ -20,7 +20,7 @@ extern const String minorVer = "0";  // Bugfix
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
 // Setting version
-extern const String SETTING_ID = "EBXCFG.v44";
+extern const String SETTING_ID = "EBXCFG.v45";
 
 // EnvBoyX Ver.53.0
 extern const String product_long = product + " " + ver_long + (DEBUG_BUILD ? "(DEBUG BUILD)" : "");
