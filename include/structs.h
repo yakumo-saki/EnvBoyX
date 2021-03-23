@@ -96,8 +96,8 @@ typedef struct _config_t {
   String displayFlip = ConfigValues::DISPLAY_FLIP_OFF;
   String displayBrightness = "255";
   String displayWaitForReconfigure = ConfigValues::DISPLAY_RECONFIG_ON; // v44;
-  String displayAutoOffLux = "5";       // v45: この明るさ以下がDuration秒続けば消灯
-  String displayAutoOffDuration = "30"; // v45: 消灯までの時間 second
+  String displayAutoDimLux = "5";       // v45: この明るさ以下がDuration秒続けば消灯
+  String displayAutoDimWaitSecond = "30"; // v45: 消灯までの時間 second
 
   String oledType = ConfigValues::OLED_SSD1306;
 

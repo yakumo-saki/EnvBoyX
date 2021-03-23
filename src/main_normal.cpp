@@ -5,6 +5,7 @@
 
 #include "config.h"
 #include "display/display.h"
+#include "display/autodimmer.h"
 #include "global.h"
 #include "halt.h"
 #include "http_normal.h"
@@ -21,6 +22,7 @@
 #include "sensors/tsl2561.h"
 #include "sensors/freeHeap.h"
 #include "sensors/delta.h"
+#include "sensors/stastics.h"
 #include "watchdog.h"
 #include "wifi.h"
 
@@ -86,51 +88,6 @@ void call_disp_sensor_value() {
   disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
 }
 
-// 統計情報を取得
-void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
-  const String STAT = "stastics";
-
-  DynamicJsonDocument doc(500);
-  doc["time"] = millis();
-
-  int idx = 0;
-  for (auto it = tasks.begin(), e = tasks.end(); it != e; ++it) {
-    // statlog(+"name=" + String(it->info.name) +
-    //         " last=" + String(it->info.lastExecMills) +
-    //         " last exec=" + String(it->info.lastElapsedMills) +
-    //         " total=" + String(it->info.totalElapsedMills) +
-    //         " count=" + String(it->info.callCount));
-
-    // 統計
-    doc[STAT][idx]["name"] = String(it->info.name);
-    doc[STAT][idx]["lastExecMs"] = it->info.lastExecMills;
-    doc[STAT][idx]["lastElapsedMs"] = it->info.lastElapsedMills;
-    doc[STAT][idx]["totalElapsedMs"] = it->info.totalElapsedMills;
-    doc[STAT][idx]["callCount"] = it->info.callCount;
-    idx++;
-  }
-
-  String logmsg = "";
-  if (DEBUG_BUILD) logmsg += "**DEBUG BUILD** ";
-
-  logmsg += "Statstics updated.";
-#ifdef ESP32
-  doc["cputemp"] = temperatureRead();  // CPU温度
-  logmsg += " cpuTemp=" + String(temperatureRead());
-  logmsg += " freeHeap=" + String(ESP.getFreeHeap());
-#endif
-
-#ifdef ESP8266
-  logmsg += " freeHeap=" + String(ESP.getFreeHeap());
-#endif
-
-  statlog(logmsg); // これくらいは出しておかないと動いてるのかわからなくなるので出す
-
-  String json = "";
-  serializeJson(doc, json);
-  stasticsJSON = json;
-}
-
 // センサー読み込み以外のタスクをタイマーに追加する
 void add_timer_tasks() {
   timer.add(wifi_store_rssi, "WIFI", 1000);
@@ -141,7 +98,11 @@ void add_timer_tasks() {
   } else {
     timer.add(store_history, "STORE_HISTORY", 60000);    // 履歴を毎分保存
   }
-  timer.add(store_delta, "STORE_DELTA", 1000); // 履歴と今の気圧の差を保存
+  timer.add(store_delta, "STORE_DELTA", 1000); // 値の履歴
+
+  if (sensorCharacters.lux) {
+    timer.add(autodimmer_loop, "AUTO_DIMMER", 1000);
+  }
 
   // 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する
   timer.add(call_disp_sensor_value, "DISP", 1000);
