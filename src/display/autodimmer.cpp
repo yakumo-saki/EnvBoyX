@@ -32,6 +32,8 @@ void autodimmer_loop() {
         belowThreasholdSecond = 0;
         if (dimming) {
             // 減光解除
+            displog("Dimmer disable. restore brightness.");
+
             dimming = false;
             disp_set_brightness(lastBrightness);
         }
@@ -50,6 +52,8 @@ void autodimmer_loop() {
     if (belowThreasholdSecond >= waitSecond) {
         // 減光する
         dimming = true;
+
+        displog("Dimmer Enable. set Brightness = 0");
 
         lastBrightness = config.displayBrightness.toInt();  // 本当はこの時点の明るさがほしいが取得できないので仮おき
         disp_set_brightness(0);
