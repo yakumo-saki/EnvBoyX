@@ -96,7 +96,7 @@ bool read_config()
  * ＝フラグファイルはみない
  */
 bool has_valid_config_file() {
-
+  String settingId = "";
   if (!SPIFFS.exists(ConfigValues::settings)) {
     cfglog(ConfigValues::settings + " not found.");
     SPIFFS.end();
@@ -105,14 +105,14 @@ bool has_valid_config_file() {
     File f = SPIFFS.open(ConfigValues::settings, "r");
 
     cfglog(F("Reading config to checking version."));
-    read_config_file(f);
+    settingId = read_config_setting_id(f);
     f.close();
 
-    if (String(SETTING_ID).equals(config.settingId)) {
-      cfglog("SETTING_ID verified. " + config.settingId);
+    if (String(SETTING_ID).equals(settingId)) {
+      cfglog("SETTING_ID verified. " + settingId);
       return true;
     } else {
-      cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + config.settingId);
+      cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + settingId);
       return false;
     }
   }

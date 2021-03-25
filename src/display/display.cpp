@@ -5,6 +5,8 @@
 #include "structs.h"
 
 #include "wifi.h"
+#include "config.h"
+#include "ConfigClass.h"
 
 #include "display/scan_alert.h"
 #include "display/display_formatter.h"
@@ -22,7 +24,7 @@ bool use_ssd1306() {
 }
 
 bool use_st7789() {
-	return (config.st7789 == ConfigValues::ST7789_USE);
+	return (config.get(ConfigNames::ST7789) == ConfigValues::ST7789_USE);
 }
 
 /**
@@ -198,7 +200,7 @@ void setup_display() {
 	}
 
 	// initialize configured brightness
-	disp_set_brightness(config.displayBrightness.toInt());
+	disp_set_brightness(config.get(ConfigNames::DISPLAY_BRIGHTNESS).toInt());
 }
 
 /**
@@ -207,10 +209,10 @@ void setup_display() {
 void disp_redraw_sensor_value_screen() {
 	displog("Redraw start");
 
-	disp_set_brightness(config.displayBrightness.toInt());
+	disp_set_brightness(config.get(ConfigNames::DISPLAY_BRIGHTNESS).toInt());
 	String ip = get_wifi_ip_addr();
-	disp_all_initialize_complete(ip, config.mDNS);
-	disp_sensor_value(ip, config.mDNS);
+	disp_all_initialize_complete(ip, config.get(ConfigNames::MDNS));
+	disp_sensor_value(ip, config.get(ConfigNames::MDNS));
 
 	displog("Redraw complete");
 }

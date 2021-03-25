@@ -18,6 +18,8 @@ class ConfigNames {
     static const String DISPLAY_FLIP;
     static const String DISPLAY_BRIGHTNESS;
     static const String DISPLAY_RECONFIG;
+    static const String DISPLAY_AUTODIM_LUX; // v45
+    static const String DISPLAY_AUTODIM_WAIT_SEC; // v45
 
     static const String OLED_TYPE;
 

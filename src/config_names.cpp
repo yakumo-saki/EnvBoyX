@@ -11,6 +11,9 @@ const String ConfigNames::DISPLAY_FLIP = "displayFlip";
 const String ConfigNames::DISPLAY_BRIGHTNESS = "displayBrightness";
 const String ConfigNames::DISPLAY_RECONFIG = "displayWaitForReconfigure";
 
+const String ConfigNames::DISPLAY_AUTODIM_LUX = "5"; // v45
+const String ConfigNames::DISPLAY_AUTODIM_WAIT_SEC = "10"; // v45
+
 const String ConfigNames::OLED_TYPE = "oledType";
 const String ConfigNames::ST7789 = "st7789";
 const String ConfigNames::ST7789_MODE = "st7789Mode";
