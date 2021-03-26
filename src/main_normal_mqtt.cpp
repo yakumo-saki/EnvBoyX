@@ -6,6 +6,7 @@
 #include "log.h"
 #include "global.h"
 #include "config.h"
+#include "ConfigClass.h"
 #include "wifi.h"
 #include "main_normal.h"
 
@@ -21,7 +22,7 @@ extern TimerCall timer;
 void begin_mqtt_connection() {
   
   Serial.println("MQTT Begin");
-  mqttClient.begin(config.mqttBroker.c_str(), net);
+  mqttClient.begin(config.get(ConfigNames::MQTT_BROKER).c_str(), net);
   delay(10);
 
   Serial.println("MQTT Started successfully.");
@@ -29,11 +30,11 @@ void begin_mqtt_connection() {
 
 void mqtt_publish(String topic, String value) {
 
-  if (config.opMode != ConfigValues::OPMODE_MQTT) {
+  if (config.get(ConfigNames::OPMODE) != ConfigValues::OPMODE_MQTT) {
     return;
   }
   
-  String t = "/" + config.mqttName + "/" + topic;
+  String t = "/" + config.get(ConfigNames::MQTT_NAME) + "/" + topic;
   Serial.println("MQTT Publish topic=>" + t + " value=>" + value);
   mqttClient.publish(t, value);
 }
@@ -57,7 +58,7 @@ void send_and_sleep() {
   delay(10);  // <- fixes some issues with WiFi stability
   
   mainlog(F("MQTT Connect begin"));
-  while (!mqttClient.connect(config.mDNS.c_str(), "", "")) { // username and password not support
+  while (!mqttClient.connect(config.get(ConfigNames::MDNS).c_str(), "", "")) { // username and password not support
     Serial.print(".");
     delay(1000);
   }

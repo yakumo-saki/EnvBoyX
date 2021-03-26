@@ -33,11 +33,18 @@ const String ConfigNames::LUX_ALERT = "luxAlerts";
 const String ConfigNames::PRES_ALERT = "presAlerts";
 const String ConfigNames::CO2_ALERT = "co2Alerts";
 
-const String ConfigNames::ALERT_WARN1_LO = "warn1.L";
-const String ConfigNames::ALERT_WARN1_HI = "warn1.H";
-const String ConfigNames::ALERT_WARN2_LO = "warn2.L";
-const String ConfigNames::ALERT_WARN2_HI = "warn2.H";
-const String ConfigNames::ALERT_CAUTION1_LO = "caut1.L";
-const String ConfigNames::ALERT_CAUTION1_HI = "caut1.H";
-const String ConfigNames::ALERT_CAUTION2_LO = "caut2.L";
-const String ConfigNames::ALERT_CAUTION2_HI = "caut2.H";
+const String ConfigNames::ALERT_WARN1 = "warn1";
+const String ConfigNames::ALERT_WARN2 = "warn2";
+const String ConfigNames::ALERT_CAUTION1 = "caut1";
+const String ConfigNames::ALERT_CAUTION2 = "caut2";
+const String ConfigNames::ALERT_LO = "L";
+const String ConfigNames::ALERT_HI = "H";
+
+const String ConfigNames::ALERT_WARN1_LO = ConfigNames::ALERT_WARN1 + "." + ConfigNames::ALERT_LO;
+const String ConfigNames::ALERT_WARN1_HI = ConfigNames::ALERT_WARN1 + "." + ConfigNames::ALERT_HI;
+const String ConfigNames::ALERT_WARN2_LO = ConfigNames::ALERT_WARN2 + "." + ConfigNames::ALERT_LO;
+const String ConfigNames::ALERT_WARN2_HI = ConfigNames::ALERT_WARN2 + "." + ConfigNames::ALERT_HI;
+const String ConfigNames::ALERT_CAUTION1_LO = ConfigNames::ALERT_CAUTION1 + "." + ConfigNames::ALERT_LO;
+const String ConfigNames::ALERT_CAUTION1_HI = ConfigNames::ALERT_CAUTION1 + "." + ConfigNames::ALERT_HI;
+const String ConfigNames::ALERT_CAUTION2_LO = ConfigNames::ALERT_CAUTION2 + "." + ConfigNames::ALERT_LO;
+const String ConfigNames::ALERT_CAUTION2_HI = ConfigNames::ALERT_CAUTION2 + "." + ConfigNames::ALERT_HI;

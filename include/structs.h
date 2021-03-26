@@ -48,17 +48,17 @@ typedef struct {
   value_alert_t co2;
 } value_alerts_t;
 
-typedef struct {
-  String low;
-  String high;
-} config_alert_range_t;
+// typedef struct {
+//   String low;
+//   String high;
+// } config_alert_range_t;
 
-typedef struct { 
-  config_alert_range_t caution1;
-  config_alert_range_t caution2;
-  config_alert_range_t warning1;
-  config_alert_range_t warning2;
-} config_alert_t;
+// typedef struct { 
+//   config_alert_range_t caution1;
+//   config_alert_range_t caution2;
+//   config_alert_range_t warning1;
+//   config_alert_range_t warning2;
+// } config_alert_t;
 
 /**
  * センサーごとにどの項目を測定できるかのフラグ

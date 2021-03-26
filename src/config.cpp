@@ -86,24 +86,24 @@ void trim_config() {
   // trim_alerts(config.co2Alerts);
 }
 
-DynamicJsonDocument alerts_to_json(const config_alert_t& alerts, String logname) {
-  DynamicJsonDocument json(300);
-  json[ConfigNames::ALERT_WARN1_LO] = alerts.warning1.low;
-  json[ConfigNames::ALERT_WARN1_HI] = alerts.warning1.high;
-  json[ConfigNames::ALERT_WARN2_LO] = alerts.warning2.low;
-  json[ConfigNames::ALERT_WARN2_HI] = alerts.warning2.high;
-  json[ConfigNames::ALERT_CAUTION1_LO] = alerts.caution1.low;
-  json[ConfigNames::ALERT_CAUTION1_HI] = alerts.caution1.high;
-  json[ConfigNames::ALERT_CAUTION2_LO] = alerts.caution2.low;
-  json[ConfigNames::ALERT_CAUTION2_HI] = alerts.caution2.high;
-  json.shrinkToFit();
+// DynamicJsonDocument alerts_to_json(const config_alert_t& alerts, String logname) {
+//   DynamicJsonDocument json(300);
+//   json[ConfigNames::ALERT_WARN1_LO] = alerts.warning1.low;
+//   json[ConfigNames::ALERT_WARN1_HI] = alerts.warning1.high;
+//   json[ConfigNames::ALERT_WARN2_LO] = alerts.warning2.low;
+//   json[ConfigNames::ALERT_WARN2_HI] = alerts.warning2.high;
+//   json[ConfigNames::ALERT_CAUTION1_LO] = alerts.caution1.low;
+//   json[ConfigNames::ALERT_CAUTION1_HI] = alerts.caution1.high;
+//   json[ConfigNames::ALERT_CAUTION2_LO] = alerts.caution2.low;
+//   json[ConfigNames::ALERT_CAUTION2_HI] = alerts.caution2.high;
+//   json.shrinkToFit();
 
-  size_t size = measureJson(json);
+//   size_t size = measureJson(json);
 
-  cfglog("Json alerts " + logname + " section is " + String(size) + " bytes");
+//   cfglog("Json alerts " + logname + " section is " + String(size) + " bytes");
 
-  return json;
-}
+//   return json;
+// }
 
 DynamicJsonDocument _create_config_json(bool save, const std::vector<String> &keyArray) {
 

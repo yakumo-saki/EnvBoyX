@@ -5,6 +5,7 @@
 #include "log.h"
 #include "global.h"
 #include "config.h"
+#include "ConfigClass.h"
 #include "utils.h"
 
 #include "mdns_client.h"
@@ -38,7 +39,7 @@ struct UpdateConfigParamResult_t {
 /**
  * 指定された項目の値を server から取り出し、追加で必要な反映処理を判定して返す
  */
-UpdateConfigParamResult_t _updateConfigParam(String key, String& config) {
+UpdateConfigParamResult_t _updateConfigParam(String key) {
 
   // これを一番上に持っていくと、ConfigNamesの値がセットされる前に処理されてしまい、空文字列になってしまう。
 
@@ -68,7 +69,7 @@ UpdateConfigParamResult_t _updateConfigParam(String key, String& config) {
   }
 
   String value = server.arg(key);
-  config = value; 
+  config.set(key, value);
   ret.value = value;
 
   // ここから先はOK
@@ -87,12 +88,9 @@ UpdateConfigParamResult_t _updateConfigParam(String key, String& config) {
 
 // Config set API の処理
 // updateConfigParam　の　API用ラッパー
-void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &flags, std::vector<String>& validKeys, String key, String& config) {
+void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &flags, std::vector<String>& validKeys, String key) {
   
-  UpdateConfigParamResult_t ret = _updateConfigParam(key, config);
-
-  // int retnum = static_cast<int>(ret.result);
-  // debuglog("RET RESULT = " + String(retnum));
+  UpdateConfigParamResult_t ret = _updateConfigParam(key);
 
   if (ret.result == UpdateConfigParamResult::NOT_SPECIFIED) {
     return;
@@ -122,18 +120,6 @@ void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &fla
   } 
 }
 
-void updateConfigAlerts(DynamicJsonDocument& msgs, ConfigHookFlags& flags, std::vector<String>& validKeys, String prefix, config_alert_t& alerts) {
-  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_WARN1_LO, alerts.warning1.low);
-  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_WARN1_HI, alerts.warning1.high);
-  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_WARN2_LO, alerts.warning2.low);
-  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_WARN2_HI, alerts.warning2.high);
-
-  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_CAUTION1_LO, alerts.caution1.low);
-  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_CAUTION1_HI, alerts.caution1.high);
-  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_CAUTION2_LO, alerts.caution2.low);
-  updateConfigParamForApi(msgs, flags, validKeys, prefix + "." + ConfigNames::ALERT_CAUTION2_HI, alerts.caution2.high);
-}
-
 void _reflectConfig(ConfigHookFlags& flags, bool all = false) {
 
   if (all || flags.needDisplayRedraw) {
@@ -143,7 +129,7 @@ void _reflectConfig(ConfigHookFlags& flags, bool all = false) {
 
   if (all || flags.needMDnsRestart) {
     apilog("Exec mDNS restart.");
-    mdns_hostname_change(config.mDNS);
+    mdns_hostname_change(config.get(ConfigNames::MDNS));
   }
 }
 
@@ -156,43 +142,17 @@ void reflectConfigAll() {
 // Config SET API のエントリポイント
 DynamicJsonDocument updateConfig() {
 
-  DynamicJsonDocument msgs(4096);
+  DynamicJsonDocument msgs(10240);
 
   ConfigHookFlags flags;
 
   std::vector<String> validKeys;
 
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::SSID, config.ssid);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::PASSWORD, config.password);
-  
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MDNS, config.mDNS);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::OPMODE, config.opMode);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::OLED_TYPE, config.oledType);
-  
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_FLIP, config.displayFlip);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_BRIGHTNESS, config.displayBrightness);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::DISPLAY_RECONFIG, config.displayWaitForReconfigure);
+  for (auto &key : config.getKeys()) {
+    updateConfigParamForApi(msgs, flags, validKeys, key);
+  } 
 
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::ST7789, config.st7789);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::ST7789_MODE, config.st7789Mode);
-  
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B, config.mhz19b);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_PWM, config.mhz19bPwmPin);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_RX, config.mhz19bRxPin);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_TX, config.mhz19bTxPin);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MHZ19B_ABC, config.mhz19bABC);
-  
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MQTT_BROKER, config.mqttBroker);
-  updateConfigParamForApi(msgs, flags, validKeys, ConfigNames::MQTT_NAME, config.mqttName);
-
-  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::TEMP_ALERT, config.temperatureAlerts);
-  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::HUMI_ALERT, config.humidityAlerts);
-  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::LUX_ALERT, config.luxAlerts);
-  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::PRES_ALERT, config.pressureAlerts);
-  updateConfigAlerts(msgs, flags, validKeys, ConfigNames::CO2_ALERT, config.co2Alerts);
-
-  for (int i = 0; i < server.args(); i++)
-  {
+  for (int i = 0; i < server.args(); i++) {
     String key = server.argName(i);
 
     if (vectorStringContains(validKeys, key) == false) {

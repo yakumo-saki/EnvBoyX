@@ -41,6 +41,13 @@ class ConfigNames {
     static const String PRES_ALERT;
     static const String CO2_ALERT;
 
+    static const String ALERT_WARN1;
+    static const String ALERT_WARN2;
+    static const String ALERT_CAUTION1;
+    static const String ALERT_CAUTION2;
+    static const String ALERT_LO;
+    static const String ALERT_HI;
+
     static const String ALERT_WARN1_LO;
     static const String ALERT_WARN1_HI;
     static const String ALERT_WARN2_LO;
