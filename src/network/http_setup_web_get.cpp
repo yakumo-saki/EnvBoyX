@@ -18,7 +18,7 @@ typedef struct  {
   String value;
 } LabelValue;
 
-String _create_input_nobr(String name, String value, String placeholder = "", String type = "text", String cssClass = "") {
+String _create_input_impl(String name, String value, String placeholder = "", String type = "text", String cssClass = "") {
   String html = "<input ";
   html += "type='" + type + "'";
   html += " name='" + name + "'";
@@ -28,8 +28,16 @@ String _create_input_nobr(String name, String value, String placeholder = "", St
   return html;
 }
 
-String _create_input(String name, String value, String placeholder = "", String type = "text", String cssClass = "") {
-  String html = _create_input_nobr(name, value, placeholder, type, cssClass);
+String _create_input_nobr(String key, String placeholder = "", String type = "text", String cssClass = "") {
+  String value = config.get(key);
+  String html = _create_input_impl(key, value, placeholder, type, cssClass);
+
+  return html;
+}
+
+String _create_input(String key, String placeholder = "", String type = "text", String cssClass = "") {
+  String value = config.get(key);
+  String html = _create_input_impl(key, value, placeholder, type, cssClass);
   html += "<br>\n";
 
   return html;
@@ -87,8 +95,10 @@ String generate_http_setup_alerts_html(String name, String prefix, const config_
  * @param name input tag name attribute
  * @param value current value
  */
-String _create_radiobuttons(String name, String value, std::vector<LabelValue> choises) {
+String _create_radiobuttons(String name, std::vector<LabelValue> choises) {
   String html = "";
+
+  String value = config.get(name);
 
   for (int i = 0; i < choises.size(); i++)
   {
@@ -134,12 +144,12 @@ String http_setup_get_root_content() {
   html += "<fieldset><legend class='m_legend_network'>ネットワーク設定</legend>";
   html += "  <strong class='m_wifi_info'>WiFi接続情報</strong><br>";
   html += "  <span class='m_wifi_msg2'>※ 2.4GHz帯のみ対応しています。</span><br>";
-  html += _create_input(ConfigNames::SSID, config.ssid, "WiFi SSID");
-  html += _create_input(ConfigNames::PASSWORD, config.password, "WiFi Password");
+  html += _create_input(ConfigNames::SSID, "WiFi SSID");
+  html += _create_input(ConfigNames::PASSWORD, "WiFi Password");
   html += "  <br>";
   html += "  <strong>mDNS名(a.k.a Rendezvous, avahi-daemon)</strong><br>";
   html += "  ※ mDNS名.local で他端末から本機にアクセスすることができます。<br>";
-  html += _create_input(ConfigNames::MDNS, config.mDNS);
+  html += _create_input(ConfigNames::MDNS);
   html += "</fieldset>";
  
 
@@ -150,7 +160,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"常時起動モード（測定値常時表示, HTTPサーバーあり）", ConfigValues::OPMODE_DISPLAY});
     choises.push_back(LabelValue{"MQTTモード（間欠動作・MQTT送信後ディープスリープ）", ConfigValues::OPMODE_MQTT});
-    html += _create_radiobuttons(ConfigNames::OPMODE, config.opMode, choises);
+    html += _create_radiobuttons(ConfigNames::OPMODE, choises);
   }
   html += "</fieldset>";
 
@@ -160,11 +170,11 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"反転しない", ConfigValues::DISPLAY_FLIP_OFF});
     choises.push_back(LabelValue{"反転する", ConfigValues::DISPLAY_FLIP_ON});
-    html += _create_radiobuttons(ConfigNames::DISPLAY_FLIP, config.displayFlip, choises);
+    html += _create_radiobuttons(ConfigNames::DISPLAY_FLIP, choises);
   }
 
   html += "  <strong>明るさ(0-255)</strong><br>";
-  html += _create_input(ConfigNames::DISPLAY_BRIGHTNESS, config.displayBrightness, "", "number");
+  html += _create_input(ConfigNames::DISPLAY_BRIGHTNESS, "brightness 0-255", "number");
 
   html += "  <strong>Wait for reconfigure画面</strong><br>";
   html += "  ※ 表示しない場合、セットアップモードに入るためにはWeb APIを使用する必要があります。<br>";
@@ -172,7 +182,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"表示する（推奨）", ConfigValues::DISPLAY_RECONFIG_ON});
     choises.push_back(LabelValue{"表示しない", ConfigValues::DISPLAY_RECONFIG_SKIP});
-    html += _create_radiobuttons(ConfigNames::DISPLAY_RECONFIG, config.displayWaitForReconfigure, choises);
+    html += _create_radiobuttons(ConfigNames::DISPLAY_RECONFIG, choises);
   }
 
   html += "</fieldset>";
@@ -183,7 +193,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"SSD1306", ConfigValues::OLED_SSD1306});
     choises.push_back(LabelValue{"SH1106", ConfigValues::OLED_SH1106});
-    html += _create_radiobuttons(ConfigNames::OLED_TYPE, config.oledType, choises);
+    html += _create_radiobuttons(ConfigNames::OLED_TYPE, choises);
   }
 
   html += "</fieldset>";
@@ -197,7 +207,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"使用しない", ConfigValues::ST7789_NOUSE});
     choises.push_back(LabelValue{"使用する", ConfigValues::ST7789_USE});
-    html += _create_radiobuttons(ConfigNames::ST7789, config.st7789, choises);
+    html += _create_radiobuttons(ConfigNames::ST7789, choises);
   }
 
   html += "  <strong>ST7789 表示モード</strong><br>";
@@ -205,7 +215,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"横表示モード", ConfigValues::ST7789_MODE_NORMAL});
     choises.push_back(LabelValue{"縦表示モード（デカ文字）", ConfigValues::ST7789_MODE_BIG});
-    html += _create_radiobuttons(ConfigNames::ST7789_MODE, config.st7789Mode, choises);
+    html += _create_radiobuttons(ConfigNames::ST7789_MODE, choises);
   }
   html += "</fieldset>";
 
@@ -217,7 +227,7 @@ String http_setup_get_root_content() {
     choises.push_back(LabelValue{"使用する（UARTモード）", ConfigValues::MHZ_USE_UART});
     // choises.push_back(LabelValue{"使用する（PWMモード）", ConfigValues::MHZ_USE_PWM});
 
-    html += _create_radiobuttons(ConfigNames::MHZ19B, config.mhz19b, choises);
+    html += _create_radiobuttons(ConfigNames::MHZ19B, choises);
   }
   
   //html += "  <br>";
@@ -230,9 +240,9 @@ String http_setup_get_root_content() {
   html += "  ※ ESP8266では RX 14 TX 0 で固定<br>";
   html += "  ※ ボードによって使用可能なピンが異なるので動作しない場合は他のピンを試してください。<br>";
   html += "  RXピン ";
-  html += _create_input(ConfigNames::MHZ19B_RX, config.mhz19bRxPin, "16", "number");
+  html += _create_input(ConfigNames::MHZ19B_RX, "16", "number");
   html += "  TXピン ";
-  html += _create_input(ConfigNames::MHZ19B_TX, config.mhz19bTxPin, "17", "number"); 
+  html += _create_input(ConfigNames::MHZ19B_TX, "17", "number"); 
   html += "  <br>";
 
   html += "  <strong>起動時のAuto Baseline Correction</strong><br>";
@@ -241,7 +251,7 @@ String http_setup_get_root_content() {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"無効（標準）", ConfigValues::MHZ_ABC_OFF});
     choises.push_back(LabelValue{"有効", ConfigValues::MHZ_ABC_ON});
-    html += _create_radiobuttons(ConfigNames::MHZ19B_ABC, config.mhz19bABC, choises);
+    html += _create_radiobuttons(ConfigNames::MHZ19B_ABC, choises);
   }
 
   html += "</fieldset>";
@@ -249,11 +259,11 @@ String http_setup_get_root_content() {
   html += "<fieldset><legend>MQTTモード専用設定</legend>";
   html += "  <strong>MQTTブローカーのIPアドレス</strong><br>";
   html += "  ※ ホスト名も可能ですが、mDNS(bonjour, avahi)は使用出来ません。<br>";
-  html += _create_input(ConfigNames::MQTT_BROKER, config.mqttBroker, "MQTT Broker"); 
+  html += _create_input(ConfigNames::MQTT_BROKER, "MQTT Broker"); 
   html += "  <br>";
   html += "  <strong>MQTT名</strong><br>";
   html += "  ※ クライアント名とトピック名として使用<br>";
-  html += _create_input(ConfigNames::MQTT_NAME, config.mqttName, "MQTT Client Name"); 
+  html += _create_input(ConfigNames::MQTT_NAME, "MQTT Client Name"); 
   html += "</fieldset>";
 
   html += "<fieldset><legend>アラート設定</legend>";

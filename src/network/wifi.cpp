@@ -10,6 +10,9 @@
 #include "log.h"
 #include "global.h"
 #include "watchdog.h"
+
+#include "ConfigClass.h"
+
 #include "display/display.h"
 
 std::vector<long> rssiArray;
@@ -57,8 +60,8 @@ void make_sure_wifi_connected() {
   watchdog_feed();
 
   int retryCount = 0;
-  wifilog("ssid " + config.ssid + " pass " + config.password);
-  WiFi.begin(config.ssid.c_str(), config.password.c_str());
+  wifilog("ssid " + config.get(ConfigNames::SSID) + " pass " + config.get(ConfigNames::PASSWORD));
+  WiFi.begin(config.get(ConfigNames::SSID).c_str(), config.get(ConfigNames::PASSWORD).c_str());
   
   delay(300);
   watchdog_feed();
@@ -79,7 +82,7 @@ void make_sure_wifi_connected() {
       wifilog(F("WiFi disconnect."));
       WiFi.disconnect();   
       delay(300);
-      WiFi.begin(config.ssid.c_str(), config.password.c_str());
+      WiFi.begin(config.get(ConfigNames::SSID).c_str(), config.get(ConfigNames::PASSWORD).c_str());
       wifilog(F("RETRY connecting WiFi from start"));
     }
 
@@ -106,18 +109,15 @@ void start_wifi_access_point() {
   WiFi.macAddress(mac);
 
   // SSID は macaddress をSUFFIXする。前半はespressifのIDなので後半3つだけ
-  config.ssid = "_SETUP_" + product_short;
+  String ssid = "_SETUP_" + product_short;
   for (int i = 3; i < 6; i++) {
-    config.ssid += String(mac[i], HEX);
+    ssid += String(mac[i], HEX);
   }
   
-  wifilog("SSID: " + config.ssid);
-  // Serial.println("PASS: " + pass);
+  wifilog("SSID: " + ssid);
 
-  /* You can remove the password parameter if you want the AP to be open. */
-  // WiFi.softAP(ssid.c_str(), pass.c_str());
-  WiFi.softAP(config.ssid.c_str());
-  wifilog("WiFi AP Started. SSID=" + config.ssid);
+  WiFi.softAP(ssid.c_str());
+  wifilog("WiFi AP Started. SSID=" + ssid);
 }
 
 /**
