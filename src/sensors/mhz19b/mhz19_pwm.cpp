@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#include "ConfigClass.h"
+
 #include "log.h"
 #include "global.h"
 #include "sensors/mhz19_main.h"
@@ -129,12 +131,12 @@ int mhz_read_data_pwm() {
 
 void mhz_setup_pwm() {
   
-  if (config.mhz19b == ConfigValues::MHZ_NOUSE) {
+  if (config.get(ConfigNames::MHZ19B) == ConfigValues::MHZ_NOUSE) {
     mhzlog(F("disabled."));
     return;
   }
 
-  CO2_IN = config.mhz19bPwmPin.toInt();
+  CO2_IN = config.get(ConfigNames::MHZ19B_PWM).toInt();
   pinMode(CO2_IN, INPUT);
   mhzlog("Enabled (PWM mode). GPIO pin = " + String(CO2_IN) );
 }

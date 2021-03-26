@@ -43,11 +43,11 @@ String _create_input(String key, String placeholder = "", String type = "text", 
   return html;
 }
 
-String _generate_alert(String nameLow, String nameHigh, String valueLow, String valueHigh) {
+String _generate_alert(String nameLow, String nameHigh) {
   String html = "";
-  html += _create_input_nobr(nameLow, valueLow, "", "number", "num");
+  html += _create_input_nobr(nameLow, "", "number", "num");
   html += " 以上";
-  html += _create_input_nobr(nameHigh, valueHigh, "", "number", "num");
+  html += _create_input_nobr(nameHigh, "", "number", "num");
   html += "未満<br>";
   return html;
 }
@@ -56,35 +56,35 @@ String _create_alert_name(String prefix, String name) {
   return prefix + "." + name;
 }
 
-String generate_http_setup_alerts_html(String name, String prefix, const config_alert_t& alerts) {
+String generate_http_setup_alerts_html(String name, String prefix) {
   String html;
   html += "<fieldset><legend>" + name + "</legend>";
   {
   html += "<span class='m_caution1'>注意１</span>:&nbsp;";
   String lo = _create_alert_name(prefix, ConfigNames::ALERT_CAUTION1_LO);
   String hi = _create_alert_name(prefix, ConfigNames::ALERT_CAUTION1_HI);
-  html += _generate_alert(lo, hi, alerts.caution1.low, alerts.caution1.high);
+  html += _generate_alert(lo, hi);
   }
 
   {
   html += "<span class='m_caution1'>注意２</span>:&nbsp;";
   String lo = _create_alert_name(prefix, ConfigNames::ALERT_CAUTION2_LO);
   String hi = _create_alert_name(prefix, ConfigNames::ALERT_CAUTION2_HI);
-  html += _generate_alert(lo, hi, alerts.caution2.low, alerts.caution2.high);
+  html += _generate_alert(lo, hi);
   }
 
   {
   html += "<span class='m_caution1'>警報１</span>:&nbsp;";
   String lo = _create_alert_name(prefix, ConfigNames::ALERT_WARN1_LO);
   String hi = _create_alert_name(prefix, ConfigNames::ALERT_WARN1_HI);
-  html += _generate_alert(lo, hi, alerts.warning1.low, alerts.warning1.high);
+  html += _generate_alert(lo, hi);
   }
 
   {
   html += "<span class='m_caution1'>警報２</span>:&nbsp;";
   String lo = _create_alert_name(prefix, ConfigNames::ALERT_WARN2_LO);
   String hi = _create_alert_name(prefix, ConfigNames::ALERT_WARN2_HI);
-  html += _generate_alert(lo, hi, alerts.warning2.low, alerts.warning2.high);
+  html += _generate_alert(lo, hi);
   }
 
   html += "</fieldset>";
@@ -267,11 +267,11 @@ String http_setup_get_root_content() {
   html += "</fieldset>";
 
   html += "<fieldset><legend>アラート設定</legend>";
-  html += generate_http_setup_alerts_html("気温", ConfigNames::TEMP_ALERT, config.temperatureAlerts);
-  html += generate_http_setup_alerts_html("湿度", ConfigNames::HUMI_ALERT, config.humidityAlerts);
-  html += generate_http_setup_alerts_html("照度", ConfigNames::LUX_ALERT, config.luxAlerts);
-  html += generate_http_setup_alerts_html("気圧", ConfigNames::PRES_ALERT, config.pressureAlerts);
-  html += generate_http_setup_alerts_html("CO2濃度", ConfigNames::CO2_ALERT, config.co2Alerts);
+  html += generate_http_setup_alerts_html("気温", ConfigNames::TEMP_ALERT);
+  html += generate_http_setup_alerts_html("湿度", ConfigNames::HUMI_ALERT);
+  html += generate_http_setup_alerts_html("照度", ConfigNames::LUX_ALERT);
+  html += generate_http_setup_alerts_html("気圧", ConfigNames::PRES_ALERT);
+  html += generate_http_setup_alerts_html("CO2濃度", ConfigNames::CO2_ALERT);
 
   html += "</fieldset>";
 

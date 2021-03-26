@@ -8,9 +8,11 @@
 #include <ESP8266mDNS.h>
 #endif
 
+#include "log.h"
+
 #include "global.h"
 #include "config.h"
-#include "log.h"
+#include "ConfigClass.h"
 
 bool start_mdns(String name) {
 
@@ -35,7 +37,7 @@ void mdns_hostname_change(String hostname) {
 
 void mdns_setup() {
   sectionlog(F("Starting mDNS server."));  
-  start_mdns(config.mDNS);
+  start_mdns(config.get(ConfigNames::MDNS));
 }
 
 void mdns_loop() {

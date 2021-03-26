@@ -7,8 +7,8 @@
 #include "global.h"
 #include "structs.h"
 
-#include "config.h"
 #include "ConfigClass.h"
+#include "config_names.h"
 
 const unsigned int CONF_JSON_SIZE = 2000;
 
