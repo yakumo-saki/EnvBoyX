@@ -11,7 +11,7 @@ extern HTTPWEBSERVER server;
 
 
 void _set_mhz_abc() {
-  if (config.get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) {
+  if (config->get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) {
     server.send(500, MimeType::TEXT, F("MHZ19B IS DISABLED\n"));
     return;
   }
@@ -37,7 +37,7 @@ void _set_mhz_abc() {
 }
 
 void _get_mhz_abc() {
-  if (config.get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) {
+  if (config->get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) {
     server.send(500, MimeType::TEXT, F("MHZ19B IS DISABLED\n"));
     return;
   }
@@ -55,7 +55,7 @@ void _get_mhz_abc() {
 }
 
 void _mhz_zero_calibration() {
-  if (config.get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) {
+  if (config->get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) {
     server.send(500, MimeType::TEXT, F("MHZ19B IS DISABLED\n"));
     return;
   }

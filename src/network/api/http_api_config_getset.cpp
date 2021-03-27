@@ -69,7 +69,7 @@ UpdateConfigParamResult_t _updateConfigParam(String key) {
   }
 
   String value = server.arg(key);
-  config.set(key, value);
+  config->set(key, value);
   ret.value = value;
 
   // ここから先はOK
@@ -129,7 +129,7 @@ void _reflectConfig(ConfigHookFlags& flags, bool all = false) {
 
   if (all || flags.needMDnsRestart) {
     apilog("Exec mDNS restart.");
-    mdns_hostname_change(config.get(ConfigNames::MDNS));
+    mdns_hostname_change(config->get(ConfigNames::MDNS));
   }
 }
 
@@ -148,7 +148,7 @@ DynamicJsonDocument updateConfig() {
 
   std::vector<String> validKeys;
 
-  for (auto &key : config.getKeys()) {
+  for (auto &key : config->getKeys()) {
     updateConfigParamForApi(msgs, flags, validKeys, key);
   } 
 

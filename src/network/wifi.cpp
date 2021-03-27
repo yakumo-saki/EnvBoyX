@@ -60,8 +60,8 @@ void make_sure_wifi_connected() {
   watchdog_feed();
 
   int retryCount = 0;
-  wifilog("ssid " + config.get(ConfigNames::SSID) + " pass " + config.get(ConfigNames::PASSWORD));
-  WiFi.begin(config.get(ConfigNames::SSID).c_str(), config.get(ConfigNames::PASSWORD).c_str());
+  wifilog("ssid " + config->get(ConfigNames::SSID) + " pass " + config->get(ConfigNames::PASSWORD));
+  WiFi.begin(config->get(ConfigNames::SSID).c_str(), config->get(ConfigNames::PASSWORD).c_str());
   
   delay(300);
   watchdog_feed();
@@ -82,7 +82,7 @@ void make_sure_wifi_connected() {
       wifilog(F("WiFi disconnect."));
       WiFi.disconnect();   
       delay(300);
-      WiFi.begin(config.get(ConfigNames::SSID).c_str(), config.get(ConfigNames::PASSWORD).c_str());
+      WiFi.begin(config->get(ConfigNames::SSID).c_str(), config->get(ConfigNames::PASSWORD).c_str());
       wifilog(F("RETRY connecting WiFi from start"));
     }
 

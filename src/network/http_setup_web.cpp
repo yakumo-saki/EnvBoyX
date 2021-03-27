@@ -36,8 +36,8 @@ void handle_post_root() {
   String a = server.arg("aaaa");
   debuglog("aaaa = " + a);
 
-  for (auto &key : config.getKeys()) {
-    config.set(key, server.arg(key));
+  for (auto &key : config->getKeys()) {
+    config->set(key, server.arg(key));
   } 
 
   String html = http_setup_post_root_content();

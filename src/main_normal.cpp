@@ -86,7 +86,7 @@ void init_sensors() {
 }
 
 void call_disp_sensor_value() {
-  disp_sensor_value(get_wifi_ip_addr(), config.get(ConfigNames::MDNS));
+  disp_sensor_value(get_wifi_ip_addr(), config->get(ConfigNames::MDNS));
 }
 
 // センサー読み込み以外のタスクをタイマーに追加する
@@ -129,7 +129,7 @@ void setup_normal() {
     halt("config err", "setup again", "Reset now");
   }
 
-  if (config.get(ConfigNames::OPMODE) == ConfigValues::OPMODE_MQTT) {
+  if (config->get(ConfigNames::OPMODE) == ConfigValues::OPMODE_MQTT) {
     setup_normal_mqtt();
     return;  // MQTTモードの場合はもう戻ってこない（ディープスリープする）
   }
@@ -138,7 +138,7 @@ void setup_normal() {
   setup_watchdog();
 
   // setupモードに入りやすくするための処理
-  if (config.get(ConfigNames::DISPLAY_RECONFIG) == ConfigValues::DISPLAY_RECONFIG_ON) {
+  if (config->get(ConfigNames::DISPLAY_RECONFIG) == ConfigValues::DISPLAY_RECONFIG_ON) {
     sectionlog(F("Reset to reconfig start."));
     remove_configure_flag_file();
 
@@ -156,7 +156,7 @@ void setup_normal() {
   sectionlog(F("Connecting WiFi."));
   disp_wifi_starting(1);
   make_sure_wifi_connected();
-  disp_wifi_info(get_wifi_ip_addr(), config.get(ConfigNames::MDNS));
+  disp_wifi_info(get_wifi_ip_addr(), config->get(ConfigNames::MDNS));
 
   mdns_setup();
 
@@ -171,7 +171,7 @@ void setup_normal() {
   timer.forceRunStasticsOnce();
 
   // 初期化終了時に画面表示をどうにかできるフック
-  disp_all_initialize_complete(get_wifi_ip_addr(), config.get(ConfigNames::MDNS));
+  disp_all_initialize_complete(get_wifi_ip_addr(), config->get(ConfigNames::MDNS));
 
 }
 

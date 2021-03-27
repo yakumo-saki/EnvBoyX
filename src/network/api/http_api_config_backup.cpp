@@ -22,12 +22,12 @@ String http_api_backup_config() {
   String ret = "curl -X POST ";
   ret += "-d \"";
   
-  for (auto &key : config.getKeys()) {
-    ret += "&" + key + "=" + config.get(key);
+  for (auto &key : config->getKeys()) {
+    ret += "&" + key + "=" + config->get(key);
   } 
 
   ret += "\"";
-  ret += " http://" + config.get(ConfigNames::MDNS) + ".local/config";
+  ret += " http://" + config->get(ConfigNames::MDNS) + ".local/config";
 
   return ret;
 }

@@ -13,36 +13,36 @@
 const unsigned int CONF_JSON_SIZE = 2000;
 
 void alerts_to_log_string(const String &alertType) {
-  cfglog("    WARNING1 '" + config.get(alertType, ConfigNames::ALERT_WARN1_LO) 
-         + "' ~ '" + config.get(alertType, ConfigNames::ALERT_WARN1_HI) + "'");
-  cfglog("    CAUTION1 '" + config.get(alertType, ConfigNames::ALERT_CAUTION1_LO) 
-         + "' ~ '" + config.get(alertType, ConfigNames::ALERT_CAUTION1_HI) + "'");
-  cfglog("    CAUTION2 '" + config.get(alertType, ConfigNames::ALERT_CAUTION2_LO) 
-         + "' ~ '" + config.get(alertType, ConfigNames::ALERT_CAUTION2_HI) + "'");
-  cfglog("    WARNING2 '" + config.get(alertType, ConfigNames::ALERT_WARN2_LO) 
-         + "' ~ '" + config.get(alertType, ConfigNames::ALERT_WARN2_HI) + "'");
+  cfglog("    WARNING1 '" + config->get(alertType, ConfigNames::ALERT_WARN1_LO) 
+         + "' ~ '" + config->get(alertType, ConfigNames::ALERT_WARN1_HI) + "'");
+  cfglog("    CAUTION1 '" + config->get(alertType, ConfigNames::ALERT_CAUTION1_LO) 
+         + "' ~ '" + config->get(alertType, ConfigNames::ALERT_CAUTION1_HI) + "'");
+  cfglog("    CAUTION2 '" + config->get(alertType, ConfigNames::ALERT_CAUTION2_LO) 
+         + "' ~ '" + config->get(alertType, ConfigNames::ALERT_CAUTION2_HI) + "'");
+  cfglog("    WARNING2 '" + config->get(alertType, ConfigNames::ALERT_WARN2_LO) 
+         + "' ~ '" + config->get(alertType, ConfigNames::ALERT_WARN2_HI) + "'");
 }
 
 void print_config() {
 
-  cfglog("SSID: " + config.get(ConfigNames::SSID));
-  cfglog("PASS: " + config.get(ConfigNames::PASSWORD));
-  cfglog("mDNS: " + config.get(ConfigNames::MDNS));
-  cfglog("opMode: " + config.get(ConfigNames::OPMODE));
+  cfglog("SSID: " + config->get(ConfigNames::SSID));
+  cfglog("PASS: " + config->get(ConfigNames::PASSWORD));
+  cfglog("mDNS: " + config->get(ConfigNames::MDNS));
+  cfglog("opMode: " + config->get(ConfigNames::OPMODE));
   cfglog(F("DISPLAY:"));
-  cfglog("   Flip: " + config.get(ConfigNames::DISPLAY_FLIP));
-  cfglog("   Brightness: " + config.get(ConfigNames::DISPLAY_BRIGHTNESS));
-  cfglog("   Wait for reconfigure: " + config.get(ConfigNames::DISPLAY_RECONFIG));
-  cfglog("I2C OLED TYPE: " + config.get(ConfigNames::OLED_TYPE));
-  cfglog("ST7789: " + config.get(ConfigNames::ST7789));
-  cfglog("   MODE: " + config.get(ConfigNames::ST7789_MODE));
-  cfglog("use MHZ19B: " + config.get(ConfigNames::MHZ19B));
-  cfglog("   PWM PIN: " + config.get(ConfigNames::MHZ19B_PWM));
-  cfglog("   RX  PIN: " + config.get(ConfigNames::MHZ19B_RX));
-  cfglog("   TX  PIN: " + config.get(ConfigNames::MHZ19B_TX));
-  cfglog("   ABC    : " + config.get(ConfigNames::MHZ19B_ABC));
-  cfglog("MQTT Broker: " + config.get(ConfigNames::MQTT_BROKER));
-  cfglog("MQTT Name  : " + config.get(ConfigNames::MQTT_NAME));
+  cfglog("   Flip: " + config->get(ConfigNames::DISPLAY_FLIP));
+  cfglog("   Brightness: " + config->get(ConfigNames::DISPLAY_BRIGHTNESS));
+  cfglog("   Wait for reconfigure: " + config->get(ConfigNames::DISPLAY_RECONFIG));
+  cfglog("I2C OLED TYPE: " + config->get(ConfigNames::OLED_TYPE));
+  cfglog("ST7789: " + config->get(ConfigNames::ST7789));
+  cfglog("   MODE: " + config->get(ConfigNames::ST7789_MODE));
+  cfglog("use MHZ19B: " + config->get(ConfigNames::MHZ19B));
+  cfglog("   PWM PIN: " + config->get(ConfigNames::MHZ19B_PWM));
+  cfglog("   RX  PIN: " + config->get(ConfigNames::MHZ19B_RX));
+  cfglog("   TX  PIN: " + config->get(ConfigNames::MHZ19B_TX));
+  cfglog("   ABC    : " + config->get(ConfigNames::MHZ19B_ABC));
+  cfglog("MQTT Broker: " + config->get(ConfigNames::MQTT_BROKER));
+  cfglog("MQTT Name  : " + config->get(ConfigNames::MQTT_NAME));
   cfglog(F("Alerts:"));
   
   cfglog(F("  Temperature:"));
@@ -180,7 +180,7 @@ void write_config_file(File f) {
 bool read_config_file(File f, bool dump_config) {
 
   // とりあえずデフォルト値をロードしておく。
-  config.loadDefault();
+  config->loadDefault();
 
   DynamicJsonDocument doc(CONF_JSON_SIZE);
 
@@ -207,7 +207,7 @@ bool read_config_file(File f, bool dump_config) {
 
   bool ret = true;
 
-  std::vector<String> keys = config.getKeys();
+  std::vector<String> keys = config->getKeys();
   for(String key : keys) {
     
     JsonVariant value = doc[key];
@@ -217,7 +217,7 @@ bool read_config_file(File f, bool dump_config) {
       ret = false;
     } else {
       String val = value.as<String>();
-      ret = ret && config.set(key, val, false);
+      ret = ret && config->set(key, val, false);
     }
   }
 

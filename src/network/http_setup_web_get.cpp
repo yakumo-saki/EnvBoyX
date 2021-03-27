@@ -29,14 +29,14 @@ String _create_input_impl(String name, String value, String placeholder = "", St
 }
 
 String _create_input_nobr(String key, String placeholder = "", String type = "text", String cssClass = "") {
-  String value = config.get(key);
+  String value = config->get(key);
   String html = _create_input_impl(key, value, placeholder, type, cssClass);
 
   return html;
 }
 
 String _create_input(String key, String placeholder = "", String type = "text", String cssClass = "") {
-  String value = config.get(key);
+  String value = config->get(key);
   String html = _create_input_impl(key, value, placeholder, type, cssClass);
   html += "<br>\n";
 
@@ -98,7 +98,7 @@ String generate_http_setup_alerts_html(String name, String prefix) {
 String _create_radiobuttons(String name, std::vector<LabelValue> choises) {
   String html = "";
 
-  String value = config.get(name);
+  String value = config->get(name);
 
   for (int i = 0; i < choises.size(); i++)
   {

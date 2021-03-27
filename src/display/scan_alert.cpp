@@ -7,8 +7,8 @@
 
 /** 指定された値がアラートor警告範囲内かチェックして結果を返す */
 bool in_range(float value, String alertType, String alertLevel) {
-	String strLow = config.get(alertType + "." + alertLevel + "." + ConfigNames::ALERT_LO);
-	String strHigh = config.get(alertType + "." + alertLevel + "." + ConfigNames::ALERT_HI);
+	String strLow = config->get(alertType + "." + alertLevel + "." + ConfigNames::ALERT_LO);
+	String strHigh = config->get(alertType + "." + alertLevel + "." + ConfigNames::ALERT_HI);
 
 	float low = strLow.toFloat();
 	float high = strHigh.toFloat();

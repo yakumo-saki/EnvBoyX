@@ -13,18 +13,20 @@
 #include "display/display_ssd1306.h"
 #include "display/display_st7789.h"
 
+bool displayInitialized = false;
 disp_values_t disp_values;
 
 /** SSD1306を使うか否か。 I2C接続なので自動チェック可能 */
 bool use_ssd1306() {
-	if (!has_ssd1306()) {
-		return false;
-	}
+	if (!displayInitialized) return false;
+	if (!has_ssd1306()) return false;
+
 	return true;
 }
 
 bool use_st7789() {
-	return (config.get(ConfigNames::ST7789) == ConfigValues::ST7789_USE);
+	if (!displayInitialized) return false;
+	return (config->get(ConfigNames::ST7789) == ConfigValues::ST7789_USE);
 }
 
 /**
@@ -200,7 +202,7 @@ void setup_display() {
 	}
 
 	// initialize configured brightness
-	disp_set_brightness(config.get(ConfigNames::DISPLAY_BRIGHTNESS).toInt());
+	disp_set_brightness(config->get(ConfigNames::DISPLAY_BRIGHTNESS).toInt());
 }
 
 /**
@@ -209,10 +211,10 @@ void setup_display() {
 void disp_redraw_sensor_value_screen() {
 	displog("Redraw start");
 
-	disp_set_brightness(config.get(ConfigNames::DISPLAY_BRIGHTNESS).toInt());
+	disp_set_brightness(config->get(ConfigNames::DISPLAY_BRIGHTNESS).toInt());
 	String ip = get_wifi_ip_addr();
-	disp_all_initialize_complete(ip, config.get(ConfigNames::MDNS));
-	disp_sensor_value(ip, config.get(ConfigNames::MDNS));
+	disp_all_initialize_complete(ip, config->get(ConfigNames::MDNS));
+	disp_sensor_value(ip, config->get(ConfigNames::MDNS));
 
 	displog("Redraw complete");
 }

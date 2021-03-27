@@ -55,7 +55,7 @@ void _clear_screen_big() {
 	tft.fillScreen(TFT_BLACK);
 
 	// 縦画面
-	if (config.get(ConfigNames::DISPLAY_FLIP) == ConfigValues::DISPLAY_FLIP_OFF) {
+	if (config->get(ConfigNames::DISPLAY_FLIP) == ConfigValues::DISPLAY_FLIP_OFF) {
 		tft.setRotation(2);
 	} else {
 		tft.setRotation(0);
@@ -67,7 +67,7 @@ void _clear_screen_big() {
  */
 void _disp_header_big(String ip, String mDNS)
 {
-	if (config.get(ConfigNames::DISPLAY_FLIP) == ConfigValues::DISPLAY_FLIP_OFF) {
+	if (config->get(ConfigNames::DISPLAY_FLIP) == ConfigValues::DISPLAY_FLIP_OFF) {
 		tft.setRotation(2);
 	} else {
 		tft.setRotation(0);
@@ -172,7 +172,7 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 	// LINE 4
 	tft.setTextDatum(TL_DATUM);
 
-	if (config.get(ConfigNames::MHZ19B) == ConfigValues::MHZ_NOUSE) {
+	if (config->get(ConfigNames::MHZ19B) == ConfigValues::MHZ_NOUSE) {
 		tft.drawString("L", R4_X + 1, R4_Y + 20, SMALL_FONT);
 		tft.drawString("X", R4_X + 1, R4_Y + 36, SMALL_FONT);
 		write_values(R4_X, R4_Y, String(v.lux, 0), alerts.lux, TR_DATUM);

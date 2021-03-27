@@ -65,8 +65,8 @@ bool mhz_setup_uart() {
   mhzlog(F("Enabled (UART mode)."));
 
 #ifdef ARDUINO_ARCH_ESP32
-  mhzlog("ESP32 serial begin RX=" + String(config.get(ConfigNames::MHZ19B_RX).toInt()) + " TX=" + String(config.get(ConfigNames::MHZ19B_TX).toInt()));
-  mhzSerial.begin(MHZ_BAUDRATE, SERIAL_8N1, config.get(ConfigNames::MHZ19B_RX).toInt(), config.get(ConfigNames::MHZ19B_TX).toInt());
+  mhzlog("ESP32 serial begin RX=" + String(config->get(ConfigNames::MHZ19B_RX).toInt()) + " TX=" + String(config->get(ConfigNames::MHZ19B_TX).toInt()));
+  mhzSerial.begin(MHZ_BAUDRATE, SERIAL_8N1, config->get(ConfigNames::MHZ19B_RX).toInt(), config->get(ConfigNames::MHZ19B_TX).toInt());
 #elif defined(ARDUINO_ARCH_ESP8266) 
   mhzSerial.begin(MHZ_BAUDRATE);
 #endif
@@ -79,8 +79,8 @@ bool mhz_setup_uart() {
   mhz19.setRange(MHZ_RANGE);
   printErrorCode();
 
-  mhzlog("setAutoCalibration = " + String(parseBooleanString(config.get(ConfigNames::MHZ19B_ABC))));
-  mhz19.autoCalibration(parseBooleanString(config.get(ConfigNames::MHZ19B_ABC)));
+  mhzlog("setAutoCalibration = " + String(parseBooleanString(config->get(ConfigNames::MHZ19B_ABC))));
+  mhz19.autoCalibration(parseBooleanString(config->get(ConfigNames::MHZ19B_ABC)));
   printErrorCode();
 
   mhz_setup_check_device_uart();
@@ -91,7 +91,7 @@ bool mhz_setup_uart() {
 
 // For API
 bool mhz_do_zero_calibration() {
-  if (config.get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) return false;
+  if (config->get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) return false;
   mhz19.calibrate();
   if (mhz19.errorCode != 1) {
     mhzlog("API: ZeroCalibration: Error " + mhz19_code_to_msg(mhz19.errorCode));
@@ -104,13 +104,13 @@ bool mhz_do_zero_calibration() {
 
 // For API
 bool mhz_get_abc() {
-  if (config.get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) return false;
+  if (config->get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) return false;
   return mhz19.getABC();
 }
 
 // For API
 bool mhz_set_abc(bool onoff) {
-  if (config.get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) return false;
+  if (config->get(ConfigNames::MHZ19B) != ConfigValues::MHZ_USE_UART) return false;
   mhz19.autoCalibration(onoff);
   if (mhz19.errorCode != 1) {
     mhzlog("API: " + mhz19_code_to_msg(mhz19.errorCode));

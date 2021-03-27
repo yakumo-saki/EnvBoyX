@@ -37,7 +37,7 @@ void mdns_hostname_change(String hostname) {
 
 void mdns_setup() {
   sectionlog(F("Starting mDNS server."));  
-  start_mdns(config.get(ConfigNames::MDNS));
+  start_mdns(config->get(ConfigNames::MDNS));
 }
 
 void mdns_loop() {
