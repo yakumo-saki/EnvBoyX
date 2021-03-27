@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "log.h"
 
 typedef struct simple_map_data_t {
   String key;
@@ -60,7 +61,10 @@ class SimpleMap {
     // @return success or not.
     bool set(String key, String value, bool create = false) {
       int idx = this->findIndex(key);
-      if (idx == NOT_FOUND && !create) return false;
+      if (idx == NOT_FOUND && !create) {
+        debuglog("[SimpleMap] KEY=" + key + " not found, and create is false");
+        return false;
+      }
       
       simple_map_data_t data {key, value};
       if (idx == NOT_FOUND) {
@@ -69,7 +73,7 @@ class SimpleMap {
         vector[idx] = data;
       }
 
-      debuglog("SET KEY=" + key + " value=" + value);
+      // debuglog("[SimpleMap] SET KEY=" + key + " value=" + value);
 
       return true;
     }

@@ -24,9 +24,13 @@ bool use_ssd1306() {
 	return true;
 }
 
+bool has_st7789() {
+	return (config->get(ConfigNames::ST7789) == ConfigValues::ST7789_USE);
+}
+
 bool use_st7789() {
 	if (!displayInitialized) return false;
-	return (config->get(ConfigNames::ST7789) == ConfigValues::ST7789_USE);
+	return has_st7789();
 }
 
 /**
@@ -192,17 +196,19 @@ void disp_set_power(bool poweron) {
 }
 
 void setup_display() {
-	if (use_ssd1306()) {
+	if (has_ssd1306()) {
 		setup_disp_ssd1306();
 	} else {
 		ssdlog(F("SSD1306 not found."));
 	}
-	if (use_st7789()) {
+	if (has_st7789()) {
 		setup_disp_st7789();
 	}
 
 	// initialize configured brightness
 	disp_set_brightness(config->get(ConfigNames::DISPLAY_BRIGHTNESS).toInt());
+
+	displayInitialized = true;
 }
 
 /**

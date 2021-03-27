@@ -86,20 +86,23 @@ class Config {
       return configMap.get(key);
     }
 
+    // set 普通のキー
     bool set(String key, String value, bool haltOnNoKey = true) {
-      debuglog("Config: SET key=" + key + " value=" + value);
-      bool ret = checkKeyExist("set", key, haltOnNoKey);
+      // debuglog("[Config] key=" + key + " value=" + value);
+      bool keyExist = checkKeyExist("set", key, haltOnNoKey);
       value.trim();
-      ret = ret && configMap.set(key, value);
-      return ret;
+
+      bool setOK = configMap.set(key, value);
+      return (keyExist && setOK);
     }
 
+    // set アラート用
     bool set(String alertType, String keySuffix, String value, bool haltOnNoKey = true) {
       String key = getAlertKey(alertType, keySuffix);
-      bool ret = checkKeyExist("set", key, haltOnNoKey);
+      bool keyExist = checkKeyExist("set", key, haltOnNoKey);
       value.trim();
-      ret = ret && configMap.set(key, value);
-      return ret;
+      bool setOK = configMap.set(key, value);
+      return (keyExist && setOK);
     }
 
     // // 設定を取得する
