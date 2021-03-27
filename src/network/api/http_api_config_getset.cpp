@@ -95,7 +95,7 @@ void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &fla
   if (ret.result == UpdateConfigParamResult::NOT_SPECIFIED) {
     return;
   } else if (ret.result == UpdateConfigParamResult::ERROR) {
-    debuglog("ERROR " + key);
+    cfglog("ERROR " + key);
   }
 
   // 有効な設定名だったので記録しておく

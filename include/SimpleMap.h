@@ -62,7 +62,7 @@ class SimpleMap {
     bool set(String key, String value, bool create = false) {
       int idx = this->findIndex(key);
       if (idx == NOT_FOUND && !create) {
-        debuglog("[SimpleMap] KEY=" + key + " not found, and create is false");
+        cfglog("[SimpleMap] KEY=" + key + " not found, and create is false");
         return false;
       }
       

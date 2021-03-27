@@ -40,7 +40,7 @@ void handle_post_root() {
 
   for (auto &key : config->getKeys()) {
     bool argExist = server.hasArg(key);
-    debuglog("server arg key=" + key + " ret=" + (argExist ? "EXIST" : "NONE"));
+    // debuglog("server arg key=" + key + " ret=" + (argExist ? "EXIST" : "NONE"));
     if (argExist) {
       config->set(key, server.arg(key));
     } else {
@@ -51,6 +51,7 @@ void handle_post_root() {
       }
     }
   }
+
 
   save_config();
 

@@ -149,7 +149,8 @@ bool read_config_file(File f) {
   bool ret = true;
 
   std::vector<String> keys = config->getKeys();
-  debuglog("keys=" + String(keys.size()));
+  // debuglog("keys=" + String(keys.size()));
+  
   for(String key : keys) {
     
     JsonVariant value = doc[key];
