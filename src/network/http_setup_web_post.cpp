@@ -18,8 +18,6 @@
  */
 String http_setup_post_root_content() {
 
-  save_config();
-
   String html = "";
   html += "<html>";
   html += "<head>";

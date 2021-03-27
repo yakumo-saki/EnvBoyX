@@ -6,6 +6,9 @@
 
 #include "http_setup.h"
 
+#include "halt.h"
+#include "utils.h"
+
 #include "embed/style_css.h"
 
 #ifdef ESP32
@@ -33,12 +36,23 @@ void handle_get_root() {
  */
 void handle_post_root() {
   
-  String a = server.arg("aaaa");
-  debuglog("aaaa = " + a);
+  std::vector<String> SKIPABLE_KEY {ConfigNames::SETTING_ID};
 
   for (auto &key : config->getKeys()) {
-    config->set(key, server.arg(key));
-  } 
+    bool argExist = server.hasArg(key);
+    debuglog("server arg key=" + key + " ret=" + (argExist ? "EXIST" : "NONE"));
+    if (argExist) {
+      config->set(key, server.arg(key));
+    } else {
+      if (vectorStringContains(SKIPABLE_KEY, key)) {
+        httplog("[OK] Skippable key. " + key);
+      } else {
+        halt("WebPOST ERR", "NO KEY", key);
+      }
+    }
+  }
+
+  save_config();
 
   String html = http_setup_post_root_content();
 
@@ -46,7 +60,7 @@ void handle_post_root() {
 }
 
 void handle_get_style_css() {
-  httplog(F("style.css accessed"));
+  // httplog(F("style.css accessed"));
   server.send(200, MimeType::CSS, STYLE_CSS);
 }
 

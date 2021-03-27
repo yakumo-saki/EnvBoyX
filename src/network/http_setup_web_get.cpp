@@ -186,6 +186,15 @@ String http_setup_get_root_content() {
     html += _create_radiobuttons(ConfigNames::DISPLAY_RECONFIG, choises);
   }
 
+  html += "  <strong>自動消灯する明るさ（暗いと判定するしきい値）</strong><br>\n";
+  html += "  <span>※ 光量センサーがない場合は自動的に無効になります。</span><br>\n";
+  html += "  <span>※ 自動消灯を使用しない場合は、999999を入力してください。</span><br>\n";
+  html += _create_input(ConfigNames::DISPLAY_AUTODIM_LUX, "Lux", "number");
+
+  html += "  <strong>自動消灯判定時間</strong><br>\n";
+  html += "  <span>※ しきい値未満の明るさがこの時間継続したら消灯します。</span><br>\n";
+  html += _create_input(ConfigNames::DISPLAY_AUTODIM_WAIT_SEC, "second to display sleep", "number");
+
   html += "</fieldset>\n";
 
   html += "<fieldset><legend>I2C OLED デバイス設定</legend>\n";
