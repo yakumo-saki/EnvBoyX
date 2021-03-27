@@ -5,6 +5,7 @@
 
 #include "config_values.h"
 #include "config_names.h"
+#include "ConfigClass.h"
 
 #include "structs.h"
 
@@ -40,7 +41,7 @@ extern const char DATA_STYLE_CSS[];
 // --------------------------------------------------------------------
 // 設定値保存
 // --------------------------------------------------------------------
-extern config_t config;
+extern Config *config;
 
 // --------------------------------------------------------------------
 // センサー値関連

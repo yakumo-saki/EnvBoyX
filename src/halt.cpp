@@ -10,12 +10,15 @@ extern TimerCall timer;
 void halt(String msg1, String msg2, String msg3) {
     
     haltlog("HALTing start");
+    haltlog("cause " + msg1 + " " + msg2 + " " + msg3);
     timer.stop();
+
+    haltlog("Showing HALT Screen");
     disp_message(true, "* STOP *", msg1, msg2, msg3);
 
     while(true) {
-        watchdog_feed();
-        delay(3000);
         haltlog("EnvBoy is HALTed");
+        watchdog_feed();
+        delay(60000);
     }
 }

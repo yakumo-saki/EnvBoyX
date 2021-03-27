@@ -8,6 +8,7 @@
 #include "global.h"
 #include "log.h"
 #include "config.h"
+#include "ConfigClass.h"
 #include "display/display.h"
 
 unsigned int belowThreasholdSecond = 0;
@@ -21,9 +22,8 @@ bool dimming = false;
 // * 減光中にAutoDimLuxを超えたLuxになったら即減光解除
 // * 原稿中にAutoDimLux以下のLuxが継続していたら減光続行
 void autodimmer_loop() {
-
-    int minLux = config.displayAutoDimLux.toInt();
-    int waitSecond = config.displayAutoDimWaitSecond.toInt();
+    int minLux = config->get(ConfigNames::DISPLAY_AUTODIM_LUX).toInt();
+    int waitSecond = config->get(ConfigNames::DISPLAY_AUTODIM_WAIT_SEC).toInt();
 
     // displog("Autodimmer: lux=" + String(sensorValues.lux) + " minLux=" + String(minLux));
 
@@ -55,7 +55,8 @@ void autodimmer_loop() {
 
         displog("Dimmer Enable. set Brightness = 0");
 
-        lastBrightness = config.displayBrightness.toInt();  // 本当はこの時点の明るさがほしいが取得できないので仮おき
+        // 本当はこの時点の明るさがほしいが取得できないので仮おき
+        lastBrightness = config->get(ConfigNames::DISPLAY_BRIGHTNESS).toInt();  
         disp_set_brightness(0);
     }
 }

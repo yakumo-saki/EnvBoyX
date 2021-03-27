@@ -5,6 +5,7 @@
 
 #include "config_names.h"
 #include "config_values.h"
+#include "ConfigClass.h"
 
 // --------------------------------------------------------------------
 // ボード依存あり
@@ -44,8 +45,12 @@ void trim_config();
 void write_config_file(File f);
 
 /** ファイルを読んでconfig値にセット。closeはしない */
-bool read_config_file(File f, bool dump_config);
 bool read_config_file(File f);
+
+/** ファイルを読んでSETTING_IDを返す。
+ * 取得できない場合はINVALIDが返る。closeはしない 
+ */
+String read_config_setting_id(File f);
 
 // APIコール用 Config->JSON 
 DynamicJsonDocument create_config_json(std::vector<String>& keys);

@@ -18,10 +18,6 @@ void _get_config() {
 
   std::vector<String> keyArray = stringSplit(keys, ",");
 
-  for (const auto& k : keyArray) {
-    debuglog(k);
-  }
-
   DynamicJsonDocument json = create_config_json(keyArray);
   json["command"] = "CONFIG_GET";
   json["success"] = true;
