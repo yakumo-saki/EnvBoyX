@@ -83,7 +83,7 @@ bool read_config()
   File f = SPIFFS.open(ConfigValues::settings, "r");
   cfglog(ConfigValues::settings + " filesize = " + String(f.size()));
 
-  bool ret = read_config_file(f, false);
+  bool ret = read_config_file(f);
   f.close();
 
   trim_config();

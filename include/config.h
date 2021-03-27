@@ -45,7 +45,6 @@ void trim_config();
 void write_config_file(File f);
 
 /** ファイルを読んでconfig値にセット。closeはしない */
-bool read_config_file(File f, bool dump_config);
 bool read_config_file(File f);
 
 /** ファイルを読んでSETTING_IDを返す。

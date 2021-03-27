@@ -27,14 +27,17 @@ class SimpleMap {
     // return all keys
     std::vector<String> getKeys() {
       std::vector<String> ret;
-      for (auto itr = this->vector.cbegin(); itr == this->vector.cend(); itr++) {
-         ret.push_back(itr->key);
+      // debuglog("SimpleMap keys start");
+      for (auto itr : vector) {
+          // debuglog("config creation add key=" + itr.key);
+          ret.push_back(itr.key);
       }
       return ret;
     }
 
     int findIndex(String key) {
       for (int i = 0; i < vector.size(); i++) {
+        // debuglog("NOW=" + vector[i].key + " target=" + key);
         if (vector[i].key == key) return i;
       }
       return NOT_FOUND;
@@ -65,6 +68,9 @@ class SimpleMap {
       } else {
         vector[idx] = data;
       }
+
+      debuglog("SET KEY=" + key + " value=" + value);
+
       return true;
     }
 

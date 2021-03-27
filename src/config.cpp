@@ -177,7 +177,7 @@ void write_config_file(File f) {
  * CONFIGを読み込む（本体）
  * @param dump_config CONFIGをシリアルにログ出力するか否か
  */
-bool read_config_file(File f, bool dump_config) {
+bool read_config_file(File f) {
 
   // とりあえずデフォルト値をロードしておく。
   config->loadDefault();
@@ -186,14 +186,14 @@ bool read_config_file(File f, bool dump_config) {
 
   cfglog(F("Json deserialize start"));
 
-  if (dump_config) {
+#ifdef DUMP_CONFIG
     Serial.println("");
     while(f.available()){
         Serial.write(f.read());
     }
     Serial.println("");
     f.seek(0);
-  }
+#endif
 
   DeserializationError error = deserializeJson(doc, f);
 
@@ -208,6 +208,7 @@ bool read_config_file(File f, bool dump_config) {
   bool ret = true;
 
   std::vector<String> keys = config->getKeys();
+  debuglog("keys=" + String(keys.size()));
   for(String key : keys) {
     
     JsonVariant value = doc[key];
@@ -217,15 +218,13 @@ bool read_config_file(File f, bool dump_config) {
       ret = false;
     } else {
       String val = value.as<String>();
+      debuglog("read config key=" + key + " value=" + val);
       ret = ret && config->set(key, val, false);
     }
   }
 
+  cfglog(F("Config read completed."));
   return ret;
-}
-
-bool read_config_file(File f) {
-  return read_config_file(f, false);
 }
 
 String read_config_setting_id(File f) {

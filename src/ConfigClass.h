@@ -29,9 +29,10 @@ class Config {
     SimpleMap configMap;
 
     bool checkKeyExist(String operation, String key, bool haltOnNoKey) {
-      if (configMap.hasKey(key)) {
+      if (!configMap.hasKey(key)) {
         if (haltOnNoKey) { 
-          halt("Cfg no key", operation, key);
+          cfglog("[ERROR] Config no key key=" + key + " operation=" + operation);
+          halt("CFG NoKey", "OP=" + operation, key);
         } else {
           cfglog("[WARN] Config Nokey key=" + key + " operation=" + operation);
         }
@@ -86,6 +87,7 @@ class Config {
     }
 
     bool set(String key, String value, bool haltOnNoKey = true) {
+      debuglog("Config: SET key=" + key + " value=" + value);
       bool ret = checkKeyExist("set", key, haltOnNoKey);
       value.trim();
       ret = ret && configMap.set(key, value);
