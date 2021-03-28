@@ -105,39 +105,6 @@ class Config {
       return (keyExist && setOK);
     }
 
-    // // 設定を取得する
-    // static String get(String key) {
-    //     return Config::getInstance().getConfig(key);
-    // }
-
-    // // 設定を取得する
-    // static String get(String alertType, String key) {
-    //     return Config::getInstance().getConfig(alertType, key);
-    // }
-
-    // // 設定を取得する(Intにキャストする)
-    // static int getInt(String key) {
-    //     return Config::get(key).toInt();
-    // }
-
-    // // 設定を取得する(Intにキャストする)
-    // static int getInt(String alertType, String key) {
-    //     return Config::get(alertType, key).toInt();
-    // }
-
-    // // 設定を保存する
-    // static bool set(String key, String value, bool haltOnNoKey = true) {
-    //     return Config::getInstance().setConfig(key, value, haltOnNoKey);
-    // }
-
-    // // 設定を保存する（アラート）
-    // static bool set(String alertType, String key, String value, bool haltOnNoKey = true) {
-    //     return Config::getInstance().setConfig(alertType, key, value, haltOnNoKey);
-    // }
-
-    // std::vector<String> getKeys() {
-    //   return Config::getInstance().getAllKeys();
-    // }
     ~Config() {
       Serial.println("Config Class is destructed. maybe bug?");
     }
