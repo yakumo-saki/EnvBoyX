@@ -24,23 +24,29 @@
 enum class ConfigValueType {
   String = 0,  // 任意の文字列
   Integer = 1, // 整数
-  Choise = 2   // validValuesに含まれている文字列
+  Choise = 2,  // validValuesに含まれている文字列
+  NotFound = 255   // そのキーは存在しない。
 };
 
 // APIにより起動中に設定を変更する際の後処理を表す
 enum class RunningConfigChangeFlags {
-  OK = 0,
-  REBOOT_REQ = 1,            // 再起動するまで反映されない
-  DISPLAY_REDRAW_REQ = 2,    // 液晶を再描画する必要がある
-  MDNS_RESTART_REQ = 3,      // mDNSを再起動する必要がある
+  OK = 0,                    // 反映された。
+  REBOOT_REQ = 1,            // 反映されたが、再起動するまで反映されない
+  DISPLAY_REDRAW_REQ = 2,    // 反映されたが、液晶を再描画する必要がある
+  MDNS_RESTART_REQ = 3,      // 反映されたが、mDNSを再起動する必要がある
   BLOCKED = 4,               // その設定は変更できない
-  ERROR = 8,                 // その他のエラー
-  NOT_SPECIFIED = 16         // そのキーは存在しない
+};
+
+enum class ConfigSetResult {
+  OK = 0,
+  INVALID_VALUE = 8,         // 値が不正
+  OTHER_ERROR = 15,          // その他のエラー
+  NO_KEY = 16                // そのキーはConfigに存在しない
 };
 
 typedef struct config_meta_t {
   String key;
-  ConfigValueType type;
+  ConfigValueType type = ConfigValueType::NotFound;
   std::vector<String> validValues;
   RunningConfigChangeFlags flags;
 } ConfigMeta;
@@ -50,8 +56,8 @@ typedef struct config_meta_t {
  */
 class Config {
   private:
-    SimpleMap configMap;
-    std::vector<ConfigMeta> configMetaList;
+    SimpleMap<String> configMap;
+    SimpleMap<ConfigMeta> configMetaMap;
 
     bool checkKeyExist(String operation, String key, bool haltOnNoKey) {
       if (!configMap.hasKey(key)) {
@@ -66,10 +72,6 @@ class Config {
       return true;
     }
 
-    String getAlertKey(String alertType, String key) {
-      return alertType + "." + key;
-    }
-
     bool addConfig(String key, String value) {
       return configMap.put(key, value, true);
     }
@@ -80,7 +82,7 @@ class Config {
     }
 
     void addMeta(ConfigMeta meta) {
-      configMetaList.push_back(meta);
+      configMetaMap.put(meta.key, meta);
     }
 
     /** 
@@ -114,34 +116,50 @@ class Config {
       return configMap.getKeys();
     }
 
+    // メタデータを取得する
+    ConfigMeta getMeta(String key, bool haltOnNotFound) {
+      if (!this->configMetaMap.hasKey(key)) {
+        if (haltOnNotFound) {
+          halt("CFG Meta", "GET Nokey", key);
+        } else {
+          ConfigMeta meta;
+          meta.type = ConfigValueType::NotFound;
+          return meta;
+        }
+      }
+      return configMetaMap.get(key);
+    }
+
+    // 設定値を取得する
     String get(String key) {
       checkKeyExist("get", key, true);
       return configMap.get(key);
     }
 
-    String get(String alertType, String keySuffix) {
-      String key = getAlertKey(alertType, keySuffix);
-      checkKeyExist("get", key, true);
-      return configMap.get(key);
-    }
-
     // set 普通のキー
-    bool set(String key, String value, bool haltOnNoKey = true) {
+    ConfigSetResult set(String key, String value, bool haltOnNoKey = true) {
       // debuglog("[Config] key=" + key + " value=" + value);
       bool keyExist = checkKeyExist("set", key, haltOnNoKey);
-      value.trim();
+      if (!keyExist) return ConfigSetResult::NO_KEY;
 
-      bool setOK = configMap.set(key, value);
-      return (keyExist && setOK);
+      value.trim();
+      
+      if (true) { // need validation
+        bool setOK = configMap.set(key, value);
+        if (!setOK) {
+          return ConfigSetResult::OTHER_ERROR;
+        }
+        return ConfigSetResult::OK;
+      } else {
+        cfglog("INVALID VALUE KEY=" + key + " VALUE=" + value);
+        return ConfigSetResult::INVALID_VALUE;
+      }
+
+      return ConfigSetResult::OTHER_ERROR;
     }
 
-    // set アラート用
-    bool set(String alertType, String keySuffix, String value, bool haltOnNoKey = true) {
-      String key = getAlertKey(alertType, keySuffix);
-      bool keyExist = checkKeyExist("set", key, haltOnNoKey);
-      value.trim();
-      bool setOK = configMap.set(key, value);
-      return (keyExist && setOK);
+    static String getAlertKey(String alertType, String key) {
+      return alertType + "." + key;
     }
 
     ~Config() {

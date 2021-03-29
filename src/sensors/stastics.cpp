@@ -32,15 +32,15 @@ void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
   String logmsg = "";
   if (DEBUG_BUILD) logmsg += "**DEBUG BUILD** ";
 
-  logmsg += "Statstics updated.";
+  logmsg += "Statstics:";
 #ifdef ESP32
   doc["cputemp"] = temperatureRead();  // CPU温度
-  logmsg += " cpuTemp=" + String(temperatureRead());
+  logmsg += " ESP32: cpuTemp=" + String(temperatureRead());
   logmsg += " freeHeap=" + String(ESP.getFreeHeap());
 #endif
 
 #ifdef ESP8266
-  logmsg += " freeHeap=" + String(ESP.getFreeHeap());
+  logmsg += " ESP8266: freeHeap=" + String(ESP.getFreeHeap());
 #endif
 
   statlog(logmsg); // これくらいは出しておかないと動いてるのかわからなくなるので出す
