@@ -21,12 +21,37 @@
 // - [ ] 8. Print config        print_config
 // - [ ] 9. Config version      global.cpp
 
+enum class ConfigValueType {
+  String = 0,  // 任意の文字列
+  Integer = 1, // 整数
+  Choise = 2   // validValuesに含まれている文字列
+};
+
+// APIにより起動中に設定を変更する際の後処理を表す
+enum class RunningConfigChangeFlags {
+  OK = 0,
+  REBOOT_REQ = 1,            // 再起動するまで反映されない
+  DISPLAY_REDRAW_REQ = 2,    // 液晶を再描画する必要がある
+  MDNS_RESTART_REQ = 3,      // mDNSを再起動する必要がある
+  BLOCKED = 4,               // その設定は変更できない
+  ERROR = 8,                 // その他のエラー
+  NOT_SPECIFIED = 16         // そのキーは存在しない
+};
+
+typedef struct config_meta_t {
+  String key;
+  ConfigValueType type;
+  std::vector<String> validValues;
+  RunningConfigChangeFlags flags;
+} ConfigMeta;
+
 /**
  * Config Class
  */
 class Config {
   private:
     SimpleMap configMap;
+    std::vector<ConfigMeta> configMetaList;
 
     bool checkKeyExist(String operation, String key, bool haltOnNoKey) {
       if (!configMap.hasKey(key)) {
@@ -54,13 +79,27 @@ class Config {
       return configMap.put(cfgKey, value, true);
     }
 
+    void addMeta(ConfigMeta meta) {
+      configMetaList.push_back(meta);
+    }
+
     /** 
      * 初期値をセットする 
      * ここでセットしていない項目は存在しないものとして扱われる
      */
     void loadDefaultValue();
 
+    // メタデータをセットする。メタデータは初期化しても変更しない
+    void loadMetadata();
+
+    // メタデータをセットする。（アラート用）
+    void loadMetadataAlert(String alertType);
+
+    // メタデータをセットする。（アラート用のサブルーチン）
+    void _loadMetadataAlert(String alertType, String suffix);
+
     Config() {
+      loadMetadata();
       loadDefaultValue();
     }
 

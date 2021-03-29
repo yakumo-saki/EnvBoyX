@@ -27,12 +27,8 @@ struct ConfigHookFlags {
   bool configFailed = false;
 };
 
-enum class UpdateConfigParamResult {
-  OK = 0, REBOOT_REQ = 1, DISPLAY_REDRAW_REQ = 2, MDNS_RESTART_REQ = 3, BLOCKED = 4, ERROR = 8, NOT_SPECIFIED = 16
-};
-
 struct UpdateConfigParamResult_t {
-  UpdateConfigParamResult result = UpdateConfigParamResult::ERROR;
+  RunningConfigChangeFlags result = RunningConfigChangeFlags::ERROR;
   String value = "";
 };
 
@@ -57,13 +53,13 @@ UpdateConfigParamResult_t _updateConfigParam(String key) {
   UpdateConfigParamResult_t ret;
 
   if (!server.hasArg(key)) {
-    ret.result = UpdateConfigParamResult::NOT_SPECIFIED; 
+    ret.result = RunningConfigChangeFlags::NOT_SPECIFIED; 
     ret.value = "";
     return ret;
   }
 
   if (vectorStringContains(BLOCKED_CONFIG, key)) {
-    ret.result = UpdateConfigParamResult::BLOCKED;
+    ret.result = RunningConfigChangeFlags::BLOCKED;
     ret.value = "";
     return ret;
   }
@@ -74,13 +70,13 @@ UpdateConfigParamResult_t _updateConfigParam(String key) {
 
   // ここから先はOK
   if (vectorStringContains(NEED_REBOOT_CONFIG, key)) {
-    ret.result = UpdateConfigParamResult::REBOOT_REQ;
+    ret.result = RunningConfigChangeFlags::REBOOT_REQ;
   } else if (vectorStringContains(NEED_REDRAW_CONFIG, key)) {
-    ret.result = UpdateConfigParamResult::DISPLAY_REDRAW_REQ;
+    ret.result = RunningConfigChangeFlags::DISPLAY_REDRAW_REQ;
   } else if (key == ConfigNames::MDNS) {
-    ret.result = UpdateConfigParamResult::MDNS_RESTART_REQ;
+    ret.result = RunningConfigChangeFlags::MDNS_RESTART_REQ;
   } else {
-    ret.result = UpdateConfigParamResult::OK;
+    ret.result = RunningConfigChangeFlags::OK;
   }
 
   return ret;
@@ -92,28 +88,28 @@ void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &fla
   
   UpdateConfigParamResult_t ret = _updateConfigParam(key);
 
-  if (ret.result == UpdateConfigParamResult::NOT_SPECIFIED) {
+  if (ret.result == RunningConfigChangeFlags::NOT_SPECIFIED) {
     return;
-  } else if (ret.result == UpdateConfigParamResult::ERROR) {
+  } else if (ret.result == RunningConfigChangeFlags::ERROR) {
     cfglog("ERROR " + key);
   }
 
   // 有効な設定名だったので記録しておく
   validKeys.push_back(key);
 
-  if (ret.result == UpdateConfigParamResult::BLOCKED) {
+  if (ret.result == RunningConfigChangeFlags::BLOCKED) {
     flags.configFailed = true;
     msgArray.add("[ERROR] " + key + " is blocked from running change. use setup mode.");
-  } else if (ret.result == UpdateConfigParamResult::REBOOT_REQ) {
+  } else if (ret.result == RunningConfigChangeFlags::REBOOT_REQ) {
     flags.needReboot = true;
     msgArray.add("[OK][REBOOT REQ] " + key + " = " + ret.value);
-  } else if (ret.result == UpdateConfigParamResult::DISPLAY_REDRAW_REQ) {
+  } else if (ret.result == RunningConfigChangeFlags::DISPLAY_REDRAW_REQ) {
     flags.needDisplayRedraw = true;
     msgArray.add("[OK][REDRAW] " + key + " = " + ret.value);
-  } else if (ret.result == UpdateConfigParamResult::MDNS_RESTART_REQ) {
+  } else if (ret.result == RunningConfigChangeFlags::MDNS_RESTART_REQ) {
     flags.needMDnsRestart = true;
     msgArray.add("[OK][mDNS RESTART] " + key + " = " + ret.value);
-  } else if (ret.result == UpdateConfigParamResult::OK) {
+  } else if (ret.result == RunningConfigChangeFlags::OK) {
     msgArray.add("[OK] " + key + " = " + (ret.value == "" ? "(empty)" : ret.value));
   } else {
     apilog("MAYBE BUG");
