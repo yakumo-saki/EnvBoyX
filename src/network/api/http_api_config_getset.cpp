@@ -108,7 +108,7 @@ DynamicJsonDocument updateConfig() {
   for (int i = 0; i < server.args(); i++) {
     String key = server.argName(i);
 
-    if (vectorStringContains(validKeys, key) == false) {
+    if (!vectorStringContains(validKeys, key)) {
       msgs.add("[INVALID KEY] " + key);
     }
   }

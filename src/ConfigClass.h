@@ -8,12 +8,12 @@
 #include "config_names.h"
 #include "config_values.h"
 
+#include "utils.h"
 #include "SimpleMap.h"
 
 //  * 項目追加時の実装項目：
-// - [ ] 1. structs.h           config struct
 // - [ ] 2. Setup HTML          http_setup_web_get.cpp http_setup_get_root_content
-// - [ ] 3. Setup POST後の表示   http_setup_web_post.cpp http_setup_post_root_content
+// - [ ] 3. Setup POST後の表示   (if required) http_setup_web_post.cpp http_setup_post_root_content
 // - [ ] 4. Web API             http_api_backup_config
 // - [ ] 5. Web API             updateConfig
 // - [ ] 6. Write Config        _create_config_json
@@ -144,7 +144,7 @@ class Config {
 
       value.trim();
       
-      if (true) { // need validation
+      if (validate(key, value)) { // need validation
         bool setOK = configMap.set(key, value);
         if (!setOK) {
           return ConfigSetResult::OTHER_ERROR;
@@ -156,6 +156,25 @@ class Config {
       }
 
       return ConfigSetResult::OTHER_ERROR;
+    }
+
+    bool validate(String key, String value) {
+      ConfigMeta meta = configMetaMap.get(key);
+      bool ret = false;
+      if (meta.type == ConfigValueType::Choise) {
+        ret = vectorStringContains(meta.validValues, value);
+      } else if (meta.type == ConfigValueType::Integer) {
+        int dummy = value.toInt(); // 変な文字列が来ている場合0が返る
+        ret = (String(dummy) == value); // +10 とか書かれるとアウトだけれども妥協
+      } else if (meta.type == ConfigValueType::String) {
+        ret = true;
+      } else {
+        cfglog("Config SET validation invalid type. key=" + key);
+        ret = false;
+      }
+
+      if (!ret) cfglog("Config SET invalid value. key=" + key + " value=" + value);
+      return ret;
     }
 
     static String getAlertKey(String alertType, String key) {

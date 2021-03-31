@@ -100,7 +100,7 @@ String _create_radiobuttons(String name, std::vector<LabelValue> choises) {
 
   String value = config->get(name);
 
-  for (int i = 0; i < choises.size(); i++)
+  for (unsigned int i = 0; i < choises.size(); i++)
   {
     auto c = choises[i];
     String id = name + "__" + c.value;
