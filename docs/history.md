@@ -11,7 +11,8 @@
 
 * NOTE: ESP32 freeHeap=238756 ESP8266 freeHeap=19184
 * ADD: Config class (Internal mechanism) maybe consume 4KB memory.
-
+* ADD: Config value validation
+* CHANGE: platformio/espressif32 @ 3.2.0 (was 3.1.0)
 
 
 ## v44.0: Internal refactoring Update
