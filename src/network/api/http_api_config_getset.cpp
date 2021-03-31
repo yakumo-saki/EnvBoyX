@@ -43,6 +43,7 @@ void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &fla
   
   String value = server.arg(key);
   ConfigSetResult setResult = config->set(key, value);
+  cfglog("API Config SET: " + key + " => " + value);
 
   if (setResult != ConfigSetResult::OK) {
     cfglog("ERROR " + key);
@@ -59,15 +60,15 @@ void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &fla
     msgArray.add("[ERROR] " + key + " is blocked from running change. use setup mode.");
   } else if (meta.flags == RunningConfigChangeFlags::REBOOT_REQ) {
     flags.needReboot = true;
-    msgArray.add("[OK][REBOOT REQ] " + key + " = " + value);
+    msgArray.add("[OK][REBOOT REQ] " + key);
   } else if (meta.flags == RunningConfigChangeFlags::DISPLAY_REDRAW_REQ) {
     flags.needDisplayRedraw = true;
-    msgArray.add("[OK][REDRAW] " + key + " = " + value);
+    // msgArray.add("[OK][REDRAW] " + key);
   } else if (meta.flags == RunningConfigChangeFlags::MDNS_RESTART_REQ) {
     flags.needMDnsRestart = true;
-    msgArray.add("[OK][mDNS RESTART] " + key + " = " + value);
+    // msgArray.add("[OK][mDNS RESTART] " + key);
   } else if (meta.flags == RunningConfigChangeFlags::OK) {
-    msgArray.add("[OK] " + key + " = " + (value == "" ? "(empty)" : value));
+    // msgArray.add("[OK] " + key);
   } else {
     apilog("MAYBE BUG");
   } 
@@ -93,9 +94,11 @@ void reflectConfigAll() {
 }
 
 // Config SET API のエントリポイント
-DynamicJsonDocument updateConfig() {
+String updateConfig() {
 
-  DynamicJsonDocument msgs(10240);
+  // DynamicJsonDocument.createNestedArray() スべきだがそうするとここですべての
+  // JSONの容量を食ってしまい、メモリ不足で落ちる(ESP8266)
+  DynamicJsonDocument msgs(5000);
 
   ConfigHookFlags flags;
 
@@ -107,19 +110,36 @@ DynamicJsonDocument updateConfig() {
 
   for (int i = 0; i < server.args(); i++) {
     String key = server.argName(i);
-
+  
+    if (key == "plain") {
+      continue;  // ESP8266実装では、POST BODY が plain として渡されるので無視
+    }
+    // debuglog(String(validKeys.size()) + " k=" + key);
     if (!vectorStringContains(validKeys, key)) {
+      cfglog("API: [INVALID KEY] " + key);
       msgs.add("[INVALID KEY] " + key);
+      flags.configFailed = true;
     }
   }
   
   _reflectConfig(flags);
 
-  DynamicJsonDocument json(10240);
+  // ここ自体は大した容量を必要としないのでこれで十分。ESP8266ではメモリがカツカツなので無駄に増やさないこと
+  DynamicJsonDocument json(1000);
+  json["command"] = "CONFIG_SET";
   json["success"] = !flags.configFailed;
   json["needReboot"] = flags.needReboot;
   json["msgs"] = msgs;
-  json["message"] = "Don't forget calling /config/commit before restart.";
 
-  return json;
+  if (flags.configFailed) {
+    json["message"] = "Some error detected. Check msg.";
+  } else {
+    json["message"] = "Don't forget calling /config/commit.";
+  }
+  json.shrinkToFit();
+
+  String jsonStr;
+  serializeJson(json, jsonStr);
+
+  return jsonStr;
 }

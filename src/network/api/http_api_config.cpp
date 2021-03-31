@@ -29,11 +29,7 @@ void _get_config() {
 
 void _set_config() {
 
-  DynamicJsonDocument json = updateConfig();
-  json["command"] = "CONFIG_SET";
-
-  String jsonStr;
-  serializeJson(json, jsonStr);
+  String jsonStr = updateConfig();
 
   server.send(200, MimeType::JSON, jsonStr);
 }
