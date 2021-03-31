@@ -42,15 +42,29 @@ void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &fla
   } 
   
   String value = server.arg(key);
-  ConfigSetResult setResult = config->set(key, value);
-  cfglog("API Config SET: " + key + " => " + value);
 
-  if (setResult != ConfigSetResult::OK) {
-    cfglog("ERROR " + key);
+  ConfigSetResult setResult = config->set(key, value);
+
+  if (setResult != ConfigSetResult::NO_KEY) {
+    // 有効な設定名だったので記録しておく
+    validKeys.push_back(key);
   }
 
-  // 有効な設定名だったので記録しておく
-  validKeys.push_back(key);
+  if (setResult == ConfigSetResult::OK) {
+    apilog("Config SET: OK   : " + key + " => " + value);
+  } else {
+    flags.configFailed = true;
+    apilog("Config SET: ERROR: " + key + " => " + value);
+  }
+
+  // 値エラー判定
+  if (setResult == ConfigSetResult::INVALID_VALUE) {
+    msgArray.add("[ERROR][INVALID_VALUE] " + key + "=" + value);
+    return;
+  } else if (setResult == ConfigSetResult::OTHER_ERROR) {
+    msgArray.add("[ERROR][OTHER_ERROR] " + key + "=" + value);
+    return;
+  }
 
   // 設定後の処理を取得
   ConfigMeta meta = config->getMeta(key, true);
@@ -116,7 +130,7 @@ String updateConfig() {
     }
     // debuglog(String(validKeys.size()) + " k=" + key);
     if (!vectorStringContains(validKeys, key)) {
-      cfglog("API: [INVALID KEY] " + key);
+      apilog("Config SET: [INVALID KEY] " + key);
       msgs.add("[INVALID KEY] " + key);
       flags.configFailed = true;
     }
