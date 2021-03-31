@@ -14,14 +14,14 @@
 const unsigned int CONF_JSON_SIZE = 4000;
 
 void alerts_to_log_string(const String &alertType) {
-  cfglog("    WARNING1 '" + config->get(alertType, ConfigNames::ALERT_WARN1_LO) 
-         + "' ~ '" + config->get(alertType, ConfigNames::ALERT_WARN1_HI) + "'");
-  cfglog("    CAUTION1 '" + config->get(alertType, ConfigNames::ALERT_CAUTION1_LO) 
-         + "' ~ '" + config->get(alertType, ConfigNames::ALERT_CAUTION1_HI) + "'");
-  cfglog("    CAUTION2 '" + config->get(alertType, ConfigNames::ALERT_CAUTION2_LO) 
-         + "' ~ '" + config->get(alertType, ConfigNames::ALERT_CAUTION2_HI) + "'");
-  cfglog("    WARNING2 '" + config->get(alertType, ConfigNames::ALERT_WARN2_LO) 
-         + "' ~ '" + config->get(alertType, ConfigNames::ALERT_WARN2_HI) + "'");
+  cfglog("    WARNING1 '" + config->get(Config::getAlertKey(alertType, ConfigNames::ALERT_WARN1_LO)) 
+         + "' ~ '" + config->get(Config::getAlertKey(alertType, ConfigNames::ALERT_WARN1_HI)) + "'");
+  cfglog("    CAUTION1 '" + config->get(Config::getAlertKey(alertType, ConfigNames::ALERT_CAUTION1_LO)) 
+         + "' ~ '" + config->get(Config::getAlertKey(alertType, ConfigNames::ALERT_CAUTION1_HI)) + "'");
+  cfglog("    CAUTION2 '" + config->get(Config::getAlertKey(alertType, ConfigNames::ALERT_CAUTION2_LO)) 
+         + "' ~ '" + config->get(Config::getAlertKey(alertType, ConfigNames::ALERT_CAUTION2_HI)) + "'");
+  cfglog("    WARNING2 '" + config->get(Config::getAlertKey(alertType, ConfigNames::ALERT_WARN2_LO))
+         + "' ~ '" + config->get(Config::getAlertKey(alertType, ConfigNames::ALERT_WARN2_HI)) + "'");
 }
 
 void print_config() {
@@ -161,7 +161,7 @@ bool read_config_file(File f) {
     } else {
       String val = value.as<String>();
       // debuglog("read config key=" + key + " value=" + val);
-      ret = config->set(key, val, false) && ret;
+      ret = (config->set(key, val, false) == ConfigSetResult::OK) && ret;
     }
   }
 

@@ -3,20 +3,21 @@
 #include <Arduino.h>
 #include "log.h"
 
-typedef struct simple_map_data_t {
+template <typename T>
+struct SimpleMapData {
   String key;
-  String value;
-} simple_map_data_t;
+  T value;
+};
 
 /**
  * Map-Like array
  */
-class SimpleMap {
+template <typename T> class SimpleMap {
 
   private:
     static const int NOT_FOUND = -128;
 
-    std::vector<simple_map_data_t> vector;
+    std::vector<SimpleMapData<T>> vector;
 
   public:
 
@@ -51,22 +52,25 @@ class SimpleMap {
     /**
      * @return value or null
      */
-    String get(String key) {
+    T get(String key) {
       int idx = this->findIndex(key);
-      if (idx == NOT_FOUND) return "";
+      if (idx == NOT_FOUND) {
+        T temp;
+        return temp;
+      }
       return vector[idx].value;
     }
 
     // @param create Create new key or not. 
     // @return success or not.
-    bool set(String key, String value, bool create = false) {
+    bool set(String key, const T& value, bool create = false) {
       int idx = this->findIndex(key);
       if (idx == NOT_FOUND && !create) {
         cfglog("[SimpleMap] KEY=" + key + " not found, and create is false");
         return false;
       }
       
-      simple_map_data_t data {key, value};
+      SimpleMapData<T> data {key, value};
       if (idx == NOT_FOUND) {
         vector.push_back(data);
       } else {
@@ -80,11 +84,11 @@ class SimpleMap {
 
     // @param failIfExist Fail if key is already exist
     // @return success or not
-    bool put(String key, String value, bool failIfExist = false) {
+    bool put(String key, const T& value, bool failIfExist = false) {
       int idx = this->findIndex(key);
       if (idx != NOT_FOUND && failIfExist) return false;
       
-      simple_map_data_t data {key, value};
+      SimpleMapData<T> data {key, value};
       if (idx == NOT_FOUND) {
         vector.push_back(data);
       } else {
