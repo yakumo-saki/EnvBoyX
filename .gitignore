@@ -5,6 +5,8 @@
 .vscode/launch.json
 .vscode/ipch
 .vscode
+# embed is auto generated directory.
+/include/embed/**
 _release
 _release/**
 EnvBoyX.zip
