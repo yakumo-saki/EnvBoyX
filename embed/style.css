@@ -6,6 +6,10 @@ body.setup_done {
     background-color: paleturquoise;
 }
 
+body.setup_err {
+    background-color: rosybrown;
+}
+
 input[type='text'] {
     width: 200px;
 }

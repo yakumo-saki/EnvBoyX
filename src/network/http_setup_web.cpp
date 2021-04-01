@@ -21,10 +21,43 @@ extern WebServer server;
 extern ESP8266WebServer server;
 #endif
 
+String http_setup_post_root_error_content(std::vector<std::pair<String, String>> errors) {
+  String html = "";
+  html += "<html>";
+  html += "<head>";
+  html += "<title>" + product + " setting done. please restart.</title>";
+  html += "<meta charset='UTF-8'>";
+  html += "<link rel='stylesheet' href='/style.css'>";
+  html += "<style>";
+  html += "  input { width:200px; }";
+  html += "</style>";
+  html += "</head>";
+  html += "<body class='setup_err'>";
+  html += "以下の設定値が正しくありません。<br>";
+  html += "<ul>";
+  for (auto& error: errors) {
+    html += "<li>" + error.first + " = " + error.second + "</li>";
+  }
+  html += "</ul>";
+  html += "設定にエラーがあるため、保存できませんでした。<br>";
+  html += "以下のリンクから再設定を行ってください。<br>";
+  html += "<br>";
+  html += "<a class='setup_again' href='/?configNoLoad'>再設定</a>";
+  html += "</body>";
+  html += "</html>";
+
+  return html;
+}
+
 /**
  * GET 設定画面
  */
 void handle_get_root() {
+
+  // エラー画面からの戻りであればConfigを読まない（すでにセットされているから上書きしてしまう）
+  if (!server.hasArg("configNoLoad")) {
+    read_config();
+  }
 
   String html = http_setup_get_root_content();
 
@@ -37,12 +70,19 @@ void handle_get_root() {
 void handle_post_root() {
   
   std::vector<String> SKIPABLE_KEY {ConfigNames::SETTING_ID};
+  std::vector<std::pair<String, String>> errors;
 
   for (auto &key : config->getKeys()) {
     bool argExist = server.hasArg(key);
     // debuglog("server arg key=" + key + " ret=" + (argExist ? "EXIST" : "NONE"));
+    String value = server.arg(key);
     if (argExist) {
-      config->set(key, server.arg(key));
+      ConfigSetResult result = config->set(key, value);
+      if (result == ConfigSetResult::INVALID_VALUE) {
+        httplog("[INVALID_VALUE] " + key + " " + value);
+        std::pair<String, String> pair(key, value);
+        errors.push_back(pair);
+      }
     } else {
       if (vectorStringContains(SKIPABLE_KEY, key)) {
         httplog("[OK] Skippable key. " + key);
@@ -52,10 +92,16 @@ void handle_post_root() {
     }
   }
 
-
-  save_config();
-
-  String html = http_setup_post_root_content();
+  String html;
+  if (errors.size() == 0) {
+    httplog("[OK] Config save start");
+    save_config();
+    httplog("[OK] Sending done HTML");
+    html = http_setup_post_root_content();
+  } else {
+    httplog("Send config error page");
+    html = http_setup_post_root_error_content(errors);
+  }
 
   server.send(200, MimeType::HTML, html);
 }

@@ -122,7 +122,6 @@ String http_setup_get_root_content() {
 
   // おかしなconfigファイルが入っていたとしても、デフォルト値が入ってくるので
   // チェックしなくても安全
-  read_config();
 
   String html = "";
   html += "<!doctype html>";
