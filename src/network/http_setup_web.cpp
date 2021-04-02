@@ -12,18 +12,14 @@
 #include "embed/style_css.h"
 
 #include "network/webserver.h"
+#include "network/http_utils.h"
 
-String http_setup_post_root_error_content(std::vector<std::pair<String, String>> errors) {
+void http_setup_post_root_error_content(std::vector<std::pair<String, String>> errors) {
+
+  sendHttpHeader();
+  sendHtmlHeader();
+
   String html = "";
-  html += "<html>";
-  html += "<head>";
-  html += "<title>" + product + " setting done. please restart.</title>";
-  html += "<meta charset='UTF-8'>";
-  html += "<link rel='stylesheet' href='/style.css'>";
-  html += "<style>";
-  html += "  input { width:200px; }";
-  html += "</style>";
-  html += "</head>";
   html += "<body class='setup_err'>";
   html += "<h1>" + product + " Settings  (" + SETTING_ID + ")</h1>";
   html += "<h3>以下の設定値が正しくありません。</h3>";
@@ -39,7 +35,7 @@ String http_setup_post_root_error_content(std::vector<std::pair<String, String>>
   html += "</body>";
   html += "</html>";
 
-  return html;
+  server.sendContent(html);
 }
 
 /**
@@ -55,7 +51,7 @@ void handle_get_root() {
     mainlog("configNoLoad parameter specified. Skip loading config.");
   }
 
-  http_setup_get_root_content();
+  http_send_setup_get_root_html();
 
   // server.send(200, MimeType::HTML, html);
 }
@@ -92,20 +88,12 @@ void handle_post_root() {
     httplog("[OK] Config save start");
     save_config();
     httplog("[OK] Sending done HTML");
-    html = http_setup_post_root_content();
+    http_send_setup_post_root_html();
   } else {
     httplog("Send config error page");
-    html = http_setup_post_root_error_content(errors);
+    http_setup_post_root_error_content(errors);
   }
-
-  server.send(200, MimeType::HTML, html);
 }
-
-void handle_get_style_css() {
-  // httplog(F("style.css accessed"));
-  server.send(200, MimeType::CSS, STYLE_CSS);
-}
-
 
 /**
  * 初期化(設定用Webサーバモード)
@@ -114,7 +102,6 @@ void setup_http_setup() {
   httplog(F("HTTP web server initializing"));
   server.on("/", HTTP_GET, handle_get_root);
   server.on("/", HTTP_POST, handle_post_root);
-  server.on("/style.css", HTTP_GET, handle_get_style_css);
   server.begin();
   httplog(F("HTTP web server initialized"));
 }

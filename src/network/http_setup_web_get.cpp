@@ -11,10 +11,10 @@
 #include "global.h"
 #include "config.h"
 
-#include "embed/style_css.h"
 #include "http_setup.h"
 
 #include "network/webserver.h"
+#include "network/http_utils.h"
 
 typedef struct  {
   String label;
@@ -118,24 +118,13 @@ String _create_radiobuttons(String name, std::vector<LabelValue> choises) {
   return html;
 }
 
-String http_setup_get_root_content() {
+void http_send_setup_get_root_html() {
 
-  server.sendContent("HTTP/1.1 200 OK\r\n");
-  server.sendContent("Content-Type: text/html\r\n");
-  server.sendContent("Connection: close\r\n");
-  server.sendContent("\r\n");
+  sendHttpHeader();
+  sendHtmlHeader();
 
   String html = "";
-  html += "<!doctype html>";
-  html += "<html>";
-  html += "<head>";
-  html += "<meta charset='UTF-8'>";
- 	html += "<meta name='viewport' content='width=device-width'>";
-  html += "<meta name='format-detection' content='telephone=no' />\n";
-  html += "<title>" + product + " setting</title>\n";
-  html += "<style>";
-  html += "</style>\n";
-  html += "</head>\n";
+
   html += "<body>\n";
   html += "<h1>" + product + " Settings  (" + SETTING_ID + ")</h1>";
   html += "<form method='post'>\n";
@@ -310,18 +299,9 @@ String http_setup_get_root_content() {
   server.sendContent(html);
   html = "";
 
-  server.sendContent("<style>\n");
-  server.sendContent(STYLE_CSS);  // String(STYLE_CSS) は使えないので注意（空文字列しか生成されない）
-  server.sendContent("\n</style>");
-
-  server.sendContent(html);
-  html = "";
-
   html += "</body>\n";
   html += "</html>\n";
   
   server.sendContent(html);
   html = "";
-
-  return html;
 }
