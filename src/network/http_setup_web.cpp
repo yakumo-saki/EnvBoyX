@@ -11,15 +11,7 @@
 
 #include "embed/style_css.h"
 
-#ifdef ESP32
-#include <WebServer.h>
-extern WebServer server;
-#endif
-
-#ifdef ESP8266
-#include <ESP8266WebServer.h>
-extern ESP8266WebServer server;
-#endif
+#include "network/webserver.h"
 
 String http_setup_post_root_error_content(std::vector<std::pair<String, String>> errors) {
   String html = "";
@@ -33,16 +25,17 @@ String http_setup_post_root_error_content(std::vector<std::pair<String, String>>
   html += "</style>";
   html += "</head>";
   html += "<body class='setup_err'>";
-  html += "以下の設定値が正しくありません。<br>";
+  html += "<h1>" + product + " Settings  (" + SETTING_ID + ")</h1>";
+  html += "<h3>以下の設定値が正しくありません。</h3>";
   html += "<ul>";
   for (auto& error: errors) {
-    html += "<li>" + error.first + " = " + error.second + "</li>";
+    html += "<li>" + error.first + " = '" + error.second + "'</li>";
   }
   html += "</ul>";
   html += "設定にエラーがあるため、保存できませんでした。<br>";
   html += "以下のリンクから再設定を行ってください。<br>";
   html += "<br>";
-  html += "<a class='setup_again' href='/?configNoLoad'>再設定</a>";
+  html += "<a class='setup_again' href='/?configNoLoad=1'>再設定</a>";
   html += "</body>";
   html += "</html>";
 
@@ -56,12 +49,15 @@ void handle_get_root() {
 
   // エラー画面からの戻りであればConfigを読まない（すでにセットされているから上書きしてしまう）
   if (!server.hasArg("configNoLoad")) {
+    mainlog("No configNoLoad parameter. loading config.");
     read_config();
+  } else {
+    mainlog("configNoLoad parameter specified. Skip loading config.");
   }
 
-  String html = http_setup_get_root_content();
+  http_setup_get_root_content();
 
-  server.send(200, MimeType::HTML, html);
+  // server.send(200, MimeType::HTML, html);
 }
 
 /**
@@ -79,7 +75,6 @@ void handle_post_root() {
     if (argExist) {
       ConfigSetResult result = config->set(key, value);
       if (result == ConfigSetResult::INVALID_VALUE) {
-        httplog("[INVALID_VALUE] " + key + " " + value);
         std::pair<String, String> pair(key, value);
         errors.push_back(pair);
       }

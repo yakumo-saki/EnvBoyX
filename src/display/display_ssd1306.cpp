@@ -88,7 +88,7 @@ void init_u8g2() {
 /**
  * セットアップモード時のディスプレイ表示
  */
-void disp_ssd1306_setup_startup_screen(String ipAddr, int disp_switch) {
+void disp_ssd1306_setup_startup_screen(String ipAddr, String ssid, int disp_switch) {
 
   if (!has_ssd1306()) return;
 
@@ -103,7 +103,7 @@ void disp_ssd1306_setup_startup_screen(String ipAddr, int disp_switch) {
   u8g2.drawStr(0, 16, "Setup mode.");
   u8g2.drawStr(0, 33, ("http://" + ipAddr + "/").c_str() );
   u8g2.setFont(FONT_SSID);
-  u8g2.drawStr(0, 52, config->get(ConfigNames::SSID).c_str());
+  u8g2.drawStr(0, 52, ssid.c_str());
   u8g2.sendBuffer();
 }
 

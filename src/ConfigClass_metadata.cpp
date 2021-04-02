@@ -188,7 +188,7 @@ void Config::loadMetadataAlert(String alertType) {
 void Config::_loadMetadataAlert(String alertType, String suffix) {
   ConfigMeta meta;
   meta.key = this->getAlertKey(alertType, suffix);
-  meta.type = ConfigValueType::String;
+  meta.type = ConfigValueType::Integer;
   meta.flags = RunningConfigChangeFlags::OK;
   this->addMeta(meta);
 }

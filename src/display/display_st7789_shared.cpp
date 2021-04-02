@@ -60,7 +60,7 @@ void clear_screen(bool ignoreBigMode = false) {
 /**
  * セットアップモード時のディスプレイ表示
  */
-void disp_st7789_setup_startup_screen(String ipAddr, int disp_switch)
+void disp_st7789_setup_startup_screen(String ipAddr, String ssid, int disp_switch)
 {
 	static bool inverted = false;
 	if (disp_switch % 3 == 0) {
@@ -81,9 +81,10 @@ void disp_st7789_setup_startup_screen(String ipAddr, int disp_switch)
 	tft.setCursor(0, 0, DEFAULT_FONT);
 
 	tft.println(product_long);
+	tft.println((DEBUG_BUILD ? "** DEBUG BUILD **" : ""));
 	tft.println("Setup Mode");
 	tft.println("http://" + ipAddr + "/");
-	tft.println(config->get(ConfigNames::SSID));
+	tft.println(ssid);
 
 	tft.endWrite();
 }

@@ -11,7 +11,10 @@
 #include "global.h"
 #include "config.h"
 
+#include "embed/style_css.h"
 #include "http_setup.h"
+
+#include "network/webserver.h"
 
 typedef struct  {
   String label;
@@ -115,13 +118,12 @@ String _create_radiobuttons(String name, std::vector<LabelValue> choises) {
   return html;
 }
 
-/**
- * GET 設定画面
- */
 String http_setup_get_root_content() {
 
-  // おかしなconfigファイルが入っていたとしても、デフォルト値が入ってくるので
-  // チェックしなくても安全
+  server.sendContent("HTTP/1.1 200 OK\r\n");
+  server.sendContent("Content-Type: text/html\r\n");
+  server.sendContent("Connection: close\r\n");
+  server.sendContent("\r\n");
 
   String html = "";
   html += "<!doctype html>";
@@ -133,13 +135,14 @@ String http_setup_get_root_content() {
   html += "<title>" + product + " setting</title>\n";
   html += "<style>";
   html += "</style>\n";
-  html += "<link rel='stylesheet' href='/style.css'>";
   html += "</head>\n";
   html += "<body>\n";
   html += "<h1>" + product + " Settings  (" + SETTING_ID + ")</h1>";
   html += "<form method='post'>\n";
   html += "  <br>";
 
+  server.sendContent(html);
+  html = "";
 
   html += "<fieldset><legend class='m_legend_network'>ネットワーク設定</legend>\n";
   html += "  <strong class='m_wifi_info'>WiFi接続情報</strong><br>\n";
@@ -149,13 +152,20 @@ String http_setup_get_root_content() {
   html += "  <br>";
   html += "  <strong>mDNS名(a.k.a Rendezvous, avahi-daemon)</strong><br>\n";
   html += "  ※ mDNS名.local で他端末から本機にアクセスすることができます。<br>\n";
+  #ifdef ESP8266
+  html += "  ※ ESP8266では動作が安定しません（名前解決に失敗する場合がある）<br>\n";
+  #endif
   html += _create_input(ConfigNames::MDNS);
   html += "</fieldset>\n";
  
+  server.sendContent(html);
+  html = "";
 
   html += "<fieldset><legend>動作モード設定</legend>\n";
   html += "  <strong>動作モード</strong><br>\n";
+  #ifdef ESP8266
   html += "  ※ ESP8266でMQTTモードを使用するにはIO16ピンとRSTピンを接続する必要があります。<br>\n";
+  #endif
   {
     std::vector<LabelValue> choises;
     choises.push_back(LabelValue{"常時起動モード（測定値常時表示, HTTPサーバーあり）", ConfigValues::OPMODE_DISPLAY});
@@ -228,6 +238,9 @@ String http_setup_get_root_content() {
   }
   html += "</fieldset>\n";
 
+  server.sendContent(html);
+  html = "";
+
   html += "<fieldset><legend>MH-Z19B デバイス設定</legend>\n";
   html += "  <strong>MH-Z19B CO2センサー有無（金色のセンサー）</strong><br>\n";
   {
@@ -284,15 +297,31 @@ String http_setup_get_root_content() {
 
   html += "</fieldset>\n";
 
+  server.sendContent(html);
+  html = "";
 
   html += "  <br>";
   html += "  <input type='submit' value='設定する'><br>\n";
   html += "</form>\n";
   html += "<br>";
   html += "<hr>";
-  html += product_long + ", Copyright 2018-2021 Yakumo Saki / ziomatrix.org.";
+  html += product_long + ", Copyright 2018-2021 Yakumo Saki / ziomatrix.org.\n";
+
+  server.sendContent(html);
+  html = "";
+
+  server.sendContent("<style>\n");
+  server.sendContent(STYLE_CSS);  // String(STYLE_CSS) は使えないので注意（空文字列しか生成されない）
+  server.sendContent("\n</style>");
+
+  server.sendContent(html);
+  html = "";
+
   html += "</body>\n";
   html += "</html>\n";
+  
+  server.sendContent(html);
+  html = "";
 
   return html;
 }

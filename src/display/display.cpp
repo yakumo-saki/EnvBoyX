@@ -36,15 +36,15 @@ bool use_st7789() {
 /**
  * セットアップモード時のディスプレイ表示
  */
-void disp_setup_startup_screen(String ipAddr) {
+void disp_setup_startup_screen(String ipAddr, String ssid) {
 
 	static int disp_switch = 0;
 
 	if (use_ssd1306()) {
-		disp_ssd1306_setup_startup_screen(ipAddr, disp_switch);	
+		disp_ssd1306_setup_startup_screen(ipAddr, ssid, disp_switch);	
 	}
 	if (use_st7789()) {
-		disp_st7789_setup_startup_screen(ipAddr, disp_switch);
+		disp_st7789_setup_startup_screen(ipAddr, ssid, disp_switch);
 	}
 
 	disp_switch++;

@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-void disp_ssd1306_setup_startup_screen(String ipAddr, int disp_switch);
+void disp_ssd1306_setup_startup_screen(String ipAddr, String ssid, int disp_switch);
 
 void disp_ssd1306_normal_startup_screen(String product_long);
 

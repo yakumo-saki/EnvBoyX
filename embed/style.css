@@ -7,7 +7,7 @@ body.setup_done {
 }
 
 body.setup_err {
-    background-color: rosybrown;
+    background-color: lightsalmon;
 }
 
 input[type='text'] {

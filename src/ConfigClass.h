@@ -144,7 +144,7 @@ class Config {
 
       value.trim();
       
-      if (validate(key, value)) { // need validation
+      if (validate(key, value)) {
         bool setOK = configMap.set(key, value);
         if (!setOK) {
           return ConfigSetResult::OTHER_ERROR;
@@ -158,6 +158,8 @@ class Config {
       return ConfigSetResult::OTHER_ERROR;
     }
 
+    // Validation
+    // @return looks good or bad
     bool validate(String key, String value) {
       ConfigMeta meta = configMetaMap.get(key);
       bool ret = false;
@@ -169,11 +171,10 @@ class Config {
       } else if (meta.type == ConfigValueType::String) {
         ret = true;
       } else {
-        cfglog("Config SET validation invalid type. key=" + key);
+        cfglog("[maybe bug]Config SET validation invalid type. key=" + key);
         ret = false;
       }
 
-      if (!ret) cfglog("Config SET invalid value. key=" + key + " value=" + value);
       return ret;
     }
 

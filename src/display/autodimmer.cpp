@@ -13,7 +13,7 @@
 
 unsigned int belowThreasholdSecond = 0;
 
-int lastBrightness = 255;
+unsigned int lastBrightness = 255;
 
 // 減光中か否か
 bool dimming = false;
@@ -22,8 +22,8 @@ bool dimming = false;
 // * 減光中にAutoDimLuxを超えたLuxになったら即減光解除
 // * 原稿中にAutoDimLux以下のLuxが継続していたら減光続行
 void autodimmer_loop() {
-    int minLux = config->get(ConfigNames::DISPLAY_AUTODIM_LUX).toInt();
-    int waitSecond = config->get(ConfigNames::DISPLAY_AUTODIM_WAIT_SEC).toInt();
+    unsigned int minLux = config->get(ConfigNames::DISPLAY_AUTODIM_LUX).toInt();
+    unsigned int waitSecond = config->get(ConfigNames::DISPLAY_AUTODIM_WAIT_SEC).toInt();
 
     // displog("Autodimmer: lux=" + String(sensorValues.lux) + " minLux=" + String(minLux));
 

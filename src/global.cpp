@@ -25,7 +25,7 @@ extern const String ver_long = " Ver." + ver + "." + minorVer;
 extern const String SETTING_ID = "EBXCFG.v45";
 
 // EnvBoyX Ver.53.0
-extern const String product_long = product + " " + ver_long + (DEBUG_BUILD ? "(DEBUG BUILD)" : "");
+extern const String product_long = product + " " + (DEBUG_BUILD ? " Dev." + ver + "." + minorVer : ver_long);
 
 // --------------------------------------------------------------------
 // デバイス周りの定数
