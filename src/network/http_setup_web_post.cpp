@@ -12,24 +12,19 @@
 #include "config.h"
 
 #include "http_setup.h"
+#include "network/webserver.h"
+#include "network/http_utils.h"
 
 /**
  * Post 設定 ( config の post。 ファイルに設定を保存）
  */
-String http_setup_post_root_content() {
+void http_send_setup_post_root_html() {
+
+  sendHttpHeader();
+  sendHtmlHeader();
 
   String html = "";
-  html += "<html>";
-  html += "<head>";
-  html += "<title>" + product + " setting done. please restart.</title>";
-  html += "<meta charset='UTF-8'>";
-  html += "<link rel='stylesheet' href='/style.css'>";
-  html += "<style>";
-  html += "  input { width:200px; }";
-  html += "</style>";
-  html += "</head>";
   html += "<body class='setup_done'>";
-
   html += "<h1>" + product + " setting done</h1>";
   if (config->get(ConfigNames::OPMODE) == "always") {
     html += "動作モード：常時稼働モード<br>";    
@@ -108,5 +103,5 @@ String http_setup_post_root_content() {
   html += "</body>";
   html += "</html>";
   
-  return html;
+  server.sendContent(html);
 }
