@@ -6,38 +6,54 @@
 
 #include "http_setup.h"
 
+#include "halt.h"
+#include "utils.h"
+
 #include "embed/style_css.h"
 
-#ifdef ESP32
-#include <WebServer.h>
-extern WebServer server;
-#endif
+#include "network/webserver.h"
+#include "network/http_utils.h"
 
-#ifdef ESP8266
-#include <ESP8266WebServer.h>
-extern ESP8266WebServer server;
-#endif
+void http_setup_post_root_error_content(std::vector<std::pair<String, String>> errors) {
+
+  sendHttpHeader();
+  sendHtmlHeader();
+
+  String html = "";
+  html += "<body class='setup_err'>";
+  html += "<h1>" + product + " Settings  (" + SETTING_ID + ")</h1>";
+  html += "<h3>以下の設定値が正しくありません。</h3>";
+  html += "<ul>";
+  for (auto& error: errors) {
+    html += "<li>" + error.first + " = '" + error.second + "'</li>";
+  }
+  html += "</ul>";
+  html += "設定にエラーがあるため、保存できませんでした。<br>";
+  html += "以下のリンクから再設定を行ってください。<br>";
+  html += "<br>";
+  html += "<a class='setup_again' href='/?configNoLoad=1'>再設定</a>";
+  html += "</body>";
+  html += "</html>";
+
+  server.sendContent(html);
+}
 
 /**
  * GET 設定画面
  */
 void handle_get_root() {
 
-  String html = http_setup_get_root_content();
+  // エラー画面からの戻りであればConfigを読まない（すでにセットされているから上書きしてしまう）
+  if (!server.hasArg("configNoLoad")) {
+    mainlog("No configNoLoad parameter. loading config.");
+    read_config();
+  } else {
+    mainlog("configNoLoad parameter specified. Skip loading config.");
+  }
 
-  server.send(200, MimeType::HTML, html);
-}
+  http_send_setup_get_root_html();
 
-void alerts_to_config(config_alert_t& alerts, String prefix) {
-  alerts.caution1.low = server.arg(prefix  + "." + ConfigNames::ALERT_CAUTION1_LO);
-  alerts.caution1.high = server.arg(prefix + "." + ConfigNames::ALERT_CAUTION1_HI);
-  alerts.caution2.low = server.arg(prefix  + "." + ConfigNames::ALERT_CAUTION2_LO);
-  alerts.caution2.high = server.arg(prefix + "." + ConfigNames::ALERT_CAUTION2_HI);
-
-  alerts.warning1.low = server.arg(prefix  + "." + ConfigNames::ALERT_WARN1_LO);
-  alerts.warning1.high = server.arg(prefix + "." + ConfigNames::ALERT_WARN1_HI);
-  alerts.warning2.low = server.arg(prefix  + "." + ConfigNames::ALERT_WARN2_LO);
-  alerts.warning2.high = server.arg(prefix + "." + ConfigNames::ALERT_WARN2_HI);
+  // server.send(200, MimeType::HTML, html);
 }
 
 /**
@@ -45,46 +61,39 @@ void alerts_to_config(config_alert_t& alerts, String prefix) {
  */
 void handle_post_root() {
   
-  config.ssid = server.arg(ConfigNames::SSID);
-  config.password = server.arg(ConfigNames::PASSWORD);
-  config.mDNS = server.arg(ConfigNames::MDNS);
-  config.opMode = server.arg(ConfigNames::OPMODE);
+  std::vector<String> SKIPABLE_KEY {ConfigNames::SETTING_ID};
+  std::vector<std::pair<String, String>> errors;
 
-  config.displayFlip = server.arg(ConfigNames::DISPLAY_FLIP);
-  config.displayBrightness = server.arg(ConfigNames::DISPLAY_BRIGHTNESS);
-  config.displayWaitForReconfigure = server.arg(ConfigNames::DISPLAY_RECONFIG);
+  for (auto &key : config->getKeys()) {
+    bool argExist = server.hasArg(key);
+    // debuglog("server arg key=" + key + " ret=" + (argExist ? "EXIST" : "NONE"));
+    String value = server.arg(key);
+    if (argExist) {
+      ConfigSetResult result = config->set(key, value);
+      if (result == ConfigSetResult::INVALID_VALUE) {
+        std::pair<String, String> pair(key, value);
+        errors.push_back(pair);
+      }
+    } else {
+      if (vectorStringContains(SKIPABLE_KEY, key)) {
+        httplog("[OK] Skippable key. " + key);
+      } else {
+        halt("WebPOST ERR", "NO KEY", key);
+      }
+    }
+  }
 
-  config.oledType = server.arg(ConfigNames::OLED_TYPE);
-
-  config.st7789 = server.arg(ConfigNames::ST7789);
-  config.st7789Mode = server.arg(ConfigNames::ST7789_MODE);
-
-  config.mhz19b = server.arg(ConfigNames::MHZ19B);
-  config.mhz19bPwmPin = server.arg(ConfigNames::MHZ19B_PWM);
-  config.mhz19bRxPin = server.arg(ConfigNames::MHZ19B_RX);
-  config.mhz19bTxPin = server.arg(ConfigNames::MHZ19B_TX);;
-  config.mhz19bABC = server.arg(ConfigNames::MHZ19B_ABC);
-
-  config.mqttBroker = server.arg(ConfigNames::MQTT_BROKER);
-  config.mqttName = server.arg(ConfigNames::MQTT_NAME);
-
-  alerts_to_config(config.temperatureAlerts, ConfigNames::TEMP_ALERT);
-  alerts_to_config(config.humidityAlerts, ConfigNames::HUMI_ALERT);
-  alerts_to_config(config.luxAlerts, ConfigNames::LUX_ALERT);
-  alerts_to_config(config.pressureAlerts, ConfigNames::PRES_ALERT);
-  alerts_to_config(config.co2Alerts, ConfigNames::CO2_ALERT);
-
-  trim_config();
-  String html = http_setup_post_root_content();
-
-  server.send(200, MimeType::HTML, html);
+  String html;
+  if (errors.size() == 0) {
+    httplog("[OK] Config save start");
+    save_config();
+    httplog("[OK] Sending done HTML");
+    http_send_setup_post_root_html();
+  } else {
+    httplog("Send config error page");
+    http_setup_post_root_error_content(errors);
+  }
 }
-
-void handle_get_style_css() {
-  httplog(F("style.css accessed"));
-  server.send(200, MimeType::CSS, STYLE_CSS);
-}
-
 
 /**
  * 初期化(設定用Webサーバモード)
@@ -93,7 +102,6 @@ void setup_http_setup() {
   httplog(F("HTTP web server initializing"));
   server.on("/", HTTP_GET, handle_get_root);
   server.on("/", HTTP_POST, handle_post_root);
-  server.on("/style.css", HTTP_GET, handle_get_style_css);
   server.begin();
   httplog(F("HTTP web server initialized"));
 }

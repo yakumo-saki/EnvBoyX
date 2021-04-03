@@ -94,6 +94,8 @@ bool has_valid_config_file() {
   LittleFS.begin();
   delay(50);
 
+  String settingId = "";
+
   if (!LittleFS.exists(ConfigValues::settings)) {
     cfglog(ConfigValues::settings + " not found.");
     return false;
@@ -101,14 +103,14 @@ bool has_valid_config_file() {
     File f = LittleFS.open(ConfigValues::settings, "r");
     cfglog(ConfigValues::settings + " filesize = " + String(f.size()));
 
-    read_config_file(f);
+    settingId = read_config_setting_id(f);
     f.close();
 
-    if (String(SETTING_ID).equals(config.settingId)) {
-      cfglog("SETTING_ID verified. " + config.settingId);
+    if (String(SETTING_ID).equals(settingId)) {
+      cfglog("SETTING_ID verified. " + settingId);
       return true;
     } else {
-      cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + config.settingId);
+      cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + settingId);
       return false;
     }
   }

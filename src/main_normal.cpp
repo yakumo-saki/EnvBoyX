@@ -4,7 +4,9 @@
 #include <TimerCall.h>
 
 #include "config.h"
+#include "ConfigClass.h"
 #include "display/display.h"
+#include "display/autodimmer.h"
 #include "global.h"
 #include "halt.h"
 #include "http_normal.h"
@@ -21,6 +23,7 @@
 #include "sensors/tsl2561.h"
 #include "sensors/freeHeap.h"
 #include "sensors/delta.h"
+#include "sensors/stastics.h"
 #include "watchdog.h"
 #include "wifi.h"
 
@@ -83,52 +86,7 @@ void init_sensors() {
 }
 
 void call_disp_sensor_value() {
-  disp_sensor_value(get_wifi_ip_addr(), config.mDNS);
-}
-
-// 統計情報を取得
-void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {
-  const String STAT = "stastics";
-
-  DynamicJsonDocument doc(500);
-  doc["time"] = millis();
-
-  int idx = 0;
-  for (auto it = tasks.begin(), e = tasks.end(); it != e; ++it) {
-    // statlog(+"name=" + String(it->info.name) +
-    //         " last=" + String(it->info.lastExecMills) +
-    //         " last exec=" + String(it->info.lastElapsedMills) +
-    //         " total=" + String(it->info.totalElapsedMills) +
-    //         " count=" + String(it->info.callCount));
-
-    // 統計
-    doc[STAT][idx]["name"] = String(it->info.name);
-    doc[STAT][idx]["lastExecMs"] = it->info.lastExecMills;
-    doc[STAT][idx]["lastElapsedMs"] = it->info.lastElapsedMills;
-    doc[STAT][idx]["totalElapsedMs"] = it->info.totalElapsedMills;
-    doc[STAT][idx]["callCount"] = it->info.callCount;
-    idx++;
-  }
-
-  String logmsg = "";
-  if (DEBUG_BUILD) logmsg += "**DEBUG BUILD** ";
-
-  logmsg += "Statstics updated.";
-#ifdef ESP32
-  doc["cputemp"] = temperatureRead();  // CPU温度
-  logmsg += " cpuTemp=" + String(temperatureRead());
-  logmsg += " freeHeap=" + String(ESP.getFreeHeap());
-#endif
-
-#ifdef ESP8266
-  logmsg += " freeHeap=" + String(ESP.getFreeHeap());
-#endif
-
-  statlog(logmsg); // これくらいは出しておかないと動いてるのかわからなくなるので出す
-
-  String json = "";
-  serializeJson(doc, json);
-  stasticsJSON = json;
+  disp_sensor_value(get_wifi_ip_addr(), config->get(ConfigNames::MDNS));
 }
 
 // センサー読み込み以外のタスクをタイマーに追加する
@@ -141,12 +99,20 @@ void add_timer_tasks() {
   } else {
     timer.add(store_history, "STORE_HISTORY", 60000);    // 履歴を毎分保存
   }
-  timer.add(store_delta, "STORE_DELTA", 1000); // 履歴と今の気圧の差を保存
+  timer.add(store_delta, "STORE_DELTA", 1000); // 値の履歴
+
+  if (sensorCharacters.lux) {
+    timer.add(autodimmer_loop, "AUTO_DIMMER", 1000);
+  }
 
   // 画面表示はセンサー読み込みよりあとに実行したいので最後に追加する
   timer.add(call_disp_sensor_value, "DISP", 1000);
   timer.add(store_free_heap, "FREE_HEAP", 15000);
-  timer.addStasticsFunction(updateStastics, "STAT", 60000);
+  if (DEBUG_BUILD) {
+    timer.addStasticsFunction(updateStastics, "STAT", 15000);
+  } else {
+    timer.addStasticsFunction(updateStastics, "STAT", 60000);
+  }
 }
 
 /**
@@ -167,7 +133,7 @@ void setup_normal() {
     halt("config err", "setup again", "Reset now");
   }
 
-  if (config.opMode == ConfigValues::OPMODE_MQTT) {
+  if (config->get(ConfigNames::OPMODE) == ConfigValues::OPMODE_MQTT) {
     setup_normal_mqtt();
     return;  // MQTTモードの場合はもう戻ってこない（ディープスリープする）
   }
@@ -176,7 +142,7 @@ void setup_normal() {
   setup_watchdog();
 
   // setupモードに入りやすくするための処理
-  if (config.displayWaitForReconfigure == ConfigValues::DISPLAY_RECONFIG_ON) {
+  if (config->get(ConfigNames::DISPLAY_RECONFIG) == ConfigValues::DISPLAY_RECONFIG_ON) {
     sectionlog(F("Reset to reconfig start."));
     remove_configure_flag_file();
 
@@ -194,7 +160,7 @@ void setup_normal() {
   sectionlog(F("Connecting WiFi."));
   disp_wifi_starting(1);
   make_sure_wifi_connected();
-  disp_wifi_info(get_wifi_ip_addr(), config.mDNS);
+  disp_wifi_info(get_wifi_ip_addr(), config->get(ConfigNames::MDNS));
 
   mdns_setup();
 
@@ -209,7 +175,7 @@ void setup_normal() {
   timer.forceRunStasticsOnce();
 
   // 初期化終了時に画面表示をどうにかできるフック
-  disp_all_initialize_complete(get_wifi_ip_addr(), config.mDNS);
+  disp_all_initialize_complete(get_wifi_ip_addr(), config->get(ConfigNames::MDNS));
 
 }
 

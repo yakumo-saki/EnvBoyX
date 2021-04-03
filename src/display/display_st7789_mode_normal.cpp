@@ -58,7 +58,7 @@ void _clear_screen_normal() {
 	tft.fillScreen(TFT_BLACK);
 
 	// 横画面
-	if (config.displayFlip == ConfigValues::DISPLAY_FLIP_OFF) {
+	if (config->get(ConfigNames::DISPLAY_FLIP) == ConfigValues::DISPLAY_FLIP_OFF) {
 		tft.setRotation(1);
 	} else {
 		tft.setRotation(3);
@@ -278,12 +278,12 @@ void _disp_sensor_value_normal(disp_values_t values, value_alerts_t alerts)
 	// ========================
 	// Alert Sidebar
 	// ========================
-	if (has_caution(alerts)) {
-		tft.fillRect(0, ROW1_Y, SIDE_LINE_WIDTH, MAX_Y, TFT_YELLOW);
-		tft.fillRect(MAX_X - SIDE_LINE_WIDTH, ROW1_Y, MAX_X, MAX_Y, TFT_YELLOW);
-	} else if (has_warning(alerts)) {
+	if (has_warning(alerts)) {
 		tft.fillRect(0, ROW1_Y, SIDE_LINE_WIDTH, MAX_Y, TFT_RED);
 		tft.fillRect(MAX_X - SIDE_LINE_WIDTH, ROW1_Y, MAX_X, MAX_Y, TFT_RED);
+	} else if (has_caution(alerts)) {
+		tft.fillRect(0, ROW1_Y, SIDE_LINE_WIDTH, MAX_Y, TFT_YELLOW);
+		tft.fillRect(MAX_X - SIDE_LINE_WIDTH, ROW1_Y, MAX_X, MAX_Y, TFT_YELLOW);
 	} else {
 		tft.fillRect(0, ROW1_Y, SIDE_LINE_WIDTH, MAX_Y, TFT_BLACK);
 		tft.fillRect(MAX_X - SIDE_LINE_WIDTH, ROW1_Y, MAX_X, MAX_Y, TFT_BLACK);

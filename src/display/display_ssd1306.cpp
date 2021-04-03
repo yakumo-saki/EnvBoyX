@@ -78,7 +78,7 @@ void init_u8g2() {
   u8g2.clearBuffer();
   u8g2.setFontPosTop(); // 文字描画の座標指定を左上にする（default=baseline)
 
-  if (config.displayFlip == ConfigValues::DISPLAY_FLIP_ON) {
+  if (config->get(ConfigNames::DISPLAY_FLIP) == ConfigValues::DISPLAY_FLIP_ON) {
     u8g2.setDisplayRotation(U8G2_R2);
   } else {
     u8g2.setDisplayRotation(U8G2_R0);
@@ -88,7 +88,7 @@ void init_u8g2() {
 /**
  * セットアップモード時のディスプレイ表示
  */
-void disp_ssd1306_setup_startup_screen(String ipAddr, int disp_switch) {
+void disp_ssd1306_setup_startup_screen(String ipAddr, String ssid, int disp_switch) {
 
   if (!has_ssd1306()) return;
 
@@ -103,7 +103,7 @@ void disp_ssd1306_setup_startup_screen(String ipAddr, int disp_switch) {
   u8g2.drawStr(0, 16, "Setup mode.");
   u8g2.drawStr(0, 33, ("http://" + ipAddr + "/").c_str() );
   u8g2.setFont(FONT_SSID);
-  u8g2.drawStr(0, 52, config.ssid.c_str());
+  u8g2.drawStr(0, 52, ssid.c_str());
   u8g2.sendBuffer();
 }
 
@@ -134,7 +134,7 @@ void disp_ssd1306_wifi_starting() {
 
 void disp_ssd1306_wifi_info(String ip, String mDNS) {
 
-  disp_ssd1306_message(false, config.ssid, ip, mDNS, "Starting up...");
+  disp_ssd1306_message(false, config->get(ConfigNames::SSID), ip, mDNS, "Starting up...");
    
 }
 
@@ -361,7 +361,7 @@ void setup_disp_ssd1306() {
 
   ssdlog("initialize start.");
   if (has_ssd1306()) {
-    if (config.oledType == ConfigValues::OLED_SSD1306) {
+    if (config->get(ConfigNames::OLED_TYPE) == ConfigValues::OLED_SSD1306) {
       ssdlog("Using SSD1306");
       u8g2 = u8g2_ssd1306;
     } else {

@@ -2,6 +2,8 @@
 #include <ArduinoJson.h>
 #include "structs.h"
 #include "TimerCall.h"
+#include "ConfigClass.h"
+
 
 // --------------------------------------------------------------------
 // プロダクト名定数
@@ -15,16 +17,15 @@ extern const bool DEBUG_BUILD = false;
 
 // EnvBoyX
 extern const String product = "EnvBoyX";
-extern const String ver = "44";      // Major
+extern const String ver = "45";      // Major
 extern const String minorVer = "0";  // Bugfix
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
 // Setting version
-extern const String SETTING_ID = "EBXCFG.v44";
+extern const String SETTING_ID = "EBXCFG.v45";
 
 // EnvBoyX Ver.53.0
-extern const String product_long = product + " " + ver_long + (DEBUG_BUILD ? "(DEBUG BUILD)" : "");
-
+extern const String product_long = product + " " + (DEBUG_BUILD ? " Dev." + ver + "." + minorVer : ver_long);
 
 // --------------------------------------------------------------------
 // デバイス周りの定数
@@ -42,11 +43,6 @@ extern const int I2C_SCL = 4;
 #endif
 
 // --------------------------------------------------------------------
-// 設定値保存
-// --------------------------------------------------------------------
-config_t config;
-
-// --------------------------------------------------------------------
 // センサー値
 // --------------------------------------------------------------------
 sensor_values_t sensorValues;
@@ -57,6 +53,11 @@ sensor_characters_t sensorCharacters;
 // 統計情報
 // --------------------------------------------------------------------
 String stasticsJSON;
+
+// --------------------------------------------------------------------
+// Config
+// --------------------------------------------------------------------
+Config *config;
 
 // --------------------------------------------------------------------
 // タイマー

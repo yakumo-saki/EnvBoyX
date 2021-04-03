@@ -18,10 +18,6 @@ void _get_config() {
 
   std::vector<String> keyArray = stringSplit(keys, ",");
 
-  for (const auto& k : keyArray) {
-    debuglog(k);
-  }
-
   DynamicJsonDocument json = create_config_json(keyArray);
   json["command"] = "CONFIG_GET";
   json["success"] = true;
@@ -33,11 +29,7 @@ void _get_config() {
 
 void _set_config() {
 
-  DynamicJsonDocument json = updateConfig();
-  json["command"] = "CONFIG_SET";
-
-  String jsonStr;
-  serializeJson(json, jsonStr);
+  String jsonStr = updateConfig();
 
   server.send(200, MimeType::JSON, jsonStr);
 }

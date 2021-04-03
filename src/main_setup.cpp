@@ -18,7 +18,7 @@
 extern TimerCall timer;
 
 void show_setup_startup_screen() {
-  disp_setup_startup_screen(WiFi.softAPIP().toString());
+  disp_setup_startup_screen(WiFi.softAPIP().toString(), WiFi.softAPSSID());
 }
 
 /**

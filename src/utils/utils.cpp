@@ -27,12 +27,11 @@ bool parseBooleanString(const String val) {
 bool vectorStringContains(const std::vector<String> &keyArray, const String& key) {
 
   for (const String k : keyArray) {
-    debuglog(k);
     if (k == key) { 
-      debuglog("return true " + key);
+      // debuglog("return true " + key);
       return true;
     }
   }
-  debuglog("return false " + key);
+  // debuglog("return false " + key);
   return false;
 }

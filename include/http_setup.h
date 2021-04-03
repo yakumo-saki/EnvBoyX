@@ -5,12 +5,12 @@
 /**
  * SETUP GET / 
  */
-String http_setup_post_root_content();
+void http_send_setup_post_root_html();
 
 /**
  * SETUP POST / 
  */
-String http_setup_get_root_content();
+void http_send_setup_get_root_html();
 
 /* 以下は共通 */
 

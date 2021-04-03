@@ -15,7 +15,7 @@ void IRAM_ATTR resetModule() {
 
 void IRAM_ATTR watchdog_feed() {
     // debuglog("watchdog feeded");
-    if (watchdogTimer != NULL) {
+    if (watchdogTimer != NULL && watchdogTimer != nullptr) {
         timerWrite(watchdogTimer, 0);
         yield();
     }

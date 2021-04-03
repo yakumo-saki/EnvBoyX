@@ -9,7 +9,7 @@ EnvBoyX has http web API.
 | 2.0   | GET | /             | JSON | sensor value as JSON.|
 | 2.0   | GET | /ping         | TEXT | returns pong. |
 | 39.0  | GET | /stastics     | JSON | stastics JSON |
-| 3.4   | GET | /brightness   | JSON | value=0-255 set display brightness (0-255) 0 means OFF |
+| 3.4   | GET | /brightness   | JSON | value=0-255 set display brightness (0-255) 0 means OFF (adHoc, not config) |
 | 3.4   | GET | /display      | JSON | set display power (1 = ON / 0 = OFF) |
 | 40.0  | POST | /goto_setup  | JSON | Go to setup mode at next boot |
 | 41.0  | POST | /mhz19b/abc  | JSON | value=1 ON value=0 OFF |
@@ -45,6 +45,8 @@ values: `config_values.cpp`
 | st7789Mode | "st7789_BIG", "st7789_normal" | n | ST7789 display mode |
 | displayFlip | "yes", "no" | n | Flip display or not |
 | displayWaitForReconfigure | "skip", "on" | n | Skip on boot wait for reconfigure screen |
+| displayAutoDimLux | integer | n | Minimum lux to display off |
+| displayAutoDimWaitSec | integer | n | Wait time to display off |
 | opMode | "always", "mqtt" | y | Operation mode |
 | mDNS | string | n | mDNS hostname |
 | co2Alerts  | {alerts} | n | See alerts section |

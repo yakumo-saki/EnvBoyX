@@ -27,7 +27,8 @@ void setup()
   Serial.println(""); 
   Serial.println("");
 
-//  Serial.println(test);
+  sectionlog(F("Initializing Config."));
+  config = &Config::getInstance();
 
   sectionlog(F("Initializing FS."));
   mainlog(F("Starting config"));

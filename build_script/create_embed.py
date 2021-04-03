@@ -23,11 +23,13 @@ EMBED_DIR=os.path.join(os.getcwd(), "embed")            # embedしたいファ�
 OUT_DIR=os.path.join(os.getcwd(), "include", "embed")  # 変換した .h ファイルの出力先
 TEMPLATE_FILE=os.path.join(os.getcwd(), "build_script", "template.cpp")
 
-print("=" * 78)
+SEP_LENGTH = 90;
+
+print("=" * SEP_LENGTH)
 print("create_embed.py executing.")
 print(f"EMBED_DIR = {EMBED_DIR}")
 print(f"OUT_DIR   = {OUT_DIR}")
-print("=" * 78)
+print("=" * SEP_LENGTH)
 
 # access to global build environment
 #print(env.Dump())
@@ -64,6 +66,6 @@ for file in pathlib.Path(EMBED_DIR).iterdir():
     print(f"generated {output_cpp_path}")
 
 
-print("=" * 78)
+print("=" * SEP_LENGTH)
 print("DONE")
-print("=" * 78)
+print("=" * SEP_LENGTH)

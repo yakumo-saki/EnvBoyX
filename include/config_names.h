@@ -18,6 +18,8 @@ class ConfigNames {
     static const String DISPLAY_FLIP;
     static const String DISPLAY_BRIGHTNESS;
     static const String DISPLAY_RECONFIG;
+    static const String DISPLAY_AUTODIM_LUX; // v45
+    static const String DISPLAY_AUTODIM_WAIT_SEC; // v45
 
     static const String OLED_TYPE;
 
@@ -38,6 +40,13 @@ class ConfigNames {
     static const String LUX_ALERT;
     static const String PRES_ALERT;
     static const String CO2_ALERT;
+
+    static const String ALERT_WARN1;
+    static const String ALERT_WARN2;
+    static const String ALERT_CAUTION1;
+    static const String ALERT_CAUTION2;
+    static const String ALERT_LO;
+    static const String ALERT_HI;
 
     static const String ALERT_WARN1_LO;
     static const String ALERT_WARN1_HI;
