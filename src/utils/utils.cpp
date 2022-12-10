@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <vector>
 
 #include "log.h"
 
@@ -23,7 +24,7 @@ bool parseBooleanString(const String val) {
     return false;
 }
 
-// 
+// returns string exist in vector<String>
 bool vectorStringContains(const std::vector<String> &keyArray, const String& key) {
 
   for (const String k : keyArray) {
