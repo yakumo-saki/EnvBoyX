@@ -50,6 +50,16 @@ os.mkdir(OUT_DIR)
 template = readall(TEMPLATE_FILE)
 
 for file in pathlib.Path(EMBED_DIR).iterdir():
+    #print(file.name)
+    if file.is_dir():
+        print(f"ignored sub directory {file.name}")
+        continue
+
+    if file.name.endswith(".md") or file.name.endswith(".sh"):
+        print(f"ignored markdown file {file.name}")
+        continue
+
+    # start generating source
     output = template
     data = readall(file)
 
