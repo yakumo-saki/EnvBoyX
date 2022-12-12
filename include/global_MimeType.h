@@ -8,4 +8,5 @@ class MimeType {
     static const String TEXT;
     static const String JSON;
     static const String CSS;
+    static const String JAVASCRIPT;
 };
