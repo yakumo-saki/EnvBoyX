@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <vector>
+
 #include "log.h"
 
 template <typename T>
