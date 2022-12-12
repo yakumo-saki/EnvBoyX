@@ -5,10 +5,16 @@
 .vscode/launch.json
 .vscode/ipch
 .vscode
+
 # embed is auto generated directory.
 include/embed/**
+
+# temporary place files when develop web ui
+embed/static/**
+
 _release
 _release/**
+
 EnvBoyX.zip
 EnvBoyX.tar.gz
 EnvBoyX-*.tar.gz

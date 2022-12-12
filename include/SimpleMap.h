@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Arduino.h>
+#include <vector>
+
 #include "log.h"
 
 template <typename T>
@@ -38,7 +40,7 @@ template <typename T> class SimpleMap {
     }
 
     int findIndex(String key) {
-      for (int i = 0; i < vector.size(); i++) {
+      for (unsigned int i = 0; i < vector.size(); i++) {
         // debuglog("NOW=" + vector[i].key + " target=" + key);
         if (vector[i].key == key) return i;
       }

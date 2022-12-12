@@ -1,3 +1,23 @@
-[*.cpp,*.h, *.hpp]
-indent_size = 2;
+root = true
+
+charset = utf-8
+
+[*.{cpp,h,hpp}]
+indent_size = 2
 indent_style = space
+
+[*.{py}]
+indent_size = 4
+indent_style = space
+
+[*.{htm,html,css}]
+indent_size = 4
+indent_style = space
+
+[*.{yml,yaml}]
+indent_size = 2
+indent_style = space
+
+[*.{ini}]
+indent_size = 4
+indent_style = tab

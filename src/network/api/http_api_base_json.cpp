@@ -17,7 +17,7 @@ String get_time_string(unsigned long ms) {
   int min = (second / 60) % 60;
   int hr =  minute / 60;
 
-  char buf[10];
+  char buf[15];
   snprintf (buf, sizeof buf,"%02d:%02d:%02d", hr, min, sec);
   return String(buf);
 }

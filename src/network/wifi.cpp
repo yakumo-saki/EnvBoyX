@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include <vector>
+#include <numeric>
 
 // WiFi
 #ifdef ESP32

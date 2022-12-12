@@ -3,11 +3,21 @@
 #include "network/webserver.h"
 #include "embed/style_css.h"
 
-void sendHttpHeader() {
+void sendHttpHeader(String contentType) {
   server.sendContent("HTTP/1.1 200 OK\r\n");
-  server.sendContent("Content-Type: text/html\r\n");
+  server.sendContent("Content-Type: " + contentType + "\r\n");
   server.sendContent("Connection: close\r\n");
   server.sendContent("\r\n");
+}
+
+void sendHttpRedirectHeader(String url) {
+  server.sendContent("HTTP/1.0 301 Moved Permanently\r\n");
+  server.sendContent("Location: " + url + "\r\n");
+  server.sendContent("\r\n");
+}
+
+void sendHttpHeader() {
+  sendHttpHeader(MimeType::HTML);
 }
 
 void sendHtmlHeader() {

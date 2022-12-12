@@ -118,6 +118,13 @@ EnvBoyX has HTTP web API.
 * WeMos D1mini
 * NodeMCU V3
 
+## build note
+
+* Use python script to store some html, css
+* Script is stored in build_script
+* Script is automatically executed by platformio
+* See platform.io [env] extra_script for details.
+
 ## Version History
 
 see [Version History](docs/history.md) for details.
