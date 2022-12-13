@@ -10,3 +10,6 @@ void sendHtmlHeader();
 
 // HTTP REDIRECTヘッダを送信する。これを実行したあとは何も送れない
 void sendHttpRedirectHeader(String url);
+
+// CORS リクエストに応答する（http OPTIONS リクエスト)
+void http_handle_cors();

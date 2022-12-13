@@ -43,5 +43,6 @@ void http_web_config_setup() {
   server.on("/static/style.css", HTTP_GET, handle_get_style_css);
   server.on("/static/config.js", HTTP_GET, handle_get_config_js);
   server.on("/webconfig", HTTP_GET, handle_get_webconfig);
+  
   httplog(F("HTTP web config initialized"));
 }

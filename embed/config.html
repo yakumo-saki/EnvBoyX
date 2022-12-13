@@ -11,7 +11,7 @@
 </head>
 
 <body>
-  <h1>EnvBoyX Settings (EBXCFG.v45)</h1>
+  <h1>EnvBoyX Settings (settingID: <span replace="settingId">EBXCFG.vXX</span>)</h1>
   <form method='post'>
     <br>
     <fieldset>
@@ -52,7 +52,7 @@
       </label><br>
 
       <strong>明るさ(0-255)</strong><br>
-      <input type='number' name='displayBrightness' placeholder='brightness 0-255' value='98'><br>
+      <input type='number' name='displayBrightness' placeholder='brightness 0-255' value='255'><br>
       
       <strong>Wait for reconfigure画面</strong><br>
       ※ 表示しない場合、セットアップモードに入るためにはWeb APIを使用する必要があります。<br>
@@ -71,7 +71,7 @@
       <strong>自動消灯する明るさ（暗いと判定するしきい値）</strong><br>
       <span>※ 光量センサーがない場合は自動的に無効になります。</span><br>
       <span>※ 自動消灯を使用しない場合は、999999を入力してください。</span><br>
-      <input type='number' name='displayAutoDimLux' placeholder='Lux' value='5'><br>
+      <input type='number' name='displayAutoDimLux' placeholder='Lux' value='999999'><br>
 
       <strong>自動消灯判定時間</strong><br>
       <span>※ しきい値未満の明るさがこの時間継続したら消灯します。</span><br>
@@ -134,14 +134,14 @@
         使用する（UARTモード）
       </label><br>
 
-      <input type='' name='mhz19bPwmPin' placeholder='14' class='hidden' value='14'><br>
+      <input type='' name='mhz19bPwmPin' placeholder='14' class='hidden' value='99'><br>
 
       <strong>MH-Z19BのUARTが接続されているGPIOピン番号</strong><br>
       ※ MH-Z19Bを使用しない場合は設定不要<br> ※ ESP8266では RX 14 TX 0 で固定<br> ※ ボードによって使用可能なピンが異なるので動作しない場合は他のピンを試してください。<br>
       RXピン&nbsp;
-      <input type='number' name='mhz19bRxPin' placeholder='16' value='32'><br>
+      <input type='number' name='mhz19bRxPin' placeholder='16' value='88'><br>
       TXピン&nbsp;
-      <input type='number' name='mhz19bTxPin' placeholder='17' value='33'><br>
+      <input type='number' name='mhz19bTxPin' placeholder='17' value='77'><br>
       
       <br> <strong>起動時のAuto Baseline Correction</strong><br>
       ※ MH-Z19Bを使用しない場合・MH-Z19BがUARTモード以外の場合は無視されます。<br> 
@@ -169,70 +169,70 @@
       <fieldset>
         <legend>気温</legend>
         <span class='m_caution1'>注意１</span>:&nbsp;
-        <input type='number' name='tempAlerts.caut1.L' class='num' value='10'>
+        <input type='number' name='tempAlerts.caut1.L' class='num' value='0'>
         以上
-        <input type='number' name='tempAlerts.caut1.H' class='num' value='15'>
+        <input type='number' name='tempAlerts.caut1.H' class='num' value='0'>
         未満<br>
         <span class='m_caution1'>注意２</span>:&nbsp;
-        <input type='number' name='tempAlerts.caut2.L' class='num' value='28'>
+        <input type='number' name='tempAlerts.caut2.L' class='num' value='1'>
         以上
-        <input type='number' name='tempAlerts.caut2.H' class='num' value='30'>
+        <input type='number' name='tempAlerts.caut2.H' class='num' value='1'>
         未満<br>
         <span class='m_caution1'>警報１</span>:&nbsp;
-        <input type='number' name='tempAlerts.warn1.L' class='num' value='-99'>
+        <input type='number' name='tempAlerts.warn1.L' class='num' value='-991'>
         以上
-        <input type='number' name='tempAlerts.warn1.H' class='num' value='10'>
+        <input type='number' name='tempAlerts.warn1.H' class='num' value='100'>
         未満<br>
         <span class='m_caution1'>警報２</span>:&nbsp;
-        <input type='number' name='tempAlerts.warn2.L' class='num' value='30'>
+        <input type='number' name='tempAlerts.warn2.L' class='num' value='3340'>
         以上
-        <input type='number' name='tempAlerts.warn2.H' class='num' value='99'>
+        <input type='number' name='tempAlerts.warn2.H' class='num' value='9339'>
         未満<br>
       </fieldset>
       <fieldset>
         <legend>湿度</legend>
         <span class='m_caution1'>注意１</span>:&nbsp;
-        <input type='number' name='humiAlerts.caut1.L' class='num' value='20'>
+        <input type='number' name='humiAlerts.caut1.L' class='num' value='21110'>
         以上
-        <input type='number' name='humiAlerts.caut1.H' class='num' value='35'>
+        <input type='number' name='humiAlerts.caut1.H' class='num' value='33535'>
         未満<br>
         <span class='m_caution1'>注意２</span>:&nbsp;
-        <input type='number' name='humiAlerts.caut2.L' class='num' value='65'>
+        <input type='number' name='humiAlerts.caut2.L' class='num' value='65555'>
         以上
-        <input type='number' name='humiAlerts.caut2.H' class='num' value='75'>
+        <input type='number' name='humiAlerts.caut2.H' class='num' value='75555'>
         未満<br>
         <span class='m_caution1'>警報１</span>:&nbsp;
-        <input type='number' name='humiAlerts.warn1.L' class='num' value='0'>
+        <input type='number' name='humiAlerts.warn1.L' class='num' value='1102'>
         以上
-        <input type='number' name='humiAlerts.warn1.H' class='num' value='20'>
+        <input type='number' name='humiAlerts.warn1.H' class='num' value='3320'>
         未満<br>
         <span class='m_caution1'>警報２</span>:&nbsp;
-        <input type='number' name='humiAlerts.warn2.L' class='num' value='75'>
+        <input type='number' name='humiAlerts.warn2.L' class='num' value='432475'>
         以上
-        <input type='number' name='humiAlerts.warn2.H' class='num' value='100'>
+        <input type='number' name='humiAlerts.warn2.H' class='num' value='142300'>
         未満<br>
       </fieldset>
       <fieldset>
         <legend>照度</legend>
         <span class='m_caution1'>注意１</span>:&nbsp;
-        <input type='number' name='luxAlerts.caut1.L' class='num' value='-1'>
+        <input type='number' name='luxAlerts.caut1.L' class='num' value='-1234'>
         以上
-        <input type='number' name='luxAlerts.caut1.H' class='num' value='-1'>
+        <input type='number' name='luxAlerts.caut1.H' class='num' value='-1444'>
         未満<br>
         <span class='m_caution1'>注意２</span>:&nbsp;
-        <input type='number' name='luxAlerts.caut2.L' class='num' value='-1'>
+        <input type='number' name='luxAlerts.caut2.L' class='num' value='-155'>
         以上
-        <input type='number' name='luxAlerts.caut2.H' class='num' value='-1'>
+        <input type='number' name='luxAlerts.caut2.H' class='num' value='-166'>
         未満<br>
         <span class='m_caution1'>警報１</span>:&nbsp;
-        <input type='number' name='luxAlerts.warn1.L' class='num' value='0'>
+        <input type='number' name='luxAlerts.warn1.L' class='num' value='550'>
         以上
-        <input type='number' name='luxAlerts.warn1.H' class='num' value='1'>
+        <input type='number' name='luxAlerts.warn1.H' class='num' value='661'>
         未満<br>
         <span class='m_caution1'>警報２</span>:&nbsp;
-        <input type='number' name='luxAlerts.warn2.L' class='num' value='2000'>
+        <input type='number' name='luxAlerts.warn2.L' class='num' value='2222'>
         以上
-        <input type='number' name='luxAlerts.warn2.H' class='num' value='99999'>
+        <input type='number' name='luxAlerts.warn2.H' class='num' value='4444'>
         未満<br>
       </fieldset>
       <fieldset>
@@ -285,7 +285,7 @@
     <br> <input type='submit' value='設定する'><br>
   </form>
   <br>
-  <hr>EnvBoyX Ver.45.0, Copyright 2018-2021 Yakumo Saki / ziomatrix.org.
+  <hr>EnvBoyX <span replace="productVer">Ver.00.0</span>, Copyright 2018-2022 Yakumo Saki / ziomatrix.org.
 </body>
 
 </html>
