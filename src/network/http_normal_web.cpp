@@ -7,7 +7,9 @@
 
 #include "http_normal.h"
 
+#include "network/http_not_found.h"
 #include "network/http_api.h"
+#include "network/http_api_ping.h"
 #include "network/http_api_base.h"
 #include "network/http_api_display.h"
 #include "network/http_api_mhz.h"
@@ -21,6 +23,8 @@ extern HTTPWEBSERVER server;
 void http_setup_normal() {
   httplog("HTTP web server initializing");
   
+  http_not_found_setup();
+  http_api_ping_setup();
   http_api_display_setup();
   http_api_base_setup();
   http_api_mhz_setup();

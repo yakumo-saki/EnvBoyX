@@ -16,11 +16,6 @@ void http_handle_data() {
   server.send(200, MimeType::JSON, message);
 }
 
-void http_handle_ping() {
-  String message = http_normal_ping_json();
-  server.send(200, MimeType::JSON, message);
-}
-
 void http_handle_stastics() {
   server.send(200, MimeType::JSON, stasticsJSON);
 }
@@ -39,17 +34,10 @@ void http_handle_goto_setup() {
   server.send(200, MimeType::JSON, jsonStr);
 }
 
-void http_handle_not_found() {
-  String message = http_normal_not_found_html();
-  server.send(404, MimeType::HTML, message);
-}
-
 void http_api_base_setup() {
-  server.on ( "/ping", HTTP_GET, http_handle_ping);
   server.on ( "/", HTTP_GET, http_handle_data );
   server.on ( "/stastics", HTTP_GET, http_handle_stastics );
   server.on ( "/goto_setup", HTTP_POST, http_handle_goto_setup );
 
-  server.onNotFound ( http_handle_not_found );
   apilog("API Base initialized.");
 }
