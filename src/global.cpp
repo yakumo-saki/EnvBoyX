@@ -13,11 +13,11 @@
 extern const String product_short = "EBX";
 
 // Enable debug function
-extern const bool DEBUG_BUILD = false;
+extern const bool DEBUG_BUILD = true;
 
 // EnvBoyX
 extern const String product = "EnvBoyX";
-extern const String ver = "45";      // Major
+extern const String ver = "46";      // Major
 extern const String minorVer = "0";  // Bugfix
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
