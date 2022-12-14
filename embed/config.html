@@ -18,8 +18,8 @@
       <legend class='m_legend_network'>ネットワーク設定</legend>
       <strong class='m_wifi_info'>WiFi接続情報</strong><br>
       <span class='m_wifi_msg2'>※ 2.4GHz帯のみ対応しています。</span><br>
-      <input type='text' name='ssid' placeholder='WiFi SSID' value='ssid'><br>
-      <input type='text' name='password' placeholder='WiFi Password' value='password'><br>
+      <span class="header">SSID</span><input type='text' name='ssid' placeholder='WiFi SSID' value='ssid'><br>
+      <span class="header">パスワード</span><input type='password' name='password' placeholder='※ 変更時のみ入力' value=''> <br>
       <br> <strong>mDNS名(a.k.a Rendezvous, avahi-daemon)</strong><br>
       ※ mDNS名.local で他端末から本機にアクセスすることができます。<br>
       <input type='text' name='mDNS' value='mdnsname'><br>
@@ -28,13 +28,13 @@
       <legend>動作モード設定</legend>
       <strong>動作モード</strong><br>
       <label>
-        <input type='radio' name='opMode' value='always' id='opMode__always' checked>
+        <input type='radio' name='opMode' value='always' id='opMode__always'>
         常時起動モード（測定値常時表示, HTTPサーバーあり）
       </label><br>
       
       <label>
         <input type='radio' name='opMode' value='mqtt' id='opMode__mqtt'>  
-        MQTTモード（間欠動作・MQTT送信後ディープスリープ）
+        MQTTモード（間欠動作・MQTT送信後ディープスリープ・非推奨）
       </label><br>
     </fieldset>
     <fieldset>
@@ -42,7 +42,7 @@
       <strong>画面反転</strong><br>
       
       <label>
-        <input type='radio' name='displayFlip' value='no' id='displayFlip__no' checked>
+        <input type='radio' name='displayFlip' value='no' id='displayFlip__no'>
         反転しない
       </label><br>
       
@@ -52,13 +52,13 @@
       </label><br>
 
       <strong>明るさ(0-255)</strong><br>
-      <input type='number' name='displayBrightness' placeholder='brightness 0-255' value='255'><br>
+      <input type='number' name='displayBrightness' class="num" placeholder='brightness 0-255' value='255'><br>
       
       <strong>Wait for reconfigure画面</strong><br>
       ※ 表示しない場合、セットアップモードに入るためにはWeb APIを使用する必要があります。<br>
       
       <label>
-        <input type='radio' name='displayWaitForReconfigure' value='on' id='displayWaitForReconfigure__on' checked>
+        <input type='radio' name='displayWaitForReconfigure' value='on' id='displayWaitForReconfigure__on'>
         表示する（推奨）
       </label><br>
       
@@ -71,18 +71,18 @@
       <strong>自動消灯する明るさ（暗いと判定するしきい値）</strong><br>
       <span>※ 光量センサーがない場合は自動的に無効になります。</span><br>
       <span>※ 自動消灯を使用しない場合は、999999を入力してください。</span><br>
-      <input type='number' name='displayAutoDimLux' placeholder='Lux' value='999999'><br>
+      <input type='number' name='displayAutoDimLux'  class="num" placeholder='Lux' value='999999'><br>
 
       <strong>自動消灯判定時間</strong><br>
       <span>※ しきい値未満の明るさがこの時間継続したら消灯します。</span><br>
-      <input type='number' name='displayAutoDimWaitSec' placeholder='second to display sleep' value='10'><br>
+      <input type='number' name='displayAutoDimWaitSec' class="num" placeholder='second to display sleep' value='10'><br>
     </fieldset>
     <fieldset>
       <legend>I2C OLED デバイス設定</legend>
       ※ 接続されていない場合無視されます。画面端にゴミが表示されている、または数ドット欠けている場合は変更してください。<br>
       
       <label>
-        <input type='radio' name='oledType' value='SSD' id='oledType__SSD' checked>
+        <input type='radio' name='oledType' value='SSD' id='oledType__SSD'>
         SSD1306
       </label><br>
 
@@ -102,14 +102,14 @@
       </label><br>
            
       <label>
-        <input type='radio' name='st7789' value='yes' id='st7789__yes' checked>
+        <input type='radio' name='st7789' value='yes' id='st7789__yes'>
         使用する
       </label><br>
       
       <strong>ST7789 表示モード</strong><br>
       
       <label>
-        <input type='radio' name='st7789Mode' value='st7789_normal' id='st7789Mode__st7789_normal' checked>
+        <input type='radio' name='st7789Mode' value='st7789_normal' id='st7789Mode__st7789_normal'>
         横表示モード
       </label><br>
 
@@ -124,31 +124,34 @@
       <strong>MH-Z19B CO2センサー有無（金色のセンサー）</strong><br>
       
       <label>
-        <input type='radio' name='mhz19b' value='no' id='mhz19b__no' checked>
+        <input type='radio' name='mhz19b' value='no' id='mhz19b__no'>
         使用しない
       </label><br>
-
-      
+     
       <label>
         <input type='radio' name='mhz19b' value='yes_uart' id='mhz19b__yes_uart'>
         使用する（UARTモード）
       </label><br>
 
-      <input type='' name='mhz19bPwmPin' placeholder='14' class='hidden' value='99'><br>
+      <label>
+        <input type='radio' name='mhz19b' value='yes_pwm' id='mhz19b__yes_pwm' disabled>
+        使用する（PWMモード・非サポート）
+      </label><br>
+      <input type='hidden' name='mhz19bPwmPin' placeholder='14' class='hidden' value='99' readonly><br>
 
       <strong>MH-Z19BのUARTが接続されているGPIOピン番号</strong><br>
       ※ MH-Z19Bを使用しない場合は設定不要<br> ※ ESP8266では RX 14 TX 0 で固定<br> ※ ボードによって使用可能なピンが異なるので動作しない場合は他のピンを試してください。<br>
       RXピン&nbsp;
-      <input type='number' name='mhz19bRxPin' placeholder='16' value='88'><br>
+      <input type='number' class="num" name='mhz19bRxPin' placeholder='16' value='88'><br>
       TXピン&nbsp;
-      <input type='number' name='mhz19bTxPin' placeholder='17' value='77'><br>
+      <input type='number' class="num" name='mhz19bTxPin' placeholder='17' value='77'><br>
       
-      <br> <strong>起動時のAuto Baseline Correction</strong><br>
-      ※ MH-Z19Bを使用しない場合・MH-Z19BがUARTモード以外の場合は無視されます。<br> 
+      <br> <strong>MH-Z19BのAuto Baseline Correction</strong><br>
+      ※ MH-Z19Bを使用しない場合は無視されます。<br> 
       
       <label>
-        <input type='radio' name='mhz19bAbc' value='no' id='mhz19bAbc__no' checked>
-        無効（標準）
+        <input type='radio' name='mhz19bAbc' value='no' id='mhz19bAbc__no'>
+        無効（推奨）
       </label><br>
       
       <label>
@@ -159,7 +162,7 @@
     <fieldset>
       <legend>MQTTモード専用設定</legend>
       <strong>MQTTブローカーのIPアドレス</strong><br>
-      ※ ホスト名も可能ですが、mDNS(bonjour, avahi)は使用出来ません。<br>
+      ※ ホスト名も指定可能です。mDNS(bonjour, avahi)は使用出来ません。<br>
       <input type='text' name='mqttBroker' placeholder='MQTT Broker' value=''><br>
       <br> <strong>MQTT名</strong><br>
       ※ クライアント名とトピック名として使用<br><input type='text' name='mqttName' placeholder='MQTT Client Name' value=''><br>

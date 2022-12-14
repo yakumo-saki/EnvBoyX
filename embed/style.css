@@ -11,12 +11,17 @@ body.setup_err {
     background-color: lightsalmon;
 }
 
-input[type='text'] {
-    width: 200px;
+span.header {
+    display: inline-block;
+    width: 6em;
+}
+
+input[type='text'],input[type='password'] {
+    width: 15em;
 }
 
 input.num {
-    width: 50px;
+    width: 6em;
 }
 
 input[type='submit'] {

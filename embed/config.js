@@ -79,13 +79,23 @@ function setConfigValuesToPage(configMap) {
 
   configMap.forEach( (v, k) => {
     console.log("key", k, 'val', v);
+
     const el = document.querySelector(`input[name="${k}"]`);
     if (el == null) {
       console.log(`key ${k} is not found on document.`);
       return;
     }
 
-    el.value = v;
+    if (el.type === "radio") {
+      const radio = document.querySelector(`input[name="${k}"][value="${v}"]`);
+      if (radio == null) {
+        console.log(`radio button name=${k} value=${v} is not found on document.`);
+      }
+      radio.checked = true;
+    } else {
+      // input type=text,password,number
+      el.value = v;
+    }
   });
 
 }
