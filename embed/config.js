@@ -101,7 +101,7 @@ function setConfigValuesToPage(configMap) {
 }
 
 async function loadConfig() {
-  const res = await httpGet('/config/backup', CONTENT_TEXT)
+  const res = await httpGet('/api/v1/config', CONTENT_JSON)
   const backupCmd = await res.text();
   console.log(backupCmd);
 
