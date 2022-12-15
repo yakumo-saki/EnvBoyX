@@ -7,13 +7,13 @@
 
 #include "http_normal.h"
 
+#include "network/webserver.h"
 #include "network/http_not_found.h"
-#include "network/http_api.h"
-#include "network/http_api_ping.h"
-#include "network/http_api_base.h"
-#include "network/http_api_display.h"
-#include "network/http_api_mhz.h"
-#include "network/http_api_config.h"
+#include "network/api/basic_api.h"
+#include "network/api/v1/display.h"
+#include "network/api/v1/mhz19b.h"
+#include "network/api/v1/config.h"
+#include "network/api/v1/getdata.h"
 
 #include "network/http_web_config.h"
 
@@ -24,11 +24,12 @@ void http_setup_normal() {
   httplog("HTTP web server initializing");
   
   http_not_found_setup();
-  http_api_ping_setup();
+  http_api_basic_setup();
   http_api_display_setup();
-  http_api_base_setup();
+  http_api_getdata_setup();
   http_api_mhz_setup();
   http_api_config_setup();
+
   http_web_config_setup();
   
   server.begin(); 

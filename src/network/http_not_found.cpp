@@ -3,11 +3,9 @@
 
 #include "config.h"
 
-#include "log.h"
 #include "global.h"
-#include "display/display.h"
-#include "network/http_api.h"
-#include "network/http_api_base_json.h"
+
+#include "network/webserver.h"
 
 extern HTTPWEBSERVER server;
 

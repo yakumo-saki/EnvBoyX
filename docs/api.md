@@ -13,7 +13,7 @@ EnvBoyX has http web API.
 | 3.4   | GET | /display      | JSON | set display power (1 = ON / 0 = OFF) |
 | 40.0  | POST | /goto_setup  | JSON | Go to setup mode at next boot |
 | 41.0  | POST | /mhz19b/abc  | JSON | value=1 ON value=0 OFF |
-| 41.0  | POST | /mhz19b/zeroCalibration | TEXT | __DANGER__ Use if you know what you are doing |
+| 41.0  | POST | /mhz19b/zeroCalibration | TEXT | __DANGER__ if you know what you are doing. see MHZ19B datasheet before run. |
 | 42.0  | GET  | /config                 | JSON | Get config |
 | 42.0  | POST | /config                 | JSON | Change config |
 | 42.0  | POST | /config/commit          | JSON | Save config |
@@ -106,3 +106,24 @@ OK
 $ curl -X POST http://[envboy IP or mDNShostname.local]/goto_setup
 OK
 ```
+
+### Appendix API urls before v46
+
+| since | METHOD | ENDPOINT      | RETURN | description                |
+| ------| ------ | ------------- | -------------------------- | -------|
+| 2.0   | GET | /             | JSON | sensor value as JSON.|
+| 2.0   | GET | /ping         | TEXT | returns pong. |
+| 39.0  | GET | /stastics     | JSON | stastics JSON |
+| 3.4   | GET | /brightness   | JSON | value=0-255 set display brightness (0-255) 0 means OFF (adHoc, not config) |
+| 3.4   | GET | /display      | JSON | set display power (1 = ON / 0 = OFF) |
+| 40.0  | POST | /goto_setup  | JSON | Go to setup mode at next boot |
+| 41.0  | POST | /mhz19b/abc  | JSON | value=1 ON value=0 OFF |
+| 41.0  | POST | /mhz19b/zeroCalibration | TEXT | __DANGER__ Use if you know what you are doing |
+| 42.0  | GET  | /config                 | JSON | Get config |
+| 42.0  | POST | /config                 | JSON | Change config |
+| 42.0  | POST | /config/commit          | JSON | Save config |
+| 42.0  | POST | /config/revert          | JSON | Revert to last saved config |
+| 43.0  | GET | /config/backup          | TEXT | Get current running config on curl command line |
+| 44.0  | POST | /config/factory-reset   | JSON | Delete ALL configs | 
+
+NOTE: There is no reboot API, because of security reason.

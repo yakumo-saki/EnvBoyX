@@ -3,8 +3,8 @@
 
 #include "log.h"
 #include "global.h"
-#include "network/http_api.h"
-#include "network/http_api_util.h"
+#include "network/webserver.h"
+#include "network/api/api_util.h"
 #include "sensors/mhz19_uart.h"
 
 extern HTTPWEBSERVER server;
@@ -72,9 +72,9 @@ void _mhz_zero_calibration() {
 }
 
 void http_api_mhz_setup() {
-  server.on ( "/mhz19b/abc", HTTP_GET, _get_mhz_abc );
-  server.on ( "/mhz19b/abc", HTTP_POST, _set_mhz_abc );
-  server.on ( "/mhz19b/zeroCalibration", HTTP_POST, _mhz_zero_calibration );
+  server.on ( "/api/v1/mhz19b/abc", HTTP_GET, _get_mhz_abc );
+  server.on ( "/api/v1/mhz19b/abc", HTTP_POST, _set_mhz_abc );
+  server.on ( "/api/v1/mhz19b/zeroCalibration", HTTP_POST, _mhz_zero_calibration );
 
   apilog("API MHZ-19B initialized.");
 }

@@ -1,5 +1,4 @@
 #include <Arduino.h>
-
 #include <ArduinoJson.h>
 
 // Config SET API のエントリポイント

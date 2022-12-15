@@ -10,8 +10,8 @@
 
 #include "mdns_client.h"
 
-#include "network/http_api.h"
-#include "network/http_api_util.h"
+#include "network/webserver.h"
+#include "network/api/api_util.h"
 #include "display/display.h"
 
 extern unsigned int CONF_JSON_SIZE;

@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include <vector>
+#include <ArduinoJson.h>
 
 bool parseBooleanString(const String value);
 std::vector<String> stringSplit(String value, String delimiter);

@@ -4,7 +4,7 @@
 #include "log.h"
 #include "global.h"
 #include "display/display.h"
-#include "network/http_api.h"
+#include "network/webserver.h"
 
 extern HTTPWEBSERVER server;
 
@@ -43,8 +43,8 @@ void http_handle_brightness() {
 }
 
 void http_api_display_setup() {
-  server.on ( "/brightness", HTTP_GET, http_handle_brightness );
-  server.on ( "/display", HTTP_GET, http_handle_power );
+  server.on ( "/api/v1/brightness", HTTP_GET, http_handle_brightness );
+  server.on ( "/api/v1/display", HTTP_GET, http_handle_power );
 
   apilog("API Display initialized.");
 }

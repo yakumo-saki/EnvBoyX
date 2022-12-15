@@ -1,10 +1,16 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
+#include "config.h"
+
 #include "log.h"
 #include "global.h"
+#include "display/display.h"
+#include "network/webserver.h"
+#include "network/api/api_util.h"
 
-#include "network/http_api_util.h"
+
+extern HTTPWEBSERVER server;
 
 String http_normal_data_json() {
 
@@ -31,4 +37,15 @@ String http_normal_data_json() {
   String json;
   serializeJson(doc, json);
   return json;
+}
+
+void http_handle_data() {
+  String message = http_normal_data_json();
+  server.send(200, MimeType::JSON, message);
+}
+
+void http_api_getdata_setup() {
+  server.on ( "/api/v1/getdata", HTTP_GET, http_handle_data );
+
+  apilog("API getdata initialized.");
 }

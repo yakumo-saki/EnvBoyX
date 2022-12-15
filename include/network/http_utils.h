@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 // HTTP ヘッダ (HTTP 1.1 〜) text/htmlで送信する
 void sendHttpHeader();
 
