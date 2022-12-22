@@ -13,7 +13,7 @@ EnvBoyX has http web API.
 | 3.4   | GET | /api/v1/brightness   | JSON | value=0-255 set display brightness (0-255) 0 means OFF (adHoc, not config) |
 | 3.4   | GET | /api/v1/display      | JSON | set display power (1 = ON / 0 = OFF) |
 | 41.0  | POST | /api/v1/mhz19b/abc  | JSON | value=1 ON value=0 OFF |
-| 41.0  | POST | /api/v1/mhz19b/zeroCalibration | TEXT | __DANGER__ if you know what you are doing. see MHZ19B datasheet before run. |
+| 41.0  | POST | /api/v1/mhz19b/zeroCalibration | TEXT | __DANGER__ use if you know what you are doing. see below |
 | 42.0  | GET  | /api/v1/config                 | JSON | Get config |
 | 42.0  | POST | /api/v1/config                 | JSON | Change config |
 | 42.0  | POST | /api/v1/config/commit          | JSON | Save config |
@@ -22,6 +22,11 @@ EnvBoyX has http web API.
 | 44.0  | POST | /api/v1/config/factory-reset   | JSON | Delete ALL configs | 
 
 NOTE: There is no reboot API, because of security reason.
+
+## /api/v1/mhz19b/zeroCalibration
+
+This method may break your MHZ19B accuracy.
+By datasheet, place mh-z19b in under 400ppm for at least 20 minutes.
 
 ## /api/v1/config API
 

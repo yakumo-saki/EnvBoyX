@@ -22,9 +22,10 @@ void _get_config() {
 
   std::vector<String> keyArray = stringSplit(keys, ",");
 
-  DynamicJsonDocument json = create_config_json(keyArray);
+  DynamicJsonDocument json(1200);
   json["command"] = "CONFIG_GET";
   json["success"] = true;
+  json["config"] = create_config_json(keyArray);
 
   String jsonStr;
   serializeJson(json, jsonStr);

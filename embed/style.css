@@ -24,7 +24,7 @@ input.num {
     width: 6em;
 }
 
-input[type='submit'] {
+input#submit {
     width: 200px;
     height: 48px;
 }
