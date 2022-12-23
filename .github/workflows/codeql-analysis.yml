@@ -66,7 +66,7 @@ jobs:
       run: pip install --upgrade platformio
 
     - name: Build PlatformIO Project
-      run: pio run build
+      run: pio run
 
     # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # If this step fails, then you should remove it and run the build manually (see below)
