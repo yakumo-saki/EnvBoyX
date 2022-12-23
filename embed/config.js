@@ -156,12 +156,9 @@ async function saveConfig() {
     if (!window.confirm("変更を保存してよろしいですか？")) {
         return;
     }
-      
 
     // 一個ずつコミット
-    configDiff.forEach((_, key) => {
-        console.log(key, configDiff[key]);
-    });
+    
 
     // config commit
     alert("committed");
