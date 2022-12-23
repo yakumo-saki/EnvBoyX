@@ -41,7 +41,7 @@ jobs:
       run: ls -la
 
     - name: generate embedded resources
-      run: build_script/create_embed.py
+      run: python build_script/create_embed.py
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
