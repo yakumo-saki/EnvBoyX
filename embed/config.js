@@ -1,7 +1,7 @@
 "use strict";
 
 const DEBUG_MODE = true;
-const DEBUG_API_HOST = "10.1.0.130"; // デバッグ時、APIを投げる先
+const DEBUG_API_HOST = "10.1.0.110"; // デバッグ時、APIを投げる先
 
 const CONTENT_JSON = "application/json";
 const CONTENT_TEXT = "text/plain";
@@ -90,7 +90,40 @@ function setConfigValuesToPage(configMap) {
 }
 
 /**
- * 
+ * configのキー、値をWeb上の要素にセット。checkboxには対応していない
+ * @param {string} key 
+ * @returns boolean 成功 or 失敗
+ */
+function setInputValue(key, value) {
+
+    const els = document.querySelectorAll(`input[name='${key}']`);
+    if (els.length > 1) {
+        // RADIO
+        const elements = document.querySelectorAll(`input[name='${key}'][value='${value}']`);
+        if (elements.length > 1) {
+            console.log(`failed. multiple elements found ${key}=${value}`);
+            return false;
+        } else if (elements.length < 1) {
+            console.log(`failed. no elements found ${key}=${value}`);
+            return false;
+        }
+
+        elements[0].checked = true;
+        return;
+    } else if (els.length == 1) {
+        els[0].value = value;
+        return true;
+    } else if (els.length == 0) {
+        console.log(key, "element not found");
+        return false;
+    }
+
+    return true;
+}
+
+
+/**
+ * Web上の要素から値を取得
  * @param {string} key 
  * @returns string
  */
