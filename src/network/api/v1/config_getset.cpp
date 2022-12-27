@@ -146,9 +146,9 @@ String updateConfig() {
   json["msgs"] = msgs;
 
   if (flags.configFailed) {
-    json["message"] = "Some error detected. Check msg.";
+    json["message"] = "Some error detected. Check msgs.";
   } else {
-    json["message"] = "Don't forget calling /config/commit.";
+    json["message"] = "Don't forget calling config/commit. API";
   }
   json.shrinkToFit();
 

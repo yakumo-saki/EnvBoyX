@@ -202,7 +202,6 @@ function createConfigDiff(orgMap, newMap) {
 /**
  * ConfigをEnvBoyに保存するAPIを呼ぶ
  * @param {Map<string,string>} configMap 
- * @param {boolean} withCommit Commitを行うか否か。
  * @return {object} result
  */
 async function saveConfig(configMap) {
@@ -217,14 +216,24 @@ async function saveConfig(configMap) {
     }
 }
 
-async function commitConfig() {
+async function commitRevertConfig(isCommit = true) {
+    const URL = "/api/v1/config/" + (isCommit ? "commit" : "revert");
     try {
-        const commit = await httpPost("/api/v1/config/commit", "", CONTENT_JSON);
+        const commit = await httpPost(URL, "", CONTENT_JSON);
         return commit;
     } catch (err) {
         throw `Failed to commit config: ${err}`;
     }
 }
+
+async function commitConfig() {
+    return commitRevertConfig(true);
+}
+
+async function revertConfig() {
+    return commitRevertConfig(false);
+}
+
 
 /**
  * 保存ボタンの処理
@@ -257,15 +266,22 @@ async function saveConfigButton() {
         const res = await saveConfig(configDiff);
         const result = await res.json();
         if (result.success != true) {
-            alert("Config send failed.");
+            alert("設定内容にエラーがあります。設定は反映されていません。\n" + result.message + "\n"
+                    + result.msgs.join("\n"));
             return;
         }
 
         const commit = await commitConfig();
         const commitResult = await commit.json();
         if (commitResult.success != true) {
-            alert("Config commit failed.");
+            alert("設定の保存に失敗しました。");
             return;
+        }
+
+        if (result.needReboot) {
+            alert("設定を保存しました。\n再起動するまで反映されない設定があります。");
+        } else {
+            alert("設定を保存しました。");
         }
 
     } catch (err) {
@@ -273,8 +289,6 @@ async function saveConfigButton() {
         return;
     }
 
-    // config commit
-    alert("Done");
 }
 
 /**
@@ -307,6 +321,8 @@ async function loadConfig() {
 
         const configObj = json["config"];
         const confMap = configObjectToMap(configObj);
+        
+        confMap.set("password", ""); // Add password as empty for later use
         LAST_CONFIG = confMap;
     
         setConfigValuesToPage(confMap);

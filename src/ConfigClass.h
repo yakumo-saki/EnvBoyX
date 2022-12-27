@@ -30,10 +30,10 @@ enum class ConfigValueType {
 
 // APIにより起動中に設定を変更する際の後処理を表す
 enum class RunningConfigChangeFlags {
-  OK = 0,                    // 反映された。
-  REBOOT_REQ = 1,            // 反映されたが、再起動するまで反映されない
-  DISPLAY_REDRAW_REQ = 2,    // 反映されたが、液晶を再描画する必要がある
-  MDNS_RESTART_REQ = 3,      // 反映されたが、mDNSを再起動する必要がある
+  OK = 0,                    // 後処理は不要
+  REBOOT_REQ = 1,            // 再起動するまで反映されない
+  DISPLAY_REDRAW_REQ = 2,    // 液晶を再描画する必要がある
+  MDNS_RESTART_REQ = 3,      // mDNSを再起動する必要がある
   BLOCKED = 4,               // その設定は変更できない
 };
 
