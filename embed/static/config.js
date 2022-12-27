@@ -5,6 +5,7 @@ const DEBUG_API_HOST = "10.1.0.110"; // デバッグ時、APIを投げる先
 
 const CONTENT_JSON = "application/json";
 const CONTENT_TEXT = "text/plain";
+const CONTENT_FORM = "application/x-www-form-urlencoded"
 const IGNORE_KEY = ["settingId"]
 
 // 画面ロード時のconfig。保存時に差分を取るために使用する。
@@ -23,18 +24,52 @@ function toPath(relativePath) {
     return path + relativePath;
 }
 
-function httpGet(relativePath, contentType = CONTENT_JSON) {
+async function httpGet(relativePath, contentType = CONTENT_JSON) {
     if (DEBUG_MODE) {
         console.log("httpGet " + toPath(relativePath));
     }
 
-    return fetch(toPath(relativePath), {
+    const ret = await fetch(toPath(relativePath), {
         method: "GET",
         cache: "no-cache",
         headers: {
             "Content-Type": contentType,
         },
     });
+
+    if (!ret.ok) {
+        throw `httpGet: ${relativePath} response is not ok. ${ret.status} ${ret.statusText}`
+    }
+
+    return ret;
+}
+
+/**
+ * 
+ * @param {string} relativePath 
+ * @param {object} body 
+ * @param {string} contentType CONTENT_*
+ * @returns promise
+ */
+async function httpPost(relativePath, body, contentType = CONTENT_TEXT) {
+    if (DEBUG_MODE) {
+        console.log("httpPost " + toPath(relativePath));
+    }
+
+    const ret = await fetch(toPath(relativePath), {
+        method: "POST",
+        cache: "no-cache",
+        headers: {
+            "Content-Type": contentType,
+        },
+        body: body
+    });
+
+    if (!ret.ok) {
+        throw `httpPost: ${relativePath} response is not ok. ${ret.status} ${ret.statusText}`
+    }
+
+    return ret;
 }
 
 function replaceVersion(replaceName, value) {
@@ -155,7 +190,7 @@ function createConfigDiff(orgMap, newMap) {
 
     orgMap.forEach((val, key) => {
         const newVal = newMap.get(key);
-        console.log("diff", key, val, newVal);
+        // console.log("diff", key, val, newVal);
         if (val !== newVal) {
             ret.set(key, newVal);
         }
@@ -165,9 +200,36 @@ function createConfigDiff(orgMap, newMap) {
 }
 
 /**
- * Configの反映
+ * ConfigをEnvBoyに保存するAPIを呼ぶ
+ * @param {Map<string,string>} configMap 
+ * @param {boolean} withCommit Commitを行うか否か。
+ * @return {object} result
  */
-async function saveConfig() {
+async function saveConfig(configMap) {
+    const params = new URLSearchParams()
+    configMap.forEach((v,k) => params.append(k, v));
+
+    try {
+        const res = await httpPost("/api/v1/config", params, CONTENT_FORM);
+        return res;
+    } catch (err) {
+        throw `Failed to send config: ${err}`;
+    }
+}
+
+async function commitConfig() {
+    try {
+        const commit = await httpPost("/api/v1/config/commit", "", CONTENT_JSON);
+        return commit;
+    } catch (err) {
+        throw `Failed to commit config: ${err}`;
+    }
+}
+
+/**
+ * 保存ボタンの処理
+ */
+async function saveConfigButton() {
     
     const newConfig = new Map();
 
@@ -177,10 +239,11 @@ async function saveConfig() {
         newConfig.set(key, val);
     });
 
-    // 差分作成
-    const configDiff = createConfigDiff(LAST_CONFIG, newConfig);
+    console.log(newConfig);
 
-    //
+    // 差分作成
+    let configDiff = createConfigDiff(LAST_CONFIG, newConfig);
+
     if (configDiff.size == 0) {
         alert("変更がありません");
         return;
@@ -190,11 +253,28 @@ async function saveConfig() {
         return;
     }
 
-    // 一個ずつコミット
-    
+    try {
+        const res = await saveConfig(configDiff);
+        const result = await res.json();
+        if (result.success != true) {
+            alert("Config send failed.");
+            return;
+        }
+
+        const commit = await commitConfig();
+        const commitResult = await commit.json();
+        if (commitResult.success != true) {
+            alert("Config commit failed.");
+            return;
+        }
+
+    } catch (err) {
+        console.log(err);
+        return;
+    }
 
     // config commit
-    alert("committed");
+    alert("Done");
 }
 
 /**
@@ -215,29 +295,42 @@ function configObjectToMap(configObj) {
 }
 
 async function loadConfig() {
-    const res = await httpGet("/api/v1/config", CONTENT_JSON);
-    const json = await res.json();
-    console.log(json);
+    try {
+        const res = await httpGet("/api/v1/config", CONTENT_JSON);
+        const json = await res.json();
+        console.log(json);
 
-	if (!json["success"]) {
-		alert("エラーが発生しました。");
-	}
+        if (!json["success"]) {
+            alert("エラーが発生しました。");
+            return;
+        }
 
-    const configObj = json["config"];
-    const confMap = configObjectToMap(configObj);
-    LAST_CONFIG = confMap;
+        const configObj = json["config"];
+        const confMap = configObjectToMap(configObj);
+        LAST_CONFIG = confMap;
+    
+        setConfigValuesToPage(confMap);
+    
+    } catch (err) {
+        alert(err);
+        return;
+    }
 
-    setConfigValuesToPage(confMap);
 }
 
 document.addEventListener("DOMContentLoaded", async (event) => {
+    const waitDialog = document.getElementById("waitDialog");
+    waitDialog.showModal();
+
     console.log("DOM fully loaded and parsed");
     document.getElementById("submit").addEventListener("click", async (event) => {
         console.log("Submit Clicked");
-        await saveConfig();
-    });   
+        await saveConfigButton();
+    });
 
     await setPageValues();
     await loadConfig();
+
+    waitDialog.close();
 });
 

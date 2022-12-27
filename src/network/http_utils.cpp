@@ -17,7 +17,6 @@ void http_handle_cors() {
   server.sendContent("Connection: close\r\n");
 }
 
-
 void sendHttpHeader(String contentType) {
   server.sendContent("HTTP/1.1 200 OK\r\n");
   server.sendContent("Content-Type: " + contentType + "\r\n");

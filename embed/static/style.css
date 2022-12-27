@@ -32,3 +32,7 @@ input#submit {
 a.setup_again {
     font-size: 150%;
 }
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+}
