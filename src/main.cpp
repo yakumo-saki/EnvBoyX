@@ -38,9 +38,12 @@ void setup()
   isNormal = has_valid_config();
 
   if (!isNormal) {
+    OPERATING_MODE = OPERATING_MODE_SETUP;
     sectionlog(F("Entering setup mode."));
+
     setup_setupmode(); 
   } else {
+    OPERATING_MODE = OPERATING_MODE_NORMAL;
     sectionlog(F("Entering normal mode."));
 
     setup_normal();

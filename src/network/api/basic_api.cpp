@@ -27,31 +27,20 @@ String http_normal_ping_json() {
   doc["majorVer"] = ver;
   doc["minorVer"] = minorVer;
   doc["settingId"] = SETTING_ID; 
+  
+  if (OPERATING_MODE == OPERATING_MODE_NORMAL) {
+    doc["mode"] = "NORMAL";
+  } else if (OPERATING_MODE == OPERATING_MODE_SETUP) {
+    doc["mode"] = "SETUP";
+  } else {
+    doc["mode"] = "INVALID";
+  }
 
   String json;
   serializeJson(doc, json);
 
   httplog(json);
   return json;
-}
-
-
-void http_handle_stastics() {
-  server.send(200, MimeType::JSON, stasticsJSON);
-}
-
-void http_handle_goto_setup() {
-
-  remove_configure_flag_file();
-  
-  DynamicJsonDocument json(200);
-  json["command"] = "GOTO_SETUP";
-  json["success"] = true;
-  json["msg"] = "OK. Entering setup mode at next boot.";
-
-  String jsonStr;
-  serializeJson(json, jsonStr);
-  server.send(200, MimeType::JSON, jsonStr);
 }
 
 void http_handle_ping() {
@@ -62,9 +51,9 @@ void http_handle_ping() {
 
 void http_api_basic_setup() {
   server.on ( "/ping", HTTP_GET, http_handle_ping);
-  server.on ( "/stastics", HTTP_GET, http_handle_stastics );
-  server.on ( "/goto_setup", HTTP_POST, http_handle_goto_setup );
 
+  // Config web ではPingが最初に実行されるので、ここにOPTION CORSの問い合わせが飛んでくる
+  // 一度答えればキャッシュされるようなので他のAPIには不要
   server.on ( "/ping", HTTP_OPTIONS, http_handle_cors);
 
   apilog("Basic API initialized.");

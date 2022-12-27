@@ -22,6 +22,11 @@ extern const String SETTING_ID;
 
 extern const bool DEBUG_BUILD;
 
+// SETUPモード OR NORMALモード
+extern const int OPERATING_MODE_NORMAL;
+extern const int OPERATING_MODE_SETUP;
+extern int OPERATING_MODE;
+
 // --------------------------------------------------------------------
 // デバイス周りの定数
 // --------------------------------------------------------------------

@@ -1,0 +1,1 @@
+void http_api_stastics_setup();

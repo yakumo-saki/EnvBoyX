@@ -63,3 +63,10 @@ Config *config;
 // タイマー
 // --------------------------------------------------------------------
 TimerCall timer = TimerCall();
+
+// --------------------------------------------------------------------
+// 動作モード
+// --------------------------------------------------------------------
+extern const int OPERATING_MODE_NORMAL = 2;
+extern const int OPERATING_MODE_SETUP = 1;
+int OPERATING_MODE = 0;

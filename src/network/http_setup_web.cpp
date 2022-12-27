@@ -20,14 +20,11 @@
 
 extern HTTPWEBSERVER server;
 
-void http_setup_normal() {
+void setup_http_setup() {
   httplog("HTTP web server initializing");
   
   http_not_found_setup();
   http_api_basic_setup();
-  http_api_display_setup();
-  http_api_getdata_setup();
-  http_api_mhz_setup();
   http_api_config_setup();
 
   http_web_config_setup();
@@ -36,6 +33,6 @@ void http_setup_normal() {
   httplog("HTTP web server initialized");
 }
 
-void http_loop_normal() {
+void loop_http_setup() {
   server.handleClient();
 }

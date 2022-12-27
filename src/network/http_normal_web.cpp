@@ -9,6 +9,8 @@
 
 #include "network/webserver.h"
 #include "network/http_not_found.h"
+#include "network/stastics_api.h"
+#include "network/goto_setup_api.h"
 #include "network/api/basic_api.h"
 #include "network/api/v1/display.h"
 #include "network/api/v1/mhz19b.h"
@@ -24,6 +26,9 @@ void http_setup_normal() {
   httplog("HTTP web server initializing");
   
   http_not_found_setup();
+  http_api_gotosetup_setup();
+  http_api_stastics_setup();
+
   http_api_basic_setup();
   http_api_display_setup();
   http_api_getdata_setup();
