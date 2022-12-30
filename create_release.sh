@@ -1,10 +1,8 @@
 #!/bin/bash -eu
 
 MYDIR=$(cd "$(dirname "$0")"; pwd)
-RELEASE_BASE_DIR=${MYDIR}/_release/
-RELEASE_DIR=${RELEASE_BASE_DIR}/EnvBoyX
+RELEASE_BASE_DIR=${MYDIR}/_release
 SRC_BUILD_DIR=${MYDIR}/.pio/build
-TGT_BUILD_DIR=${RELEASE_DIR}/.pio/build
 
 # SUBs
 
@@ -19,8 +17,7 @@ copy_src_to_tgt () {
   banner "Copying board build $1"
 
   # $1 = boardname
-  mkdir -p ${TGT_BUILD_DIR}/$1
-  cp -v ${SRC_BUILD_DIR}/$1/firmware.bin ${TGT_BUILD_DIR}/$1_EnvBoyX_$VER$VER_ADDITIONAL.bin
+  cp -v ${SRC_BUILD_DIR}/$1/firmware.bin ${RELEASE_BASE_DIR}/$1_EnvBoyX_$VER$VER_ADDITIONAL.bin
 }
 
 # --------------------
@@ -72,7 +69,7 @@ fi
 banner "Delete and create build directory"
 # -------------------------------------------------------------------------
 rm -rf ${RELEASE_BASE_DIR}
-mkdir -p ${RELEASE_DIR}
+mkdir -p ${RELEASE_BASE_DIR}
 
 # -------------------------------------------------------------------------
 banner "Build"
@@ -80,7 +77,7 @@ banner "Build"
 
 BOARDS=( esp32dev esp12e )
 
-#pio run --target clean
+pio run --target clean
 pio run --environment esp32dev  --environment esp12e
 
 for b in ${BOARDS[@]} ; do
