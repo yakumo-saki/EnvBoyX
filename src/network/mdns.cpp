@@ -32,7 +32,12 @@ bool start_mdns(String name) {
 
 void mdns_hostname_change(String hostname) {
   MDNS.end();
-  MDNS.begin(hostname.c_str());
+  bool success = MDNS.begin(hostname.c_str());
+  if (success) {
+    mdnslog("MDNS begin success. hostname is " + hostname);
+  } else {
+    mdnslog("MDNS begin failed. hostname is " + hostname);
+  }
 }
 
 void mdns_setup() {

@@ -15,7 +15,7 @@
 #include "network/api/v1/config.h"
 #include "network/api/v1/getdata.h"
 
-#include "network/http_web_config.h"
+#include "network/web/http_web_config.h"
 
 
 extern HTTPWEBSERVER server;

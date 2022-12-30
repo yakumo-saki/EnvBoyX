@@ -1,6 +1,6 @@
 "use strict";
 
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 const DEBUG_API_HOST = "10.1.0.110"; // デバッグ時、APIを投げる先
 
 const CONTENT_JSON = "application/json";
@@ -239,7 +239,9 @@ async function revertConfig() {
  * 保存ボタンの処理
  */
 async function saveConfigButton() {
-    
+
+    const waitDialog = document.getElementById("waitDialog");
+
     const newConfig = new Map();
 
     // INPUTから取得
@@ -253,22 +255,28 @@ async function saveConfigButton() {
     // 差分作成
     let configDiff = createConfigDiff(LAST_CONFIG, newConfig);
 
+    let confirmMessage = "変更を保存してよろしいですか？";
     if (configDiff.size == 0) {
-        alert("変更がありません");
-        return;
+        confirmMessage = confirmMessage + "\n\n※設定内容に変更がありません";
     } 
     
-    if (!window.confirm("変更を保存してよろしいですか？")) {
+    if (!window.confirm(confirmMessage)) {
         return;
     }
 
     try {
-        const res = await saveConfig(configDiff);
-        const result = await res.json();
-        if (result.success != true) {
-            alert("設定内容にエラーがあります。設定は反映されていません。\n" + result.message + "\n"
-                    + result.msgs.join("\n"));
-            return;
+        waitDialog.showModal();
+
+        let needReboot = false;
+        if (configDiff.size > 0) {
+            const res = await saveConfig(configDiff);
+            const result = await res.json();
+            if (result.success != true) {
+                alert("設定内容にエラーがあります。設定は反映されていません。\n" + result.message + "\n"
+                        + result.msgs.join("\n"));
+                return;
+            }
+            needReboot = result.needReboot;
         }
 
         const commit = await commitConfig();
@@ -278,7 +286,7 @@ async function saveConfigButton() {
             return;
         }
 
-        if (result.needReboot) {
+        if (needReboot) {
             alert("設定を保存しました。\n再起動するまで反映されない設定があります。");
         } else {
             alert("設定を保存しました。");
@@ -287,6 +295,8 @@ async function saveConfigButton() {
     } catch (err) {
         console.log(err);
         return;
+    } finally {
+        waitDialog.close();
     }
 
 }

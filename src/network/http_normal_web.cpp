@@ -17,8 +17,8 @@
 #include "network/api/v1/config.h"
 #include "network/api/v1/getdata.h"
 
-#include "network/http_web_config.h"
-
+#include "network/web/http_web_config.h"
+#include "network/web/http_web_updater.h"
 
 extern HTTPWEBSERVER server;
 
@@ -36,6 +36,7 @@ void http_setup_normal() {
   http_api_config_setup();
 
   http_web_config_setup();
+  http_web_updater_setup();
   
   server.begin(); 
   httplog("HTTP web server initialized");

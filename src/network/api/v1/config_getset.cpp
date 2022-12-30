@@ -97,6 +97,7 @@ void _reflectConfig(ConfigHookFlags& flags, bool all = false) {
 
   if (all || flags.needMDnsRestart) {
     apilog("Exec mDNS restart.");
+    apilog("New mDNS name restart." + config->get(ConfigNames::MDNS));
     mdns_hostname_change(config->get(ConfigNames::MDNS));
   }
 }
