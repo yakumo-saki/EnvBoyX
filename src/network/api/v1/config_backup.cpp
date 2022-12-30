@@ -21,7 +21,7 @@ String http_api_backup_config() {
   ret += keys;
 
   ret += "\"";
-  ret += " http://" + config->get(ConfigNames::MDNS) + ".local/config";
+  ret += " http://" + config->get(ConfigNames::MDNS) + ".local/api/v1/config";
 
   return ret;
 }
