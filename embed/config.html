@@ -14,25 +14,14 @@
     <dialog id="waitDialog">
         <p>Now loading. Please wait.</p>
     </dialog>
-    
-    <dialog id="favDialog">
-        <form method="dialog">
-          <p><label>Favorite animal:
-            <select>
-              <option></option>
-              <option>Brine shrimp</option>
-              <option>Red panda</option>
-              <option>Spider monkey</option>
-            </select>
-          </label></p>
-          <menu>
-            <button value="cancel">Cancel</button>
-            <button id="confirmBtn" value="default">Confirm</button>
-          </menu>
-        </form>
-    </dialog>
 
     <h1>EnvBoyX Settings (settingID: <span replace="settingId">EBXCFG.vXX</span>)</h1>
+
+    <div class="setupModeOnly notice" hidden>
+        <p>セットアップモードです。</p>
+        <p>一度設定を保存して再起動すると通常モードに移行します。</p>
+    </div>
+
     <form method='post'>
         <br>
         <fieldset>

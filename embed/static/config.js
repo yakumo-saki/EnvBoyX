@@ -8,6 +8,8 @@ const CONTENT_TEXT = "text/plain";
 const CONTENT_FORM = "application/x-www-form-urlencoded"
 const IGNORE_KEY = ["settingId"]
 
+let SETUP_MODE = false;
+
 // 画面ロード時のconfig。保存時に差分を取るために使用する。
 let LAST_CONFIG = null;
 
@@ -89,8 +91,18 @@ async function setPageValues() {
     const json = await res.json();
     console.log(json);
 
+    SETUP_MODE = json["mode"] == "SETUP";
+
     replaceVersion("productVer", `ver.${json["majorVer"]}.${json["minorVer"]}`);
     replaceVersion("settingId", json["settingId"]);
+}
+
+async function showSetupModeOnly() {
+    const elements = document.querySelectorAll(".setupModeOnly");
+    elements.forEach(element => {
+        element.hidden = !SETUP_MODE;
+    });
+
 }
 
 /**
@@ -355,6 +367,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
     });
 
     await setPageValues();
+    await showSetupModeOnly();
     await loadConfig();
 
     waitDialog.close();

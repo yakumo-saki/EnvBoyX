@@ -1,6 +1,7 @@
 @charset "utf-8";
 body { 
     background-color: aliceblue;
+    line-height: 110%;
 }
 
 body.setup_done { 
@@ -35,4 +36,10 @@ a.setup_again {
 
 dialog::backdrop {
     background: rgba(0, 0, 0, 0.6);
+}
+
+.notice {
+    background-color: blanchedalmond;
+    border: 2px solid black;
+    padding: 0.5em 1.5em 0.5em 1.5em;
 }

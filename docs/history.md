@@ -1,11 +1,15 @@
 # Version History
 
-## v46.0: Web config update
+## v46.0: Big Usability improve update
+
+* Config WebUI is always ON (normal and setup mode)
+* Web Updater is added. (only on ESP32)
 
 ### UPGRADE NOTE
 
-All API url are changed. (Yes, really ALL APIs).
-See [API Docs](api.md). 
+* Almost all API url are changed.
+* API URLs are prefixed by /api/v1 is added. (exception: /ping /goto_setup).
+* See [API Docs](api.md). 
 
 ### CHANGES
 

@@ -49,6 +49,11 @@ fi
 set +e
 grep -i "DEBUG_BUILD.*TRUE" ${MYDIR}/src/global.cpp
 IS_DEBUG=$?
+
+if [ $IS_DEBUG -eq 0 ] ; then
+  grep -i "const DEBUG_MODE.*true" ${MYDIR}/embed/static/config.js
+  IS_DEBUG=$?
+fi
 set -e
 
 if [ $IS_DEBUG -eq 0 ] ; then
