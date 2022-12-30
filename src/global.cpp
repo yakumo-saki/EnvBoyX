@@ -16,6 +16,7 @@ extern const String product_short = "EBX";
 extern const bool DEBUG_BUILD = true;
 
 // EnvBoyX
+// note: Also referenced by create_release.sh
 extern const String product = "EnvBoyX";
 extern const String ver = "46";      // Major
 extern const String minorVer = "0";  // Bugfix
