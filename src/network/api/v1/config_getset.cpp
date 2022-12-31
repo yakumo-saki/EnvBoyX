@@ -10,8 +10,8 @@
 
 #include "mdns_client.h"
 
-#include "network/http_api.h"
-#include "network/http_api_util.h"
+#include "network/webserver.h"
+#include "network/api/api_util.h"
 #include "display/display.h"
 
 extern unsigned int CONF_JSON_SIZE;
@@ -97,6 +97,7 @@ void _reflectConfig(ConfigHookFlags& flags, bool all = false) {
 
   if (all || flags.needMDnsRestart) {
     apilog("Exec mDNS restart.");
+    apilog("New mDNS name restart." + config->get(ConfigNames::MDNS));
     mdns_hostname_change(config->get(ConfigNames::MDNS));
   }
 }
@@ -146,9 +147,9 @@ String updateConfig() {
   json["msgs"] = msgs;
 
   if (flags.configFailed) {
-    json["message"] = "Some error detected. Check msg.";
+    json["message"] = "Some error detected. Check msgs.";
   } else {
-    json["message"] = "Don't forget calling /config/commit.";
+    json["message"] = "Don't forget calling config/commit. API";
   }
   json.shrinkToFit();
 

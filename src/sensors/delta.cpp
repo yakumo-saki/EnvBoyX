@@ -26,7 +26,7 @@ void store_delta() {
     // 起動直後のhistoryが空の状態のときに、最新の測定値を
     // historyに追加して、差分の計算を単純にする
     if (history.empty()) {
-        deltalog(F("No history. Create first history"));
+        deltalog(F("First history created."));
         history.reserve(MAX_HISTORY);
         store_history();
     } else {

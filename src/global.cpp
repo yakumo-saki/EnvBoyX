@@ -16,12 +16,13 @@ extern const String product_short = "EBX";
 extern const bool DEBUG_BUILD = false;
 
 // EnvBoyX
+// note: Also referenced by create_release.sh
 extern const String product = "EnvBoyX";
-extern const String ver = "45";      // Major
+extern const String ver = "46";      // Major
 extern const String minorVer = "0";  // Bugfix
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
-// Setting version
+// Setting version (version number when settings changed)
 extern const String SETTING_ID = "EBXCFG.v45";
 
 // EnvBoyX Ver.53.0
@@ -63,3 +64,10 @@ Config *config;
 // タイマー
 // --------------------------------------------------------------------
 TimerCall timer = TimerCall();
+
+// --------------------------------------------------------------------
+// 動作モード
+// --------------------------------------------------------------------
+extern const int OPERATING_MODE_NORMAL = 2;
+extern const int OPERATING_MODE_SETUP = 1;
+int OPERATING_MODE = 0;

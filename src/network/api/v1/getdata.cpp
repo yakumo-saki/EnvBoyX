@@ -1,31 +1,21 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
+#include "config.h"
+
 #include "log.h"
 #include "global.h"
+#include "display/display.h"
+#include "network/webserver.h"
+#include "network/api/api_util.h"
 
-String http_normal_not_found_html() {
-  String message = "File Not Found\n\n";
-  return message;
-}
 
-String get_time_string(unsigned long ms) {
-  unsigned long second = ms / 1000;
-  unsigned long minute = second / 60;
-
-  int sec = second % 60;
-  int min = (second / 60) % 60;
-  int hr =  minute / 60;
-
-  char buf[15];
-  snprintf (buf, sizeof buf,"%02d:%02d:%02d", hr, min, sec);
-  return String(buf);
-}
+extern HTTPWEBSERVER server;
 
 String http_normal_data_json() {
 
   unsigned long ms = millis();
-  String timeString = get_time_string(ms);
+  String timeString = getTimeString(ms);
 
   char temp[10], hum[10], pres[10];
   char lux[10], luxIr[10],ppm[10];
@@ -49,19 +39,13 @@ String http_normal_data_json() {
   return json;
 }
 
-String http_normal_ping_json() {
+void http_handle_data() {
+  String message = http_normal_data_json();
+  server.send(200, MimeType::JSON, message);
+}
 
-  unsigned long ms = millis();
-  String timeString = get_time_string(ms);
+void http_api_getdata_setup() {
+  server.on ( "/api/v1/getdata", HTTP_GET, http_handle_data );
 
-  DynamicJsonDocument doc(2000);
-  doc["product"] = product;
-  doc["uptime"] = timeString;
-  doc["uptimeMills"] = ms;
-
-  String json;
-  serializeJson(doc, json);
-
-  httplog(json);
-  return json;
+  apilog("API getdata initialized.");
 }

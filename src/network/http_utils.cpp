@@ -1,12 +1,28 @@
 #include "global.h"
 
+#include "global.h"
 #include "network/webserver.h"
 #include "embed/style_css.h"
+
+void http_handle_cors() {
+  server.sendContent("HTTP/1.1 204 No Content\r\n");
+  server.sendContent("Access-Control-Allow-Methods: POST, GET, OPTIONS\r\n");
+  server.sendContent("Access-Control-Allow-Headers: content-type\r\n"); 
+  server.sendContent("Access-Control-Max-Age: 86400\r\n");
+
+  if (DEBUG_BUILD) {
+    server.sendContent("Access-Control-Allow-Origin: *\r\n");
+  }
+
+  server.sendContent("Connection: close\r\n");
+}
 
 void sendHttpHeader(String contentType) {
   server.sendContent("HTTP/1.1 200 OK\r\n");
   server.sendContent("Content-Type: " + contentType + "\r\n");
-  server.sendContent("Connection: close\r\n");
+  if (DEBUG_BUILD) {
+    server.sendContent("Access-Control-Allow-Origin: *\r\n");
+  }
   server.sendContent("\r\n");
 }
 

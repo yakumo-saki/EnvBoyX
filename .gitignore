@@ -9,9 +9,6 @@
 # embed is auto generated directory.
 include/embed/**
 
-# temporary place files when develop web ui
-embed/static/**
-
 _release
 _release/**
 

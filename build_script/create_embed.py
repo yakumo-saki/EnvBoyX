@@ -12,7 +12,8 @@ def readall(path):
     return data
 
 
-def create_name_from_filename(filename):
+def create_name_from_filename(path):
+    filename = os.path.basename(path)
     ret = filename
     ret = ret.replace(".", "_")
     ret = ret.replace(" ", "_")
@@ -31,12 +32,6 @@ print(f"EMBED_DIR = {EMBED_DIR}")
 print(f"OUT_DIR   = {OUT_DIR}")
 print("=" * SEP_LENGTH)
 
-# access to global build environment
-#print(env.Dump())
-
-# access to project build environment (is used source files in "src" folder)
-#print(projenv.Dump())
-
 #
 # Script to build cpp file from embed directory
 #
@@ -49,31 +44,33 @@ if os.path.exists(OUT_DIR):
 os.mkdir(OUT_DIR)
 template = readall(TEMPLATE_FILE)
 
-for file in pathlib.Path(EMBED_DIR).iterdir():
-    #print(file.name)
-    if file.is_dir():
-        print(f"ignored sub directory {file.name}")
-        continue
+for root, dirs, files in os.walk(EMBED_DIR):
 
-    if file.name.endswith(".md") or file.name.endswith(".sh"):
-        print(f"ignored markdown file {file.name}")
-        continue
+    for filename in files:
+        print(root, filename)
+        file = os.path.join(root, filename)
 
-    # start generating source
-    output = template
-    data = readall(file)
+        if file.endswith(".md") or file.endswith(".sh"):
+            print(f"ignored markdown file {file.name}")
+            continue
 
-    output_name = create_name_from_filename(file.name)
+        # start generating source
+        output = template
+        data = readall(file)
 
-    # 変数名部分を置換。 変数名は全部大文字とする
-    output = output.replace("$$REPLACE_NAME$$", output_name.upper()).replace("$$REPLACE_CONTENT$$", data)
-    output_cpp_path = os.path.join(OUT_DIR, output_name + ".h")
+        output_name = create_name_from_filename(file)
 
-    f = open(output_cpp_path, 'w')
-    data = f.write(output)
-    f.close()
+        # 変数名部分を置換。 変数名は全部大文字とする
+        output = output.replace("$$REPLACE_NAME$$", output_name.upper()).replace("$$REPLACE_CONTENT$$", data)
+        output_cpp_path = os.path.join(OUT_DIR, output_name + ".h")
 
-    print(f"generated {output_cpp_path}")
+        # todo ファイル名重複チェック。すでにあったらコケる
+
+        f = open(output_cpp_path, 'w')
+        data = f.write(output)
+        f.close()
+
+        print(f"generated {output_cpp_path}")
 
 
 print("=" * SEP_LENGTH)

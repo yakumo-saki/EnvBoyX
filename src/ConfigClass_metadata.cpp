@@ -27,14 +27,14 @@ void Config::loadMetadata() {
     ConfigMeta meta;
     meta.key = ConfigNames::SSID;
     meta.type = ConfigValueType::String;
-    meta.flags = RunningConfigChangeFlags::BLOCKED;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ; // v46 BLOCKED to REBOOT_REQ
     this->addMeta(meta);
   }
   {
     ConfigMeta meta;
     meta.key = ConfigNames::PASSWORD;
     meta.type = ConfigValueType::String;
-    meta.flags = RunningConfigChangeFlags::BLOCKED;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ; // v46 BLOCKED to REBOOT_REQ
     this->addMeta(meta);
   }
   {

@@ -29,6 +29,14 @@ pio run -t nobuild -t upload --disable-auto-clean
 * `-t upload` 書き込みする
 * `--disable-auto-clean` ビルドディレクトリを自動的に削除しない（これをつけないと、ビルド済みバイナリが削除されます）
 
+## Update via web browser
+
+This method only for ESP32 and EnvBoyX v46.0 or above.
+
+* download latest release from github.
+* Go to http://[envboyx ip address or hostname]/update
+* Upload and flash.
+
 ## 蛇足
 
 以下は、必要でなければ読む必要はありません。
