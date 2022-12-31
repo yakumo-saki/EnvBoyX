@@ -13,7 +13,7 @@
 extern const String product_short = "EBX";
 
 // Enable debug function
-extern const bool DEBUG_BUILD = true;
+extern const bool DEBUG_BUILD = false;
 
 // EnvBoyX
 // note: Also referenced by create_release.sh
