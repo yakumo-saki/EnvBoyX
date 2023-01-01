@@ -37,6 +37,8 @@ echo "Version is ${VER}"
 # -------------------------------------------------------------------------
 banner "Get Version additional info (debug, branch...)"
 # -------------------------------------------------------------------------
+VER_ADDITIONAL=""     # ここにブランチ名とかDEBUGとかを入れていく
+
 # git ブランチからファイル名判定
 branch=`git symbolic-ref --short HEAD`
 if [ $branch != "main" ]; then
