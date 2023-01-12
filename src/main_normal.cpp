@@ -25,7 +25,7 @@
 #include "sensors/delta.h"
 #include "sensors/stastics.h"
 #include "watchdog.h"
-#include "wifi.h"
+#include "wifiutil.h"
 
 WiFiClient net;
 
