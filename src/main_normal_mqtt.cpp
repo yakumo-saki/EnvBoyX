@@ -7,7 +7,7 @@
 #include "global.h"
 #include "config.h"
 #include "ConfigClass.h"
-#include "wifi.h"
+#include "wifiutil.h"
 #include "main_normal.h"
 
 extern WiFiClient net;

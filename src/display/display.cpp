@@ -4,7 +4,7 @@
 #include "log.h"
 #include "structs.h"
 
-#include "wifi.h"
+#include "wifiutil.h"
 #include "config.h"
 #include "ConfigClass.h"
 

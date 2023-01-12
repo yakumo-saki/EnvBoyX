@@ -11,7 +11,7 @@
 #include "global.h"
 #include "config.h"
 #include "http_setup.h"
-#include "wifi.h"
+#include "wifiutil.h"
 #include "i2c.h"
 #include "TimerCall.h"
 
