@@ -9,6 +9,8 @@ const String ConfigNames::OPMODE = "opMode";
 
 const String ConfigNames::DISPLAY_FLIP = "displayFlip";
 const String ConfigNames::DISPLAY_BRIGHTNESS = "displayBrightness";
+
+/** Show and wait for reconfig screen on boot */
 const String ConfigNames::DISPLAY_RECONFIG = "displayWaitForReconfigure";
 
 const String ConfigNames::DISPLAY_AUTODIM_LUX = "displayAutoDimLux"; // v45

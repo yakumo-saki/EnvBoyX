@@ -26,6 +26,7 @@
 #include "sensors/stastics.h"
 #include "watchdog.h"
 #include "wifiutil.h"
+#include "network/time_client.h"
 
 WiFiClient net;
 
@@ -169,6 +170,8 @@ void setup_normal() {
 
   mainlog("TimerCall version: " + String(timer.VERSION, 2));
   init_sensors();
+
+  ntp_setup();
 
   // TimerCall
   add_timer_tasks();
