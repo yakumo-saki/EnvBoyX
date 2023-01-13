@@ -22,7 +22,7 @@ void Config::loadDefaultValue() {
 
   this->addConfig(ConfigNames::DISPLAY_FLIP, ConfigValues::DISPLAY_FLIP_OFF);
   this->addConfig(ConfigNames::DISPLAY_BRIGHTNESS, "255");
-  this->addConfig(ConfigNames::DISPLAY_RECONFIG, ConfigValues::DISPLAY_RECONFIG_ON);  // v44;
+  this->addConfig(ConfigNames::DISPLAY_RECONFIG, ConfigValues::DISPLAY_RECONFIG_SKIP);  // v44: 追加(ON) v47: デフォルトOFF
   this->addConfig(ConfigNames::DISPLAY_AUTODIM_LUX, "5");       // v45: この明るさ以下がDuration秒続けば消灯
   this->addConfig(ConfigNames::DISPLAY_AUTODIM_WAIT_SEC, "10"); // v45: 消灯までの時間 second
 

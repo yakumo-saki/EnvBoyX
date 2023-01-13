@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "network/time_client.h"
 
 void real_log(String msgString, String prefixString) {
   char log[130];
@@ -6,7 +7,14 @@ void real_log(String msgString, String prefixString) {
   char msg[100];
   prefixString.toCharArray(prefix, sizeof prefix);
   msgString.toCharArray(msg, sizeof msg);
-  snprintf(log, sizeof log, "%08lu %-10s: %s", millis(),  prefix, msg);
+
+  String datetime = getFormattedTime();
+
+  if (datetime != TIME_NOT_READY) {
+    snprintf(log, sizeof log, "%s %08lu %-10s: %s", datetime, millis(),  prefix, msg);
+  } else {
+    snprintf(log, sizeof log, "%08lu %-10s: %s", millis(),  prefix, msg);
+  }
   Serial.println(log);
 }
 
