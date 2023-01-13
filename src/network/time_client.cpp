@@ -20,7 +20,7 @@ void ntp_setup() {
   cfglog("Communicating NTP server done.");
 }
 
-#ifdef esp32
+#ifdef ESP32
 struct tm timeinfo;
 
 String getFormattedTime() {
