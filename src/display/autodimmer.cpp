@@ -7,7 +7,7 @@
 
 #include "global.h"
 #include "log.h"
-#include "config.h"
+#include "config/config.h"
 #include "ConfigClass.h"
 #include "display/display.h"
 

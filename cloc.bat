@@ -1,0 +1,1 @@
+c:\usr\ols\bin\cloc --exclude-dir=.pio,.vscode,_release,.github . --by-file-by-lang

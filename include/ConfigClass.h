@@ -11,15 +11,6 @@
 #include "utils.h"
 #include "SimpleMap.h"
 
-//  * 項目追加時の実装項目：
-// - [ ] 2. Setup HTML          http_setup_web_get.cpp http_setup_get_root_content
-// - [ ] 3. Setup POST後の表示   (if required) http_setup_web_post.cpp http_setup_post_root_content
-// - [ ] 4. Web API             http_api_backup_config
-// - [ ] 5. Web API             updateConfig
-// - [ ] 6. Write Config        _create_config_json
-// - [ ] 7. Read Config         read_config_file
-// - [ ] 8. Print config        print_config
-// - [ ] 9. Config version      global.cpp
 
 enum class ConfigValueType {
   String = 0,  // 任意の文字列

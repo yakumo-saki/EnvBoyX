@@ -5,7 +5,7 @@
 #include "structs.h"
 
 #include "wifiutil.h"
-#include "config.h"
+#include "config/config.h"
 #include "ConfigClass.h"
 
 #include "display/scan_alert.h"

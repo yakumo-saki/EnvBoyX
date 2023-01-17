@@ -3,7 +3,7 @@
 
 #include "log.h"
 #include "global.h"
-#include "config.h"
+#include "config/config.h"
 
 #include "http_normal.h"
 

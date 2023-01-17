@@ -3,7 +3,7 @@
 #include <MQTTClient.h>
 #include <TimerCall.h>
 
-#include "config.h"
+#include "config/config.h"
 #include "ConfigClass.h"
 #include "display/display.h"
 #include "display/autodimmer.h"

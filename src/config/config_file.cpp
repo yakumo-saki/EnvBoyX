@@ -1,5 +1,3 @@
-#ifdef ESP32
-
 #include <Arduino.h>
 
 #include "FS.h"
@@ -7,7 +5,15 @@
 
 #include "log.h"
 #include "global.h"
-#include "config.h"
+#include "config/config.h"
+
+#ifdef ESP32
+#define EBXFS SPIFFS
+#endif
+
+#ifdef ESP8266
+#define EBXFS LITTLEFS
+#endif
 
 /**
  * デバッグ用 ファイル一覧の表示
@@ -16,7 +22,7 @@ void list_dir()
 {
   cfglog(F(">>> SPIFFS directory listing"));
  
-  File root = SPIFFS.open("/");
+  File root = EBXFS.open("/");
   if (!root) {
       cfglog(F("- failed to open directory"));
       return;
@@ -44,7 +50,8 @@ void list_dir()
  */
 void create_configure_flag_file()
 {
-  File f2 = SPIFFS.open(ConfigValues::configured_file, "w");
+  
+  File f2 = EBXFS.open(ConfigValues::configured_file, FILE_WRITE);
   f2.println("ok");
   f2.close();
   cfglog(F("configured file created."));
@@ -55,7 +62,7 @@ void create_configure_flag_file()
  */
 void remove_configure_flag_file()
 {
-  SPIFFS.remove(ConfigValues::configured_file);
+  EBXFS.remove(ConfigValues::configured_file);
   cfglog(ConfigValues::configured_file + " removed.");
 }
 
@@ -65,10 +72,8 @@ void remove_configure_flag_file()
  */
 void save_config()
 {
-  trim_config();
-
   // 設定ファイル
-  File f = SPIFFS.open(ConfigValues::settings, "w");
+  File f = EBXFS.open(ConfigValues::settings, "w");
   write_config_file(f);
   f.close();
 
@@ -80,13 +85,12 @@ void save_config()
  */
 bool read_config()
 {
-  File f = SPIFFS.open(ConfigValues::settings, "r");
+  File f = EBXFS.open(ConfigValues::settings, "r");
   cfglog(ConfigValues::settings + " filesize = " + String(f.size()));
 
-  bool ret = read_config_file(f);
+  bool ret = read_config_file(f, false);
   f.close();
 
-  trim_config();
   print_config();
   return ret;
 }
@@ -95,12 +99,12 @@ bool read_config()
  * configファイルが存在して、SETTING_IDが一致するかだけを判定する
  * ＝フラグファイルはみない
  */
-bool has_valid_config_file() {
+CFG_VALIDATE_RESULT has_valid_config_file() {
   String settingId = "";
-  if (!SPIFFS.exists(ConfigValues::settings)) {
+  if (!EBXFS.exists(ConfigValues::settings)) {
     cfglog(ConfigValues::settings + " not found.");
     SPIFFS.end();
-    return false;
+    return CFG_VALIDATE_RESULT::NOT_FOUND;
   } else {
     File f = SPIFFS.open(ConfigValues::settings, "r");
 
@@ -110,34 +114,33 @@ bool has_valid_config_file() {
 
     if (String(SETTING_ID).equals(settingId)) {
       cfglog("SETTING_ID verified. " + settingId);
-      return true;
+      return CFG_VALIDATE_RESULT::VALID;
     } else {
       cfglog("SETTING_ID NOT match! required:" + String(SETTING_ID) + " actual:" + settingId);
-      return false;
+      return CFG_VALIDATE_RESULT::NEED_UPGRADE;
     }
   }
 
   cfglog("Unknown state. Assuming config not found");
-  return false;
+  return CFG_VALIDATE_RESULT::ERROR;
 }
 
 /**
- * configファイルの存在とバージョン一致とconfigフラグファイルの存在をチェックする
+ * configとconfigフラグファイルの存在をチェックする
  */
-bool has_valid_config() {
+bool has_configured_file() {
 
-  bool exist = SPIFFS.exists(ConfigValues::configured_file);
+  bool exist = EBXFS.exists(ConfigValues::configured_file);
 
   if (!exist) {
     // reconfigure用ファイルがなければセットアップモード
     // => wait for reconfigure でリセットされたとき。
     cfglog(F("configured_file not found."));
     return false;
-  } else {
-    cfglog(F("configured_file found"));
-  }
+  } 
 
-  return has_valid_config_file();
+  cfglog(F("configured_file found"));
+  return true;
 }
 
 
@@ -153,8 +156,7 @@ void config_setup() {
 void config_factory_reset() {
   remove_configure_flag_file();
 
-  SPIFFS.remove(ConfigValues::settings);
+  EBXFS.remove(ConfigValues::settings);
   cfglog("Factory reset executed.");
 }
 
-#endif

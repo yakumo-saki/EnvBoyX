@@ -67,17 +67,17 @@
 
             <strong>Wait for reconfigure画面</strong><br>
             ※ 起動時にセットアップモードに入るための待ち時間を追加します。<br>
-
-            <label>
-                <input type='radio' name='displayWaitForReconfigure' value='on' id='displayWaitForReconfigure__on'>
-                表示する
-            </label><br>
-
+            v46以降、セットアップモードに意図的に入る必要はほぼありません。<br>
 
             <label>
                 <input type='radio' name='displayWaitForReconfigure' value='skip' id='displayWaitForReconfigure__skip'>
                 表示しない（推奨）
             </label><br>
+            <label>
+                <input type='radio' name='displayWaitForReconfigure' value='on' id='displayWaitForReconfigure__on'>
+                表示する
+            </label><br>
+
 
             <strong>自動消灯する明るさ（暗いと判定するしきい値）</strong><br>
             <span>※ 光量センサーがない場合は自動的に無効になります。</span><br>
@@ -131,6 +131,49 @@
                 縦表示モード（デカ文字）
             </label><br>
         </fieldset>
+
+
+        <fieldset>
+            <legend>時刻関連設定</legend>
+            <strong>NTPサーバー設定</strong><br>
+            NTPサーバーを使用しない場合、時刻関係の機能は動作しません。<br>
+            <label>
+                <input type='radio' name='ntp' value='no' id='ntp__no'>
+                使用しない
+            </label><br>
+
+            <label>
+                <input type='radio' name='ntp' value='yes' id='ntp__yes'>
+                使用する
+            </label><br>
+            <br>
+
+            <strong>NTPサーバーのIPアドレス</strong><br>
+            <input type='text' name='ntpAddress' placeholder='IP Address' id='ntpAddress'><br>
+            <br>
+
+            <strong>時刻によるディスプレイ自動消灯</strong><br>
+            <label>
+                <input type='radio' name='ntpAutoDimmer' value='no' id='ntpAutoDimmer__no'>
+                使用しない
+            </label><br>
+
+            <label>
+                <input type='radio' name='ntpAutoDimmer' value='yes' id='ntpAutoDimmer__yes'>
+                使用する
+            </label><br>
+            <br>
+
+            <strong>時刻によるディスプレイ自動消灯時刻</strong><br>
+            指定した時刻の間、ディスプレイを消灯します。<br>
+            <input type="time" name='ntpAutoDimmerStart' id='ntpAutoDimmerStart'>
+            &nbsp;～&nbsp;
+            <input type="time" name='ntpAutoDimmerEnd' id='ntpAutoDimmerEnd'>
+            <br>
+
+        </fieldset>
+
+
         <fieldset>
             <legend>MH-Z19B デバイス設定</legend>
             <strong>MH-Z19B CO2センサー有無（金色のセンサー）</strong><br>

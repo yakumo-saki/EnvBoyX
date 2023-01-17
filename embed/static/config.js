@@ -1,6 +1,6 @@
 "use strict";
 
-const DEBUG_MODE = false;
+const DEBUG_MODE = true;
 const DEBUG_API_HOST = "10.1.0.110"; // デバッグ時、APIを投げる先
 
 const CONTENT_JSON = "application/json";

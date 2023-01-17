@@ -10,7 +10,6 @@
 
 /** 
  * 初期値をセットする 
- * ここでセットしていない項目は存在しないものとして扱われる
  */
 void Config::loadDefaultValue() {
   this->addConfig(ConfigNames::SETTING_ID, "");

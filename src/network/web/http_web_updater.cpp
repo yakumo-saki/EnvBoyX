@@ -4,7 +4,7 @@
 #include <Update.h>
 #endif
 
-#include "config.h"
+#include "config/config.h"
 #include "global.h"
 #include "log.h"
 #include "network/http_utils.h"

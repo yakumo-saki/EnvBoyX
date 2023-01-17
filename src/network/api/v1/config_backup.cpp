@@ -2,7 +2,7 @@
 
 #include "log.h"
 #include "global.h"
-#include "config.h"
+#include "config/config.h"
 
 String http_api_backup_config() {
   String ret = "curl -X POST ";
