@@ -14,6 +14,7 @@
 #include "watchdog.h"
 
 #include "ConfigClass.h"
+#include "config/config.h"
 
 #include "display/display.h"
 
@@ -93,6 +94,8 @@ void make_sure_wifi_connected() {
       wifilog(F("Restarting"));
       wifilog(F("ESP8266 note: must connect proper pins, otherwise device hangs"));
       disp_wifi_error();
+      remove_configure_flag_file();
+      delay(10000);
       ESP.deepSleep(1 * 1000 * 1000);
       delay(10000);
     }
