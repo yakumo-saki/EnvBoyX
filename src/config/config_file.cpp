@@ -1,49 +1,10 @@
 #include <Arduino.h>
 
-#include "FS.h"
-#include <SPIFFS.h>
+#include <LittleFS.h>
 
 #include "log.h"
 #include "global.h"
 #include "config/config.h"
-
-#ifdef ESP32
-#define EBXFS SPIFFS
-#endif
-
-#ifdef ESP8266
-#define EBXFS LITTLEFS
-#endif
-
-/**
- * デバッグ用 ファイル一覧の表示
- */
-void list_dir()
-{
-  cfglog(F(">>> SPIFFS directory listing"));
- 
-  File root = EBXFS.open("/");
-  if (!root) {
-      cfglog(F("- failed to open directory"));
-      return;
-  }
-  if (!root.isDirectory()){
-      cfglog(F(" - not a directory"));
-      return;
-  }
-
-  File file = root.openNextFile();
-  while(file){
-      if(file.isDirectory()){
-          cfglog("  DIR : " + String(file.name()));
-      } else {
-          cfglog("  FILE: " + String(file.name()) + "  SIZE: " + String(file.size()));
-      }
-      file = root.openNextFile();
-  }
-
-  cfglog(F("<<< End listing"));
-}
 
 /**
  * config済みフラグファイルを作成する
@@ -51,7 +12,7 @@ void list_dir()
 void create_configure_flag_file()
 {
   
-  File f2 = EBXFS.open(ConfigValues::configured_file, FILE_WRITE);
+  File f2 = LittleFS.open(ConfigValues::configured_file, "w");
   f2.println("ok");
   f2.close();
   cfglog(F("configured file created."));
@@ -62,7 +23,7 @@ void create_configure_flag_file()
  */
 void remove_configure_flag_file()
 {
-  EBXFS.remove(ConfigValues::configured_file);
+  LittleFS.remove(ConfigValues::configured_file);
   cfglog(ConfigValues::configured_file + " removed.");
 }
 
@@ -73,7 +34,7 @@ void remove_configure_flag_file()
 void save_config()
 {
   // 設定ファイル
-  File f = EBXFS.open(ConfigValues::settings, "w");
+  File f = LittleFS.open(ConfigValues::settings, "w");
   write_config_file(f);
   f.close();
 
@@ -85,7 +46,7 @@ void save_config()
  */
 bool read_config()
 {
-  File f = EBXFS.open(ConfigValues::settings, "r");
+  File f = LittleFS.open(ConfigValues::settings, "r");
   cfglog(ConfigValues::settings + " filesize = " + String(f.size()));
 
   bool ret = read_config_file(f, false);
@@ -101,12 +62,11 @@ bool read_config()
  */
 CFG_VALIDATE_RESULT has_valid_config_file() {
   String settingId = "";
-  if (!EBXFS.exists(ConfigValues::settings)) {
+  if (!LittleFS.exists(ConfigValues::settings)) {
     cfglog(ConfigValues::settings + " not found.");
-    SPIFFS.end();
     return CFG_VALIDATE_RESULT::NOT_FOUND;
   } else {
-    File f = SPIFFS.open(ConfigValues::settings, "r");
+    File f = LittleFS.open(ConfigValues::settings, "r");
 
     cfglog(F("Reading config to checking version."));
     settingId = read_config_setting_id(f);
@@ -130,7 +90,7 @@ CFG_VALIDATE_RESULT has_valid_config_file() {
  */
 bool has_configured_file() {
 
-  bool exist = EBXFS.exists(ConfigValues::configured_file);
+  bool exist = LittleFS.exists(ConfigValues::configured_file);
 
   if (!exist) {
     // reconfigure用ファイルがなければセットアップモード
@@ -143,20 +103,28 @@ bool has_configured_file() {
   return true;
 }
 
-
 void config_setup() {
-  if (!SPIFFS.begin(true)){
-    cfglog(F("SPIFFS Mount Failed."));
+
+  if (!LittleFS.begin()) {
+    cfglog(F("LittleFS Mount Failed. Try formatting."));
+    LittleFS.format();
+    if (LittleFS.begin()) {
+      cfglog(F("LittleFS format completed."));    
+    } else {
+      cfglog(F("LittleFS Mount Failed. Halt"));
+      halt("LittleFS","FAIL", "FORMAT");
+    }
   } else {
-    cfglog(F("SPIFFS Mount success."));
+    cfglog(F("LittleFS Mount success."));
   }
   list_dir();
 }
 
+
 void config_factory_reset() {
   remove_configure_flag_file();
 
-  EBXFS.remove(ConfigValues::settings);
+  LittleFS.remove(ConfigValues::settings);
   cfglog("Factory reset executed.");
 }
 

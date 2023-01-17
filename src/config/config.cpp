@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "FS.h"
+#include <LittleFS.h>
 
 #include <ArduinoJson.h>
 
@@ -72,14 +72,13 @@ bool read_config_file(File f, bool readForUpdate) {
   cfglog(F("Json deserialize start"));
 
   if (DEBUG_BUILD) {
-    debuglog("*****  CONFIG DUMP (DEBUG BUILD ONLY) *****");
-    Serial.println("");
+    debuglog("*****  CONFIG RAW DATA DUMP (DEBUG BUILD ONLY) *****");
     while(f.available()){
         Serial.write(f.read());
     }
     Serial.println("");
     f.seek(0);
-    debuglog("*****  CONFIG DUMP END                *****");
+    debuglog("*****  CONFIG RAW DATA DUMP END                *****");
   }
 
   DeserializationError error = deserializeJson(doc, f);

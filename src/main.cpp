@@ -43,7 +43,7 @@ void setup()
   } else if (validateResult == CFG_VALIDATE_RESULT::NEED_UPGRADE) {
     // TODO upgrade
   } else {
-    mainlog(F("Config file is validation error. dropping to setup mode."));
+    mainlog(F("Config file validation error. dropping to setup mode."));
     isNormal = false;
   }
 

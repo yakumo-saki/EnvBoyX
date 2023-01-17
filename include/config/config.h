@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ArduinoJson.h>
-#include "FS.h"
+#include <LittleFS.h>
 
 #include "config_names.h"
 #include "config_values.h"
