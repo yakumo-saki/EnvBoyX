@@ -20,6 +20,27 @@ void ntp_setup() {
   cfglog("Communicating NTP server done.");
 }
 
+/**
+ * 現在時刻のhh:mm:ss を返す。
+ * 時刻がセットされていない場合 "00:00:00" を返す
+ */
+String getTime() {
+  String now = getFormattedTime();
+  return now.substring(11); // yyyy/mm/dd hh:mm:ss
+}
+
+/**
+ * 現在日付を yyyy/mm/dd 形式で返す。
+ * 時刻がセットされていない場合 "0000/00/00" を返す
+ */
+String getDate() {
+  String now = getFormattedTime();
+  return now.substring(0, 9); // yyyy/mm/dd hh:mm:ss
+}
+
+
+// ローカルタイムの取得がESP32とESP8266で異なるので切り分け
+
 #ifdef ESP32
 struct tm timeinfo;
 
