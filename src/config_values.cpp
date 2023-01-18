@@ -8,6 +8,12 @@ const String ConfigValues::OPMODE_NAME = "opmode";
 const String ConfigValues::OPMODE_MQTT = "mqtt";
 const String ConfigValues::OPMODE_DISPLAY = "always";
 
+const String ConfigValues::NTP_ON = "yes"; // v47
+const String ConfigValues::NTP_OFF = "no"; // v47
+
+const String ConfigValues::NTP_AUTO_DIMMER_ON = "yes"; // v47
+const String ConfigValues::NTP_AUTO_DIMMER_OFF = "no"; // v47
+
 const String ConfigValues::OLED_SSD1306 = "SSD";
 const String ConfigValues::OLED_SH1106 = "SH";
 

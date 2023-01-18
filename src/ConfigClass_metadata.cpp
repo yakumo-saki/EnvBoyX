@@ -52,6 +52,59 @@ void Config::loadMetadata() {
     meta.validValues = std::vector<String> {ConfigValues::OPMODE_DISPLAY, ConfigValues::OPMODE_MQTT};
     this->addMeta(meta);
   }
+  { // v47
+    ConfigMeta meta;
+    meta.key = ConfigNames::NTP;
+    meta.type = ConfigValueType::Choise;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    meta.validValues = std::vector<String> {ConfigValues::NTP_ON, ConfigValues::NTP_OFF};
+    this->addMeta(meta);
+  }
+  { // v47
+    ConfigMeta meta;
+    meta.key = ConfigNames::NTP_ADDRESS;
+    meta.type = ConfigValueType::String;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    this->addMeta(meta);
+  }
+  { // v47
+    ConfigMeta meta;
+    meta.key = ConfigNames::NTP_AUTO_DIMMER;
+    meta.type = ConfigValueType::Choise;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    meta.validValues = std::vector<String> {ConfigValues::NTP_AUTO_DIMMER_ON, ConfigValues::NTP_AUTO_DIMMER_OFF};
+    this->addMeta(meta);
+  }
+  { // v47
+    ConfigMeta meta;
+    meta.key = ConfigNames::NTP_AUTO_DIMMER_START;
+    meta.type = ConfigValueType::String;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    this->addMeta(meta);
+  }
+  { // v47
+    ConfigMeta meta;
+    meta.key = ConfigNames::NTP_AUTO_DIMMER_END;
+    meta.type = ConfigValueType::String;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    this->addMeta(meta);
+  }
+  {
+    // v45: この明るさ以下がDuration秒続けば消灯
+    ConfigMeta meta;
+    meta.key = ConfigNames::DISPLAY_AUTODIM_LUX;
+    meta.type = ConfigValueType::Integer;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    this->addMeta(meta);
+  }
+  {
+    // v45: 消灯までの時間 second
+    ConfigMeta meta;
+    meta.key = ConfigNames::DISPLAY_AUTODIM_WAIT_SEC;
+    meta.type = ConfigValueType::Integer;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    this->addMeta(meta);
+  }
   {
     ConfigMeta meta;
     meta.key = ConfigNames::DISPLAY_FLIP;
@@ -73,22 +126,6 @@ void Config::loadMetadata() {
     meta.type = ConfigValueType::Choise;
     meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
     meta.validValues = std::vector<String> {ConfigValues::DISPLAY_RECONFIG_ON, ConfigValues::DISPLAY_RECONFIG_SKIP};
-    this->addMeta(meta);
-  }
-  {
-    // v45: この明るさ以下がDuration秒続けば消灯
-    ConfigMeta meta;
-    meta.key = ConfigNames::DISPLAY_AUTODIM_LUX;
-    meta.type = ConfigValueType::Integer;
-    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
-    this->addMeta(meta);
-  }
-  {
-    // v45: 消灯までの時間 second
-    ConfigMeta meta;
-    meta.key = ConfigNames::DISPLAY_AUTODIM_WAIT_SEC;
-    meta.type = ConfigValueType::Integer;
-    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
     this->addMeta(meta);
   }
   {

@@ -10,6 +10,13 @@ const String ConfigNames::OPMODE = "opMode";
 const String ConfigNames::DISPLAY_FLIP = "displayFlip";
 const String ConfigNames::DISPLAY_BRIGHTNESS = "displayBrightness";
 
+/** NTP */
+const String ConfigNames::NTP = "ntp"; // v47
+const String ConfigNames::NTP_ADDRESS = "ntpAddress"; // v47
+const String ConfigNames::NTP_AUTO_DIMMER = "ntpAutoDimmer"; // v47
+const String ConfigNames::NTP_AUTO_DIMMER_START = "ntpAutoDimmerStart"; // v47
+const String ConfigNames::NTP_AUTO_DIMMER_END = "ntpAutoDimmerEnd"; // v47
+
 /** Show and wait for reconfig screen on boot */
 const String ConfigNames::DISPLAY_RECONFIG = "displayWaitForReconfigure";
 

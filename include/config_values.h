@@ -17,6 +17,12 @@ class ConfigValues {
     static const String OPMODE_MQTT;
     static const String OPMODE_DISPLAY;
 
+    static const String NTP_ON; // v47
+    static const String NTP_OFF; // v47
+
+    static const String NTP_AUTO_DIMMER_ON; // v47
+    static const String NTP_AUTO_DIMMER_OFF; // v47
+
     static const String ST7789_USE;
     static const String ST7789_NOUSE;
 

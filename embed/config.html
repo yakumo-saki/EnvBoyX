@@ -49,6 +49,47 @@
                 MQTTモード（間欠動作・MQTT送信後ディープスリープ・非推奨）
             </label><br>
         </fieldset>
+
+
+        <fieldset>
+            <legend>時刻関連設定</legend>
+            <strong>NTPサーバー設定</strong><br>
+            NTPサーバーを使用しない場合、時刻関係の機能は動作しません。<br>
+            <label>
+                <input type='radio' name='ntp' value='no' id='ntp__no'>
+                使用しない
+            </label><br>
+            <label>
+                <input type='radio' name='ntp' value='yes' id='ntp__yes'>
+                使用する
+            </label><br>
+            <br>
+
+            <strong>NTPサーバーのIPアドレス</strong><br>
+            <input type='text' name='ntpAddress' placeholder='IP Address' id='ntpAddress'><br>
+            <br>
+
+            <strong>時刻によるディスプレイ自動消灯</strong><br>
+            <label>
+                <input type='radio' name='ntpAutoDimmer' value='no' id='ntpAutoDimmer__no'>
+                使用しない
+            </label><br>
+            <label>
+                <input type='radio' name='ntpAutoDimmer' value='yes' id='ntpAutoDimmer__yes'>
+                使用する
+            </label><br>
+            <br>
+
+            <strong>時刻によるディスプレイ自動消灯時刻</strong><br>
+            指定した時刻の間、ディスプレイを消灯します。<br>
+            <input type="time" name='ntpAutoDimmerStart' id='ntpAutoDimmerStart'>
+            &nbsp;～&nbsp;
+            <input type="time" name='ntpAutoDimmerEnd' id='ntpAutoDimmerEnd'>
+            <br>
+
+        </fieldset>
+
+
         <fieldset>
             <legend>表示デバイス共通設定</legend>
             <strong>画面反転</strong><br>
@@ -132,48 +173,6 @@
                 縦表示モード（デカ文字）
             </label><br>
         </fieldset>
-
-
-        <fieldset>
-            <legend>時刻関連設定</legend>
-            <strong>NTPサーバー設定</strong><br>
-            NTPサーバーを使用しない場合、時刻関係の機能は動作しません。<br>
-            <label>
-                <input type='radio' name='ntp' value='no' id='ntp__no'>
-                使用しない
-            </label><br>
-
-            <label>
-                <input type='radio' name='ntp' value='yes' id='ntp__yes'>
-                使用する
-            </label><br>
-            <br>
-
-            <strong>NTPサーバーのIPアドレス</strong><br>
-            <input type='text' name='ntpAddress' placeholder='IP Address' id='ntpAddress'><br>
-            <br>
-
-            <strong>時刻によるディスプレイ自動消灯</strong><br>
-            <label>
-                <input type='radio' name='ntpAutoDimmer' value='no' id='ntpAutoDimmer__no'>
-                使用しない
-            </label><br>
-
-            <label>
-                <input type='radio' name='ntpAutoDimmer' value='yes' id='ntpAutoDimmer__yes'>
-                使用する
-            </label><br>
-            <br>
-
-            <strong>時刻によるディスプレイ自動消灯時刻</strong><br>
-            指定した時刻の間、ディスプレイを消灯します。<br>
-            <input type="time" name='ntpAutoDimmerStart' id='ntpAutoDimmerStart'>
-            &nbsp;～&nbsp;
-            <input type="time" name='ntpAutoDimmerEnd' id='ntpAutoDimmerEnd'>
-            <br>
-
-        </fieldset>
-
 
         <fieldset>
             <legend>MH-Z19B デバイス設定</legend>
