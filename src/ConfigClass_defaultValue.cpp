@@ -22,6 +22,8 @@ void Config::loadDefaultValue() {
 
   this->addConfig(ConfigNames::NTP, ConfigValues::NTP_OFF);
   this->addConfig(ConfigNames::NTP_ADDRESS, "");
+  this->addConfig(ConfigNames::NTP_TIMEZONE, "JST-9");
+
   this->addConfig(ConfigNames::NTP_AUTO_DIMMER, ConfigValues::NTP_AUTO_DIMMER_OFF);
   this->addConfig(ConfigNames::NTP_AUTO_DIMMER_START, "");
   this->addConfig(ConfigNames::NTP_AUTO_DIMMER_END, "");

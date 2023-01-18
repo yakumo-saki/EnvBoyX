@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "config_values.h"
 
+// configの項目が選択式の場合の文字列表記を列挙する
+
 const String ConfigValues::settings = "/wifi_settings.txt";
 const String ConfigValues::configured_file = "/config_ok.txt";
 

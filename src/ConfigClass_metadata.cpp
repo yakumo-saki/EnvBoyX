@@ -69,6 +69,13 @@ void Config::loadMetadata() {
   }
   { // v47
     ConfigMeta meta;
+    meta.key = ConfigNames::NTP_TIMEZONE;
+    meta.type = ConfigValueType::String;
+    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    this->addMeta(meta);
+  }
+  { // v47
+    ConfigMeta meta;
     meta.key = ConfigNames::NTP_AUTO_DIMMER;
     meta.type = ConfigValueType::Choise;
     meta.flags = RunningConfigChangeFlags::REBOOT_REQ;

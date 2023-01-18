@@ -29,11 +29,12 @@ class ConfigNames {
     static const String DISPLAY_AUTODIM_LUX; // v45
     static const String DISPLAY_AUTODIM_WAIT_SEC; // v45
 
-    static const String NTP; // v47
-    static const String NTP_ADDRESS; // v47
-    static const String NTP_AUTO_DIMMER; // v47
-    static const String NTP_AUTO_DIMMER_START; // v47
-    static const String NTP_AUTO_DIMMER_END; // v47
+    static const String NTP;                    // v47
+    static const String NTP_ADDRESS;            // v47
+    static const String NTP_TIMEZONE;           // v47
+    static const String NTP_AUTO_DIMMER;        // v47
+    static const String NTP_AUTO_DIMMER_START;  // v47
+    static const String NTP_AUTO_DIMMER_END;    // v47
 
     static const String OLED_TYPE;
 
