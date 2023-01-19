@@ -13,6 +13,9 @@
 #include "network/time_client.h"
 #include "utils.h"
 
+char TIME_CLIENT_TZCHAR[30];
+char TIME_CLIENT_NTPCHAR[30];
+
 void ntp_setup() {
 
   cfglog("Communicating NTP server.");
@@ -22,13 +25,11 @@ void ntp_setup() {
 
   cfglog("timezone=" + tz + " ntpsrv=" + ntp);
 
-  char tzchar[30];
-  char ntpchar[30];
 
-  tz.toCharArray(tzchar, sizeof tzchar);
-  ntp.toCharArray(ntpchar, sizeof tzchar);
+  tz.toCharArray(TIME_CLIENT_TZCHAR, sizeof TIME_CLIENT_TZCHAR);
+  ntp.toCharArray(TIME_CLIENT_NTPCHAR, sizeof TIME_CLIENT_TZCHAR);
 
-  configTzTime(tzchar, ntpchar);
+  configTzTime(TIME_CLIENT_TZCHAR, TIME_CLIENT_NTPCHAR);
 
   cfglog("Communicating NTP server done.");
 }
