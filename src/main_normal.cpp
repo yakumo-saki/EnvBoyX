@@ -24,6 +24,7 @@
 #include "sensors/freeHeap.h"
 #include "sensors/delta.h"
 #include "sensors/stastics.h"
+#include "sensors/timebased_dimmer.h"
 #include "watchdog.h"
 #include "wifiutil.h"
 #include "network/time_client.h"
@@ -174,7 +175,7 @@ void setup_normal() {
   
   if (config->getAsBoolean(ConfigNames::NTP)) {
     ntp_setup();
-    // TODO add timebased auto dimmer watcher 
+    timer.add(timebased_dimmer, "TIMEBASED_DIMMER", 60000);
   } else {
     cfglog("NTP is disabled.");
   }

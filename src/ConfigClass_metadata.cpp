@@ -78,7 +78,7 @@ void Config::loadMetadata() {
     ConfigMeta meta;
     meta.key = ConfigNames::NTP_AUTO_DIMMER;
     meta.type = ConfigValueType::Choise;
-    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    meta.flags = RunningConfigChangeFlags::OK;
     meta.validValues = std::vector<String> {ConfigValues::NTP_AUTO_DIMMER_ON, ConfigValues::NTP_AUTO_DIMMER_OFF};
     this->addMeta(meta);
   }
@@ -86,14 +86,14 @@ void Config::loadMetadata() {
     ConfigMeta meta;
     meta.key = ConfigNames::NTP_AUTO_DIMMER_START;
     meta.type = ConfigValueType::String;
-    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    meta.flags = RunningConfigChangeFlags::OK;
     this->addMeta(meta);
   }
   { // v47
     ConfigMeta meta;
     meta.key = ConfigNames::NTP_AUTO_DIMMER_END;
     meta.type = ConfigValueType::String;
-    meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    meta.flags = RunningConfigChangeFlags::OK;
     this->addMeta(meta);
   }
   {

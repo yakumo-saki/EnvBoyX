@@ -121,7 +121,7 @@ void disp_wait_for_reconfig() {
 			disp_ssd1306_wait_for_reconfig_bar(i + 1, MAX_BAR);
 		}
 	
-	    delay(WAIT_PER_BAR);
+    delay(WAIT_PER_BAR);
 	}
 	displog(F("Wait for reconfigure end"));
 
