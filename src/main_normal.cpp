@@ -171,7 +171,13 @@ void setup_normal() {
   mainlog("TimerCall version: " + String(timer.VERSION, 2));
   init_sensors();
 
-  ntp_setup();
+  
+  if (config->getAsBoolean(ConfigNames::NTP)) {
+    ntp_setup();
+    // TODO add timebased auto dimmer watcher 
+  } else {
+    cfglog("NTP is disabled.");
+  }
 
   // TimerCall
   add_timer_tasks();

@@ -121,10 +121,16 @@ class Config {
       return configMetaMap.get(key);
     }
 
-    // 設定値を取得する
+    // 設定値を取得する(String)
     String get(String key) {
       checkKeyExist("get", key, true);
       return configMap.get(key);
+    }
+
+    // 設定値を取得する(bool)
+    bool getAsBoolean(String key) {
+      String val = configMap.get(key);
+      return parseBooleanString(val);
     }
 
     // set 普通のキー

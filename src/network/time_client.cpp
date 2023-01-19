@@ -9,13 +9,26 @@
 #endif
 
 #include "log.h"
+#include "global.h"
 #include "network/time_client.h"
+#include "utils.h"
 
 void ntp_setup() {
 
   cfglog("Communicating NTP server.");
 
-  configTzTime("JST-9", "10.1.0.10");
+  String tz = config->get(ConfigNames::NTP_TIMEZONE);
+  String ntp = config->get(ConfigNames::NTP_ADDRESS);
+
+  cfglog("timezone=" + tz + " ntpsrv=" + ntp);
+
+  char tzchar[30];
+  char ntpchar[30];
+
+  tz.toCharArray(tzchar, sizeof tzchar);
+  ntp.toCharArray(ntpchar, sizeof tzchar);
+
+  configTzTime(tzchar, ntpchar);
 
   cfglog("Communicating NTP server done.");
 }
