@@ -47,8 +47,6 @@ void config_factory_reset();
 // ボード依存なし
 // --------------------------------------------------------------------
 
-void print_config();
-
 void trim_config();
 
 /** config値をファイルに書き出す。closeはしない */

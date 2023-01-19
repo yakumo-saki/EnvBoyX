@@ -52,7 +52,6 @@ bool read_config()
   bool ret = read_config_file(f, false);
   f.close();
 
-  print_config();
   return ret;
 }
 
