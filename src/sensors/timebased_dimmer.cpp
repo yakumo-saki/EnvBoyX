@@ -19,6 +19,10 @@ bool LAST_AUTODIMMER_RESULT = false;
 bool _inDimmingTime(int now, int start, int end) {
   bool overday = (start > end);  // 日付またぎ (ex 22:00 - 06:00)
 
+  // Serial.println(now);
+  // Serial.println(start);
+  // Serial.println(end);
+
   if (!overday) {
     // simple pattern ex 05:00 - 17:00
     if (start <= now && now <= end) {
@@ -34,7 +38,8 @@ bool _inDimmingTime(int now, int start, int end) {
 }
 
 int _timeToInt(String time) {
-  return (time.substring(0,1) + time.substring(3,4)).toInt();
+  String timeIntStr = "1" + time.substring(0,2) + time.substring(3,5); // prefix "1" to prevent deletion of ZERO
+  return (timeIntStr).toInt();
 }
 
 /**
@@ -62,7 +67,9 @@ void timebased_dimmer() {
 
   int start = _timeToInt(startTime);
   int end = _timeToInt(endTime);
-  int now = _timeToInt(datetime.substring(11, 15));  // 2023/01/20 12:34:56 -> 12:34
+  int now = _timeToInt(datetime.substring(11, 16));  // 2023/01/20 12:34:56 -> 12:34
+
+  // Serial.println(datetime + "->" + datetime.substring(11, 16));
 
   bool dimming = _inDimmingTime(now, start, end);
 

@@ -175,7 +175,7 @@ void setup_normal() {
   
   if (config->getAsBoolean(ConfigNames::NTP)) {
     ntp_setup();
-    timer.add(timebased_dimmer, "TIMEBASED_DIMMER", 60000);
+    timer.add(timebased_dimmer, "TIMEBASED_DIMMER", 10000);
   } else {
     cfglog("NTP is disabled.");
   }
