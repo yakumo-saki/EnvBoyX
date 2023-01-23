@@ -3,6 +3,11 @@
 
 #include "log.h"
 
+/**
+ * 文字列をboolとして解釈する。大文字小文字は区別しない
+ * TRUE/1/ON/YES
+ * @return bool TRUE-ish ならTRUEそれ以外ならfalse
+*/
 bool parseBooleanString(const String val) {
 
     // String is null or invalid
@@ -15,11 +20,6 @@ bool parseBooleanString(const String val) {
     if (v == "1") return true;
     if (v == "ON") return true;
     if (v == "YES") return true;
-
-    if (v == "FALSE" ) return false;
-    if (v == "0") return false;
-    if (v == "OFF") return false;
-    if (v == "NO") return false;
 
     return false;
 }

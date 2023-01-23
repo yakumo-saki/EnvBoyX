@@ -18,12 +18,12 @@ extern const bool DEBUG_BUILD = false;
 // EnvBoyX
 // note: Also referenced by create_release.sh
 extern const String product = "EnvBoyX";
-extern const String ver = "46";      // Major
+extern const String ver = "47";      // Major
 extern const String minorVer = "0";  // Bugfix
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
 // Setting version (version number when settings changed)
-extern const String SETTING_ID = "EBXCFG.v45";
+extern const String SETTING_ID = "EBXCFG.v47";
 
 // EnvBoyX Ver.53.0
 extern const String product_long = product + " " + (DEBUG_BUILD ? " Dev." + ver + "." + minorVer : ver_long);

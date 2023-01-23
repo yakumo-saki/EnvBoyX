@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
-#include "config.h"
+#include "config/config.h"
 
 #include "log.h"
 #include "global.h"

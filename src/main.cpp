@@ -5,7 +5,7 @@
 
 #include "log.h"
 #include "global.h"
-#include "config.h"
+#include "config/config.h"
 #include "main_setup.h"
 #include "main_normal.h"
 
@@ -35,7 +35,17 @@ void setup()
   config_setup();
 
   mainlog(F("Checking config files"));
-  isNormal = has_valid_config();
+  isNormal = has_configured_file();
+
+  CFG_VALIDATE_RESULT validateResult = has_valid_config_file();
+  if (validateResult == CFG_VALIDATE_RESULT::VALID) {
+    mainlog(F("Config file is valid."));
+  } else if (validateResult == CFG_VALIDATE_RESULT::NEED_UPGRADE) {
+    mainlog(F("Config file needs upgrade."));
+  } else {
+    mainlog(F("Config file validation error. dropping to setup mode."));
+    isNormal = false;
+  }
 
   if (!isNormal) {
     OPERATING_MODE = OPERATING_MODE_SETUP;

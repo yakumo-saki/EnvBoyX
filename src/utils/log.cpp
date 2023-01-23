@@ -1,12 +1,19 @@
 #include <Arduino.h>
+#include "network/time_client.h"
 
 void real_log(String msgString, String prefixString) {
-  char log[130];
+  char log[150];
   char prefix[10];
   char msg[100];
+  char datetimeChar[20];
+  
   prefixString.toCharArray(prefix, sizeof prefix);
   msgString.toCharArray(msg, sizeof msg);
-  snprintf(log, sizeof log, "%08lu %-10s: %s", millis(),  prefix, msg);
+
+  String datetime = getTime();
+  datetime.toCharArray(datetimeChar, sizeof datetimeChar);
+
+  snprintf(log, sizeof log, "%s %08lu %-10s: %s", datetimeChar, millis(),  prefix, msg);
   Serial.println(log);
 }
 

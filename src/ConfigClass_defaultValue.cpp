@@ -10,7 +10,6 @@
 
 /** 
  * 初期値をセットする 
- * ここでセットしていない項目は存在しないものとして扱われる
  */
 void Config::loadDefaultValue() {
   this->addConfig(ConfigNames::SETTING_ID, "");
@@ -18,11 +17,20 @@ void Config::loadDefaultValue() {
   this->addConfig(ConfigNames::PASSWORD, "");
 
   this->addConfig(ConfigNames::MDNS, "ebx");
+
   this->addConfig(ConfigNames::OPMODE, ConfigValues::OPMODE_DISPLAY);
+
+  this->addConfig(ConfigNames::NTP, ConfigValues::NTP_OFF);
+  this->addConfig(ConfigNames::NTP_ADDRESS, "");
+  this->addConfig(ConfigNames::NTP_TIMEZONE, "JST-9");
+
+  this->addConfig(ConfigNames::NTP_AUTO_DIMMER, ConfigValues::NTP_AUTO_DIMMER_OFF);
+  this->addConfig(ConfigNames::NTP_AUTO_DIMMER_START, "");
+  this->addConfig(ConfigNames::NTP_AUTO_DIMMER_END, "");
 
   this->addConfig(ConfigNames::DISPLAY_FLIP, ConfigValues::DISPLAY_FLIP_OFF);
   this->addConfig(ConfigNames::DISPLAY_BRIGHTNESS, "255");
-  this->addConfig(ConfigNames::DISPLAY_RECONFIG, ConfigValues::DISPLAY_RECONFIG_ON);  // v44;
+  this->addConfig(ConfigNames::DISPLAY_RECONFIG, ConfigValues::DISPLAY_RECONFIG_SKIP);  // v44: 追加(ON) v47: デフォルトOFF
   this->addConfig(ConfigNames::DISPLAY_AUTODIM_LUX, "5");       // v45: この明るさ以下がDuration秒続けば消灯
   this->addConfig(ConfigNames::DISPLAY_AUTODIM_WAIT_SEC, "10"); // v45: 消灯までの時間 second
 

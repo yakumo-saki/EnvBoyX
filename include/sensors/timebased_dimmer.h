@@ -1,0 +1,1 @@
+void timebased_dimmer();

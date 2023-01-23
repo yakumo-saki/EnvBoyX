@@ -5,7 +5,7 @@
 #include "global.h"
 #include "utils.h"
 
-#include "config.h"
+#include "config/config.h"
 #include "ConfigClass.h"
 
 #include "sensors/mhz19_main.h"

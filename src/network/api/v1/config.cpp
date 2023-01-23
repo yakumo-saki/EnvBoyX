@@ -3,7 +3,7 @@
 
 #include "log.h"
 #include "global.h"
-#include "config.h"
+#include "config/config.h"
 #include "sensors/mhz19_uart.h"
 
 #include "network/webserver.h"
