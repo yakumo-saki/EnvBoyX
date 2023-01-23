@@ -1,28 +1,32 @@
-# how to develop web ui
+# how to develop
 
-## copy files except config.html to static/
+## arduino code
 
-```
-cd embed
-rsync -v --exclude=config.html ./* static
-```
+1. git clone
+2. open directory in VSCode
+3. Fix includePath
 
-## run python http.server or some simple web server on embed
+### include path
 
-```
-cd embed
-python -m http.server
-```
-
-## Access web via web browser
-
-Use firefox or chrome newer version.
-
-# after development
-
-Dont forget to write back all files in static/ to embed.
+Edit `.vscode/c_cpp_properties.json` file.
 
 ```
-cd embed/static
-cp -v ./* ../
+"includePath": [
+    "${workspaceFolder}/**",
+    "/Users/username/.platformio/packages/**"  <-- Add this. path vary on your OS.
+],
 ```
+
+## Web UI code
+
+1. git clone
+2. edit `src/global.cpp` `DEBUG_BUILD = true`. by change this, envboy returns CORS header.
+3. Upload to board
+4. exec `python -m http.server` In `embed` directory
+5. access `localhost:8000` using web browser
+
+### NOTE
+
+1. you cant use external JS libraries. because host has no internet access while in setup mode.
+
+NOTE: modernize JS/Web development is a task in near future.
