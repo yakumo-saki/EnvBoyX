@@ -4,6 +4,10 @@ MYDIR=$(cd "$(dirname "$0")"; pwd)
 RELEASE_BASE_DIR=${MYDIR}/_release
 SRC_BUILD_DIR=${MYDIR}/.pio/build
 
+SED=sed
+if [ "$(uname)" == 'Darwin' ]; then
+  SED=gsed  # install via homebrew install gnu-sed
+fi
 # SUBs
 
 banner () {
@@ -28,8 +32,8 @@ cd ${MYDIR}
 # -------------------------------------------------------------------------
 banner "Get Version"
 # -------------------------------------------------------------------------
-MAJOR=$(grep " ver =" ./src/global.cpp | sed -r 's/.*"(.*+)".*/\1/')
-MINOR=$(grep " minorVer =" ./src/global.cpp | sed -r 's/.*"(.*+)".*/\1/')
+MAJOR=$(grep " ver =" ./src/global.cpp | $SED -r 's/.*"(.*+)".*/\1/')
+MINOR=$(grep " minorVer =" ./src/global.cpp | $SED -r 's/.*"(.*+)".*/\1/')
 VER=$(echo "${MAJOR}.${MINOR}")
 echo "Version is ${VER}"
 
@@ -39,6 +43,7 @@ banner "Get Version additional info (debug, branch...)"
 # -------------------------------------------------------------------------
 # git ブランチからファイル名判定
 branch=`git symbolic-ref --short HEAD`
+VER_ADDITIONAL=""
 if [ $branch != "main" ]; then
   echo "git branch is not master/main!"
   echo "Appending branch name"
@@ -69,6 +74,9 @@ fi
 if [ ${#VER_ADDITIONAL} -gt 0 ] ; then
   VER_ADDITIONAL=$(echo "-$VER_ADDITIONAL")
 fi
+
+echo "Version Additional is '$VER_ADDITIONAL'"
+
 
 # -------------------------------------------------------------------------
 banner "Delete and create build directory"
