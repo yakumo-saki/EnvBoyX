@@ -71,7 +71,10 @@ CFG_VALIDATE_RESULT has_valid_config_file() {
     settingId = read_config_setting_id(f);
     f.close();
 
-    if (String(SETTING_ID).equals(settingId)) {
+    if (settingId.equals(CFG_VERSION_INVALID)) {
+      cfglog("SETTING_ID not found. INVALID config.");
+      return CFG_VALIDATE_RESULT::ERROR;
+    } else if (String(SETTING_ID).equals(settingId)) {
       cfglog("SETTING_ID verified. " + settingId);
       return CFG_VALIDATE_RESULT::VALID;
     } else {
@@ -80,7 +83,7 @@ CFG_VALIDATE_RESULT has_valid_config_file() {
     }
   }
 
-  cfglog("Unknown state. Assuming config not found");
+  cfglog("Unknown state. Assuming config not found. " + settingId);
   return CFG_VALIDATE_RESULT::ERROR;
 }
 
@@ -102,6 +105,7 @@ bool has_configured_file() {
   return true;
 }
 
+/** ファイルシステムのマウント */
 void config_setup() {
 
   if (!LittleFS.begin()) {

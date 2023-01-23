@@ -41,7 +41,10 @@ void setup()
   if (validateResult == CFG_VALIDATE_RESULT::VALID) {
     mainlog(F("Config file is valid."));
   } else if (validateResult == CFG_VALIDATE_RESULT::NEED_UPGRADE) {
-    mainlog(F("Config file needs upgrade."));
+    sectionlog(F("Config file needs upgrade. upgrading..."));
+    read_config();
+    save_config();  // upgrade means json + default, so only saving is needed.
+    sectionlog(F("Config file upgrade done!"));
   } else {
     mainlog(F("Config file validation error. dropping to setup mode."));
     isNormal = false;

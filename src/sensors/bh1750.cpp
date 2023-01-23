@@ -24,16 +24,16 @@ bool bh_setup(void) {
   byte error = Wire.endTransmission();
 
   if (!(error == 0)) {
-    amlog(F("BH1750 disabled. "));
+    bhlog(F("BH1750 disabled. "));
     return false;
   }
 
   if (!bh1750.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
-    amlog(F("BH1750 disabled: Device found but initialize error. "));
+    bhlog(F("BH1750 disabled: Device found but initialize error. "));
     return false;
   }
 
-  amlog(F("BH1750 Enabled"));
+  bhlog(F("BH1750 Enabled"));
   use_bh1750 = true;
   return true;
 }

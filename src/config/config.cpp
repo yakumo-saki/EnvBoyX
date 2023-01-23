@@ -12,6 +12,8 @@
 #include "config_names.h"
 
 const unsigned int CONF_JSON_SIZE = 4000;
+extern const String CFG_VERSION_INVALID = "INVALID";
+
 
 DynamicJsonDocument _create_config_json(bool save, const std::vector<String> &keyArray) {
 
@@ -119,12 +121,12 @@ String read_config_setting_id(File f) {
   DeserializationError error = deserializeJson(doc, f);
 
   if (error) {
-    return "INVALID";
+    return CFG_VERSION_INVALID;
   }
 
   JsonVariant value = doc[ConfigNames::SETTING_ID];
   if (value.isNull()) {
-    return "INVALID"; // JSON not contains SETTING_ID
+    return CFG_VERSION_INVALID; // JSON not contains SETTING_ID
   }
 
   return value.as<String>();
