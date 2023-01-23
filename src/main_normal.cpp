@@ -143,7 +143,7 @@ void setup_normal() {
   sectionlog(F("Start watchdog"));
   setup_watchdog();
 
-  // setupモードに入りやすくするための処理
+  // setupモードに入りやすくするための処理(deprecated)
   if (config->get(ConfigNames::DISPLAY_RECONFIG) == ConfigValues::DISPLAY_RECONFIG_ON) {
     sectionlog(F("Reset to reconfig start."));
     remove_configure_flag_file();

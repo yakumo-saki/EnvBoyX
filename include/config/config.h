@@ -7,6 +7,8 @@
 #include "config_values.h"
 #include "ConfigClass.h"
 
+extern const String CFG_VERSION_INVALID;
+
 enum struct CFG_VALIDATE_RESULT {
   // 存在していて、バージョンも一致している
   VALID,
