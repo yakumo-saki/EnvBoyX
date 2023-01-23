@@ -1,12 +1,13 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
-#include "config.h"
+#include "config/config.h"
 
 #include "log.h"
 #include "global.h"
 #include "display/display.h"
 
+#include "network/time_client.h"
 #include "network/webserver.h"
 #include "network/api/basic_api.h"
 #include "network/api/api_util.h"
@@ -22,6 +23,7 @@ String http_normal_ping_json() {
 
   DynamicJsonDocument doc(2000);
   doc["product"] = product;
+  doc["datetime"] = getFormattedTime();
   doc["uptime"] = timeString;
   doc["uptimeMills"] = ms;
   doc["majorVer"] = ver;

@@ -1,12 +1,20 @@
 #include <Arduino.h>
 #include "config_values.h"
 
+// configの項目が選択式の場合の文字列表記を列挙する
+
 const String ConfigValues::settings = "/wifi_settings.txt";
 const String ConfigValues::configured_file = "/config_ok.txt";
 
 const String ConfigValues::OPMODE_NAME = "opmode";
 const String ConfigValues::OPMODE_MQTT = "mqtt";
 const String ConfigValues::OPMODE_DISPLAY = "always";
+
+const String ConfigValues::NTP_ON = "yes"; // v47
+const String ConfigValues::NTP_OFF = "no"; // v47
+
+const String ConfigValues::NTP_AUTO_DIMMER_ON = "yes"; // v47
+const String ConfigValues::NTP_AUTO_DIMMER_OFF = "no"; // v47
 
 const String ConfigValues::OLED_SSD1306 = "SSD";
 const String ConfigValues::OLED_SH1106 = "SH";

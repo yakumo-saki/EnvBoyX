@@ -5,7 +5,7 @@
 
 #include "log.h"
 #include "global.h"
-#include "config.h"
+#include "config/config.h"
 #include "ConfigClass.h"
 #include "wifiutil.h"
 #include "main_normal.h"

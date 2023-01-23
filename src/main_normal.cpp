@@ -3,7 +3,7 @@
 #include <MQTTClient.h>
 #include <TimerCall.h>
 
-#include "config.h"
+#include "config/config.h"
 #include "ConfigClass.h"
 #include "display/display.h"
 #include "display/autodimmer.h"
@@ -24,6 +24,7 @@
 #include "sensors/freeHeap.h"
 #include "sensors/delta.h"
 #include "sensors/stastics.h"
+#include "sensors/timebased_dimmer.h"
 #include "watchdog.h"
 #include "wifiutil.h"
 #include "network/time_client.h"
@@ -171,7 +172,13 @@ void setup_normal() {
   mainlog("TimerCall version: " + String(timer.VERSION, 2));
   init_sensors();
 
-  ntp_setup();
+  
+  if (config->getAsBoolean(ConfigNames::NTP)) {
+    ntp_setup();
+    timer.add(timebased_dimmer, "TIMEBASED_DIMMER", 10000);
+  } else {
+    cfglog("NTP is disabled.");
+  }
 
   // TimerCall
   add_timer_tasks();

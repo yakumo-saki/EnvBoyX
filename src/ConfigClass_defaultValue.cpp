@@ -10,7 +10,6 @@
 
 /** 
  * 初期値をセットする 
- * ここでセットしていない項目は存在しないものとして扱われる
  */
 void Config::loadDefaultValue() {
   this->addConfig(ConfigNames::SETTING_ID, "");
@@ -18,7 +17,16 @@ void Config::loadDefaultValue() {
   this->addConfig(ConfigNames::PASSWORD, "");
 
   this->addConfig(ConfigNames::MDNS, "ebx");
+
   this->addConfig(ConfigNames::OPMODE, ConfigValues::OPMODE_DISPLAY);
+
+  this->addConfig(ConfigNames::NTP, ConfigValues::NTP_OFF);
+  this->addConfig(ConfigNames::NTP_ADDRESS, "");
+  this->addConfig(ConfigNames::NTP_TIMEZONE, "JST-9");
+
+  this->addConfig(ConfigNames::NTP_AUTO_DIMMER, ConfigValues::NTP_AUTO_DIMMER_OFF);
+  this->addConfig(ConfigNames::NTP_AUTO_DIMMER_START, "");
+  this->addConfig(ConfigNames::NTP_AUTO_DIMMER_END, "");
 
   this->addConfig(ConfigNames::DISPLAY_FLIP, ConfigValues::DISPLAY_FLIP_OFF);
   this->addConfig(ConfigNames::DISPLAY_BRIGHTNESS, "255");

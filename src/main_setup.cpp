@@ -9,7 +9,7 @@
 #include "log.h"
 #include "display/display.h"
 #include "global.h"
-#include "config.h"
+#include "config/config.h"
 #include "http_setup.h"
 #include "wifiutil.h"
 #include "i2c.h"

@@ -3,7 +3,7 @@
 #include "log.h"
 
 #include "global.h"
-#include "config.h"
+#include "config/config.h"
 #include "ConfigClass.h"
 
 #include "sensors/mhz19_pwm.h"
