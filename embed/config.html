@@ -228,6 +228,17 @@
             <br> <strong>MQTT名</strong><br>
             ※ クライアント名とトピック名として使用<br><input type='text' name='mqttName' placeholder='MQTT Client Name' value=''><br>
         </fieldset>
+
+        <fieldset>
+            <legend>センサー値の補正</legend>
+            <p>お使いのセンサーの値を補正することができます。</p>
+            <span class="header">温度</span><input type='number' class="num" name='adjustTemperature' value='12'><br>
+            <span class="header">湿度</span><input type='number' class="num" name='adjustHumidity' value='34'><br>
+            <span class="header">気圧</span><input type='number' class="num" name='adjustPressure' value='56'><br>
+            <span class="header">照度</span><input type='number' class="num" name='adjustLux' value='78'><br>
+            <span class="header">CO2</span><input type='number' class="num" name='adjustCo2' value='90'><br>
+        </fieldset>
+
         <fieldset>
             <legend>アラート設定</legend>
             <fieldset>
