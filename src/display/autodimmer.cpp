@@ -9,7 +9,7 @@
 #include "log.h"
 #include "config/config.h"
 #include "ConfigClass.h"
-#include "display/display.h"
+#include "display/brightnessManager.h"
 
 unsigned int belowThreasholdSecond = 0;
 
@@ -35,7 +35,7 @@ void autodimmer_loop() {
             displog("Dimmer disable. restore brightness.");
 
             dimming = false;
-            disp_set_brightness(lastBrightness);
+            unregisterBrightness(MOD_BRIGHTNESS_AUTODIMMER);
         }
 
         return;
@@ -53,10 +53,6 @@ void autodimmer_loop() {
         // 減光する
         dimming = true;
 
-        displog("Dimmer Enable. set Brightness = 0");
-
-        // 本当はこの時点の明るさがほしいが取得できないので仮おき
-        lastBrightness = config->get(ConfigNames::DISPLAY_BRIGHTNESS).toInt();  
-        disp_set_brightness(0);
+        registerBrightness(MOD_BRIGHTNESS_AUTODIMMER, 0);
     }
 }

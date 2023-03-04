@@ -12,39 +12,45 @@ struct SimpleMapData {
 };
 
 /**
- * Map-Like array
+ * Map-Like array. 
+ * NOTE: Key is always string.
+ * typename T is typename of Data
  */
 template <typename T> class SimpleMap {
 
   private:
     static const int NOT_FOUND = -128;
 
-    std::vector<SimpleMapData<T>> vector;
+    std::vector<SimpleMapData<T>> values;
+
+    /**
+     * Returns index of key.
+     * @return index of key. if not found return NOT_FOUND (-128)
+     */
+    int findIndex(String key) {
+      for (unsigned int i = 0; i < values.size(); i++) {
+        // debuglog("NOW=" + vector[i].key + " target=" + key);
+        if (values[i].key == key) return i;
+      }
+      return NOT_FOUND;
+    }
 
   public:
 
     // すべて削除
     void clear() {
-      vector.clear();
+      values.clear();
     }
 
-    // return all keys
+    /** return all keys in map */
     std::vector<String> getKeys() {
       std::vector<String> ret;
       // debuglog("SimpleMap keys start");
-      for (auto itr : vector) {
+      for (auto itr : values) {
           // debuglog("config creation add key=" + itr.key);
           ret.push_back(itr.key);
       }
       return ret;
-    }
-
-    int findIndex(String key) {
-      for (unsigned int i = 0; i < vector.size(); i++) {
-        // debuglog("NOW=" + vector[i].key + " target=" + key);
-        if (vector[i].key == key) return i;
-      }
-      return NOT_FOUND;
     }
 
     bool hasKey(String key) {
@@ -60,7 +66,7 @@ template <typename T> class SimpleMap {
         T temp;
         return temp;
       }
-      return vector[idx].value;
+      return values[idx].value;
     }
 
     // @param create Create new key or not. 
@@ -74,9 +80,9 @@ template <typename T> class SimpleMap {
       
       SimpleMapData<T> data {key, value};
       if (idx == NOT_FOUND) {
-        vector.push_back(data);
+        values.push_back(data);
       } else {
-        vector[idx] = data;
+        values[idx] = data;
       }
 
       // debuglog("[SimpleMap] SET KEY=" + key + " value=" + value);
@@ -84,19 +90,36 @@ template <typename T> class SimpleMap {
       return true;
     }
 
-    // @param failIfExist Fail if key is already exist
-    // @return success or not
+    /**
+     * put new item to map.
+     * @param failIfExist true -> Fail if key is already exist. false -> overwrite
+     * @return success or not
+     */
     bool put(String key, const T& value, bool failIfExist = false) {
       int idx = this->findIndex(key);
       if (idx != NOT_FOUND && failIfExist) return false;
       
       SimpleMapData<T> data {key, value};
       if (idx == NOT_FOUND) {
-        vector.push_back(data);
+        values.push_back(data);
       } else {
-        vector[idx] = data;
+        values[idx] = data;
       }
       return true;
+    }
+
+    // remove key from map.
+    // @return success or not (not means key not found)
+    bool remove(String key) {
+
+      for (auto it = values.begin(); it != values.end(); ++it) {
+        if (it->key == key) {
+          values.erase(it);
+          return true;
+        }
+      }
+      
+      return false;
     }
 
 };

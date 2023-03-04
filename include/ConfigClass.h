@@ -133,6 +133,13 @@ class Config {
       return parseBooleanString(val);
     }
 
+    // 設定値を取得する(int)
+    int getAsInteger(String key) {
+      String val = configMap.get(key);
+      int i = val.toInt();
+      return i;
+    }
+
     // set 普通のキー
     ConfigSetResult set(String key, String value, bool haltOnNoKey = true) {
       // debuglog("[Config] key=" + key + " value=" + value);

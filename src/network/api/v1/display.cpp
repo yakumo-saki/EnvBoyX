@@ -30,12 +30,13 @@ void http_handle_power() {
 void http_handle_brightness() {
   String value = server.arg("value");
   int brightness = value.toInt();
+  // brightnessManagerに投げたいところだが、一時的に変更する用途だろうと思われるので直接変更
   String msg = disp_set_brightness(brightness);
 
   DynamicJsonDocument json(100);
   json["command"] = "DISPLAY_BRIGHTNESS";
   json["success"] = true;
-  json["msg"] = msg;
+  json["msg"] = msg + "\nDont forget to change config if you like new brightness!";
 
   String jsonStr;
   serializeJson(json, jsonStr);
