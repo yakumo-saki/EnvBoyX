@@ -125,7 +125,6 @@ void disp_ssd1306_message(bool isError, String msg1, String msg2, String msg3, S
 
 /**
  * WiFi接続中表示
- * @param wait_print_row Please wait を何行目に表示するか(0,1,2)
  */
 void disp_ssd1306_wifi_starting() {
 

@@ -160,8 +160,8 @@ void setup_normal() {
 
   // start WiFi
   sectionlog(F("Connecting WiFi."));
-  disp_wifi_starting(1);
-  make_sure_wifi_connected();
+  disp_wifi_starting();
+  make_sure_wifi_connected(true);
   disp_wifi_info(get_wifi_ip_addr(), config->get(ConfigNames::MDNS));
 
   mdns_setup();
@@ -197,7 +197,7 @@ void loop_normal() {
   watchdog_feed();
 
   // WiFiが繋がってなければ意味がないので接続チェック
-  make_sure_wifi_connected();
+  make_sure_wifi_connected(false);
 
   // mainlog("WiFi connected. IP=" + get_wifi_ip_addr());
 

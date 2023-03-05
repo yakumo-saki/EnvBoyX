@@ -5,7 +5,7 @@ void disp_setup_startup_screen(String ipAddr, String ssid);
 
 void disp_wifi_info(String ip, String mDNS);
 void disp_wait_for_reconfig();
-void disp_wifi_starting(int wait_print_row);
+void disp_wifi_starting();
 void disp_wifi_error();
 
 /** メッセージ画面を表示 */
