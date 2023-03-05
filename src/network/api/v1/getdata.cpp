@@ -33,9 +33,12 @@ String http_normal_data_json() {
   doc["co2ppmAccuracy"] =  sensorValues.co2ppmAccuracy;
   doc["rssi"] = sensorValues.rssi;
   doc["freeHeap"] = sensorValues.freeHeap;
+  doc["name"] = config->get(ConfigNames::MDNS);
 
   String json;
   serializeJson(doc, json);
+  doc.clear();
+  
   return json;
 }
 

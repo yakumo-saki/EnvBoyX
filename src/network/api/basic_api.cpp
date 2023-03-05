@@ -28,7 +28,8 @@ String http_normal_ping_json() {
   doc["uptimeMills"] = ms;
   doc["majorVer"] = ver;
   doc["minorVer"] = minorVer;
-  doc["settingId"] = SETTING_ID; 
+  doc["settingId"] = SETTING_ID;
+  doc["name"] = config->get(ConfigNames::MDNS);
   
   if (OPERATING_MODE == OPERATING_MODE_NORMAL) {
     doc["mode"] = "NORMAL";
@@ -40,6 +41,7 @@ String http_normal_ping_json() {
 
   String json;
   serializeJson(doc, json);
+  doc.clear();
 
   httplog(json);
   return json;
