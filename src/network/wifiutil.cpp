@@ -59,6 +59,8 @@ void make_sure_wifi_connected() {
   WiFi.softAPdisconnect(true);
   WiFi.enableAP(false);
 
+  WiFi.setHostname(config->get(ConfigNames::MDNS).c_str());
+
   delay(100);
   watchdog_feed();
 
