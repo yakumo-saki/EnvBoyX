@@ -129,8 +129,9 @@ void _disp_sensor_value_big(disp_values_t values, value_alerts_t alerts)
 	tft.setTextColor(TFT_WHITE, TFT_BLACK);
 
 	// LINE 1
-	tft.setTextDatum(TL_DATUM);
-	tft.drawString(ver, R1_X + 3, R1_Y, XSMALL_FONT);
+	// バージョンをXSMALLで書いても読めないのでやめ。
+  // tft.setTextDatum(TL_DATUM);
+	// tft.drawString(ver, R1_X + 3, R1_Y, XSMALL_FONT);
 
 	tft.setTextDatum(TL_DATUM);
 	tft.drawString("c", R1_X + 3, R1_Y + 30, DEFAULT_FONT);
