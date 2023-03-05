@@ -6,6 +6,8 @@
 #include "global.h"
 #include "log.h"
 
+#include "network/time_client.h"
+
 #include "display/display_util.h"
 #include "display/u8g2_utils.h"
 #include "display/display_ssd1306_delta.h"
@@ -228,7 +230,6 @@ void _draw_delta(int x, int y, delta_value_t delta, String unit, bool smallUnitF
  */
 void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
 
-
   // 値を書くy座標。
   const int R0 = 0;
   const int R1 = 12;
@@ -300,8 +301,13 @@ void disp_ssd1306_sensor_value(disp_values_t values, value_alerts_t alerts) {
     draw_string(127, R0, values.mDNS, TextAlign::RIGHT, FONT_SMALL_NARROW); 
   }
 
-  // 左上、EnvBoyX の表示
-  draw_string(0 , R0 + 1, product_short, TextAlign::LEFT, FONT_SMALL); 
+  // 左上、EnvBoyX or 時刻 の表示
+  String time = getTime();
+  if (time.equals(TIME_NOT_READY)) {
+    draw_string(0 , R0 + 1, product_short, TextAlign::LEFT, FONT_SMALL);
+  } else {
+    draw_string(0 , R0 + 1, time, TextAlign::LEFT, FONT_SMALL_NARROW);
+  }
   // バージョン表示
   // draw_string(40, R0, ver, TextAlign::RIGHT, FONT_SMALL_VERSION);
 

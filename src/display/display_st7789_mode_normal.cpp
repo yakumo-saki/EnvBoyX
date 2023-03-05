@@ -8,6 +8,8 @@
 #include "display/display_util.h"
 #include "display/st7789_utils.h"
 
+#include "network/time_client.h"
+
 #include <TFT_eSPI.h>
 #include <SPI.h>
 
@@ -67,31 +69,41 @@ void _clear_screen_normal() {
 
 /**
  * ノーマルモード：ヘッダ部分のみを表示する（この部分は変更されない）
+ * 20230305 今まではヘッダ部は一度しか書かなかったが、時計表示に伴い毎秒表示するようになった。
  */
 void _disp_header_normal(String ip, String mDNS)
 {
-	_clear_screen_normal();
+	// _clear_screen_normal();
 
-	tft.setTextColor(TFT_WHITE);
 
-	// Logo
+	// 1行目左上
 	tft.setTextDatum(TL_DATUM);
 
-	// EnvBoy
-	tft.setTextColor(TFT_DARKGREY);
-	tft.drawString(product.substring(0, product.length() - 1), 3, 2, SMALL_FONT);
-	tft.setTextColor(TFT_WHITE);
-	tft.drawString(product.substring(0, product.length() - 1), 2, 1, SMALL_FONT);
+  String time = getTime();
+  if (time.equals(TIME_NOT_READY)) {
+    // EnvBoyX ロゴ
+    tft.setTextColor(TFT_DARKGREY);
+    tft.drawString(product.substring(0, product.length() - 1), 3, 2, SMALL_FONT);
+    tft.setTextColor(TFT_WHITE);
+    tft.drawString(product.substring(0, product.length() - 1), 2, 1, SMALL_FONT);
+  
+  	// X 影→本体の順で書かないと重なった部分が上書きされるのに注意
+    tft.setTextColor(TFT_SILVER);
+    tft.drawString("X", 51, 2, SMALL_FONT);
+    tft.setTextColor(TFT_WHITE);
+    tft.drawString("X", 50, 0, SMALL_FONT);
 
-	// X 影→本体の順で書かないと重なった部分が上書きされるのに注意
-	tft.setTextColor(TFT_SILVER);
-	tft.drawString("X", 51, 2, SMALL_FONT);
-	tft.setTextColor(TFT_WHITE);
-	tft.drawString("X", 50, 0, SMALL_FONT);
-
-	// version
-	tft.setTextColor(TFT_WHITE);
-	tft.drawString(ver, 62, 0, XSMALL_FONT);
+    // version (実用的に読めないので削除)
+    // tft.setTextColor(TFT_WHITE);
+    // tft.drawString(ver, 62, 0, XSMALL_FONT);
+  } else {
+    // 時計
+    tft.fillRect(0,0,100,24,TFT_BLACK);
+    // tft.setTextColor(TFT_DARKGREY);
+    // tft.drawString(time, 3, 2, SMALL_FONT);
+    tft.setTextColor(TFT_WHITE);
+    tft.drawString(time, 0, 0, DEFAULT_FONT);
+  }
 
 	tft.setTextSize(1);
 

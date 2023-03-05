@@ -60,7 +60,7 @@ struct tm timeinfo;
 
 String getFormattedTime() {
   if (!getLocalTime(&timeinfo, 1)) {
-    return TIME_NOT_READY;
+    return DATETIME_NOT_READY;
   }
 
   char buf[64];

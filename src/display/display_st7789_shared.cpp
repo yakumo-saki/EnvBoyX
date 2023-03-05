@@ -229,6 +229,8 @@ void disp_st7789_sensor_value(disp_values_t values, value_alerts_t alerts)
 	}
 	else
 	{
+    
+    _disp_header_normal(values.ip, values.mDNS);
 		_disp_sensor_value_normal(values, alerts);
 	}
 }

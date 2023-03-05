@@ -64,7 +64,7 @@ void timebased_dimmer() {
   }
 
   String datetime = getFormattedTime();
-  if (datetime.equals(TIME_NOT_READY)) {
+  if (datetime.equals(DATETIME_NOT_READY)) {
     return;
   }
 
