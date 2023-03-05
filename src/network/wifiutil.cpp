@@ -55,11 +55,10 @@ void make_sure_wifi_connected() {
   watchdog_feed();
 
   wifilog(F("WiFi is down or not initialized. connecting"));
+  WiFi.setHostname(config->get(ConfigNames::MDNS).c_str());
   WiFi.disconnect();
   WiFi.softAPdisconnect(true);
   WiFi.enableAP(false);
-
-  WiFi.setHostname(config->get(ConfigNames::MDNS).c_str());
 
   delay(100);
   watchdog_feed();
