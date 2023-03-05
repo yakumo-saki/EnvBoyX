@@ -46,7 +46,7 @@ String wl_status_t_to_string(wl_status_t wl_stat) {
 /**
  * WiFi接続する
  */
-void make_sure_wifi_connected() {
+void make_sure_wifi_connected(bool haltOnFail) {
   
   if (WiFi.status() == WL_CONNECTED) {
     return;
@@ -67,14 +67,15 @@ void make_sure_wifi_connected() {
   wifilog("ssid " + config->get(ConfigNames::SSID) + " pass " + config->get(ConfigNames::PASSWORD));
   WiFi.begin(config->get(ConfigNames::SSID).c_str(), config->get(ConfigNames::PASSWORD).c_str());
   
-  delay(300);
-  watchdog_feed();
-  
   while (WiFi.status() != WL_CONNECTED) {
 
     watchdog_feed();
     delay(300);
     retryCount++;
+
+    if (retryCount = 5) {
+      disp_wifi_starting();
+    }
 
     if (retryCount % 10 == 0) {
       wifilog("WiFI.status() = " + wl_status_t_to_string(WiFi.status()));
@@ -82,15 +83,15 @@ void make_sure_wifi_connected() {
     }
     if (retryCount % 30 == 0) {
       wifilog(F("Restarting WiFi"));
-      delay(100);
       wifilog(F("WiFi disconnect."));
       WiFi.disconnect();   
-      delay(300);
+      delay(100);
+      WiFi.setHostname(config->get(ConfigNames::MDNS).c_str());
       WiFi.begin(config->get(ConfigNames::SSID).c_str(), config->get(ConfigNames::PASSWORD).c_str());
       wifilog(F("RETRY connecting WiFi from start"));
     }
 
-    if (retryCount > 100) {
+    if (retryCount > 60 && haltOnFail) {
       wifilog(F("WiFi connect failure."));
       wifilog(F("Restarting"));
       wifilog(F("ESP8266 note: must connect proper pins, otherwise device hangs"));

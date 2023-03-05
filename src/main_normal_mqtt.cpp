@@ -47,7 +47,7 @@ void send_and_sleep() {
   sectionlog(F("loop start"));
 
   // WiFiが繋がってなければ意味がないので接続チェック
-  make_sure_wifi_connected();
+  make_sure_wifi_connected(false);
 
   mainlog(F("WiFi connected."));
 
@@ -97,7 +97,7 @@ void setup_normal_mqtt() {
 
   // start WiFi
   sectionlog(F("Connecting WiFi."));
-  make_sure_wifi_connected();
+  make_sure_wifi_connected(true);
 
   init_sensors();
 
