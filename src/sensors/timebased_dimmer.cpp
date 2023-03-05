@@ -8,6 +8,8 @@
 #include "display/display.h"
 #include "network/time_client.h"
 
+#include "display/brightnessManager.h"
+
 // 最後に見た結果と異なるときのみディスプレイON/OFFするために覚えておく
 bool LAST_AUTODIMMER_RESULT = false;
 
@@ -15,6 +17,7 @@ bool LAST_AUTODIMMER_RESULT = false;
 /**
  * 時刻判定
  * @param now,start,end 01:00 -> 100 のような int 表記
+ * @return true 範囲内 false 範囲外
 */
 bool _inDimmingTime(int now, int start, int end) {
   bool overday = (start > end);  // 日付またぎ (ex 22:00 - 06:00)
@@ -75,7 +78,12 @@ void timebased_dimmer() {
 
   if (dimming != LAST_AUTODIMMER_RESULT) {
     LAST_AUTODIMMER_RESULT = dimming;
-    disp_set_power(!dimming);
+    // disp_set_power(!dimming);
+    if (dimming) {
+      registerBrightness(MOD_BRIGHTNESS_AUTODIMMER, 0);
+    } else {
+      unregisterBrightness(MOD_BRIGHTNESS_AUTODIMMER);
+    }
   }
   
 }
