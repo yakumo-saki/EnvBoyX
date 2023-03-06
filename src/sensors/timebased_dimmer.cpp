@@ -10,40 +10,10 @@
 
 #include "display/brightnessManager.h"
 
+#include <TimeUtil.h>
+
 // 最後に見た結果と異なるときのみディスプレイON/OFFするために覚えておく
 bool LAST_AUTODIMMER_RESULT = false;
-
-
-/**
- * 時刻判定
- * @param now,start,end 01:00 -> 100 のような int 表記
- * @return true 範囲内 false 範囲外
-*/
-bool _inDimmingTime(int now, int start, int end) {
-  bool overday = (start > end);  // 日付またぎ (ex 22:00 - 06:00)
-
-  // Serial.println(now);
-  // Serial.println(start);
-  // Serial.println(end);
-
-  if (!overday) {
-    // simple pattern ex 05:00 - 17:00
-    if (start <= now && now <= end) {
-      return true;
-    }
-  } else {
-    if (start <= now || now <= end) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-int _timeToInt(String time) {
-  String timeIntStr = "1" + time.substring(0,2) + time.substring(3,5); // prefix "1" to prevent deletion of ZERO
-  return (timeIntStr).toInt();
-}
 
 /**
  * 時刻ベースのディスプレイ消灯。
@@ -52,37 +22,36 @@ int _timeToInt(String time) {
 */
 void timebased_dimmer() {
 
-  String startTime = config->get(ConfigNames::NTP_AUTO_DIMMER_START);
-  String endTime = config->get(ConfigNames::NTP_AUTO_DIMMER_END);
-
   if (!config->getAsBoolean(ConfigNames::NTP_AUTO_DIMMER)) {
+    displog("Time-based dimmer is disabled");
     return;
   }
 
+  String startTime = config->get(ConfigNames::NTP_AUTO_DIMMER_START);
+  String endTime = config->get(ConfigNames::NTP_AUTO_DIMMER_END);
+
   if (startTime.length() == 0 || endTime.length() == 0) {
+    displog("Time-based dimmer: time is invalid: " + startTime + ' ' + endTime);
     return;  // bad config
   }
 
   String datetime = getFormattedTime();
   if (datetime.equals(DATETIME_NOT_READY)) {
+    displog("Time-based dimmer: datetime is not ready");
     return;
   }
 
-  int start = _timeToInt(startTime);
-  int end = _timeToInt(endTime);
-  int now = _timeToInt(datetime.substring(11, 16));  // 2023/01/20 12:34:56 -> 12:34
+  String nowTime = datetime.substring(11, 16);  // 2023/01/20 12:34:56 -> 12:34
 
-  // Serial.println(datetime + "->" + datetime.substring(11, 16));
-
-  bool dimming = _inDimmingTime(now, start, end);
+  bool dimming = betweenTime(nowTime, startTime, endTime);
 
   if (dimming != LAST_AUTODIMMER_RESULT) {
     LAST_AUTODIMMER_RESULT = dimming;
     // disp_set_power(!dimming);
     if (dimming) {
-      registerBrightness(MOD_BRIGHTNESS_AUTODIMMER, 0);
+      registerBrightness(MOD_BRIGHTNESS_TIMEDIMMER, 0);
     } else {
-      unregisterBrightness(MOD_BRIGHTNESS_AUTODIMMER);
+      unregisterBrightness(MOD_BRIGHTNESS_TIMEDIMMER);
     }
   }
   

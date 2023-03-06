@@ -53,6 +53,7 @@ void autodimmer_loop() {
         // 減光する
         dimming = true;
 
+        displog("Dimmer enable. brightness = zero.");
         registerBrightness(MOD_BRIGHTNESS_AUTODIMMER, 0);
     }
 }

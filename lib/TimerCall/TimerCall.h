@@ -33,11 +33,17 @@ class TimerCall
             TimerCall::TimerCallStatFunction statFunc;
         } TimerCallStatTask;
 
+        // add job to TimerCall
         void add(TimerCall::TimerCallFunction f, String name, unsigned long interval);
+
+        // remove added job from TimerCall
+        bool remove(String name);
+
         void addStasticsFunction(TimerCall::TimerCallStatFunction f, String name, unsigned long intervalinterval);
         
         // start timer (do nothing when timer is already started)
         void start();
+
 
         // restart timer (reset timer and start)
         void restart();

@@ -93,7 +93,7 @@ void call_disp_sensor_value() {
 
 // センサー読み込み以外のタスクをタイマーに追加する
 void add_timer_tasks() {
-  timer.add(wifi_store_rssi, "WIFI", 1000);
+  timer.add(wifi_store_rssi, "WIFI_RSSI", 1000);
 
   // delta
   if (DEBUG_BUILD) {
@@ -175,7 +175,10 @@ void setup_normal() {
   
   if (config->getAsBoolean(ConfigNames::NTP)) {
     ntp_setup();
+
+    // あとで設定が変更されたときのことを考えてとりあえず登録はしておく
     timer.add(timebased_dimmer, "TIMEBASED_DIMMER", 10000);
+    cfglog("NTP is Enabled.");
   } else {
     cfglog("NTP is disabled.");
   }

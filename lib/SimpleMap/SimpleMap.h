@@ -3,8 +3,6 @@
 #include <Arduino.h>
 #include <vector>
 
-#include "log.h"
-
 template <typename T>
 struct SimpleMapData {
   String key;
@@ -74,7 +72,7 @@ template <typename T> class SimpleMap {
     bool set(String key, const T& value, bool create = false) {
       int idx = this->findIndex(key);
       if (idx == NOT_FOUND && !create) {
-        cfglog("[SimpleMap] KEY=" + key + " not found, and create is false");
+        // cfglog("[SimpleMap] KEY=" + key + " not found, and create is false");
         return false;
       }
       

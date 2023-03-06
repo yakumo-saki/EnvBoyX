@@ -15,6 +15,19 @@ void TimerCall::add(TimerCall::TimerCallFunction f, String name, unsigned long i
     this->tasks.push_back(task);
 };
 
+bool TimerCall::remove(String name) {
+
+  for (auto it = this->tasks.begin(); it != this->tasks.end(); ++it) {
+    if (it->info.name == name) {
+      this->tasks.erase(it);
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+
 void TimerCall::start() {
 
     if (this->started) {
