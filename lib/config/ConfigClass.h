@@ -171,6 +171,9 @@ class Config {
         ret = (String(dummy) == value); // +10 とか書かれるとアウトだけれども妥協
       } else if (meta.type == ConfigValueType::String) {
         ret = true;
+      } else if (meta.type == ConfigValueType::Double) {
+        double dummy = value.toDouble();
+        ret = true;
       } else {
         cfglog("[maybe bug]Config SET validation invalid type. key=" + key);
         ret = false;

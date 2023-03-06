@@ -24,18 +24,27 @@ String http_normal_data_json() {
   doc["product"] = product;
   doc["uptime"] = timeString;
   doc["uptimeMills"] = ms;
-  // TODO SenserValueAdjustment
-  doc["temparature"] = dtostrf(sensorValues.temperature, 0, 2, temp);
-  doc["humidity"] = dtostrf(sensorValues.humidity, 0, 2, hum);
-  doc["pressure"] = dtostrf(sensorValues.pressure, 0, 2, pres);
-  doc["luminous"] = dtostrf(sensorValues.lux, 0, 0, lux);
+
+  // v48 SenserValueAdjustment
+  double temperature = sensorValues.temperature + config->getAsDouble(ConfigNames::TEMP_ADJ);
+  double humidity = sensorValues.humidity + config->getAsDouble(ConfigNames::HUMI_ADJ);
+  double luminous = sensorValues.lux + config->getAsDouble(ConfigNames::LUX_ADJ);
+  double pressure = sensorValues.pressure + config->getAsInteger(ConfigNames::PRES_ADJ);
+  double co2ppm = sensorValues.co2ppm + config->getAsInteger(ConfigNames::CO2_ADJ);
+
+  doc["temparature"] = dtostrf(temperature, 0, 2, temp);
+  doc["humidity"] = dtostrf(humidity, 0, 2, hum);
+  doc["pressure"] = dtostrf(pressure, 0, 2, pres);
+  doc["luminous"] = dtostrf(luminous, 0, 0, lux);
+  doc["co2ppm"] = dtostrf(co2ppm, 0, 0, ppm);
+
   doc["luminousIr"] = dtostrf(sensorValues.luxIr, 0, 0, luxIr);
-  doc["co2ppm"] = dtostrf(sensorValues.co2ppm, 0, 0, ppm);
   doc["co2ppmAccuracy"] =  sensorValues.co2ppmAccuracy;
   doc["rssi"] = sensorValues.rssi;
   doc["freeHeap"] = sensorValues.freeHeap;
   doc["name"] = config->get(ConfigNames::MDNS);
 
+  // v48 補正前値
   DynamicJsonDocument rawdoc(1000);
   rawdoc["temparature"] = dtostrf(sensorValues.temperature, 0, 2, temp);
   rawdoc["humidity"] = dtostrf(sensorValues.humidity, 0, 2, hum);
