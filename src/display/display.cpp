@@ -141,7 +141,7 @@ void disp_all_initialize_complete(String ip, String mdns) {
  */
 void disp_sensor_value(String ip, String mdns) {
 	
-    value_alerts_t alerts = check_for_alerts();
+  value_alerts_t alerts = check_for_alerts();
 	disp_values_t last_values = disp_values;
 	disp_values = create_disp_values();
 	disp_values.ip = ip;

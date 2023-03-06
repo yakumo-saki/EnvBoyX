@@ -22,17 +22,25 @@ void _applyBrightness() {
   
   int brightness = -1;
 
-  if (brightnessRegisterMap.hasKey(MOD_BRIGHTNESS_TIMEDIMMER)) {
-    brightness = brightnessRegisterMap.get(MOD_BRIGHTNESS_TIMEDIMMER);
-  } else if (brightnessRegisterMap.hasKey(MOD_BRIGHTNESS_AUTODIMMER)) {
-    brightness = brightnessRegisterMap.get(MOD_BRIGHTNESS_AUTODIMMER);
-  } 
+  String priority[] = {MOD_BRIGHTNESS_TIMEDIMMER, MOD_BRIGHTNESS_AUTODIMMER};
+  int count = sizeof(priority) / sizeof(String);
+
+  // 優先順位順にチェック
+  for (int i = 0; i < count; i++) {
+    String key = priority[i];
+    if (brightnessRegisterMap.hasKey(key)) {
+      brightness = brightnessRegisterMap.get(key);
+      displog("brightness changed to " + String(brightness) + " key=" + key);
+      break;
+    }
+  }
 
   if (brightness != -1) {
     // timedimmer or autodimmer is active(dimming)
     disp_set_brightness(brightness);
   } else {
     // no dimmers are active.
+    displog("brightness back to normal.");
     disp_set_brightness(config->getAsInteger(ConfigNames::DISPLAY_BRIGHTNESS));
   }
   
@@ -41,13 +49,21 @@ void _applyBrightness() {
 // ディスプレイの明るさを変更したい時に明るさとモジュール名を登録する
 // 実際の明るさは優先順位を加味して決まる
 void registerBrightness(String moduleName, int brightness) {
-  brightnessRegisterMap.put(moduleName, brightness, false);
+  displog("add " + moduleName + " value=" + String(brightness));
+  auto result = brightnessRegisterMap.put(moduleName, brightness, false);
+  if (!result) {
+    displog("brightnessRegisterMap.put() failed");
+  }
   _applyBrightness();
 }
 
 // ディスプレイの明るさセットリクエストを削除する
 // 登録されていないモジュール名の場合は何も起きない
 void unregisterBrightness(String moduleName) {
-  brightnessRegisterMap.remove(moduleName);
+  displog("remove " + moduleName);
+  auto result = brightnessRegisterMap.remove(moduleName);
+  if (!result) {
+    displog("brightnessRegisterMap.remove failed");
+  }
   _applyBrightness();
 }

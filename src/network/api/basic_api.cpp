@@ -30,6 +30,7 @@ String http_normal_ping_json() {
   doc["minorVer"] = minorVer;
   doc["settingId"] = SETTING_ID;
   doc["name"] = config->get(ConfigNames::MDNS);
+  doc["build"] = DEBUG_BUILD ? "Release" : "DEBUG";
   
   if (OPERATING_MODE == OPERATING_MODE_NORMAL) {
     doc["mode"] = "NORMAL";
