@@ -4,7 +4,6 @@
 #include "ConfigClass.h"
 
 #include "log.h"
-#include "halt.h"
 #include "config_names.h"
 #include "config_values.h"
 
@@ -52,6 +51,12 @@ void Config::loadDefaultValue() {
   
   this->addConfig(ConfigNames::MQTT_BROKER, "");
   this->addConfig(ConfigNames::MQTT_NAME, "");
+
+  this->addConfig(ConfigNames::TEMP_ADJ , "0.0");
+  this->addConfig(ConfigNames::HUMI_ADJ , "0.0");
+  this->addConfig(ConfigNames::LUX_ADJ, "0");
+  this->addConfig(ConfigNames::PRES_ADJ , "0.0");
+  this->addConfig(ConfigNames::CO2_ADJ, "0");
 
   this->addConfig(ConfigNames::TEMP_ALERT, ConfigNames::ALERT_WARN1_LO, "-99");
   this->addConfig(ConfigNames::TEMP_ALERT, ConfigNames::ALERT_WARN1_HI, "10");

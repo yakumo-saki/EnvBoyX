@@ -4,7 +4,6 @@
 #include "ConfigClass.h"
 
 #include "log.h"
-#include "halt.h"
 #include "config_names.h"
 #include "config_values.h"
 
@@ -208,6 +207,41 @@ void Config::loadMetadata() {
     meta.key = ConfigNames::MQTT_NAME;
     meta.type = ConfigValueType::String;
     meta.flags = RunningConfigChangeFlags::REBOOT_REQ;
+    this->addMeta(meta);
+  }
+  { // v48
+    ConfigMeta meta;
+    meta.key = ConfigNames::TEMP_ADJ;
+    meta.type = ConfigValueType::Double;
+    meta.flags = RunningConfigChangeFlags::OK;
+    this->addMeta(meta);
+  }
+  { // v48
+    ConfigMeta meta;
+    meta.key = ConfigNames::HUMI_ADJ;
+    meta.type = ConfigValueType::Double;
+    meta.flags = RunningConfigChangeFlags::OK;
+    this->addMeta(meta);
+  }
+  { // v48
+    ConfigMeta meta;
+    meta.key = ConfigNames::LUX_ADJ;
+    meta.type = ConfigValueType::Integer;
+    meta.flags = RunningConfigChangeFlags::OK;
+    this->addMeta(meta);
+  }
+  { // v48
+    ConfigMeta meta;
+    meta.key = ConfigNames::PRES_ADJ;
+    meta.type = ConfigValueType::Double;
+    meta.flags = RunningConfigChangeFlags::OK;
+    this->addMeta(meta);
+  }
+  { // v48
+    ConfigMeta meta;
+    meta.key = ConfigNames::CO2_ADJ;
+    meta.type = ConfigValueType::Integer;
+    meta.flags = RunningConfigChangeFlags::OK;
     this->addMeta(meta);
   }
 

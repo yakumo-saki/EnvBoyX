@@ -8,7 +8,7 @@
 #include "display/display_util.h"
 #include "display/st7789_utils.h"
 
-#include "network/time_client.h"
+#include "TimeUtil.h"
 
 #include <TFT_eSPI.h>
 #include <SPI.h>

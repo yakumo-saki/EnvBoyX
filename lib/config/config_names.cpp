@@ -39,6 +39,12 @@ const String ConfigNames::MHZ19B_ABC = "mhz19bAbc";
 const String ConfigNames::MQTT_BROKER = "mqttBroker";
 const String ConfigNames::MQTT_NAME = "mqttName";
 
+const String ConfigNames::TEMP_ADJ = "adjustTemperature";  // v48 TEMP_ADJUSTにしたかったがMHZ19Bライブラリがdefineしている
+const String ConfigNames::HUMI_ADJ = "adjustHumidity";     // v48
+const String ConfigNames::LUX_ADJ = "adjustPressure";      // v48
+const String ConfigNames::PRES_ADJ = "adjustLux";          // v48
+const String ConfigNames::CO2_ADJ = "adjustCo2";           // v48
+
 const String ConfigNames::TEMP_ALERT = "tempAlerts";
 const String ConfigNames::HUMI_ALERT = "humiAlerts";
 const String ConfigNames::LUX_ALERT = "luxAlerts";

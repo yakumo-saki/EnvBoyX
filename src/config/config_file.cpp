@@ -3,6 +3,7 @@
 #include <LittleFS.h>
 
 #include "log.h"
+#include "halt.h"
 #include "global.h"
 #include "config/config.h"
 

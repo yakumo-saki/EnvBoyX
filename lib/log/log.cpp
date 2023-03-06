@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "network/time_client.h"
+#include "TimeUtil.h"
 
 void real_log(String msgString, String prefixString) {
   char log[150];

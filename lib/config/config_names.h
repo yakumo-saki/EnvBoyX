@@ -50,6 +50,12 @@ class ConfigNames {
     static const String MQTT_BROKER;
     static const String MQTT_NAME;
 
+    static const String TEMP_ADJ;   // v48
+    static const String HUMI_ADJ;   // v48
+    static const String LUX_ADJ;    // v48
+    static const String PRES_ADJ;   // v48
+    static const String CO2_ADJ;    // v48
+
     static const String TEMP_ALERT;
     static const String HUMI_ALERT;
     static const String LUX_ALERT;

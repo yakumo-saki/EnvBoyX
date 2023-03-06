@@ -20,10 +20,11 @@ String http_normal_data_json() {
   char temp[10], hum[10], pres[10];
   char lux[10], luxIr[10],ppm[10];
 
-  DynamicJsonDocument doc(3000);
+  DynamicJsonDocument doc(2000);
   doc["product"] = product;
   doc["uptime"] = timeString;
   doc["uptimeMills"] = ms;
+  // TODO SenserValueAdjustment
   doc["temparature"] = dtostrf(sensorValues.temperature, 0, 2, temp);
   doc["humidity"] = dtostrf(sensorValues.humidity, 0, 2, hum);
   doc["pressure"] = dtostrf(sensorValues.pressure, 0, 2, pres);
@@ -34,6 +35,18 @@ String http_normal_data_json() {
   doc["rssi"] = sensorValues.rssi;
   doc["freeHeap"] = sensorValues.freeHeap;
   doc["name"] = config->get(ConfigNames::MDNS);
+
+  DynamicJsonDocument rawdoc(1000);
+  rawdoc["temparature"] = dtostrf(sensorValues.temperature, 0, 2, temp);
+  rawdoc["humidity"] = dtostrf(sensorValues.humidity, 0, 2, hum);
+  rawdoc["pressure"] = dtostrf(sensorValues.pressure, 0, 2, pres);
+  rawdoc["luminous"] = dtostrf(sensorValues.lux, 0, 0, lux);
+  rawdoc["luminousIr"] = dtostrf(sensorValues.luxIr, 0, 0, luxIr);
+  rawdoc["co2ppm"] = dtostrf(sensorValues.co2ppm, 0, 0, ppm);
+  rawdoc["co2ppmAccuracy"] =  sensorValues.co2ppmAccuracy;
+
+  doc["rawdata"] = rawdoc;
+
 
   String json;
   serializeJson(doc, json);
