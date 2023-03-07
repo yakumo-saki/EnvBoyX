@@ -21,21 +21,21 @@ void handle_get_webconfig() {
 
   sendHttpHeader();
 
-  server.sendContent(String(CONFIG_HTML));
+  server.sendContent(CONFIG_HTML);
 }
 
 void handle_get_style_css() {
 
   sendHttpHeader(MimeType::CSS);
 
-  server.sendContent(String(STYLE_CSS));
+  server.sendContent(STYLE_CSS);
 }
 
 void handle_get_config_js() {
 
   sendHttpHeader(MimeType::JAVASCRIPT);
 
-  server.sendContent(String(CONFIG_JS));
+  server.sendContent(CONFIG_JS);
 }
 
 void http_web_config_setup() {
