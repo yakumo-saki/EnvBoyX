@@ -23,7 +23,7 @@ bool LAST_AUTODIMMER_RESULT = false;
 void timebased_dimmer() {
 
   if (!config->getAsBoolean(ConfigNames::NTP_AUTO_DIMMER)) {
-    displog("Time-based dimmer is disabled");
+    // displog("Time-based dimmer is disabled");
     return;
   }
 

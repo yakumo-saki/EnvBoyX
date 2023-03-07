@@ -78,7 +78,9 @@ void http_web_updater_setup() {
 
 void handle_get_update() {
   sendHttpHeader();
-  server.sendContent(String(UPDATE_UNSUPPORT_HTML));
+
+  // TODO ESP8266 can supports updater...
+  server.sendContent(UPDATE_UNSUPPORT_HTML);
 }
 
 void http_web_updater_setup() {
