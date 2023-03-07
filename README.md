@@ -12,6 +12,10 @@ https://envboyx.readthedocs.io/en/latest/
 
 # images
 
+## EnvBoyX v48 on TTGO T-Display and SSD1306 , SH1106
+
+![Default Output Image](docs/imgs/envboy_v48_esp32.jpg)
+
 ## Default output image on TTGO T-Display
 
 ![Default Output Image](docs/imgs/EnvBoyX_Horizontal.jpg)
