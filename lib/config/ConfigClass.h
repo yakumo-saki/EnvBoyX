@@ -137,7 +137,12 @@ class Config {
       return i;
     }
 
-    // set 普通のキー
+    /** 
+     * 設定値を設定する。set 普通のキー
+     * @param key キー
+     * @param value 値（文字列表記）
+     * @return ConfigSetResult 設定を行った結果。呼び出し元で確認必要（正常な値だったか、反映されたか、再起動が必要か）
+     */
     ConfigSetResult set(String key, String value) {
       // debuglog("[Config] key=" + key + " value=" + value);
       bool keyExist = checkKeyExist("set", key);

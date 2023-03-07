@@ -6,13 +6,14 @@
 #include "config/config.h"
 #include "ConfigClass.h"
 
+#include "sensors/mhz19.h"
 #include "sensors/mhz19_pwm.h"
 #include "sensors/mhz19_uart.h"
 
+extern const int CO2_PPM_INVALID = -999;
+
 // ■ 動作モード ■
 bool USE_PWM = true;
-
-int CO2_PPM_INVALID = -999;
 
 sensor_characters_t mhz_characters() {
 	sensor_characters_t sensor;
