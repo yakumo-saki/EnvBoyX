@@ -9,6 +9,7 @@
 #include "network/webserver.h"
 #include "network/api/api_util.h"
 
+#include "util/sensor_value_adjust.h"
 
 extern HTTPWEBSERVER server;
 
@@ -26,17 +27,12 @@ String http_normal_data_json() {
   doc["uptimeMills"] = ms;
 
   // v48 SenserValueAdjustment
-  double temperature = sensorValues.temperature + config->getAsDouble(ConfigNames::TEMP_ADJ);
-  double humidity = sensorValues.humidity + config->getAsDouble(ConfigNames::HUMI_ADJ);
-  double luminous = sensorValues.lux + config->getAsDouble(ConfigNames::LUX_ADJ);
-  double pressure = sensorValues.pressure + config->getAsInteger(ConfigNames::PRES_ADJ);
-  double co2ppm = sensorValues.co2ppm + config->getAsInteger(ConfigNames::CO2_ADJ);
-
-  doc["temparature"] = dtostrf(temperature, 0, 2, temp);
-  doc["humidity"] = dtostrf(humidity, 0, 2, hum);
-  doc["pressure"] = dtostrf(pressure, 0, 2, pres);
-  doc["luminous"] = dtostrf(luminous, 0, 0, lux);
-  doc["co2ppm"] = dtostrf(co2ppm, 0, 0, ppm);
+  auto adjusted = applySenserValueAdjustment(sensorValues);
+  doc["temparature"] = dtostrf(adjusted.temperature, 0, 2, temp);
+  doc["humidity"] = dtostrf(adjusted.humidity, 0, 2, hum);
+  doc["pressure"] = dtostrf(adjusted.pressure, 0, 2, pres);
+  doc["luminous"] = dtostrf(adjusted.lux, 0, 0, lux);
+  doc["co2ppm"] = dtostrf(adjusted.co2ppm, 0, 0, ppm);
 
   doc["luminousIr"] = dtostrf(sensorValues.luxIr, 0, 0, luxIr);
   doc["co2ppmAccuracy"] =  sensorValues.co2ppmAccuracy;

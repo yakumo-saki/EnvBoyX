@@ -130,10 +130,10 @@ class Config {
       return i;
     }
 
-    // 設定値を取得する(int)
-    float getAsDouble(String key) {
+    // 設定値を取得する(float)
+    float getAsFloat(String key) {
       String val = configMap.get(key);
-      double i = val.toDouble();
+      double i = val.toFloat();
       return i;
     }
 
