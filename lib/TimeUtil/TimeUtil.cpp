@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#include "TimeUtil.h"
+
 /**
  * 時刻判定
  * @param now,start,end 01:00 -> 100 のような int 表記
@@ -48,3 +50,60 @@ bool betweenTime(String nowTime, String startTime, String endTime) {
   bool dimming = _inDimmingTime(now, start, end);
   return dimming;
 }
+
+/**
+ * 現在時刻のhh:mm:ss を返す。
+ * 時刻がセットされていない場合 "00:00:00" を返す
+ */
+String getTime() {
+  String now = getFormattedTime();
+  return now.substring(11); // yyyy/mm/dd hh:mm:ss
+}
+
+/**
+ * 現在日付を yyyy/mm/dd 形式で返す。
+ * 時刻がセットされていない場合 "0000/00/00" を返す
+ */
+String getDate() {
+  String now = getFormattedTime();
+  return now.substring(0, 9); // yyyy/mm/dd hh:mm:ss
+}
+
+
+// ローカルタイムの取得がESP32とESP8266で異なるので切り分け
+#ifdef ESP32
+struct tm timeinfo;
+
+String getFormattedTime() {
+  if (!getLocalTime(&timeinfo, 1)) {
+    return DATETIME_NOT_READY;
+  }
+
+  char buf[64];
+  strftime(buf, 64, "%Y/%m/%d %H:%M:%S", &timeinfo);
+  // String s = fmt.Sprintf(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+  return String(buf);
+}
+#endif
+#ifdef ESP8266
+time_t t;
+struct tm *tm;
+
+String getFormattedTime() {
+
+  char buf[50];
+
+  t = time(NULL);
+  tm = localtime(&t);
+
+  if ( tm->tm_year < 100) {
+    return TIME_NOT_READY;
+  }
+
+  sprintf(buf, "%04d/%02d/%02d %02d:%02d:%02d",
+          tm->tm_year+1900, tm->tm_mon+1, tm->tm_mday,
+          tm->tm_hour, tm->tm_min, tm->tm_sec);
+
+  return String(buf);
+}
+#endif

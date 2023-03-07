@@ -23,7 +23,7 @@ extern const String minorVer = "0";  // Bugfix
 extern const String ver_long = " Ver." + ver + "." + minorVer;
 
 // Setting version (version number when settings changed)
-extern const String SETTING_ID = "EBXCFG.v48";
+extern const String SETTING_ID = "EBXCFG.v48C";
 
 // EnvBoyX Ver.53.0
 extern const String product_long = product + " " + (DEBUG_BUILD ? " Dev." + ver + "." + minorVer : ver_long);
@@ -44,10 +44,15 @@ extern const int I2C_SCL = 4;
 #endif
 
 // --------------------------------------------------------------------
-// センサー値
+// センサー値グローバル
 // --------------------------------------------------------------------
+// センサー値（グローバル）
 sensor_values_t sensorValues;
+
+// センサー値差分（グローバル）
 sensor_delta_values_t deltaValues;
+
+// 測定できる項目（グローバル）
 sensor_characters_t sensorCharacters;
 
 // --------------------------------------------------------------------

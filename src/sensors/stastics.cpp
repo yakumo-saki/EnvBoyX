@@ -5,7 +5,7 @@
 #include "log.h"
 #include "TimerCall.h"
 
-#include "network/time_client.h"
+#include "TimeUtil.h"
 
 // 統計情報を取得
 void updateStastics(std::vector<TimerCall::TimerCallTask> &tasks) {

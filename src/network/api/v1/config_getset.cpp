@@ -10,6 +10,7 @@
 
 #include "mdns_client.h"
 
+#include "halt.h"
 #include "network/webserver.h"
 #include "network/api/api_util.h"
 #include "display/display.h"
@@ -67,7 +68,11 @@ void updateConfigParamForApi(DynamicJsonDocument& msgArray, ConfigHookFlags &fla
   }
 
   // 設定後の処理を取得
-  ConfigMeta meta = config->getMeta(key, true);
+  ConfigMeta meta = config->getMeta(key);
+  if (meta.type == ConfigValueType::NotFound) {
+    halt("cfg getmeta", "failed", key);
+  }
+
 
   if (meta.flags == RunningConfigChangeFlags::BLOCKED) {
     flags.configFailed = true;

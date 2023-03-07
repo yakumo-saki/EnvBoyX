@@ -11,7 +11,7 @@
 
 #include "log.h"
 #include "global.h"
-#include "watchdog.h"
+#include "util/watchdog.h"
 
 #include "ConfigClass.h"
 #include "config/config.h"

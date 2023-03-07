@@ -2,7 +2,7 @@
 #include "display/display.h"
 
 #include "log.h"
-#include "watchdog.h"
+#include "util/watchdog.h"
 #include "TimerCall.h"
 
 extern TimerCall timer;

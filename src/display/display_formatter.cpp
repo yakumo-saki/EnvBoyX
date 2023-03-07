@@ -4,6 +4,8 @@
 #include "log.h"
 #include "structs.h"
 
+#include "util/sensor_value_adjust.h"
+
 String format_temparature(float temp) {
 	return String(temp, 2) + "c";
 }
@@ -32,17 +34,19 @@ String format_co2_ppm(int ppm) {
 	return result;
 }
 
-
 /**
  * Global last**** から disp_values_tを作る
  */
 disp_values_t create_disp_values() {
 	disp_values_t ret;
-	ret.temperature = format_temparature(sensorValues.temperature);
-	ret.humidity = format_humidity(sensorValues.humidity);
-	ret.pressure = format_pressure(sensorValues.pressure);
-	ret.co2ppm = format_co2_ppm(sensorValues.co2ppm);
-	ret.lux = format_lux(sensorValues.lux);
+
+  auto adjust = applySenserValueAdjustment(sensorValues);
+
+	ret.temperature = format_temparature(adjust.temperature);
+	ret.humidity = format_humidity(adjust.humidity);
+	ret.pressure = format_pressure(adjust.pressure);
+	ret.co2ppm = format_co2_ppm(adjust.co2ppm);
+	ret.lux = format_lux(adjust.lux);
 	
 	return ret;
 }

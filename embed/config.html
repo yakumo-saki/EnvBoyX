@@ -235,11 +235,11 @@
         <fieldset>
             <legend>センサー値の補正</legend>
             <p>お使いのセンサーの値を補正することができます。</p>
-            <span class="header">温度</span><input type='number' class="num" name='adjustTemperature' value='12'><br>
-            <span class="header">湿度</span><input type='number' class="num" name='adjustHumidity' value='34'><br>
-            <span class="header">気圧</span><input type='number' class="num" name='adjustPressure' value='56'><br>
-            <span class="header">照度</span><input type='number' class="num" name='adjustLux' value='78'><br>
-            <span class="header">CO2</span><input type='number' class="num" name='adjustCo2' value='90'><br>
+            <span class="header">温度</span><input type='number' class="num" name='adjustTemperature' step="0.1"><br>
+            <span class="header">湿度</span><input type='number' class="num" name='adjustHumidity' step="0.1"><br>
+            <span class="header">気圧</span><input type='number' class="num" name='adjustPressure' step="0.1"><br>
+            <span class="header">照度</span><input type='number' class="num" name='adjustLux'><br>
+            <span class="header">CO2</span><input type='number' class="num" name='adjustCo2'><br>
         </fieldset>
 
         <fieldset>
@@ -363,7 +363,7 @@
         <br> <input type='button' id="submit" value='設定する'><br>
     </form>
     <br>
-    <hr>EnvBoyX <span replace="productVer">Ver.00.0</span>, Copyright 2018-2022 Yakumo Saki / ziomatrix.org.
+    <hr>EnvBoyX <span replace="productVer">Ver.00.0</span>, Copyright 2018-2023 Yakumo Saki / ziomatrix.org.
 </body>
 
 </html>

@@ -7,7 +7,8 @@
 #include "global.h"
 #include "display/display.h"
 
-#include "network/time_client.h"
+#include "TimeUtil.h"
+
 #include "network/webserver.h"
 #include "network/api/basic_api.h"
 #include "network/api/api_util.h"

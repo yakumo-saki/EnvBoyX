@@ -108,7 +108,7 @@ bool read_config_file(File f, bool readForUpdate) {
     } else {
       String val = value.as<String>();
       // debuglog("read config key=" + key + " value=" + val);
-      ret = (config->set(key, val, false) == ConfigSetResult::OK) && ret;
+      ret = (config->set(key, val) == ConfigSetResult::OK) && ret;
     }
   }
 

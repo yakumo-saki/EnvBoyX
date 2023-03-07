@@ -3,11 +3,10 @@
 #include <Arduino.h>
 #include <unordered_map>
 
-#include "log.h"
-#include "halt.h"
 #include "config_names.h"
 #include "config_values.h"
 
+#include "log.h"
 #include "utils.h"
 #include "SimpleMap.h"
 
@@ -16,6 +15,7 @@ enum class ConfigValueType {
   String = 0,  // 任意の文字列
   Integer = 1, // 整数
   Choise = 2,  // validValuesに含まれている文字列
+  Double = 3,  // 小数
   NotFound = 255   // そのキーは存在しない。
 };
 
@@ -50,14 +50,8 @@ class Config {
     SimpleMap<String> configMap;
     SimpleMap<ConfigMeta> configMetaMap;
 
-    bool checkKeyExist(String operation, String key, bool haltOnNoKey) {
+    bool checkKeyExist(String operation, String key) {
       if (!configMap.hasKey(key)) {
-        if (haltOnNoKey) { 
-          cfglog("[ERROR] Config no key key=" + key + " operation=" + operation);
-          halt("CFG NoKey", "OP=" + operation, key);
-        } else {
-          cfglog("[WARN] Config Nokey key=" + key + " operation=" + operation);
-        }
         return false;
       }
       return true;
@@ -108,22 +102,18 @@ class Config {
     }
 
     // メタデータを取得する
-    ConfigMeta getMeta(String key, bool haltOnNotFound) {
+    ConfigMeta getMeta(String key) {
       if (!this->configMetaMap.hasKey(key)) {
-        if (haltOnNotFound) {
-          halt("CFG Meta", "GET Nokey", key);
-        } else {
-          ConfigMeta meta;
-          meta.type = ConfigValueType::NotFound;
-          return meta;
-        }
+        ConfigMeta meta;
+        meta.type = ConfigValueType::NotFound;
+        return meta;
       }
       return configMetaMap.get(key);
     }
 
     // 設定値を取得する(String)
     String get(String key) {
-      checkKeyExist("get", key, true);
+      checkKeyExist("get", key);
       return configMap.get(key);
     }
 
@@ -140,10 +130,17 @@ class Config {
       return i;
     }
 
+    // 設定値を取得する(float)
+    float getAsFloat(String key) {
+      String val = configMap.get(key);
+      double i = val.toFloat();
+      return i;
+    }
+
     // set 普通のキー
-    ConfigSetResult set(String key, String value, bool haltOnNoKey = true) {
+    ConfigSetResult set(String key, String value) {
       // debuglog("[Config] key=" + key + " value=" + value);
-      bool keyExist = checkKeyExist("set", key, haltOnNoKey);
+      bool keyExist = checkKeyExist("set", key);
       if (!keyExist) return ConfigSetResult::NO_KEY;
 
       value.trim();
@@ -173,6 +170,9 @@ class Config {
         int dummy = value.toInt(); // 変な文字列が来ている場合0が返る
         ret = (String(dummy) == value); // +10 とか書かれるとアウトだけれども妥協
       } else if (meta.type == ConfigValueType::String) {
+        ret = true;
+      } else if (meta.type == ConfigValueType::Double) {
+        double dummy = value.toDouble();
         ret = true;
       } else {
         cfglog("[maybe bug]Config SET validation invalid type. key=" + key);

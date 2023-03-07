@@ -6,7 +6,7 @@
 #include "global.h"
 #include "log.h"
 
-#include "network/time_client.h"
+#include "TimeUtil.h"
 
 #include "display/display_util.h"
 #include "display/u8g2_utils.h"
