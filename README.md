@@ -4,8 +4,8 @@ Arduino environment monitor for ESP32 / ESP8266 based boards.
 
 ## All of documents
 
-* [書き込み方法（日本語）](docs/how_to_write.ja.md)
-* [How to write](docs/how_to_write.en.md)
+* [書き込み方法（日本語）](docs/how_to_write-jp.md)
+* [How to write](docs/how_to_write-en.md)
 
 View document on read the docs
 https://envboyx.readthedocs.io/en/latest/

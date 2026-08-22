@@ -24,7 +24,7 @@ EMBED_DIR=os.path.join(os.getcwd(), "embed")            # embedしたいファ�
 OUT_DIR=os.path.join(os.getcwd(), "include", "embed")  # 変換した .h ファイルの出力先
 TEMPLATE_FILE=os.path.join(os.getcwd(), "build_script", "template.cpp")
 
-SEP_LENGTH = 90;
+SEP_LENGTH = 90
 
 print("=" * SEP_LENGTH)
 print("create_embed.py executing.")

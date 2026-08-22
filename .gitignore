@@ -6,6 +6,8 @@
 .vscode/ipch
 .vscode
 
+.idea
+
 # embed is auto generated directory.
 include/embed/**
 
@@ -15,3 +17,5 @@ _release/**
 EnvBoyX.zip
 EnvBoyX.tar.gz
 EnvBoyX-*.tar.gz
+
+*.DS_Store
