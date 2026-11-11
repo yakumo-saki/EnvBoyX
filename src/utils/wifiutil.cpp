@@ -73,7 +73,7 @@ void make_sure_wifi_connected(bool haltOnFail) {
     delay(300);
     retryCount++;
 
-    if (retryCount = 5) {
+    if (retryCount == 5) {
       disp_wifi_starting();
     }
 
